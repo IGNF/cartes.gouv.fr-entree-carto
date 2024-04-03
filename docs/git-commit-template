@@ -1,0 +1,54 @@
+# Le commit doit suivre le template suivant : 
+#
+# <TYPE><(SCOPE (facultatif))> : <SUJET>
+# 
+# <DESCRIPTION (facultatif)>
+# 
+# <FOOTER (facultatif)>
+#
+#
+# --- DEBUT DU COMMIT ---
+# <TYPE><SCOPE> : <SUJET>
+
+
+# <DESCRIPTION>
+
+
+# <FOOTER>
+
+
+# --- FIN DU COMMIT ---
+#
+# Le TYPE peut être :
+#	 build : changements qui affectent le système de build ou des dépendances externes (npm, make…)
+#	 ci : changements concernant les fichiers et scripts d’intégration ou de configuration (Travis, Ansible, BrowserStack…)
+#	 feat : ajout d’une nouvelle fonctionnalité
+#	 fix : correction d’un bug
+#	 perf : amélioration des performances
+#	 refactor : modification qui n’apporte ni nouvelle fonctionalité ni d’amélioration de performances
+#	 style : changement qui n’apporte aucune alteration fonctionnelle ou sémantique (indentation, mise en forme, ajout d’espace, renommante d’une variable…)
+#	 docs : rédaction ou mise à jour de documentation
+#	 test : ajout ou modification de tests
+#
+# Le SCOPE peut être :
+# - Interface
+# - Base
+# - Controls
+# - Layers
+# - VectorTiles
+# - View
+# - CSS
+# - Listeners
+# - Utils
+# - ...
+#
+# Le SUJET ne doit idealement pas depasser 50 caractères
+#
+# Le FOOTER peut contenir un lien vers un ticket
+#
+# Rappels :
+#   * Utiliser une forme active dans le sujet
+#   * Ne pas finir le sujet par un "."
+#   * Separer chaque bloc (Sujet/Description/Footer) d'un saut de ligne
+#   * La description peut contenir des listes avec les caractères "-" et "*" 
+# --------------------
