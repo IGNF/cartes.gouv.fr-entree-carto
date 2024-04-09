@@ -1,0 +1,47 @@
+{
+  "name": "cartes.gouv.fr-entree-carto",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "clean:dist": "rimraf dist",
+    "build-only": "vite build",
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "format": "eslint . --fix",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --build --force"
+  },
+  "dependencies": {
+    "@gouvfr/dsfr": "^1.11.2",
+    "@gouvminint/vue-dsfr": "^5.10.3",
+    "focus-trap": "^7.5.4",
+    "focus-trap-vue": "^4.0.3",
+    "oh-vue-icons": "1.0.0-rc3",
+    "ol": "^9.1.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.11.6",
+    "@rushstack/eslint-patch": "^1.6.0",
+    "@tsconfig/node20": "^20.1.2",
+    "@types/jsdom": "^21.1.6",
+    "@types/node": "^20.10.4",
+    "@vitejs/plugin-vue": "^4.5.1",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "@vue/test-utils": "^2.4.3",
+    "@vue/tsconfig": "^0.4.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.2",
+    "npm-run-all2": "^6.1.2",
+    "oh-vue-icons": "1.0.0-rc3",
+    "rimraf": "^5.0.5",
+    "typescript": "~5.4.0",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.26.0",
+    "vite": "^5.1.6",
+    "vue-tsc": "^2.0.6"
+  }
+}
