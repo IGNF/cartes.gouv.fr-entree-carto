@@ -1,14 +1,14 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
   "scripts": {
     "clean:dist": "rimraf dist",
     "build-only": "vite build",
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "format": "eslint . --fix",
-    "lint": "eslint .",
+    "format": "eslint ./src --fix",
+    "lint": "eslint ./src",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force"
   },
