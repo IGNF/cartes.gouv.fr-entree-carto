@@ -8,9 +8,10 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']
+    DsfrFooterLinkList: typeof import('@gouvminint/vue-dsfr')['DsfrFooterLinkList']
     DsfrHeader: typeof import('@gouvminint/vue-dsfr')['DsfrHeader']
+    DsfrNavigation: typeof import('@gouvminint/vue-dsfr')['DsfrNavigation']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VIcon: typeof import('oh-vue-icons')['OhVueIcon']
   }
 }
