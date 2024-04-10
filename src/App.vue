@@ -6,7 +6,7 @@ useScheme()
 // Paramètres pour le Header
 const serviceTitle = 'Carte.gouv.fr'
 const serviceDescription = 'Portail Cartographique'
-const logoText = ['Ministère', 'de l’intérieur']
+const logoText = ['Ministère', 'des Cartes']
 
 const quickLinks = [
   {
