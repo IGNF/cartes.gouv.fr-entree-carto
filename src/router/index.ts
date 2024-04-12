@@ -4,6 +4,7 @@ import Map from '../views/portailCarto.vue'
 import Catalogue from '../views/Catalogue.vue'
 import Login from '../views/Login.vue'
 import Presentation from '../views/Presentation.vue'
+import Accueil from '../views/Accueil.vue'
 
 const MAIN_TITLE = 'Carte.gouv'
 
@@ -12,6 +13,11 @@ const routes = [
     path: '/',
     name: 'Carte',
     component: Map,
+  },
+  {
+    path: '/accueil',
+    name: 'Accueil',
+    component: Accueil,
   },
   {
     path: '/catalogue',
@@ -49,6 +55,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => { // Cf. https://github.com/vueuse/head pour des transformations avancées de Head
+  if(to.fullPath == "/accueil" && !window.location.href.includes("/accueil")) {
+    window.open(to.href);
+    return false;
+  }
   const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
   document.title = `${specificTitle}${MAIN_TITLE}`
 })
