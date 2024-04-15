@@ -16,7 +16,7 @@ const quickLinks = [
     iconRight: true
   },
   {
-    label: "Accueil",
+    label: 'Accueil',
     to: '/accueil',
     icon: 'ri-arrow-right-line',
     iconRight: true

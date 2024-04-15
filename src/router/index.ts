@@ -55,9 +55,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => { // Cf. https://github.com/vueuse/head pour des transformations avancées de Head
-  if(to.fullPath == "/accueil" && !window.location.href.includes("/accueil")) {
-    window.open(to.href);
-    return false;
+  if (to.fullPath === '/accueil' && !window.location.href.includes('/accueil')) {
+    window.open(to.href)
+    return false
   }
   const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
   document.title = `${specificTitle}${MAIN_TITLE}`
