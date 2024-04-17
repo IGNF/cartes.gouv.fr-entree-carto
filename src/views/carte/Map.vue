@@ -42,7 +42,7 @@ provide('map', map)
 <style scoped>
 #map {
   margin-left: 0;
-  width: 100vw;
-  height: 80vh;
+  width: 80vw;
+  height: 50vh;
 }
 </style>
