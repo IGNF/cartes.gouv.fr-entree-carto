@@ -1,31 +1,34 @@
 <script setup lang="ts">
 import OSM from 'ol/source/OSM.js'
 import TileLayer from 'ol/layer/Tile.js'
-import vlMap from './ol-views/vlMap.vue'
-import vlView from './ol-views/vlView.vue'
-import vlControl from './ol-views/vlControl.vue'
+import Map from './carte/Map.vue'
+import View from './carte/View.vue'
+import Control from './carte/Control.vue'
+import MenuControl from './carte/MenuControl.vue'
 
 const zoom = 10
 const center = [-234814.550892, 4774562.534805]
-const units = 'metric'
-const miniMapLayer = new TileLayer({
-  source: new OSM(),
-})
+
 const layers = [new TileLayer({
   source: new OSM(),
 })]
+
+const controlOptions = defineModel()
+
 </script>
 
 <template>
-  <vlMap>
-    <vlView
+  <MenuControl
+    v-model="controlOptions"
+  />
+  <Map>
+    <View
       :center="center"
       :zoom="zoom"
       :layers="layers"
     />
-    <vlControl
-      :units="units"
-      :layer="miniMapLayer"
+    <Control
+      :controlOptions="controlOptions"
     />
-  </vlMap>
+  </Map>
 </template>
