@@ -17,11 +17,12 @@
     "@gouvminint/vue-dsfr": "^5.10.3",
     "focus-trap": "^7.5.4",
     "focus-trap-vue": "^4.0.3",
-    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.7.tgz",
+    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.8.tgz",
     "oh-vue-icons": "1.0.0-rc3",
     "ol": "^8.0.0",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.11.6",
