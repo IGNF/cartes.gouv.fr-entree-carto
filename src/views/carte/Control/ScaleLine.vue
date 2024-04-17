@@ -4,14 +4,12 @@ import { ScaleLine } from 'ol/control'
 
 const props = defineProps({
   visibility: Boolean,
-  units: String
+  scaleLineOptions: Object
 })
 
 const map = inject<Map>('map')
 
-const scaleLine = ref(new ScaleLine({
-    units: props.units
-}))
+const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
 
 onMounted(() => {
     if (props.visibility) {
