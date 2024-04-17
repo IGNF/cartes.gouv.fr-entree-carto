@@ -122,9 +122,9 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :quick-links="quickLinks"
     show-search
   >
-  <DsfrNavigation
-    :nav-items="navItems"
-  />
+    <DsfrNavigation
+      :nav-items="navItems"
+    />
   </DsfrHeader>
 
   <div>
