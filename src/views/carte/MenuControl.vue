@@ -1,4 +1,6 @@
 <script setup>
+import { ControlList } from '@/composables/configuration';
+
 // Définit un modèle sur un modèle de composant enfant
 const modelValue = defineModel();
 
@@ -11,19 +13,19 @@ const options = [
     {
       label: 'Barre de Recherche',
       id: 'searchEngine',
-      name: 'SearchEngine',
+      name: ControlList.SearchEngine,
       hint: 'Barre de recherche sur la carte',
     },
     {
       label: 'Mini carte',
       id: 'overview',
-      name: 'OverviewMap',
+      name: ControlList.OverviewMap,
       hint: 'Petite carte pour se repérer',
     },
     {
       label: 'Scale Line',
       id: 'route',
-      name: 'ScaleLine',
+      name: ControlList.ScaleLine,
       hint: 'Echelle',
     },
   ]
