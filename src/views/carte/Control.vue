@@ -18,6 +18,11 @@ const scaleLineOptions = {
 
 const searchEngineOptions = {
   collapsed: false,
+  opened : true,
+  displayButtonAdvancedSearch : true,
+  displayButtonGeolocate : true,
+  displayButtonCoordinateSearch : true,
+  displayButtonClose : false
 }
 
 const miniMapLayer = new TileLayer({
