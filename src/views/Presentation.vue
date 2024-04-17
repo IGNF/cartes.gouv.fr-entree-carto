@@ -1,3 +1,3 @@
 <template>
-  <h1>Catalogue Vue</h1>
+  <h1>Présentation Vue</h1>
 </template>

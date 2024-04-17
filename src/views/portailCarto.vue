@@ -4,7 +4,6 @@ import TileLayer from 'ol/layer/Tile.js'
 import Map from './carte/Map.vue'
 import View from './carte/View.vue'
 import Control from './carte/Control.vue'
-import MenuControl from './carte/MenuControl.vue'
 import { ControlList } from '@/composables/configuration'
 
 const zoom = 10
@@ -15,7 +14,7 @@ const layers = [new TileLayer({
 })]
 
 // const controlOptions = defineModel()
-var controlOptions = Object.values(ControlList);
+const controlOptions = Object.values(ControlList)
 </script>
 
 <template>
@@ -29,7 +28,7 @@ var controlOptions = Object.values(ControlList);
       :layers="layers"
     />
     <Control
-      :controlOptions="controlOptions"
+      :control-options="controlOptions"
     />
   </Map>
 </template>

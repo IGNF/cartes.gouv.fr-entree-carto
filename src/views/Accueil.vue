@@ -1,3 +1,3 @@
 <template>
-  <h1>Acceuil Vue</h1>
+  <h1>Accueil Vue</h1>
 </template>

@@ -1,5 +1,5 @@
 export const ControlList = {
-    OverviewMap: "OverviewMap",
-    SearchEngine: "SearchEngine",
-    ScaleLine: "ScaleLine"
+  OverviewMap: 'OverviewMap',
+  SearchEngine: 'SearchEngine',
+  ScaleLine: 'ScaleLine'
 }

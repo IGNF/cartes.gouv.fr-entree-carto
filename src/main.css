@@ -10,7 +10,3 @@ body,
 .h-full {
   height: 100%;
 }
-
-div[id^="GPsearchEngine-"]{
-  left: 40vw;
-}
