@@ -53,7 +53,7 @@ export default defineConfig({
       ],
     }),
   ],
-  base: process.env.BASE_URL || '/',
+  base: process.env.BASE_URL || '/cartes.gouv.fr-entree-carto',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
