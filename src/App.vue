@@ -53,7 +53,7 @@ const legalLink = '/mentions-legales'
 const personalDataLink = '/donnees-personnelles'
 const cookiesLink = '/cookies'
 const a11yComplianceLink = '/a11y-conformite'
-const descText = 'Description'
+const descText = 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.'
 const homeLink = '/'
 const licenceText = undefined
 const licenceTo = undefined
@@ -83,96 +83,23 @@ const route = useRoute()
 
 const navItems: DsfrNavigationProps['navItems'] = [
   {
-    title: 'Présentation',
+    title: 'Commencer avec cartes.gouv',
     get active () {
-      return ['Présentation générale', 'Gouvernance', 'Commencer sur cartes.gouv.fr'].includes(route.name as string)
+      return ['Documentation Géoplateforme', 'Questions fréquanetes', 'Nous écrire'].includes(route.name as string)
     },
     links: [
       {
         href: '',
-        text: 'Présentation générale',
+        text: 'Documentation Géoplateforme',
       },
       {
         href: '',
-        text: 'Gouvernance',
+        text: 'Questions fréquanetes',
       },
       {
         href: '',
-        text: 'Commencer sur cartes.gouv.fr',
+        text: 'Nous écrire',
       },
-    ],
-  },
-  {
-    title: 'Ressources',
-    get active () {
-      return ['Catalogue de données (prochainement)', 'Catalogue de traitements (prochainement)', 'API & outils de construction (prochainement)'].includes(route.name as string)
-    },
-    links: [
-      {
-        href: '',
-        text: 'Catalogue de données (prochainement)',
-      },
-      {
-        href: '',
-        text: 'Catalogue de traitements (prochainement)',
-      },
-      {
-        href: '',
-        text: 'API & outils de construction (prochainement)',
-      },
-    ],
-  },
-  {
-    title: 'Développeurs',
-    get active () {
-      return ['Blog Développeurs', 'Communautés de développeurs', 'API & outils de construction (prochainement)', 'Bac à sable développement', 'Gitlab cartes.gouv'].includes(route.name as string)
-    },
-    links: [
-      {
-        href: '',
-        text: 'Blog Développeurs',
-      },
-      {
-        href: '',
-        text: 'Communautés de développeurs',
-      },
-      {
-        href: '',
-        text: 'API & outils de construction (prochainement)',
-      },
-      {
-        href: '',
-        text: 'Bac à sable développement',
-      },
-      {
-        href: '',
-        text: 'Gitlab cartes.gouv',
-      },
-    ],
-  },
-
-  {
-    title: 'Communautés géoplateforme',
-    get active () {
-      return ['Organisations (prochainement)', 'Communautés d\'assistance', 'Réutilisations', 'Témoignages'].includes(route.name as string)
-    },
-    links: [
-      {
-        href: '',
-        text: 'Organisations (prochainement)',
-      },
-      {
-        href: '',
-        text: 'Communautés d\'assistance',
-      },
-      {
-        href: '',
-        text: 'Réutilisations',
-      },
-      {
-        href: '',
-        text: 'Témoignages',
-      }
     ],
   },
   {
@@ -181,71 +108,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
   },
   {
     to: { href: '' },
-    text: 'Agenda',
-  },
-  {
-    title: 'Support',
-    get active () {
-      return ['Niveau de service', 'Documentation', 'Didactitiels', 'Contacter l\'assistance', 'Plans d\'assistance', 'FAQ'].includes(route.name as string)
-    },
-    links: [
-      {
-        href: '',
-        text: 'Niveau de service',
-      },
-      {
-        href: '',
-        text: 'Documentation',
-      },
-      {
-        href: '',
-        text: 'Didactitiels',
-      },
-      {
-        href: '',
-        text: 'Contacter l\'assistance',
-      },
-      {
-        href: '',
-        text: 'Plans d\'assistance',
-      },
-      {
-        href: '',
-        text: 'FAQ',
-      },
-    ],
+    text: 'A propos',
   }
-]
-// Paramètre pour la barre de navigation
-const categoryName1 = 'Présentation'
-const linkList1 = [
-  {
-    to: { href: '' },
-    label: 'Présentation générale',
-  },
-  {
-    to: { href: '' },
-    label: 'Gouvernance',
-  },
-  {
-    to: { href: '' },
-    label: 'Commencer sur cartes.gouv.fr',
-  },
-]
-const categoryName2 = 'Ressources'
-const linkList2 = [
-  {
-    to: { href: '' },
-    label: 'Présentation générale',
-  },
-  {
-    to: { href: '' },
-    label: 'Gouvernance',
-  },
-  {
-    to: { href: '' },
-    label: 'Commencer sur cartes.gouv.fr',
-  },
 ]
 </script>
 
@@ -258,11 +122,9 @@ const linkList2 = [
     :quick-links="quickLinks"
     show-search
   >
-    <!-- <template #mainnav> -->
-    <DsfrNavigation
-      :nav-items="navItems"
-    />
-    <!-- </template> -->
+  <DsfrNavigation
+    :nav-items="navItems"
+  />
   </DsfrHeader>
 
   <div>
@@ -285,18 +147,5 @@ const linkList2 = [
     :licence-name="licenceName"
     :licence-link-props="licenceLinkProps"
     :ecosystem-links="ecosystemLinks"
-  >
-    <template #footer-link-lists>
-      <DsfrFooterLinkList
-        class="fr-col-6"
-        :category-name="categoryName1"
-        :links="linkList1"
-      />
-      <DsfrFooterLinkList
-        class="fr-col-6"
-        :category-name="categoryName2"
-        :links="linkList2"
-      />
-    </template>
-  </DsfrFooter>
+  />
 </template>
