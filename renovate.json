@@ -3,9 +3,11 @@
     "extends": ["config:base"],
     "packageRules": [
         {
-            "matchUpdateTypes": ["major"],
-            "dependencyDashboardApproval": true
+            "groupName": "all major dependencies",
+            "groupSlug": "all-major",
+            "matchPackagePatterns": ["*"],
+            "matchUpdateTypes": ["major"]
         }
     ],
-    "ignoreDeps": ["ol", "ol-mapbox-style", "php"]
+    "ignoreDeps": ["ol","ol-mapbox-style","php"]
 }
