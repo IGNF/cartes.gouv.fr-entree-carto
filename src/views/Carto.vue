@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import OSM from 'ol/source/OSM.js'
 import TileLayer from 'ol/layer/Tile.js'
-import Map from './carte/Map.vue'
-import View from './carte/View.vue'
-import Control from './carte/Control.vue'
+
+import Map from '@/components/carte/Map.vue'
+import View from '@/components/carte/View.vue'
+import Control from '@/components/carte/Control.vue'
+
 import { ControlList } from '@/composables/configuration'
 
 const zoom = 10

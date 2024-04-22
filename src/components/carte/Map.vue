@@ -3,7 +3,7 @@ import Map from 'ol/Map'
 
 import { onMounted, ref } from 'vue'
 
-const mapRef = ref<string | HTMLElement | undefined>(undefined)
+const mapRef = ref<HTMLElement | undefined>(undefined)
 
 const map: Map | undefined = new Map()
 
@@ -11,8 +11,8 @@ onMounted(() => {
   map?.setTarget(mapRef.value)
 
   const canvas = document.getElementById('map')?.getElementsByTagName('canvas')
-  if (canvas) {
-    canvas.tabindex = 0
+  if (canvas?.length) {
+    canvas[0].tabIndex = 0
   }
 })
 
@@ -22,7 +22,7 @@ onMounted(() => {
  *
  */
 function focusOnMap () {
-  mapRef.value.focus()
+  mapRef.value?.focus();
 }
 
 provide('map', map)

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
 import { useRoute } from 'vue-router'
 
 useScheme()
@@ -78,7 +79,7 @@ const ecosystemLinks = [
   },
 ]
 
-// Paramètre pour la barre de navigation
+// Paramètre pour la barre de navigations
 const route = useRoute()
 
 const navItems: DsfrNavigationProps['navItems'] = [

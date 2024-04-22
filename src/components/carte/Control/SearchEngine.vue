@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type Map from 'ol/Map'
-import { SearchEngine } from 'geoportal-extensions-openlayers'
+import SearchEngine from 'geoportal-extensions-openlayers/src/packages/Controls/SearchEngine/SearchEngine'
 
 const props = defineProps({
   visibility: Boolean,
@@ -29,6 +29,8 @@ onUpdated(() => {
   }
 })
 </script>
+
+<template></template>
 
 <style>
 div[id^="GPsearchEngine-"]{

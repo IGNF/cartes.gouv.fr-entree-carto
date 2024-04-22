@@ -1,6 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { 
+  type RouteRecordRaw, 
+  createRouter, 
+  createWebHistory } 
+from 'vue-router'
 
-import Map from '../views/portailCarto.vue'
+import Carto from '../views/Carto.vue'
 import Catalogue from '../views/Catalogue.vue'
 import Login from '../views/Login.vue'
 import Presentation from '../views/Presentation.vue'
@@ -8,11 +12,11 @@ import Accueil from '../views/Accueil.vue'
 
 const MAIN_TITLE = 'Carte.gouv'
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Carte',
-    component: Map,
+    component: Carto,
   },
   {
     path: '/accueil',
@@ -29,17 +33,12 @@ const routes = [
     name: 'Se connecter',
     component: Login,
   },
-  // Présentation
   {
     path: '/presentation-generale',
     name: 'Présentation générale',
     component: Presentation,
   },
-  {
-    path: '/tuto',
-    name: 'Commencer sur cartes.gouv.fr',
-  },
-
+  { path: '/tuto', name: 'Commencer sur cartes.gouv.fr' },
   { path: '/a11y-conformite', component: { template: '<div>Conformité RGAA</div>' } },
   { path: '/mentions-legales', component: { template: '<div>Mentions légales</div>' } },
   { path: '/donnees-personnelles', component: { template: '<div>Données personnelles</div>' } },

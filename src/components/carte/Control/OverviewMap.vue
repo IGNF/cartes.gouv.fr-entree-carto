@@ -1,8 +1,8 @@
-const overviewMap =
 <script setup lang="ts">
-import type Map from 'ol/Map'
+import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile.js'
-import { OverviewMap } from 'ol/control'
+import OverviewMap from 'ol/control/OverviewMap'
+import type Control from 'ol/control/Control';
 
 const props = defineProps({
   visibility: Boolean,
@@ -37,6 +37,8 @@ onUpdated(() => {
   }
 })
 </script>
+
+<template></template>
 
 <style>
      #map .ol-custom-overviewmap {

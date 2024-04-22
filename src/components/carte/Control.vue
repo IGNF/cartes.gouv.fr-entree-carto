@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TileLayer from 'ol/layer/Tile.js'
 import OSM from 'ol/source/OSM'
+
 import SearchEngine from './Control/SearchEngine.vue'
 import ScaleLine from './Control/ScaleLine.vue'
 import OverviewMap from './Control/OverviewMap.vue'
@@ -22,7 +23,10 @@ const searchEngineOptions = {
   displayButtonAdvancedSearch : true,
   displayButtonGeolocate : true,
   displayButtonCoordinateSearch : true,
-  displayButtonClose : false
+  displayButtonClose : false,
+  resources : {
+    search : true
+  }
 }
 
 const miniMapLayer = new TileLayer({
