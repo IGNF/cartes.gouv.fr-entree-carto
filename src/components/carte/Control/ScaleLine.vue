@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type Map from 'ol/Map'
-import { ScaleLine } from 'ol/control'
+import ScaleLine from 'ol/control/ScaleLine'
 
 const props = defineProps({
   visibility: Boolean,
@@ -29,3 +29,5 @@ onUpdated(() => {
   }
 })
 </script>
+
+<template></template>
