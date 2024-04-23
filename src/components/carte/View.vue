@@ -1,26 +1,33 @@
-<script setup lang="ts">
-import type Map from 'ol/Map'
+<script setup lang="js">
 import View from 'ol/View'
-import type BaseLayer from 'ol/layer/Tile.js'
 
 const props = defineProps({
-  zoom: Number,
-  center: Array,
-  layers: Array<BaseLayer>
+  zoom : Number,
+  center : Array,
+  layers : Array
 })
 
-const map = inject<Map>('map')
-const viewParams: Object | undefined = { zoom: props.zoom, center: props.center }
-const view: View | undefined = new View(viewParams)
+const map = inject('map')
+
+const viewParams = { 
+  zoom: props.zoom, 
+  center: props.center 
+}
+const view = new View(viewParams)
 
 onMounted(() => {
-  props.layers?.forEach((layer) => {
-    map?.addLayer(layer)
-  })
-  map?.setView(view)
+  if (map) {
+    props.layers.forEach((layer) => {
+      map.addLayer(layer)
+    })
+    map.setView(view)
+  }
 })
 </script>
 
 <template>
   <div />
 </template>
+
+<style scoped>
+</style>
