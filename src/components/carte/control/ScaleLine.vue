@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type Map from 'ol/Map'
+<script setup lang="js">
+
 import ScaleLine from 'ol/control/ScaleLine'
 
 const props = defineProps({
@@ -7,27 +7,28 @@ const props = defineProps({
   scaleLineOptions: Object
 })
 
-const map = inject<Map>('map')
-
+const map = inject('map')
 const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
 
 onMounted(() => {
   if (props.visibility) {
-    map?.addControl(scaleLine.value)
+    map.addControl(scaleLine.value)
   }
 })
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map?.removeControl(scaleLine.value)
+    map.removeControl(scaleLine.value)
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map?.addControl(scaleLine.value)
+    map.addControl(scaleLine.value)
   }
 })
 </script>
 
 <template></template>
+
+<style scoped></style>

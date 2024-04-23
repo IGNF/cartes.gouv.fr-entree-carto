@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type Map from 'ol/Map'
+<script setup lang="js">
+
 import SearchEngine from 'geoportal-extensions-openlayers/src/packages/Controls/SearchEngine/SearchEngine'
 
 const props = defineProps({
@@ -7,33 +7,28 @@ const props = defineProps({
   searchEngineOptions: Object
 })
 
-const map = inject<Map>('map')
-
-const searchengine = ref(new SearchEngine(props.searchEngineOptions))
+const map = inject('map')
+const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
 
 onMounted(() => {
   if (props.visibility) {
-    map?.addControl(searchengine.value)
+    map.addControl(searchEngine.value)
   }
 })
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map?.removeControl(searchengine.value)
+    map.removeControl(searchEngine.value)
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map?.addControl(searchengine.value)
+    map.addControl(searchEngine.value)
   }
 })
 </script>
 
 <template></template>
 
-<style>
-div[id^="GPsearchEngine-"]{
-  left: 40vw;
-}
-</style>
+<style scoped></style>

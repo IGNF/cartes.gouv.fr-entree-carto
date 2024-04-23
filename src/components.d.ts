@@ -13,11 +13,11 @@ declare module 'vue' {
     DsfrNavigation: typeof import('@gouvminint/vue-dsfr')['DsfrNavigation']
     Map: typeof import('./components/carte/Map.vue')['default']
     MenuControl: typeof import('./components/carte/MenuControl.vue')['default']
-    OverviewMap: typeof import('./components/carte/Control/OverviewMap.vue')['default']
+    OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    ScaleLine: typeof import('./components/carte/Control/ScaleLine.vue')['default']
-    SearchEngine: typeof import('./components/carte/Control/SearchEngine.vue')['default']
+    ScaleLine: typeof import('./components/carte/control/ScaleLine.vue')['default']
+    SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
     View: typeof import('./components/carte/View.vue')['default']
   }
 }

@@ -1,12 +1,13 @@
-<script setup lang="ts">
+<script setup lang="js">
+
 import TileLayer from 'ol/layer/Tile.js'
 import OSM from 'ol/source/OSM'
 
-import SearchEngine from './Control/SearchEngine.vue'
-import ScaleLine from './Control/ScaleLine.vue'
-import OverviewMap from './Control/OverviewMap.vue'
+import SearchEngine from './control/SearchEngine.vue'
+import ScaleLine from './control/ScaleLine.vue'
+import OverviewMap from './control/OverviewMap.vue'
 
-import { ControlList } from '@/composables/configuration'
+import { useControls } from '@/composables/controls'
 
 const props = defineProps({
   controlOptions: Array
@@ -19,32 +20,40 @@ const scaleLineOptions = {
 
 const searchEngineOptions = {
   collapsed: false,
-  opened : true,
-  displayButtonAdvancedSearch : true,
-  displayButtonGeolocate : true,
-  displayButtonCoordinateSearch : true,
-  displayButtonClose : false,
-  resources : {
-    search : true
+  opened: true,
+  displayButtonAdvancedSearch: true,
+  displayButtonGeolocate: true,
+  displayButtonCoordinateSearch: true,
+  displayButtonClose: false,
+  resources: {
+    search: true
   }
 }
 
-const miniMapLayer = new TileLayer({
-  source: new OSM(),
-})
+const overviewMapOptions = {
+  className: 'ol-overviewmap ol-custom-overviewmap',
+  collapseLabel: '\u00BB',
+  label: '\u00AB',
+  collapsed: false,
+  layers : [
+    new TileLayer({
+      source: new OSM(),
+    })
+  ]
+}
 </script>
 
 <template>
   <SearchEngine
-    :visibility="props.controlOptions?.includes(ControlList.SearchEngine)"
+    :visibility="props.controlOptions.includes(useControls.SearchEngine)"
     :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
-    :visibility="props.controlOptions?.includes(ControlList.ScaleLine)"
+    :visibility="props.controlOptions.includes(useControls.ScaleLine)"
     :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
-    :visibility="props.controlOptions?.includes(ControlList.OverviewMap)"
-    :layer="miniMapLayer"
+    :visibility="props.controlOptions.includes(useControls.OverviewMap)"
+    :overview-map-options="overviewMapOptions"
   />
 </template>

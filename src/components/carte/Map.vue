@@ -1,17 +1,17 @@
-<script setup lang="ts">
+<script setup lang="js">
 import Map from 'ol/Map'
 
 import { onMounted, ref } from 'vue'
 
-const mapRef = ref<HTMLElement | undefined>(undefined)
+const mapRef = ref(0)
 
-const map: Map | undefined = new Map()
+const map = new Map()
 
 onMounted(() => {
-  map?.setTarget(mapRef.value)
+  map.setTarget(mapRef.value)
 
-  const canvas = document.getElementById('map')?.getElementsByTagName('canvas')
-  if (canvas?.length) {
+  const canvas = document.getElementById('map').getElementsByTagName('canvas')
+  if (canvas.length) {
     canvas[0].tabIndex = 0
   }
 })
@@ -19,10 +19,9 @@ onMounted(() => {
 /**
  *  To focus on map and activate keyboard control.
  *  Trigerred on mouse over
- *
  */
 function focusOnMap () {
-  mapRef.value?.focus();
+  mapRef.value.focus();
 }
 
 provide('map', map)
@@ -39,10 +38,4 @@ provide('map', map)
   </div>
 </template>
 
-<style scoped>
-#map {
-  margin-left: 0;
-  width: 100vw;
-  height: 70vh;
-}
-</style>
+<style scoped></style>
