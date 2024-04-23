@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
+import { title } from 'node:process';
 import { useRoute } from 'vue-router'
 
 useScheme()
@@ -7,8 +8,7 @@ useScheme()
 // Paramètres pour le Header
 const serviceTitle = 'Carte.gouv.fr'
 const serviceDescription = 'Portail Cartographique'
-const logoText = ['Ministère', 'des Cartes']
-
+const logoText = ['RÉPUBLIQUE', 'FRANÇAISE']
 const quickLinks = [
   {
     label: serviceDescription,
@@ -38,7 +38,6 @@ const quickLinks = [
 const searchQuery = ref('')
 
 // Paramètres pour le Footer
-
 const beforeMandatoryLinks = [{ label: 'Before', to: '/before' }]
 const afterMandatoryLinks = [
   { label: 'After', to: '/after' },
@@ -78,6 +77,17 @@ const ecosystemLinks = [
     href: 'https://data.gouv.fr',
   },
 ]
+
+// Paramètre pour les partenaires
+const partners = {
+  title: "Nos partenaires",
+  mainPartner: {
+    href: "https://www.ign.fr/",
+    logo: "https://www.ign.fr/files/default/styles/thumbnail/public/2020-06/logoIGN_300x200.png",
+    name: "IGN"
+  },
+  subPartners: []
+}
 
 // Paramètre pour la barre de navigations
 const route = useRoute()
@@ -143,6 +153,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :a11y-compliance-link="a11yComplianceLink"
     :desc-text="descText"
     :home-link="homeLink"
+    :partners="partners"
     :licence-text="licenceText"
     :licence-to="licenceTo"
     :licence-name="licenceName"
