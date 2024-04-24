@@ -1,5 +1,6 @@
 <script setup lang="js">
 
+import { useDataStore } from "@/stores/dataStore"
 import SearchEngine from 'geoportal-extensions-openlayers/src/packages/Controls/SearchEngine/SearchEngine'
 
 const props = defineProps({
@@ -7,12 +8,18 @@ const props = defineProps({
   searchEngineOptions: Object
 })
 
+const store = useDataStore()
+
 const map = inject('map')
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
 
 onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngine.value)
+    // abonnement au widget
+    searchEngine.value.on("searchengine:search:click", (e) => {
+      console.warn("search", e.suggest, store.data);
+    });
   }
 })
 

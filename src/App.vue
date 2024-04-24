@@ -2,6 +2,8 @@
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
 import { useRoute } from 'vue-router'
 
+import StoreDataLoading from './components/StoreDataLoading.vue';
+
 useScheme()
 
 import LogoIGN from "./assets/logo-ign.png"
@@ -157,6 +159,14 @@ const navItems: DsfrNavigationProps['navItems'] = [
       :nav-items="navItems"
     />
   </DsfrHeader>
+
+  <Suspense>
+    <StoreDataLoading/>
+    <!-- loading state -->
+    <template #fallback>
+      Loading...
+    </template>
+  </Suspense>
 
   <div>
     <router-view />
