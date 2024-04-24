@@ -1,3 +1,3 @@
 <template>
-  <h1>À propos</h1>
+  <h1>Login Vue</h1>
 </template>

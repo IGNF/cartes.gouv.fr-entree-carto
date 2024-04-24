@@ -1,0 +1,34 @@
+<script setup lang="js">
+
+import ScaleLine from 'ol/control/ScaleLine'
+
+const props = defineProps({
+  visibility: Boolean,
+  scaleLineOptions: Object
+})
+
+const map = inject('map')
+const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
+
+onMounted(() => {
+  if (props.visibility) {
+    map.addControl(scaleLine.value)
+  }
+})
+
+onBeforeUpdate(() => {
+  if (!props.visibility) {
+    map.removeControl(scaleLine.value)
+  }
+})
+
+onUpdated(() => {
+  if (props.visibility) {
+    map.addControl(scaleLine.value)
+  }
+})
+</script>
+
+<template></template>
+
+<style scoped></style>

@@ -1,27 +1,44 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { 
+  type RouteRecordRaw, 
+  createRouter, 
+  createWebHistory } 
+from 'vue-router'
 
-import Home from '../views/AppHome.vue'
-import Map from '../views/portailCarto.vue'
-import AboutUs from '../views/AboutUs.vue'
+import Carto from '../views/Carto.vue'
+import Catalogue from '../views/Catalogue.vue'
+import Login from '../views/Login.vue'
+import Presentation from '../views/Presentation.vue'
+import Accueil from '../views/Accueil.vue'
 
 const MAIN_TITLE = 'Carte.gouv'
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/carte',
     name: 'Carte',
-    component: Map,
+    component: Carto,
   },
   {
-    path: '/a-propos',
-    name: 'About',
-    component: AboutUs,
+    path: '/accueil',
+    name: 'Accueil',
+    component: Accueil,
   },
+  {
+    path: '/catalogue',
+    name: 'Catalogue',
+    component: Catalogue,
+  },
+  {
+    path: '/login',
+    name: 'Se connecter',
+    component: Login,
+  },
+  {
+    path: '/presentation-generale',
+    name: 'Présentation générale',
+    component: Presentation,
+  },
+  { path: '/tuto', name: 'Commencer sur cartes.gouv.fr' },
   { path: '/a11y-conformite', component: { template: '<div>Conformité RGAA</div>' } },
   { path: '/mentions-legales', component: { template: '<div>Mentions légales</div>' } },
   { path: '/donnees-personnelles', component: { template: '<div>Données personnelles</div>' } },
@@ -37,6 +54,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => { // Cf. https://github.com/vueuse/head pour des transformations avancées de Head
+  if (to.fullPath === '/accueil' && !window.location.href.includes('/accueil')) {
+    window.open(to.href)
+    return false
+  }
   const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
   document.title = `${specificTitle}${MAIN_TITLE}`
 })

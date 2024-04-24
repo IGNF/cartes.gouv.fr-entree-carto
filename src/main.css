@@ -1,4 +1,5 @@
-@import "node_modules/ol/ol.css";
+@import "ol/ol.css";
+@import "geoportal-extensions-openlayers/css/Dsfr.css";
 
 html,
 body,
