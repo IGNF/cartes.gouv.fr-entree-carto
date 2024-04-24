@@ -18,6 +18,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScaleLine: typeof import('./components/carte/control/ScaleLine.vue')['default']
     SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
+    StoreDataLoading: typeof import('./components/StoreDataLoading.vue')['default']
     View: typeof import('./components/carte/View.vue')['default']
   }
 }

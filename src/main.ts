@@ -7,6 +7,7 @@ import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 import '@gouvfr/dsfr/dist/utility/icons/icons.min.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router/index'
@@ -18,6 +19,9 @@ import './assets/controls.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
+const pinia = createPinia()
+
 createApp(App)
+  .use(pinia)
   .use(router)
   .mount('#app')
