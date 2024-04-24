@@ -1,38 +1,47 @@
 <script setup lang="ts">
-useScheme()
-import useToaster from './composables/use-toaster'
+import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
+import { useRoute } from 'vue-router'
 
-const toaster = useToaster()
+useScheme()
+
+import LogoIGN from "./assets/logo-ign.png"
+import LogoTRANSFO from "./assets/logo-transformation-fonction-publiques.png"
+import LogoECOLO from "./assets/logo-transition-ecologique.png"
+import LogoCNIG from "./assets/logo-cnig.png"
 
 // Paramètres pour le Header
 const serviceTitle = 'Carte.gouv.fr'
 const serviceDescription = 'Portail Cartographique'
-const logoText = ['Ministère', 'de l’intérieur']
-
+const logoText = ['RÉPUBLIQUE', 'FRANÇAISE']
 const quickLinks = [
   {
-    label: 'Home',
-    to: '/',
-    icon: 'ri-home-4-line',
-    iconAttrs: { color: 'var(--red-marianne-425-625)' },
-  },
-  {
     label: serviceDescription,
-    to: '/carte',
+    to: '/',
     icon: 'ri-arrow-right-line',
     iconRight: true
   },
   {
-    label: 'À propos',
-    to: '/a-propos',
-    icon: 'ri-question-mark',
+    label: 'Accueil',
+    to: '/accueil',
+    icon: 'ri-arrow-right-line',
+    iconRight: true
+  },
+  {
+    label: 'Catalogue',
+    to: '/catalogue',
+    icon: 'ri-arrow-right-line',
     iconRight: true,
   },
+  {
+    label: 'Se Connecter',
+    to: '/login',
+    icon: 'fa-user-circle',
+  }
 ]
+
 const searchQuery = ref('')
 
 // Paramètres pour le Footer
-
 const beforeMandatoryLinks = [{ label: 'Before', to: '/before' }]
 const afterMandatoryLinks = [
   { label: 'After', to: '/after' },
@@ -48,7 +57,7 @@ const legalLink = '/mentions-legales'
 const personalDataLink = '/donnees-personnelles'
 const cookiesLink = '/cookies'
 const a11yComplianceLink = '/a11y-conformite'
-const descText = 'Description'
+const descText = 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.'
 const homeLink = '/'
 const licenceText = undefined
 const licenceTo = undefined
@@ -73,7 +82,66 @@ const ecosystemLinks = [
   },
 ]
 
+// Paramètre pour les partenaires
+const partners = {
+  title: "Nos partenaires",
+  mainPartner: {
+    href: "https://www.ign.fr/",
+    logo: LogoIGN,
+    name: "IGN"
+  },
+  subPartners: [
+    {
+      href: "https://www.transformation.gouv.fr/",
+      logo: LogoTRANSFO,
+      name: "Ministère de la transformation et de la fonction publiques"
+    },
+    {
+      href: "https://www.ecologie.gouv.fr/",
+      logo: LogoECOLO,
+      name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
+    },
+    {
+      href: "https://cnig.gouv.fr/",
+      logo: LogoCNIG,
+      name: "Conseil national de l’information géolocalisée"
+    },
+  ]
+}
 
+// Paramètre pour la barre de navigations
+const route = useRoute()
+
+const navItems: DsfrNavigationProps['navItems'] = [
+  {
+    title: 'Commencer avec cartes.gouv',
+    get active () {
+      return ['Documentation Géoplateforme', 'Questions fréquanetes', 'Nous écrire'].includes(route.name as string)
+    },
+    links: [
+      {
+        href: '',
+        text: 'Documentation Géoplateforme',
+      },
+      {
+        href: '',
+        text: 'Questions fréquanetes',
+      },
+      {
+        href: '',
+        text: 'Nous écrire',
+      },
+    ],
+  },
+  {
+    to: { href: '' },
+    text: 'Actualités',
+  },
+  {
+    to: { href: '' },
+    text: 'A propos',
+  }
+]
 </script>
 
 <template>
@@ -84,9 +152,13 @@ const ecosystemLinks = [
     :logo-text="logoText"
     :quick-links="quickLinks"
     show-search
-  />
+  >
+    <DsfrNavigation
+      :nav-items="navItems"
+    />
+  </DsfrHeader>
 
-  <div class="fr-container  fr-mt-3w  fr-mt-md-5w  fr-mb-5w">
+  <div>
     <router-view />
   </div>
 
@@ -101,6 +173,7 @@ const ecosystemLinks = [
     :a11y-compliance-link="a11yComplianceLink"
     :desc-text="descText"
     :home-link="homeLink"
+    :partners="partners"
     :licence-text="licenceText"
     :licence-to="licenceTo"
     :licence-name="licenceName"

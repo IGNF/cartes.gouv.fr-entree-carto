@@ -7,3 +7,7 @@ export {
   RiRefreshLine,
   RiQuestionMark,
 } from 'oh-vue-icons/icons/ri/index.js'
+
+export {
+  FaUserCircle
+} from 'oh-vue-icons/icons/fa/index.js'
