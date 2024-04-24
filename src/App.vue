@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
-import { title } from 'node:process';
 import { useRoute } from 'vue-router'
 
 useScheme()
+
+import LogoIGN from "./assets/logo-ign.png"
+import LogoTRANSFO from "./assets/logo-transformation-fonction-publiques.png"
+import LogoECOLO from "./assets/logo-transition-ecologique.png"
+import LogoCNIG from "./assets/logo-cnig.png"
 
 // Paramètres pour le Header
 const serviceTitle = 'Carte.gouv.fr'
@@ -83,10 +87,26 @@ const partners = {
   title: "Nos partenaires",
   mainPartner: {
     href: "https://www.ign.fr/",
-    logo: "https://www.ign.fr/files/default/styles/thumbnail/public/2020-06/logoIGN_300x200.png",
+    logo: LogoIGN,
     name: "IGN"
   },
-  subPartners: []
+  subPartners: [
+    {
+      href: "https://www.transformation.gouv.fr/",
+      logo: LogoTRANSFO,
+      name: "Ministère de la transformation et de la fonction publiques"
+    },
+    {
+      href: "https://www.ecologie.gouv.fr/",
+      logo: LogoECOLO,
+      name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
+    },
+    {
+      href: "https://cnig.gouv.fr/",
+      logo: LogoCNIG,
+      name: "Conseil national de l’information géolocalisée"
+    },
+  ]
 }
 
 // Paramètre pour la barre de navigations
