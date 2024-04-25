@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 
 /**
  * Store des couches
- * - branchement sur l'aggregation des GetCapabilities (3.7Mo)
+ * - branchement sur l'aggregation des GetCapabilities
  * - utilisation des informations éditoriales : fonds de carte, thématique...
- * @todo à completer avec les informations editoriales
+ * - ressources additionnelles : metadonnées, vignettes, ...
  */
 export const useDataStore = defineStore('data', {
   // state
@@ -45,17 +45,29 @@ export const useDataStore = defineStore('data', {
   actions: {
     /**
      * Téléchargement de l'aggregation des GetCapabilities
-     * C'est une opération asynchrone qui est à gérer avec l'initialisation de la carte
+     * avec fusion avec les informations editoriales
+     * /!\ opération asynchrone && initialisation de la carte /!\
      */
     async fetchData() {
-      var url = "https://raw.githubusercontent.com/IGNF/geoportal-configuration/new-url/dist/fullConfig.json"
-      try {
-        const response = await fetch(url)
-        this.data = await response.json()
-        this.isLoaded = true
-      } catch (e) {
-        console.error(e)
-      }
+      var urls = [
+        import.meta.env.VITE_GPF_CONF_TECH_URL,
+        import.meta.env.VITE_GPF_CONF_LAYERS_URL
+      ]
+      return Promise.all(
+        urls.map((url) => fetch(url)
+          .then((response) => response.json())))
+          .then((jsons) => {
+            var techs = jsons[0]
+            var edito = jsons[1]
+            Object.keys(edito.layers).forEach(id => {
+              Object.assign(techs.layers[id], edito.layers[id]); // merge
+            });
+            this.data = techs
+            this.isLoaded = true
+          })
+          .catch((e) => {
+            console.error('An error occurred:', e)
+          });
     }
   }
 })

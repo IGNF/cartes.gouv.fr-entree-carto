@@ -20,9 +20,11 @@ import './assets/controls.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
+const isProduction = (import.meta.env.MODE === "production")
 const logger = createLogger({
   enabled: true,
-  level: 'debug'
+  level: isProduction ? 'error' : 'debug',
+  callerInfo: true
 })
 const pinia = createPinia()
 
