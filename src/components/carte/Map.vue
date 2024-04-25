@@ -1,7 +1,7 @@
 <script setup lang="js">
-import Map from 'ol/Map'
-
 import { onMounted, ref } from 'vue'
+
+import Map from 'ol/Map'
 
 const mapRef = ref(0)
 

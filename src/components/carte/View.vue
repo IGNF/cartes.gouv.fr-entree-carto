@@ -1,6 +1,9 @@
 <script setup lang="js">
 import View from 'ol/View'
 
+import { useMapStore } from "@/stores/mapStore"
+const store = useMapStore()
+
 const props = defineProps({
   zoom : Number,
   center : Array,
@@ -9,11 +12,17 @@ const props = defineProps({
 
 const map = inject('map')
 
-const viewParams = { 
+const view = new View({ 
   zoom: props.zoom, 
   center: props.center 
-}
-const view = new View(viewParams)
+})
+
+/**
+ * abonnement aux evenements de la vue
+ */
+view.on("change:center", (e) => {
+  store.setCenter(e.target.getCenter());
+})
 
 onMounted(() => {
   if (map) {

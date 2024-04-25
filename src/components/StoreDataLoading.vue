@@ -16,7 +16,7 @@ const { getLayers } = storeToRefs(store)
 await store.fetchData()
 
 if (store.isLoaded) {
-  log.debug(getLayers.value)
+  log.debug(toRaw(getLayers.value))
 }
 </script>
 
