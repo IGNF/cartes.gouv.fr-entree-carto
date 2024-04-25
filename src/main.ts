@@ -8,6 +8,7 @@ import '@gouvfr/dsfr/dist/utility/icons/icons.min.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { createLogger } from 'vue-logger-plugin'
 
 import App from './App.vue'
 import router from './router/index'
@@ -19,9 +20,14 @@ import './assets/controls.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
+const logger = createLogger({
+  enabled: true,
+  level: 'debug'
+})
 const pinia = createPinia()
 
 createApp(App)
   .use(pinia)
   .use(router)
+  .use(logger)
   .mount('#app')
