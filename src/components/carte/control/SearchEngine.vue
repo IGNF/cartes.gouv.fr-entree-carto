@@ -1,5 +1,7 @@
 <script setup lang="js">
 
+import { useLogger } from 'vue-logger-plugin'
+import { storeToRefs } from 'pinia'
 import { useDataStore } from "@/stores/dataStore"
 import SearchEngine from 'geoportal-extensions-openlayers/src/packages/Controls/SearchEngine/SearchEngine'
 
@@ -8,7 +10,9 @@ const props = defineProps({
   searchEngineOptions: Object
 })
 
+const log = useLogger()
 const store = useDataStore()
+const { getLayerByName } = storeToRefs(store)
 
 const map = inject('map')
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
@@ -18,7 +22,9 @@ onMounted(() => {
     map.addControl(searchEngine.value)
     // abonnement au widget
     searchEngine.value.on("searchengine:search:click", (e) => {
-      console.warn("search", e.suggest, store.data);
+      if (store.isLoaded) {
+        log.debug("search", e.suggest, getLayerByName.value(e.suggest.name, e.suggest.service));
+      }
     });
   }
 })

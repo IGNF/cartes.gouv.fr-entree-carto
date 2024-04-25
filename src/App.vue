@@ -167,11 +167,11 @@ const navItems: DsfrNavigationProps['navItems'] = [
       Loading...
     </template>
   </Suspense>
-
+  
   <div>
     <router-view />
   </div>
-
+  
   <DsfrFooter
     :before-mandatory-links="beforeMandatoryLinks"
     :after-mandatory-links="afterMandatoryLinks"
