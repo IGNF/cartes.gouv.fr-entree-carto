@@ -21,7 +21,13 @@
     },
     "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
       "thematic": "",
-      "base": true
+      "base": true,
+      "thumbnail": "img/thumbnails/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg",
+      "legends": [{
+        "format": "image/jpeg",
+        "minScaleDenominator": "200",
+        "url": "img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg"
+      }]
     },
     "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Risques naturels",
