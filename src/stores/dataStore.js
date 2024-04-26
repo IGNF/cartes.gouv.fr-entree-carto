@@ -49,24 +49,26 @@ export const useDataStore = defineStore('data', {
      * /!\ opération asynchrone && initialisation de la carte /!\
      */
     async fetchData() {
+      var techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
+      var editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
       var urls = [
-        import.meta.env.VITE_GPF_CONF_TECH_URL,
-        import.meta.env.VITE_GPF_CONF_LAYERS_URL
-      ]
+        techUrl,
+        editoUrl
+      ];
       return Promise.all(
         urls.map((url) => fetch(url)
           .then((response) => response.json())))
           .then((jsons) => {
-            var techs = jsons[0]
-            var edito = jsons[1]
+            var techs = jsons[0];
+            var edito = jsons[1];
             Object.keys(edito.layers).forEach(id => {
               Object.assign(techs.layers[id], edito.layers[id]); // merge
             });
-            this.data = techs
-            this.isLoaded = true
+            this.data = techs;
+            this.isLoaded = true;
           })
           .catch((e) => {
-            console.error('An error occurred:', e)
+            console.error('An error occurred:', e);
           });
     }
   }
