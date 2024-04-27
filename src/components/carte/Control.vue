@@ -6,6 +6,8 @@ import OSM from 'ol/source/OSM'
 import SearchEngine from './control/SearchEngine.vue'
 import ScaleLine from './control/ScaleLine.vue'
 import OverviewMap from './control/OverviewMap.vue'
+import Zoom from './control/Zoom.vue'
+import Attributions from './control/Attributions.vue'
 
 import { useControls } from '@/composables/controls'
 
@@ -41,9 +43,21 @@ const overviewMapOptions = {
     })
   ]
 }
+
+const zoomOptions = {}
+const attributionsOptions = {}
+
 </script>
 
 <template>
+  <Zoom
+    :visibility="props.controlOptions.includes(useControls.Zoom)"
+    :zoom-options="zoomOptions"
+  />
+  <Attributions
+    :visibility="props.controlOptions.includes(useControls.Attributions)"
+    :attributions-options="attributionsOptions"
+  />
   <SearchEngine
     :visibility="props.controlOptions.includes(useControls.SearchEngine)"
     :search-engine-options="searchEngineOptions"
