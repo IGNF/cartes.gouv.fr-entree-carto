@@ -29,6 +29,11 @@ const searchEngineOptions = {
   displayButtonClose: false,
   resources: {
     search: true
+  },
+  searchOptions: {
+    serviceOptions : {
+      services: "WMTS,WMS,TMS"
+    }
   }
 }
 
