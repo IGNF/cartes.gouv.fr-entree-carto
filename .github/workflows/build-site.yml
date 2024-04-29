@@ -1,0 +1,60 @@
+name: Publication du site ...
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build-only -- --mode=developpment
+  
+      - name: Upload Binary artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: IGNF/cartes.gouv.fr-entree-carto
+          ref: gh-pages
+      
+      - name: Download Binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+      
+      - name: Build 404
+        run: |
+          cp index.html 404.html
+  
+      - name: Publish
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -A
+          git commit -m "build project gh-pages"
+          git push
+
