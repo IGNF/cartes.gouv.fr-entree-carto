@@ -21,7 +21,7 @@ const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
 onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngine.value)
-    // abonnement au widget
+    /** abonnement au widget */
     searchEngine.value.on("searchengine:search:click", onClickSearch);
   }
 })
@@ -51,4 +51,8 @@ const onClickSearch = (e) => {
 
 <template></template>
 
-<style scoped></style>
+<style>
+  div[id^="GPsearchEngine-"]{
+    left: 40vw;
+  }
+</style>

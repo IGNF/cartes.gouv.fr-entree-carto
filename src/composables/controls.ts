@@ -4,4 +4,5 @@ export const useControls = {
   ScaleLine: 'ScaleLine',
   Zoom: 'Zoom',
   // Attributions: 'Attributions'
+  // Rotate: 'Rotate'
 }
