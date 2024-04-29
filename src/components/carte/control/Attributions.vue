@@ -31,4 +31,6 @@ onUpdated(() => {
 
 <template></template>
 
-<style scoped></style>
+<style scoped>
+  /* TODO style DSFR */
+</style>

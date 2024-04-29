@@ -13,6 +13,8 @@ const store = useMapStore()
 store.setZoom(12)
 store.setCenter([-234814.550892, 4774562.534805])
 
+// TODO enregistrer la liste des couches dans le store & localStorage
+// TODO definir la couche par defaut ou les couches utilisateurs (localStorage)
 const layers = [
   new TileLayer({
     source: new OSM(),

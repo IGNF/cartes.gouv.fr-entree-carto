@@ -1,7 +1,0 @@
-/**********************************************************
- CSS pour les extensions : geoportail-extensions-openlayers 
-***********************************************************/
-div[id^="GPsearchEngine-"]{
-  left: 40vw;
-}
-

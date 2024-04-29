@@ -51,9 +51,6 @@ onMounted(() => {
 })
 </script>
 
-<template>
-  <div />
-</template>
+<template></template>
 
-<style scoped>
-</style>
+<style scoped></style>

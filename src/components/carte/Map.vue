@@ -10,6 +10,7 @@ const mapRef = ref(0)
 
 /**
  * Map
+ * default controls are removed (rotate, zoom and attributions)
  */
 const map = new Map({
   controls: [] // on supprime les contrôles par defaut !
@@ -34,7 +35,7 @@ const onFocusOnMap = () => {
   mapRef.value.focus();
 }
 
-// rendre disponible 'map' aux composants enfannts imbriqués
+// rendre disponible 'map' aux composants enfants imbriqués
 provide('map', map)
 
 </script>
@@ -50,4 +51,10 @@ provide('map', map)
   </div>
 </template>
 
-<style scoped></style>
+<style>
+  #map {
+    margin-left: 0;
+    width: inherit;
+    height: 70vh;
+  }
+</style>
