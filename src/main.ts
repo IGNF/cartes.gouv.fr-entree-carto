@@ -7,17 +7,27 @@ import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 import '@gouvfr/dsfr/dist/utility/icons/icons.min.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import { createLogger } from 'vue-logger-plugin'
 
 import App from './App.vue'
 import router from './router/index'
 import * as icons from './icons'
 
 import './main.css'
-import './assets/ol.css'
-import './assets/controls.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
+const isProduction = (import.meta.env.MODE === "production")
+const logger = createLogger({
+  enabled: true,
+  level: isProduction ? 'error' : 'debug',
+  callerInfo: true
+})
+const pinia = createPinia()
+
 createApp(App)
+  .use(pinia)
   .use(router)
+  .use(logger)
   .mount('#app')

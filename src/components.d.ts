@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
     Control: typeof import('./components/carte/Control.vue')['default']
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']
     DsfrHeader: typeof import('@gouvminint/vue-dsfr')['DsfrHeader']
@@ -18,6 +19,8 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScaleLine: typeof import('./components/carte/control/ScaleLine.vue')['default']
     SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
+    StoreDataLoading: typeof import('./components/StoreDataLoading.vue')['default']
     View: typeof import('./components/carte/View.vue')['default']
+    Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }
 }
