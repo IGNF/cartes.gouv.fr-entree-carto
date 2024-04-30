@@ -1,33 +1,56 @@
 <script setup lang="js">
 import View from 'ol/View'
 
+import { useMapStore } from "@/stores/mapStore"
+const store = useMapStore()
+
 const props = defineProps({
   zoom : Number,
   center : Array,
   layers : Array
 })
 
+// recuperation de l'objet 'map' du composant parent
 const map = inject('map')
 
-const viewParams = { 
+/**
+ * creation de la vue
+ */
+const view = new View({ 
   zoom: props.zoom, 
   center: props.center 
-}
-const view = new View(viewParams)
+})
+
+/**
+ * abonnement à l'evenement 'change:center' de la vue
+ * pour mise à jour du centre de la carte
+ */
+view.on("change:center", (e) => {
+  store.setCenter(e.target.getCenter());
+})
+
+/**
+ * abonnement à l'evenement 'change:resolution' de la vue
+ * pour mise à jour du zoom de la carte
+ */
+view.on("change:resolution", (e) => {
+  store.setZoom(view.getZoom())
+})
 
 onMounted(() => {
   if (map) {
+    // ajout des couches
     props.layers.forEach((layer) => {
       map.addLayer(layer)
     })
+    // ajout de la vue
     map.setView(view)
+    // enregistrement
+    store.setMap(map)
   }
 })
 </script>
 
-<template>
-  <div />
-</template>
+<template></template>
 
-<style scoped>
-</style>
+<style scoped></style>

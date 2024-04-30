@@ -32,4 +32,11 @@ onUpdated(() => {
 
 <template></template>
 
-<style scoped></style>
+<style>
+  #map .ol-custom-overviewmap {
+    bottom: 30px;
+    left: auto;
+    right: 20px;
+    top: auto;
+  }
+</style>
