@@ -1,0 +1,65 @@
+{
+  "thematics": [
+    "Administratif",
+    "Foncier",
+    "Agriculture",
+    "Forêt",
+    "Hydrographie, mer et littoral",
+    "Espaces protégés",
+    "Risques naturels",
+    "Tourisme et loisirs",
+    "Transports"
+  ],
+  "layers": {
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Foncier",
+      "base": false
+    },
+    "FORETS.PUBLIQUES$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Forêt",
+      "base": false
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "",
+      "base": true,
+      "thumbnail": "img/thumbnails/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg",
+      "legends": [{
+        "format": "image/jpeg",
+        "minScaleDenominator": "200",
+        "url": "img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg"
+      }]
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Risques naturels",
+      "base": false
+    },
+    "HYDROGRAPHY.HYDROGRAPHY$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Hydrographie, mer et littoral",
+      "base": false
+    },
+    "LANDUSE.AGRICULTURE2022$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Agriculture",
+      "base": false
+    },
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Administratif",
+      "base": false
+    },
+    "PROTECTEDSITES.MNHN.RESERVES-REGIONALES$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Espaces protégés",
+      "base": false
+    },
+    "TRANSPORTNETWORKS.RAILWAYS$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Transports",
+      "base": false
+    },
+    "TRANSPORTNETWORKS.ROADS$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Transports",
+      "base": false
+    },
+    "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
+      "thematic": "Tourisme et loisirs",
+      "base": false
+    }
+  }
+}
