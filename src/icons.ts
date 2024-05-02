@@ -11,3 +11,7 @@ export {
 export {
   FaUserCircle
 } from 'oh-vue-icons/icons/fa/index.js'
+
+export {
+  BiChevronDoubleRight
+} from 'oh-vue-icons/icons/bi/index.js'

@@ -7,7 +7,6 @@ const store = useMapStore()
 const props = defineProps({
   zoom : Number,
   center : Array,
-  layers : Array
 })
 
 // recuperation de l'objet 'map' du composant parent
@@ -39,11 +38,6 @@ view.on("change:resolution", (e) => {
 
 onMounted(() => {
   if (map) {
-    // ajout des couches
-    props.layers.forEach((layer) => {
-      map.addLayer(layer)
-    })
-    // ajout de la vue
     map.setView(view)
     // enregistrement
     store.setMap(map)
