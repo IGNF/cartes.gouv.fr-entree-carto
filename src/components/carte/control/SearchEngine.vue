@@ -13,6 +13,7 @@ const props = defineProps({
 
 const log = useLogger()
 const store = useDataStore()
+
 const { getLayerByName } = storeToRefs(store)
 
 const map = inject('map')
@@ -52,7 +53,21 @@ const onClickSearch = (e) => {
 <template></template>
 
 <style>
+/* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
   div[id^="GPsearchEngine-"]{
-    left: 40vw;
+    position: relative;
+    width: 500px;
+    margin: 0 auto;
+    left: unset;
+  }
+
+  /* MODE MOBILE : les boutons sont en dessous de la barre de recherche qui prend toute la largeur */
+  @media (max-width: 576px){
+    div[id^=GPsearchEngine-]{
+      flex-direction: column;
+      top: unset;
+      left: unset;
+      width:100%;
+    }
   }
 </style>
