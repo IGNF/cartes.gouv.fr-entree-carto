@@ -76,3 +76,4 @@ const attributionsOptions = {}
     :overview-map-options="overviewMapOptions"
   />
 </template>
+
