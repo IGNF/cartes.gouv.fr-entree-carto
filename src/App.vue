@@ -12,16 +12,10 @@ import LogoECOLO from "./assets/logo-transition-ecologique.png"
 import LogoCNIG from "./assets/logo-cnig.png"
 
 // Paramètres pour le Header
-const serviceTitle = 'Carte.gouv.fr'
+const serviceTitle = 'cartes.gouv.fr'
 const serviceDescription = 'Portail Cartographique'
 const logoText = ['RÉPUBLIQUE', 'FRANÇAISE']
 const quickLinks = [
-  {
-    label: serviceDescription,
-    to: '/',
-    icon: 'ri-arrow-right-line',
-    iconRight: true
-  },
   {
     label: 'Accueil',
     to: '/accueil',
@@ -33,11 +27,6 @@ const quickLinks = [
     to: '/catalogue',
     icon: 'ri-arrow-right-line',
     iconRight: true,
-  },
-  {
-    label: 'Se Connecter',
-    to: '/login',
-    icon: 'fa-user-circle',
   }
 ]
 
@@ -118,19 +107,19 @@ const navItems: DsfrNavigationProps['navItems'] = [
   {
     title: 'Commencer avec cartes.gouv',
     get active () {
-      return ['Documentation Géoplateforme', 'Questions fréquanetes', 'Nous écrire'].includes(route.name as string)
+      return ['Documentation Géoplateforme', 'Questions fréquentes', 'Nous écrire'].includes(route.name as string)
     },
     links: [
       {
-        href: '',
+        href: 'https://cartes.gouv.fr/documentation',
         text: 'Documentation Géoplateforme',
       },
       {
-        href: '',
-        text: 'Questions fréquanetes',
+        href: 'https://cartes.gouv.fr/faq',
+        text: 'Questions fréquentes',
       },
       {
-        href: '',
+        href: 'https://cartes.gouv.fr/nous-ecrire',
         text: 'Nous écrire',
       },
     ],
@@ -153,7 +142,6 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :service-description="serviceDescription"
     :logo-text="logoText"
     :quick-links="quickLinks"
-    show-search
   >
     <DsfrNavigation
       :nav-items="navItems"
