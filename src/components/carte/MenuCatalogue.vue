@@ -1,10 +1,8 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin'
-import { useDataStore } from "@/stores/dataStore"
-import { storeToRefs } from 'pinia'
+import MenuLateralWrapper from '@/components/carte/MenuLateralWrapper.vue';
+
 const log = useLogger()
-const store = useDataStore()
-const { getLayers } = storeToRefs(store)
 
 const props = defineProps({
     layers: Object
@@ -12,6 +10,7 @@ const props = defineProps({
 const headingTitle = "Catalogue de données";
 const buttonLabel = "bouton label sensé déplier le side menu";
 const collapsable = true;
+const side = "left";
 
 const menuItems = Object.values(props.layers).map((layer) => {
     return {
@@ -19,9 +18,8 @@ const menuItems = Object.values(props.layers).map((layer) => {
         to: "/",
         id:layer.name
     }
-}).slice(0, 10);
+}).slice(0, 50);
 
-const backgroundColor = getComputedStyle(document.body)?.backgroundColor;
 
 // const newLayername = defineModel();
 const emit = defineEmits(['selectLayer'])
@@ -34,7 +32,8 @@ function selectLayer(e) {
 </script>
 
 <template>
-<div class="menu-catalogue">
+<MenuLateralWrapper
+    :side="side">
     <DsfrSideMenu
     :heading-title="headingTitle"
     :button-label="buttonLabel"
@@ -42,18 +41,10 @@ function selectLayer(e) {
     :menu-items="menuItems"
     @click="selectLayer"
   />
-</div>
+</MenuLateralWrapper>
 </template>
 
 
 
 <style scoped>
-.menu-catalogue {
-    position: absolute;
-    height: inherit;
-    z-index: 1;
-    background-color: v-bind(backgroundColor);
-    overflow-y: scroll;
-}
-
 </style>

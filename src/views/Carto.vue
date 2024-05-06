@@ -6,12 +6,10 @@ import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Control from '@/components/carte/Control.vue'
 import LayerManager from '@/components/carte/Layer/LayerManager.vue'
-import LayerCatalogue from '@/components/carte/Layer/LayerCatalogue.vue'
-import MenuLateral from '@/components/carte/MenuLateral.vue'
+import MenuCatalogue from '@/components/carte/MenuCatalogue.vue'
 
 import { useControls } from '@/composables/controls'
 import { useMapStore } from "@/stores/mapStore"
-import { listIcons } from 'oh-vue-icons'
 
 const techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
 const editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
@@ -72,7 +70,7 @@ function addLayer(layername) {
   <!-- <div>{{ tech }}</div>
   <div>{{ edito }}</div> -->
 <div id="map-container">
-    <MenuLateral
+    <MenuCatalogue
     :layers="layersConf"
     @add-layer="addLayer"/>
 
