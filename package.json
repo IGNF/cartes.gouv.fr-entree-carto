@@ -39,6 +39,7 @@
     "oh-vue-icons": "1.0.0-rc3",
     "pinia": "^2.1.7",
     "rimraf": "^5.0.5",
+    "sass": "^1.76.0",
     "typescript": "~5.4.0",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
