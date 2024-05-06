@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+import { useMatchMedia } from '@/composables/matchMedia';
 
 import StoreDataLoading from './components/StoreDataLoading.vue';
 
@@ -10,6 +11,9 @@ import LogoIGN from "./assets/logo-ign.png"
 import LogoTRANSFO from "./assets/logo-transformation-fonction-publiques.png"
 import LogoECOLO from "./assets/logo-transition-ecologique.png"
 import LogoCNIG from "./assets/logo-cnig.png"
+
+// Paramètres de mediaQuery pour affichage HEADER et FOOTER
+const largeScreen = useMatchMedia("LG");
 
 // Paramètres pour le Header
 const serviceTitle = 'cartes.gouv.fr'
@@ -145,6 +149,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
   >
     <DsfrNavigation
       :nav-items="navItems"
+      v-show="!largeScreen"
     />
   </DsfrHeader>
 
