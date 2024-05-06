@@ -18,7 +18,7 @@ const logoText = ['RÉPUBLIQUE', 'FRANÇAISE']
 const quickLinks = [
   {
     label: 'Accueil',
-    to: '/accueil',
+    to: '/',
     icon: 'ri-arrow-right-line',
     iconRight: true
   },
@@ -111,26 +111,26 @@ const navItems: DsfrNavigationProps['navItems'] = [
     },
     links: [
       {
-        href: 'https://cartes.gouv.fr/documentation',
+        to: '/documentation',
         text: 'Documentation Géoplateforme',
       },
       {
-        href: 'https://cartes.gouv.fr/faq',
+        to: '/faq',
         text: 'Questions fréquentes',
       },
       {
-        href: 'https://cartes.gouv.fr/nous-ecrire',
+        to: '/nous-ecrire',
         text: 'Nous écrire',
       },
     ],
   },
   {
-    to: { href: '' },
+    to: '/actualites',
     text: 'Actualités',
   },
   {
-    to: { href: '' },
-    text: 'A propos',
+    to: '/a-propos',
+    text: '\u00c0 propos',
   }
 ]
 </script>
