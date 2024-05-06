@@ -37,9 +37,7 @@ const quickLinks = [
 const searchQuery = ref('')
 
 // Paramètres pour le Footer
-const beforeMandatoryLinks = [{ label: 'Before', to: '/before' }]
 const afterMandatoryLinks = [
-  { label: 'After', to: '/after' },
   {
     label: 'Paramètres d’affichage',
     button: true,
@@ -47,11 +45,12 @@ const afterMandatoryLinks = [
     to: '/settings',
   },
 ]
+const beforeMandatoryLinks = [{ label: 'Plan du site', to: '/plan-du-site' }]
 const a11yCompliance = 'partiellement conforme'
 const legalLink = '/mentions-legales'
 const personalDataLink = '/donnees-personnelles'
 const cookiesLink = '/cookies'
-const a11yComplianceLink = '/a11y-conformite'
+const a11yComplianceLink = '/accessibilite'
 const descText = 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.'
 const homeLink = '/'
 const licenceText = undefined
@@ -166,7 +165,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
   </div>
   
   <DsfrFooter
-    :before-mandatory-links="beforeMandatoryLinks"
+    :before-mandatory-links = "beforeMandatoryLinks"
     :after-mandatory-links="afterMandatoryLinks"
     :a11y-compliance="a11yCompliance"
     :logo-text="logoText"
