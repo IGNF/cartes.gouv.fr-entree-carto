@@ -2,12 +2,11 @@ import LogoIGN from "../assets/logo-ign.png"
 import LogoTRANSFO from "../assets/logo-transformation-fonction-publiques.png"
 import LogoECOLO from "../assets/logo-transition-ecologique.png"
 import LogoCNIG from "../assets/logo-cnig.png"
-import { ref } from 'vue';
 
 export function useFooterParams() {
 
     // Paramètres pour le Footer
-    var footerParams = {
+    const footerParams = {
         beforeMandatoryLinks: [{ label: 'Plan du site', to: '/plan-du-site' }],
         a11yCompliance: 'partiellement conforme',
         legalLink: '/mentions-legales',
@@ -40,12 +39,13 @@ export function useFooterParams() {
         ],
         partners: {
             title: "Nos partenaires",
-            mainPartner: {
-                href: "https://www.ign.fr/",
-                logo: LogoIGN,
-                name: "IGN"
-            },
+            mainPartner: {},
             subPartners: [
+                {
+                    href: "https://www.ign.fr/",
+                    logo: LogoIGN,
+                    name: "IGN"
+                },
                 {
                     href: "https://www.transformation.gouv.fr/",
                     logo: LogoTRANSFO,
@@ -64,28 +64,31 @@ export function useFooterParams() {
             ]
         },
         themeModale: {
-            title: "Params",
+            title: "Paramètres d'affichage",
             size: "md",
-            legend: "Groupe de cases à cocher simple",
+            legend: "Choisissez un thème pour personnaliser l'apparence du site.",
             themeOptions: [
                 {
                     label: 'Thème clair',
                     value: 'light',
-                    id: 'theme-1',
-                    name: 'radio-set',
+                    id: 'fr-radios-theme-light',
+                    name: 'fr-radios-theme',
+                    img: ""
                 },
                 {
                     label: 'Thème sombre',
-                    id: 'theme-2',
+                    id: 'fr-radios-theme-dark',
                     value: 'dark',
-                    name: 'radio-set',
+                    name: 'fr-radios-theme',
+                    img: ""
                 },
                 {
                     label: 'Système',
-                    id: 'theme-3',
+                    id: 'fr-radios-theme-system',
                     value: 'system',
-                    name: 'radio-set',
+                    name: 'fr-radios-theme',
                     hint: 'Utilise les paramètres sytème.',
+                    img: ""
                 }
             ]
         }
