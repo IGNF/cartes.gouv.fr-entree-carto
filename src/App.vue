@@ -20,7 +20,7 @@ const { setScheme, theme } = useScheme()
 const headerParams = useHeaderParams();
 
 // Paramètres pour le Footer
-var footerParams = useFooterParams();
+const footerParams = useFooterParams();
 
 // gestion de la modale de changement de thème d'affichage
 const modelValue = ref();
@@ -33,7 +33,7 @@ const themeModalOpened = ref(false)
 
 const openModalTheme = () => {
   console.log(themeModalOpened);
-    themeModalOpened.value = true;
+  themeModalOpened.value = true;
 }
 
 const onModalClose = () => {
@@ -85,8 +85,9 @@ const navItems: DsfrNavigationProps['navItems'] = [
 </script>
 
 <template>
-  <DsfrHeader v-model="headerParams.serviceTitle" :service-title="headerParams.serviceTitle" :service-description="headerParams.serviceDescription"
-    :logo-text="headerParams.logoText" :quick-links="headerParams.quickLinks">
+  <DsfrHeader v-model="headerParams.serviceTitle" :service-title="headerParams.serviceTitle"
+    :service-description="headerParams.serviceDescription" :logo-text="headerParams.logoText"
+    :quick-links="headerParams.quickLinks">
     <DsfrNavigation :nav-items="navItems" v-show="!largeScreen" />
   </DsfrHeader>
 
@@ -103,16 +104,21 @@ const navItems: DsfrNavigationProps['navItems'] = [
   </div>
 
   <DsfrFooter :before-mandatory-links="footerParams.beforeMandatoryLinks" :after-mandatory-links="afterMandatoryLinks"
-    :a11y-compliance="footerParams.a11yCompliance" :logo-text="footerParams.logoText" :legal-link="footerParams.legalLink" :personal-data-link="footerParams.personalDataLink"
-    :cookies-link="footerParams.cookiesLink" :a11y-compliance-link="footerParams.a11yComplianceLink" :desc-text="footerParams.descText" :home-link="footerParams.homeLink"
-    :partners="footerParams.partners" :licence-text="footerParams.licenceText" :licence-to="footerParams.licenceTo" :licence-name="footerParams.licenceName"
+    :a11y-compliance="footerParams.a11yCompliance" :logo-text="footerParams.logoText" :legal-link="footerParams.legalLink"
+    :personal-data-link="footerParams.personalDataLink" :cookies-link="footerParams.cookiesLink"
+    :a11y-compliance-link="footerParams.a11yComplianceLink" :desc-text="footerParams.descText"
+    :home-link="footerParams.homeLink" :partners="footerParams.partners" :licence-text="footerParams.licenceText"
+    :licence-to="footerParams.licenceTo" :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" :ecosystem-links="footerParams.ecosystemLinks" />
-  <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title" :size="footerParams.themeModale.size" @close="onModalClose">
-    <div class="fr-container fr-my-2v">
-      <div class="fr-my-2v">
-        <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="radio-set" :options="footerParams.themeModale.themeOptions"
-          @update:model-value="changeTheme" />
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title"
+      :size="footerParams.themeModale.size" @close="onModalClose">
+      <div class="fr-container fr-my-2v">
+        <div class="fr-my-2v fr-radio-group fr-radio-rich">
+          <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="fr-radios-theme"
+            :options="footerParams.themeModale.themeOptions" @update:model-value="changeTheme" />
+        </div>
       </div>
-    </div>
-  </DsfrModal>
+    </DsfrModal>
+  </div>
 </template>
