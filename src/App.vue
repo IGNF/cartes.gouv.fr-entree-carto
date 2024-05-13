@@ -1,115 +1,53 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+import { useMatchMedia } from '@/composables/matchMedia';
+import { useHeaderParams } from '@/composables/headerParams';
+import { useFooterParams } from '@/composables/footerParams';
 
 import StoreDataLoading from './components/StoreDataLoading.vue';
 
 useScheme()
 
-import LogoIGN from "./assets/logo-ign.png"
-import LogoTRANSFO from "./assets/logo-transformation-fonction-publiques.png"
-import LogoECOLO from "./assets/logo-transition-ecologique.png"
-import LogoCNIG from "./assets/logo-cnig.png"
+import { useModel } from 'vue';
+
+// Paramètres de mediaQuery pour affichage HEADER et FOOTER
+const largeScreen = useMatchMedia("LG");
+
+const { setScheme, theme } = useScheme()
 
 // Paramètres pour le Header
-const serviceTitle = 'Carte.gouv.fr'
-const serviceDescription = 'Portail Cartographique'
-const logoText = ['RÉPUBLIQUE', 'FRANÇAISE']
-const quickLinks = [
-  {
-    label: serviceDescription,
-    to: '/',
-    icon: 'ri-arrow-right-line',
-    iconRight: true
-  },
-  {
-    label: 'Accueil',
-    to: '/accueil',
-    icon: 'ri-arrow-right-line',
-    iconRight: true
-  },
-  {
-    label: 'Catalogue',
-    to: '/catalogue',
-    icon: 'ri-arrow-right-line',
-    iconRight: true,
-  },
-  {
-    label: 'Se Connecter',
-    to: '/login',
-    icon: 'fa-user-circle',
-  }
-]
-
-const searchQuery = ref('')
+const headerParams = useHeaderParams();
 
 // Paramètres pour le Footer
-const beforeMandatoryLinks = [{ label: 'Before', to: '/before' }]
+const footerParams = useFooterParams();
+
+// gestion de la modale de changement de thème d'affichage
+const modelValue = ref();
+
+const changeTheme = () => {
+  setScheme(modelValue.value);
+}
+
+const themeModalOpened = ref(false)
+
+const openModalTheme = () => {
+  console.log(themeModalOpened);
+  themeModalOpened.value = true;
+}
+
+const onModalClose = () => {
+  themeModalOpened.value = false;
+}
 const afterMandatoryLinks = [
-  { label: 'After', to: '/after' },
   {
     label: 'Paramètres d’affichage',
     button: true,
     class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
     to: '/settings',
+    onclick: openModalTheme
   },
-]
-const a11yCompliance = 'partiellement conforme'
-const legalLink = '/mentions-legales'
-const personalDataLink = '/donnees-personnelles'
-const cookiesLink = '/cookies'
-const a11yComplianceLink = '/a11y-conformite'
-const descText = 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.'
-const homeLink = '/'
-const licenceText = undefined
-const licenceTo = undefined
-const licenceName = undefined
-const licenceLinkProps = undefined
-const ecosystemLinks = [
-  {
-    label: 'legifrance.gouv.fr',
-    href: 'https://legifrance.gouv.fr',
-  },
-  {
-    label: 'gouvernement.fr',
-    href: 'https://gouvernement.fr',
-  },
-  {
-    label: 'service-public.fr',
-    href: 'https://service-public.fr',
-  },
-  {
-    label: 'data.gouv.fr',
-    href: 'https://data.gouv.fr',
-  },
-]
-
-// Paramètre pour les partenaires
-const partners = {
-  title: "Nos partenaires",
-  mainPartner: {
-    href: "https://www.ign.fr/",
-    logo: LogoIGN,
-    name: "IGN"
-  },
-  subPartners: [
-    {
-      href: "https://www.transformation.gouv.fr/",
-      logo: LogoTRANSFO,
-      name: "Ministère de la transformation et de la fonction publiques"
-    },
-    {
-      href: "https://www.ecologie.gouv.fr/",
-      logo: LogoECOLO,
-      name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
-    },
-    {
-      href: "https://cnig.gouv.fr/",
-      logo: LogoCNIG,
-      name: "Conseil national de l’information géolocalisée"
-    },
-  ]
-}
+];
 
 // Paramètre pour la barre de navigations
 const route = useRoute()
@@ -117,77 +55,70 @@ const route = useRoute()
 const navItems: DsfrNavigationProps['navItems'] = [
   {
     title: 'Commencer avec cartes.gouv',
-    get active () {
-      return ['Documentation Géoplateforme', 'Questions fréquanetes', 'Nous écrire'].includes(route.name as string)
+    get active() {
+      return ['Documentation Géoplateforme', 'Questions fréquentes', 'Nous écrire'].includes(route.name as string)
     },
     links: [
       {
-        href: '',
+        to: '/documentation',
         text: 'Documentation Géoplateforme',
       },
       {
-        href: '',
-        text: 'Questions fréquanetes',
+        to: '/faq',
+        text: 'Questions fréquentes',
       },
       {
-        href: '',
+        to: '/nous-ecrire',
         text: 'Nous écrire',
       },
     ],
   },
   {
-    to: { href: '' },
+    to: '/actualites',
     text: 'Actualités',
   },
   {
-    to: { href: '' },
-    text: 'A propos',
+    to: '/a-propos',
+    text: '\u00c0 propos',
   }
 ]
 </script>
 
 <template>
-  <DsfrHeader
-    v-model="searchQuery"
-    :service-title="serviceTitle"
-    :service-description="serviceDescription"
-    :logo-text="logoText"
-    :quick-links="quickLinks"
-    show-search
-  >
-    <DsfrNavigation
-      :nav-items="navItems"
-    />
+  <DsfrHeader v-model="headerParams.serviceTitle" :service-title="headerParams.serviceTitle"
+    :service-description="headerParams.serviceDescription" :logo-text="headerParams.logoText"
+    :quick-links="headerParams.quickLinks">
+    <DsfrNavigation :nav-items="navItems" v-show="!largeScreen" />
   </DsfrHeader>
 
   <Suspense>
-    <StoreDataLoading/>
+    <StoreDataLoading />
     <!-- loading state -->
     <template #fallback>
       Loading...
     </template>
   </Suspense>
-  
+
   <div>
     <router-view />
   </div>
-  
-  <DsfrFooter
-    :before-mandatory-links="beforeMandatoryLinks"
-    :after-mandatory-links="afterMandatoryLinks"
-    :a11y-compliance="a11yCompliance"
-    :logo-text="logoText"
-    :legal-link="legalLink"
-    :personal-data-link="personalDataLink"
-    :cookies-link="cookiesLink"
-    :a11y-compliance-link="a11yComplianceLink"
-    :desc-text="descText"
-    :home-link="homeLink"
-    :partners="partners"
-    :licence-text="licenceText"
-    :licence-to="licenceTo"
-    :licence-name="licenceName"
-    :licence-link-props="licenceLinkProps"
-    :ecosystem-links="ecosystemLinks"
-  />
+
+  <DsfrFooter :before-mandatory-links="footerParams.beforeMandatoryLinks" :after-mandatory-links="afterMandatoryLinks"
+    :a11y-compliance="footerParams.a11yCompliance" :logo-text="footerParams.logoText" :legal-link="footerParams.legalLink"
+    :personal-data-link="footerParams.personalDataLink" :cookies-link="footerParams.cookiesLink"
+    :a11y-compliance-link="footerParams.a11yComplianceLink" :desc-text="footerParams.descText"
+    :home-link="footerParams.homeLink" :partners="footerParams.partners" :licence-text="footerParams.licenceText"
+    :licence-to="footerParams.licenceTo" :licence-name="footerParams.licenceName"
+    :licence-link-props="footerParams.licenceLinkProps" :ecosystem-links="footerParams.ecosystemLinks" />
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title"
+      :size="footerParams.themeModale.size" @close="onModalClose">
+      <div class="fr-container fr-my-2v">
+        <div class="fr-my-2v fr-radio-group fr-radio-rich">
+          <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="fr-radios-theme"
+            :options="footerParams.themeModale.themeOptions" @update:model-value="changeTheme" />
+        </div>
+      </div>
+    </DsfrModal>
+  </div>
 </template>
