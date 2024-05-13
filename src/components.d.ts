@@ -9,8 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
     Control: typeof import('./components/carte/Control.vue')['default']
-    DsfrButton: typeof import('@gouvminint/vue-dsfr')['DsfrButton']
-    DsfrCheckboxSet: typeof import('@gouvminint/vue-dsfr')['DsfrCheckboxSet']
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']
     DsfrHeader: typeof import('@gouvminint/vue-dsfr')['DsfrHeader']
     DsfrModal: typeof import('@gouvminint/vue-dsfr')['DsfrModal']
