@@ -15,7 +15,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.11.2",
     "@gouvminint/vue-dsfr": "^5.14.2",
-    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.17.tgz",
+    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.29.tgz",
     "ol": "8.2.0"
   },
   "devDependencies": {
