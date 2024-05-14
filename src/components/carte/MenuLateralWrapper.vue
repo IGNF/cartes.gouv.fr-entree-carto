@@ -5,6 +5,8 @@ const props = defineProps({
   side: String,
 })
 
+const modelValue = defineModel()
+
 
 const icon = "bi-chevron-double-right"
 const defaultScale = 0.8325;
@@ -31,8 +33,7 @@ const ToggleMenu = () => {
   <div class="menu-toggle-wrap" :class="`${is_expanded  && 'is_expanded'} ${props.side}`">
     <button class="menu-collapse-icon" @click="ToggleMenu">
         <VIcon
-        v-bind="iconProps"
-    />  
+        v-bind="iconProps"/>  
     </button>
     <div class="menu-list">
       <slot></slot>
@@ -45,14 +46,47 @@ const ToggleMenu = () => {
 <style scoped lang="scss">
 .left {
 left: 0;
+.menu-collapse-icon {
+    right: 0;
+    margin-right: 15px;
+    z-index: 1;
+}
+&.is_expanded {
+  flex-direction: row-reverse;
+  .menu-collapse-icon {
+        transform : rotate(-180deg);
+    }
+}
 }
 .right {
   right: 0;
+  .menu-collapse-icon {
+    left: 0;
+    margin-left: 15px;
+    z-index: 1;
+    transform : rotate(-180deg)
+  }
+  .menu-list {
+    right: 0;
+  }
+  &.is_expanded {
+  .menu-collapse-icon {
+        transform : none;
+      }
+}
+}
+
+.menu-collapse-icon {
+    z-index: 1;
+    &:hover{
+      color : #8585f6;
+      // color : var(--text-activeblue-france-tab-active);
+    }
 }
 .menu-toggle-wrap {
     position: absolute;
     height: inherit;
-    display: flex;
+    display: inline-flex;
     z-index: 1;
     background-color: v-bind(backgroundColor);
     width : 50px;
@@ -60,11 +94,9 @@ left: 0;
       width:auto;
       .menu-list {
         width : auto;
+      }
     }
 }
-}
-
-
 
 .menu-list {
   height: inherit;
@@ -73,11 +105,6 @@ left: 0;
   scrollbar-width: thin;
 }
 
-.menu-collapse-icon {
-    position: absolute;
-    right: 0;
-    margin-right: 15px;
-    z-index: 1;
-}
+
 
 </style>

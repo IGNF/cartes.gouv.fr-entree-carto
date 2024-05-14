@@ -1,7 +1,4 @@
 <script setup lang="js">
-import OSM from 'ol/source/OSM.js'
-import TileLayer from 'ol/layer/Tile.js'
-
 import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Control from '@/components/carte/Control.vue'
@@ -35,8 +32,7 @@ const store = useMapStore()
 store.setZoom(12)
 store.setCenter([283734.248995, 5655117.100650])
 
-const controlOptions = Object.values(useControls);
-
+const selectedControls = ref(availableControls);
 
 const newLayer = ref("");
 const layersList = computed(() => {
@@ -64,16 +60,14 @@ function addLayer(layername) {
 </script>
 
 <template>
-  <!-- <MenuControl
-    v-model="controlOptions"
-  /> -->
-  <!-- <div>{{ tech }}</div>
-  <div>{{ edito }}</div> -->
+
 <div id="map-container">
     <MenuCatalogue
     :layers="layersConf"
     @add-layer="addLayer"/>
-
+  <MenuControl
+    v-model="selectedControls"
+  />
   <Map>
 
     <View
@@ -81,7 +75,8 @@ function addLayer(layername) {
       :zoom="store.getZoom"
     />
     <Control
-      :control-options="controlOptions"
+      v-if="selectedControls"
+      :control-options="selectedControls"
     />
     <LayerManager
       :layers-list="layersList"
