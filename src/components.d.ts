@@ -10,6 +10,7 @@ declare module 'vue' {
     Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
     Control: typeof import('./components/carte/Control.vue')['default']
     copy: typeof import('./components/carte/MenuLateral copy.vue')['default']
+    DsfrCheckboxSet: typeof import('@gouvminint/vue-dsfr')['DsfrCheckboxSet']
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']
     DsfrHeader: typeof import('@gouvminint/vue-dsfr')['DsfrHeader']
     DsfrNavigation: typeof import('@gouvminint/vue-dsfr')['DsfrNavigation']
