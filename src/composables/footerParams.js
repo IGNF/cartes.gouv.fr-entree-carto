@@ -2,6 +2,9 @@ import LogoIGN from "../assets/logo-ign.png"
 import LogoTRANSFO from "../assets/logo-transformation-fonction-publiques.png"
 import LogoECOLO from "../assets/logo-transition-ecologique.png"
 import LogoCNIG from "../assets/logo-cnig.png"
+import LogoSun from "@gouvfr/dsfr/dist/artwork/pictograms/environment/sun.svg"
+import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
+import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg"
 
 export function useFooterParams() {
 
@@ -73,14 +76,14 @@ export function useFooterParams() {
                     value: 'light',
                     id: 'fr-radios-theme-light',
                     name: 'fr-radios-theme',
-                    img: ""
+                    img: LogoSun,
                 },
                 {
                     label: 'Thème sombre',
                     id: 'fr-radios-theme-dark',
                     value: 'dark',
                     name: 'fr-radios-theme',
-                    img: ""
+                    img: LogoMoon,
                 },
                 {
                     label: 'Système',
@@ -88,7 +91,7 @@ export function useFooterParams() {
                     value: 'system',
                     name: 'fr-radios-theme',
                     hint: 'Utilise les paramètres sytème.',
-                    img: ""
+                    img: LogoSystem,
                 }
             ]
         }
