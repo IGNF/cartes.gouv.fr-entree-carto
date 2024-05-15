@@ -113,12 +113,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
   <div class="fr-container fr-container--fluid fr-container-md">
     <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title"
       :size="footerParams.themeModale.size" @close="onModalClose">
-      <div class="fr-container fr-my-2v">
-        <div class="fr-my-2v fr-radio-group fr-radio-rich">
-          <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="fr-radios-theme"
-            :options="footerParams.themeModale.themeOptions" @update:model-value="changeTheme" />
-        </div>
-      </div>
+      <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="fr-radios-theme"
+        :options="footerParams.themeModale.themeOptions" @update:model-value="changeTheme" />
     </DsfrModal>
   </div>
 </template>
