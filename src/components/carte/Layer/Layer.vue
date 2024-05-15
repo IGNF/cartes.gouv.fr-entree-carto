@@ -1,4 +1,6 @@
 <script setup lang="js">
+// FIXME c'est pour l'exemple car les couches sont gérées par les extensions !
+// cf. LayerManager
 import TileLayer from 'ol/layer/Tile.js'
 
 const props = defineProps({
