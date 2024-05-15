@@ -1,3 +1,5 @@
+// FIXME le nom du composable !? 
+// ex useResolutionsGeographic()
 export const resolutions = [
     156543.03392804103,
     78271.5169640205,

@@ -1,4 +1,6 @@
 <script setup lang="js">
+// FIXME c'est juste pour l'exemple car on va ajouter l'extension LayerSwitcher !
+// Donc provisoire...
 import Layer from '@/components/carte/Layer/Layer.vue'
 import { resolutions } from '@/composables/layers'
 import WMTS from 'ol/source/WMTS.js';

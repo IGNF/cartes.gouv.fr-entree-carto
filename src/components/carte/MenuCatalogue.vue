@@ -1,4 +1,7 @@
 <script setup lang="js">
+// FIXME on place ce composant dans un autre répertoire : ex. menu ou navigation
+// ce composant utilise un composant DSFR, il n'appartient pas à l'ensemble 'carte'
+// revoir la logique de l'appel des composants de type menu !
 import { useLogger } from 'vue-logger-plugin'
 import MenuLateralWrapper from '@/components/carte/MenuLateralWrapper.vue';
 

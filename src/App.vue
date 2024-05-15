@@ -2,7 +2,7 @@
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
 import { useRoute } from 'vue-router'
 
-import StoreDataLoading from './components/StoreDataLoading.vue';
+// import StoreDataLoading from '@/components/StoreDataLoading.vue';
 
 useScheme()
 
@@ -160,13 +160,16 @@ const navItems: DsfrNavigationProps['navItems'] = [
     />
   </DsfrHeader>
 
-  <Suspense>
+  <!-- FIXME ce composant realisait le chargement du store / patience 
+      ce comportement est porté par une autre view du router
+      donc, à supprimer !
+  -->
+  <!-- <Suspense>
     <StoreDataLoading/>
-    <!-- loading state -->
     <template #fallback>
       Loading...
     </template>
-  </Suspense>
+  </Suspense> -->
   
   <div>
     <router-view />
