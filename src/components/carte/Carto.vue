@@ -1,11 +1,10 @@
 <script setup lang="js">
-// FIXME la view Carto n'est plus une view appelée dans le router,
-// ne devrait on pas la basculer en composant ?
 import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Control from '@/components/carte/Control.vue'
 import LayerManager from '@/components/carte/Layer/LayerManager.vue'
-import MenuCatalogue from '@/components/carte/MenuCatalogue.vue'
+import LeftMenu from '@/components/menu/LeftMenu.vue'
+import RightMenu from '@/components/menu/RightMenu.vue'
 
 import { useControls } from '@/composables/controls'
 import { useMapStore } from "@/stores/mapStore"
@@ -29,6 +28,7 @@ const layersConf = Object.values(tech.layers).map((layer) => {
   }  
   return layer;
 })
+const catalogueProps = { layersConf : layersConf };
 
 const store = useMapStore()
 
@@ -66,6 +66,8 @@ function addLayer(layername) {
   listBeforeUpdate.value.concat(layername)
 }
 
+const mapWidth=70
+const menuWidth = 100 - mapWidth;
 </script>
 
 <template>
@@ -73,13 +75,28 @@ function addLayer(layername) {
   
   <div id="map-container">
     <!-- FIXME les menus ne font pas partis de la carte !? -->
-    <MenuCatalogue
+
+
+    <!-- <MenuCatalogue
       :layers="layersConf"
       @add-layer="addLayer"/>
     <MenuControl
       v-model="selectedControls"/>
-    
-    <Map>
+     -->
+    <LeftMenu
+    :width="menuWidth"
+    :catalogue-props="catalogueProps"
+    v-model="selectedControls"
+     @catalogue-event="addLayer"
+    />
+    <RightMenu
+    :width="menuWidth"
+    :catalogue-props="catalogueProps"
+    v-model="selectedControls"
+     @catalogue-event="addLayer"
+    />
+    <Map
+    :width="mapWidth">
       <View
         :center="store.getCenter"
         :zoom="store.getZoom"/>
