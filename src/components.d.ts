@@ -25,7 +25,6 @@ declare module 'vue' {
     MenuLateralContent: typeof import('./components/menu/MenuLateralContent.vue')['default']
     MenuLateralNavButton: typeof import('./components/menu/MenuLateralNavButton.vue')['default']
     MenuLateralWrapper: typeof import('./components/menu/MenuLateralWrapper.vue')['default']
-    'MenuLateralWrapper copy': typeof import('./components/menu/MenuLateralWrapper copy.vue')['default']
     MenuObject: typeof import('./components/menu/MenuObject.vue')['default']
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
