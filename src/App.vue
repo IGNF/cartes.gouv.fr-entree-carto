@@ -159,17 +159,6 @@ const navItems: DsfrNavigationProps['navItems'] = [
       :nav-items="navItems"
     />
   </DsfrHeader>
-
-  <!-- FIXME ce composant realisait le chargement du store / patience 
-      ce comportement est porté par une autre view du router
-      donc, à supprimer !
-  -->
-  <!-- <Suspense>
-    <StoreDataLoading/>
-    <template #fallback>
-      Loading...
-    </template>
-  </Suspense> -->
   
   <div>
     <router-view />

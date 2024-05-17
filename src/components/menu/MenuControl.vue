@@ -7,7 +7,7 @@ const availableControls = Object.values(useControls);
 
 </script>
 <script setup lang="js">
-import MenuLateralWrapper from '@/components/carte/MenuLateralWrapper.vue';
+import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 
 const selectedControls = defineModel()
 const initCheckbox = ref(availableControls)
@@ -46,8 +46,6 @@ onUpdated(() => {
 </script>
 
 <template>
-<MenuLateralWrapper
-  :side="side"> 
   <DsfrCheckboxSet
     v-model="selectedControls"
     :legend="legend"
@@ -58,8 +56,6 @@ onUpdated(() => {
     :options="options"
     :model-value="selectedControls"
   /> 
-</MenuLateralWrapper>
-
 </template>
 
 <style scoped>

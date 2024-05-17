@@ -1,12 +1,6 @@
 <script setup lang="ts">
-// FIXME le nom est il bien choisi ?
-// ex. un autre nom comme MapLoading ou CartoLoading ?
-
-// FIXME une view qui impporte des views !?
-// non, les 2 views suivantes sont des composants
-// on devrait les basculer dans le répertoire components
-import Carto from '@/views/Carto.vue'
-import Patience from '@/views/Patience.vue'
+import Carto from '@/components/carte/Carto.vue'
+import Patience from '@/components/utils/Patience.vue'
 
 </script>
 

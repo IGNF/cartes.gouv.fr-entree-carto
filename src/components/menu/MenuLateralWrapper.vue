@@ -4,10 +4,9 @@ import { OhVueIcon as VIcon } from 'oh-vue-icons'
 
 const props = defineProps({
   side: String,
+  width: Number,
+  menuObjectArray : Array
 })
-
-const modelValue = defineModel()
-
 
 const icon = "bi-chevron-double-right"
 const defaultScale = 0.8325;
@@ -25,6 +24,7 @@ const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value
 }
 
+console.log(props.side)
 </script>
 
 
@@ -32,13 +32,21 @@ const ToggleMenu = () => {
 <template>
 
   <div class="menu-toggle-wrap" :class="`${is_expanded  && 'is_expanded'} ${props.side}`">
-    <button class="menu-collapse-icon" @click="ToggleMenu">
+
+    <div class="menu-content-list">
+        <slot name="content"></slot>
+    </div>
+
+    <div class="menu-logo-list">
+      <button class="menu-collapse-icon" @click="ToggleMenu">
         <VIcon
         v-bind="iconProps"/>  
-    </button>
-    <div class="menu-list">
-      <slot></slot>
+      </button>
+      <slot name="navButtons"></slot>
     </div>
+
+
+
   </div>
 </template>
 
@@ -47,13 +55,7 @@ const ToggleMenu = () => {
 <style scoped lang="scss">
 .left {
 left: 0;
-.menu-collapse-icon {
-    right: 0;
-    margin-right: 15px;
-    z-index: 1;
-}
 &.is_expanded {
-  flex-direction: row-reverse;
   .menu-collapse-icon {
         transform : rotate(-180deg);
     }
@@ -62,27 +64,25 @@ left: 0;
 .right {
   right: 0;
   .menu-collapse-icon {
-    left: 0;
-    margin-left: 15px;
-    z-index: 1;
     transform : rotate(-180deg)
   }
-  .menu-list {
-    right: 0;
-  }
   &.is_expanded {
+  flex-direction: row-reverse;
   .menu-collapse-icon {
         transform : none;
-      }
+  }
+  .menu-content-list {
+    margin-left: 20px;
+  }
 }
 }
 
 .menu-collapse-icon {
-    z-index: 1;
     &:hover{
       color : #8585f6;
       // color : var(--text-activeblue-france-tab-active);
     }
+    margin-bottom: 20px;
 }
 .menu-toggle-wrap {
     position: absolute;
@@ -90,22 +90,23 @@ left: 0;
     display: inline-flex;
     z-index: 1;
     background-color: v-bind(backgroundColor);
-    width : 50px;
     &.is_expanded {
-      width:auto;
-      .menu-list {
+      .menu-content-list {
         width : auto;
       }
     }
 }
 
-.menu-list {
+.menu-content-list {
   height: inherit;
   width: 0;
   overflow-y: scroll;
   scrollbar-width: thin;
 }
-
+.menu-logo-list {
+  flex-direction: column;
+  display: flex;
+}
 
 
 </style>
