@@ -13,7 +13,7 @@ const { getLayers } = storeToRefs(store)
 // INFO
 // l'opération est asynchrone, il faut donc attendre que le store soit chargé 
 // avant d'initialiser la carte.
-await store.fetchData()
+const storeLoaded = await store.fetchData()
 
 if (store.isLoaded) {
   log.debug(toRaw(getLayers.value))
@@ -21,7 +21,7 @@ if (store.isLoaded) {
 </script>
 
 <template>
-  <!-- TODO mettre en place une patience -->
+  <slot></slot>
 </template>
 
 <style scoped></style>

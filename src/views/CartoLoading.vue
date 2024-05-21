@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import Carto from '@/components/carte/Carto.vue'
 import Patience from '@/components/utils/Patience.vue'
+import StoreDataLoading from '@/components/StoreDataLoading.vue';
 
 </script>
 
 <template>
   <Suspense>
     <!-- component with nested async dependencies -->
-    <Carto/>
+    <StoreDataLoading>
+      <Carto/>
+    </StoreDataLoading>
     <!-- loading state via #fallback slot -->
     <template #fallback>
       <div id="patience-container">
