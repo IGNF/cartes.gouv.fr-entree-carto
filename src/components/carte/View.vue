@@ -25,7 +25,8 @@ const view = new View({
  * pour mise à jour du centre de la carte
  */
 view.on("change:center", (e) => {
-  store.setCenter(e.target.getCenter());
+  store.lat =  e.target.getCenter()[0]
+  store.long =  e.target.getCenter()[1]
 })
 
 /**
@@ -33,14 +34,14 @@ view.on("change:center", (e) => {
  * pour mise à jour du zoom de la carte
  */
 view.on("change:resolution", (e) => {
-  store.setZoom(view.getZoom())
+    store.zoom = view.getZoom()
 })
 
 onMounted(() => {
   if (map) {
     map.setView(view)
     // enregistrement
-    store.setMap(map)
+    store.map = map
   }
 })
 </script>

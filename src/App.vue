@@ -2,8 +2,6 @@
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
 import { useRoute } from 'vue-router'
 
-// import StoreDataLoading from '@/components/StoreDataLoading.vue';
-
 useScheme()
 
 import LogoIGN from "./assets/logo-ign.png"

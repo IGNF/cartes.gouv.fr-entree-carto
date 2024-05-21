@@ -8,34 +8,15 @@ import RightMenu from '@/components/menu/RightMenu.vue'
 
 import { useControls } from '@/composables/controls'
 import { useMapStore } from "@/stores/mapStore"
+import { useDataStore } from "@/stores/dataStore"
 
-// FIXME on doit utiliser le dataStore !
-// cf. ex dans le composant StoreDataLoading
-const techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
-const editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
-const techRes = await fetch(techUrl);
-const editoRes = await fetch(editoUrl);
-const tech = await techRes.json();
-const edito = await editoRes.json();
+const dataStore = useDataStore()
+const mapStore = useMapStore()
 
-// FIXME c'est une methode du dataStore !
-const layersConf = Object.values(tech.layers).map((layer) => {
-  let key = Object.keys(layer)
-  let ret = layer
-  if (key in edito.layers)  {
-    return Object.assign(ret, edito.layers[key]); // merge
+const catalogueProps = { layersConf : toRaw(dataStore.getLayers) };
 
-  }  
-  return layer;
-})
-const catalogueProps = { layersConf : layersConf };
 
-const store = useMapStore()
 
-// FIXME c'est pour l'exemple, on utilise le zoom / centre par defaut !?
-// mais, les settings par defaut devraient être fournis par le mapStore !
-store.setZoom(12)
-store.setCenter([283734.248995, 5655117.100650])
 
 const availableControls = Object.values(useControls);
 const selectedControls = ref(availableControls);
@@ -54,7 +35,7 @@ const listBeforeUpdate = ref(["Plan IGN v2"])
 
 // FIXME c'est une methode du dataStore !
 function getLayerConfFromTitle(layername) {
-  return Object.values(layersConf).filter((layer) => {
+  return Object.values(catalogueProps.layersConf).filter((layer) => {
     if (layername && layer.title == layername) {
       return layer
     }
@@ -65,6 +46,7 @@ function addLayer(layername) {
   newLayer.value = layername;
   listBeforeUpdate.value.concat(layername)
 }
+
 
 const mapWidth=70
 const menuWidth = 100 - mapWidth;
@@ -98,8 +80,8 @@ const menuWidth = 100 - mapWidth;
     <Map
     :width="mapWidth">
       <View
-        :center="store.getCenter"
-        :zoom="store.getZoom"/>
+        :center="mapStore.center"
+        :zoom="mapStore.zoom"/>
       <Control
         v-if="selectedControls"
         :control-options="selectedControls"/>
