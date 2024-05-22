@@ -32,7 +32,10 @@ onMounted(() => {
  *  Trigerred on mouse over
  */
 const onFocusOnMap = () => {
-  mapRef.value.focus();
+  // Si le focus est actuellement sur une balise <input>, on ne change pas de focus
+  if (document.activeElement.tagName !== "INPUT") {
+    mapRef.value.focus();
+  }
 }
 
 // rendre disponible 'map' aux composants enfants imbriqués
