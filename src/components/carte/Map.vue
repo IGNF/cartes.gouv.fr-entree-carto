@@ -57,4 +57,13 @@ provide('map', map)
     width: inherit;
     height: 70vh;
   }
+
+  /* MODE TABLETTE : la carte prend toute la hauteur */
+
+  /* TODO : en attente de maquette Header/Footer en mode tablette */
+  @media (max-width: 1440px){
+    #map {
+      height: 100vh;
+    }
+  }
 </style>
