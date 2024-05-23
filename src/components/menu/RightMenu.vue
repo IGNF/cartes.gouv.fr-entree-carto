@@ -43,16 +43,12 @@ function tabIsActive(componentName) {
     return activeTab.value.replace("Content1" , '') === componentName ? true : false
 }
 
-onMounted(()=> {
-    console.log(side)
-})
 </script>
 
 <template>
 <MenuLateralWrapper
     :side="side"
-    :width="props.width"
-    :menu-object-array="menuObjectArray">
+    :width="props.width">
         <template #content>
             <div id="MenuCatalogueContent1" 
                 :class="[activeTab === 'MenuCatalogueContent1' ? 'activeTab' : 'inactiveTab']" >

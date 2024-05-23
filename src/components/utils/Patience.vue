@@ -1,6 +1,4 @@
-<script setup lang="ts">
-// FIXME ceci n'est pas une view mais un composant !
-// il est reutilisable pour d'autre actions
+<script setup lang="js">
 </script>
 
 <template>
