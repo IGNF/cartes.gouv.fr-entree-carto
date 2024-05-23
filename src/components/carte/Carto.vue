@@ -12,11 +12,7 @@ import { useDataStore } from "@/stores/dataStore"
 
 const dataStore = useDataStore()
 const mapStore = useMapStore()
-
-const catalogueProps = { layersConf : toRaw(dataStore.getLayers) };
-
-
-
+const catalogueProps = { layersConf : toRaw(dataStore.layers) };
 
 const availableControls = Object.values(useControls);
 const selectedControls = ref(availableControls);

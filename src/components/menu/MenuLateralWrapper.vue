@@ -24,7 +24,6 @@ const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value
 }
 
-console.log(props.side)
 </script>
 
 

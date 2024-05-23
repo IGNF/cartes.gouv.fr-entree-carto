@@ -1,27 +1,23 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin'
-import { storeToRefs } from 'pinia'
 import { useDataStore } from "@/stores/dataStore"
 
 const props = defineProps({})
 
 const log = useLogger()
-const store = useDataStore()
-const { getLayers } = storeToRefs(store)
+const storeData = useDataStore()
 
 // INFO
 // l'opération est asynchrone, il faut donc attendre que le store soit chargé 
 // avant d'initialiser la carte.
-const storeLoaded = await store.fetchData()
+const { fetchData } = storeData;
+const res = await fetchData();
 
-if (store.isLoaded) {
-  log.debug(toRaw(getLayers.value))
-}
 </script>
 
 <template>
-  <slot></slot>
+  <slot v-if="!storeData.loading && !storeData.error"></slot>
 </template>
 
 <style scoped></style>
