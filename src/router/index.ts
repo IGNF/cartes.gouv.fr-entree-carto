@@ -19,33 +19,10 @@ const routes: Array<RouteRecordRaw> = [
     component: CartoLoading,
   },
   {
-    path: '/accueil',
-    name: 'Accueil',
-    component: Accueil,
-  },
-  {
-    path: '/catalogue',
-    name: 'Catalogue',
-    component: Catalogue,
-  },
-  {
     path: '/login',
     name: 'Se connecter',
     component: Login,
-  },
-  {
-    path: '/presentation-generale',
-    name: 'Présentation générale',
-    component: Presentation,
-  },
-  { path: '/tuto', name: 'Commencer sur cartes.gouv.fr' },
-  { path: '/a11y-conformite', component: { template: '<div>Conformité RGAA</div>' } },
-  { path: '/mentions-legales', component: { template: '<div>Mentions légales</div>' } },
-  { path: '/donnees-personnelles', component: { template: '<div>Données personnelles</div>' } },
-  { path: '/cookies', component: { template: '<div>cookies</div>' } },
-  { path: '/after', component: { template: '<div>after</div>' } },
-  { path: '/before', component: { template: '<div>before</div>' } },
-  { path: '/_frame', component: { template: '<div>frame</div>' } }
+  }
 ]
 
 const router = createRouter({
