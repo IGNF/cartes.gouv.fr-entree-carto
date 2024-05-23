@@ -1,13 +1,9 @@
 <script lang="js">
-// FIXME on place ce composant dans un autre répertoire : ex. menu ou navigation
-// ce composant utilise un composant DSFR, il n'appartient pas à l'ensemble 'carte'
-// revoir la logique de l'appel des composants de type menu !
 import { useControls } from '@/composables/controls'
 const availableControls = Object.values(useControls);
 
 </script>
 <script setup lang="js">
-import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 
 const selectedControls = defineModel()
 const initCheckbox = ref(availableControls)

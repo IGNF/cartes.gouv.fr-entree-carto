@@ -1,5 +1,4 @@
 <script setup lang="js">
-// FIXME composant dans un autre répertoire : ex. menu
 import { OhVueIcon as VIcon } from 'oh-vue-icons'
 
 const props = defineProps({

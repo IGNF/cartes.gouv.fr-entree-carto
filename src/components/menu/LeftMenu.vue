@@ -47,8 +47,7 @@ function tabIsActive(componentName) {
 <template>
 <MenuLateralWrapper
     :side="side"
-    :width="props.width"
-    :menu-object-array="menuObjectArray">
+    :width="props.width">
         <template #content>
             <div id="MenuCatalogueContent" 
                 :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
