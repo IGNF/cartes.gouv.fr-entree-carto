@@ -4,7 +4,7 @@ import {
   createWebHistory } 
 from 'vue-router'
 
-import CartoLoading from '../views/CartoLoading.vue'
+import AsyncStorageInit from '../views/AsyncStorageInit.vue'
 import Catalogue from '../views/Catalogue.vue'
 import Login from '../views/Login.vue'
 import Presentation from '../views/Presentation.vue'
@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Carte',
-    component: CartoLoading,
+    component: AsyncStorageInit,
   },
   {
     path: '/login',
