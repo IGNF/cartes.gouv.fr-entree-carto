@@ -9,7 +9,7 @@ import { useControls } from '@/composables/controls'
 import { useDataStore } from "@/stores/dataStore"
 
 const dataStore = useDataStore()
-const catalogueProps = { layersConf : toRaw(dataStore.layers) };
+const catalogueProps = { layersConf : toRaw(dataStore.getLayers()) };
 
 const availableControls = Object.values(useControls);
 const selectedControls = ref(availableControls);

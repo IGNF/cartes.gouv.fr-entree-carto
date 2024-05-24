@@ -8,12 +8,23 @@ import ScaleLine from './control/ScaleLine.vue'
 import OverviewMap from './control/OverviewMap.vue'
 import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
+import LayerSwitcher from './control/LayerSwitcher.vue'
 
 import { useControls } from '@/composables/controls'
 
 const props = defineProps({
   controlOptions: Array
 })
+
+const layerSwitcherOptions = {
+  options : {
+    // FIXME 
+    // position : "top-right",
+    collapsed : true,
+    panel : true,
+    counter : true
+  }
+}
 
 const scaleLineOptions = {
   units: 'metric',
@@ -31,6 +42,7 @@ const searchEngineOptions = {
     search: true
   },
   searchOptions: {
+    addToMap : false,
     serviceOptions : {
       services: "WMTS,WMS,TMS"
     }
@@ -55,6 +67,10 @@ const attributionsOptions = {}
 </script>
 
 <template>
+  <LayerSwitcher
+    :visibility="props.controlOptions.includes(useControls.LayerSwitcher)"
+    :layer-switcher-options="layerSwitcherOptions"
+  />
   <Zoom
     :visibility="props.controlOptions.includes(useControls.Zoom)"
     :zoom-options="zoomOptions"
