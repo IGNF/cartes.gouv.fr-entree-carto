@@ -23,13 +23,15 @@ function addWMTSLayer(layer) {
     format: layer.formats[0].name,
     style: layer.styles[0].name,
     tileGrid : new WMTSTileGrid({
-                    origin: [-20037508,20037508], // topLeftCorner
-                    resolutions: resolutions.slice(startRes, endRes), // résolutions
-                    matrixIds: Object.keys(layer.wmtsOptions.tileMatrixSetLimits) // ids des TileMatrix
+      origin: [-20037508,20037508], // topLeftCorner
+      resolutions: resolutions.slice(startRes, endRes), // résolutions
+      matrixIds: Object.keys(layer.wmtsOptions.tileMatrixSetLimits) // ids des TileMatrix
     })
   };
+  var source = new WMTS(sourceOptions);
+  source._title = layer.name;
   return {
-        source : new WMTS(sourceOptions),
+        source : source,
         opacity: 1
 
     }

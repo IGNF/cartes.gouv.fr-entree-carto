@@ -13,11 +13,11 @@ const storeData = useDataStore()
 // avant d'initialiser la carte.
 const { fetchData } = storeData;
 const res = await fetchData();
-
+log.debug(res);
 </script>
 
 <template>
-  <slot v-if="!storeData.loading && !storeData.error"></slot>
+  <slot v-if="storeData.isLoaded && !storeData.error"></slot>
 </template>
 
 <style scoped></style>

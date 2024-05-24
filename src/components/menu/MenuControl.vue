@@ -32,6 +32,12 @@ const options = [
     name: useControls.ScaleLine,
     hint: 'Echelle',
   },
+  {
+    label: 'Gestionnaire de couches',
+    id: 'layerSwitcher',
+    name: useControls.LayerSwitcher,
+    hint: 'Gestionnaire de couches',
+  },
 ].filter(opt => Object.values(availableControls).includes(opt.name))
 
 const side = "right"
