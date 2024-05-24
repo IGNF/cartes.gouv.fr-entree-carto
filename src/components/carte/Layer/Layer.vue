@@ -22,7 +22,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div>
+  <div>
     <slot></slot>
   </div>
 </template>

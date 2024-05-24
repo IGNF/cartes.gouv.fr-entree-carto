@@ -98,7 +98,7 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getLayerParamsByName(name, service) {
-    var params = {};
+    var params = null;
     if ((service === "WMS" || Object.keys(this.getTileMatrixSets()).length !== 0) && Object.keys(this.getLayers()).length !== 0) {
       var id = this.getLayerIdByName(name, service);
       params = this.getLayerParamsByID(id);
@@ -107,8 +107,9 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getLayerParamsByID(id) {
-    var params = {};
+    var params = null;
     if (id) {
+      params = {};
       // get the layer Conf Object
       var l = this.getLayerByID(id);
 
@@ -171,11 +172,12 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getGlobalConstraintsByID(id) {
-    var params = {};
+    var params = null;
 
     if (id) {
         // get layer configuration object
         var l = this.getLayerByID(id);
+        params = {};
         params.projection = l.defaultProjection;
         params.minScale = l.globalConstraint.minScaleDenominator;
         params.maxScale = l.globalConstraint.maxScaleDenominator;
@@ -183,6 +185,11 @@ export const useDataStore = defineStore('data', () => {
     }
 
     return params;
+  }
+
+  function getGlobalConstraintsByName(name, service) {
+    var id = this.getLayerIdByName(name, service);
+    return this.getGlobalConstraintsByID(id);
   }
 
   function getTileMatrixSets() {
@@ -206,6 +213,7 @@ export const useDataStore = defineStore('data', () => {
     getTileMatrixSetByID,
     getLayerParamsByName,
     getLayerParamsByID,
-    getGlobalConstraintsByID
+    getGlobalConstraintsByID,
+    getGlobalConstraintsByName
   }
 })

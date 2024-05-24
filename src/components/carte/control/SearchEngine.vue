@@ -72,7 +72,7 @@ const onClickSearch = (e) => {
       });
       break;
     case "TMS":
-      // TODO option du style
+      // INFO le style par defaut est utilisé !
       layer = new GeoportalMapBox({
         layer : name,
         configuration : value

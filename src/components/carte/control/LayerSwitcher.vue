@@ -1,6 +1,11 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin'
+import { useDataStore } from '@/stores/dataStore';
+
+import {
+    transformExtent as olTransformExtentProj
+} from "ol/proj";
 
 import { LayerSwitcher } from 'geoportal-extensions-openlayers'
 
@@ -10,6 +15,7 @@ const props = defineProps({
 })
 
 const log = useLogger()
+const store = useDataStore();
 
 const map = inject('map')
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions))
@@ -49,6 +55,34 @@ const onRemoveLayer = (e) => {
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("layer", e);
+  // INFO
+  // on reimplemente le ZoomToExtent
+  // car on préfère utiliser le dataStore 
+  // pour le configurer
+  if (e.error) {
+    var globalConstraints = store.getGlobalConstraintsByName(e.layer.name, e.layer.service);
+    if (globalConstraints) {
+      var view = map.getView();
+      var crsTarget = view.getProjection();
+    
+      var bbox = [
+        globalConstraints.extent.left,
+        globalConstraints.extent.bottom,
+        globalConstraints.extent.right,
+        globalConstraints.extent.top
+      ];
+
+      var crsSource = globalConstraints.crs;
+      if (!crsSource) {
+        crsSource = "EPSG:4326";
+      }
+                
+      var extent = olTransformExtentProj(bbox, crsSource, crsTarget);
+      if (extent) {
+        view.fit(extent);
+      }
+    }
+  }
 }
 const onChangeOpacityLayer = (e) => {
   log.debug("layer", e);
