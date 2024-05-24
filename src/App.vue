@@ -12,6 +12,7 @@ useScheme()
 import { useModel } from 'vue';
 
 // Paramètres de mediaQuery pour affichage HEADER et FOOTER
+const desktopScreen = useMatchMedia("XL");
 const largeScreen = useMatchMedia("LG");
 
 const { setScheme, theme } = useScheme()
@@ -85,9 +86,11 @@ const navItems: DsfrNavigationProps['navItems'] = [
 </script>
 
 <template>
+  <!-- TODO : Sortir le header de App.vue et en faire un composant à part entière
+  v-show en mode tablette à adapter une fois la maquette récupérée pour le mode tablette -->
   <DsfrHeader v-model="headerParams.serviceTitle" :service-title="headerParams.serviceTitle"
     :service-description="headerParams.serviceDescription" :logo-text="headerParams.logoText"
-    :quick-links="headerParams.quickLinks">
+    :quick-links="headerParams.quickLinks" v-show="!desktopScreen">
     <DsfrNavigation :nav-items="navItems" v-show="!largeScreen" />
   </DsfrHeader>
 
@@ -102,14 +105,15 @@ const navItems: DsfrNavigationProps['navItems'] = [
   <div>
     <router-view />
   </div>
-
+  <!-- TODO : Sortir le footer de App.vue et en faire un composant à part entière
+  v-show en mode tablette à adapter une fois la maquette récupérée pour le mode tablette -->
   <DsfrFooter :before-mandatory-links="footerParams.beforeMandatoryLinks" :after-mandatory-links="afterMandatoryLinks"
     :a11y-compliance="footerParams.a11yCompliance" :logo-text="footerParams.logoText" :legal-link="footerParams.legalLink"
     :personal-data-link="footerParams.personalDataLink" :cookies-link="footerParams.cookiesLink"
     :a11y-compliance-link="footerParams.a11yComplianceLink" :desc-text="footerParams.descText"
     :home-link="footerParams.homeLink" :partners="footerParams.partners" :licence-text="footerParams.licenceText"
     :licence-to="footerParams.licenceTo" :licence-name="footerParams.licenceName"
-    :licence-link-props="footerParams.licenceLinkProps" :ecosystem-links="footerParams.ecosystemLinks" />
+    :licence-link-props="footerParams.licenceLinkProps" :ecosystem-links="footerParams.ecosystemLinks" v-show="!desktopScreen"/>
   <div class="fr-container fr-container--fluid fr-container-md">
     <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title"
       :size="footerParams.themeModale.size" @close="onModalClose">
@@ -118,3 +122,6 @@ const navItems: DsfrNavigationProps['navItems'] = [
     </DsfrModal>
   </div>
 </template>
+
+<style scoped>
+</style>
