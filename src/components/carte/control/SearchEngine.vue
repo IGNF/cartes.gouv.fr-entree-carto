@@ -54,20 +54,25 @@ const onClickSearch = (e) => {
 
 <style>
 /* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
-  div[id^="GPsearchEngine-"]{
+  div[id^="GPsearchEngine-"] {
     position: relative;
     width: 520px;
     margin: 0 auto;
     left: unset;
   }
 
+  /* pas de scrollbar sur les panneaux de recherche avancée */
+  form[id^="GPadvancedSearchForm"],
+  form[id^="GPcoordinateSearchForm"] {
+    max-height: unset;
+  }
+
   /* MODE MOBILE : les boutons sont en dessous de la barre de recherche qui prend toute la largeur */
   @media (max-width: 576px){
     div[id^=GPsearchEngine-]{
-      flex-direction: column;
       top: unset;
       left: unset;
-      width:100%;
+      width: 100%;
     }
   }
 </style>
