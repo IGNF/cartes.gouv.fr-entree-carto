@@ -112,5 +112,4 @@ const onClickSearch = (e) => {
       width: 100%;
     }
   }
-}
 </style>
