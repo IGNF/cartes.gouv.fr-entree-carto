@@ -1,10 +1,14 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin'
-import { storeToRefs } from 'pinia'
 import { useDataStore } from "@/stores/dataStore"
 
-import { SearchEngine } from 'geoportal-extensions-openlayers'
+import { 
+  SearchEngine,
+  LayerMapBox as GeoportalMapBox,
+  LayerWMS as GeoportalWMS,
+  LayerWMTS as GeoportalWMTS
+} from 'geoportal-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
@@ -13,8 +17,6 @@ const props = defineProps({
 
 const log = useLogger()
 const store = useDataStore()
-
-const { getLayerByName } = storeToRefs(store)
 
 const map = inject('map')
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
@@ -39,12 +41,47 @@ onUpdated(() => {
   }
 })
 
+onUnmounted(() => {})
+
 /** 
- * gestionnaire d'evenement sur l'abonnement à la recherche de couche
- */
+* gestionnaire d'evenement sur l'abonnement à la recherche de couche
+*/
 const onClickSearch = (e) => {
-  if (store.isLoaded) {
-      log.debug("search", e.suggest, toRaw(getLayerByName.value(e.suggest.name, e.suggest.service)));
+  var value = store.getLayerByName(e.suggest.name, e.suggest.service);
+  var params = store.getLayerParamsByName(e.suggest.name, e.suggest.service);
+  value.params = params; // fusion
+  log.debug("search", e, value);
+  // INFO
+  // on reimplemente l'ajout des couches
+  // car on préfère utiliser le dataStore 
+  // pour configurer la couche à ajouter
+  var service = e.suggest.service;
+  var name = e.suggest.name;
+  var layer = null;
+  switch (service) {
+    case "WMS":
+      layer = new GeoportalWMS({
+        layer : name,
+        configuration : value
+      });
+      break;
+    case "WMTS":
+      layer = new GeoportalWMTS({
+        layer : name,
+        configuration : value
+      });
+      break;
+    case "TMS":
+      // INFO le style par defaut est utilisé !
+      layer = new GeoportalMapBox({
+        layer : name,
+        configuration : value
+      });
+      break;
+    default:
+  }
+  if (layer) {
+    map.addLayer(layer);
   }
 }
 
@@ -75,4 +112,5 @@ const onClickSearch = (e) => {
       width: 100%;
     }
   }
+}
 </style>

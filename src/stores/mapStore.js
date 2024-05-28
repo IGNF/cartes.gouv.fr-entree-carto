@@ -1,32 +1,41 @@
-import { defineStore } from 'pinia'
+import {
+  defineStore
+} from 'pinia';
+
+
+import {
+  useStorage
+} from '@vueuse/core';
 
 /**
  * Store des objets de la carte
  * Enregistrement dans le LocalStorage
- * @todo à completer
+ * 
  */
-export const useMapStore = defineStore('map', {
-  state: () => ({
-    map: null,
-    zoom: 0,
-    center: []
-  }),
-  getters: {
-    getMap: (state) => state.map,
-    getZoom: (state) => state.zoom,
-    getCenter: (state) => state.center
-  },
-  actions: {
-    setMap(map) {
-      this.map = map;
-    },
-    setZoom(zoom) {
-      this.zoom = zoom;
-      localStorage.setItem('zoom', zoom)
-    },
-    setCenter(center) {
-      this.center = center;
-      localStorage.setItem('center', center)
-    }
+export const useMapStore = defineStore('map', () => {
+  const map = ref({});
+  const zoom = useStorage('zoom', 12);
+  const lat = useStorage('lat', 283734.248995);
+  const long = useStorage('long', 5655117.100650);
+  const center = computed(() => {
+    return [lat.value, long.value];
+  });
+
+  watch(zoom, () => {
+    localStorage.setItem('zoom', zoom.value);
+  })
+  watch(lat, () => {
+    localStorage.setItem('lat', lat.value);
+  })
+  watch(long, () => {
+    localStorage.setItem('long', long.value);
+  })
+
+  return {
+    map,
+    zoom,
+    center,
+    lat,
+    long
   }
-});
+})

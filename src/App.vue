@@ -5,8 +5,6 @@ import { useMatchMedia } from '@/composables/matchMedia';
 import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
 
-import StoreDataLoading from './components/StoreDataLoading.vue';
-
 useScheme()
 
 import { useModel } from 'vue';
@@ -85,36 +83,54 @@ const navItems: DsfrNavigationProps['navItems'] = [
 </script>
 
 <template>
-  <DsfrHeader v-model="headerParams.serviceTitle" :service-title="headerParams.serviceTitle"
-    :service-description="headerParams.serviceDescription" :logo-text="headerParams.logoText"
+  <DsfrHeader 
+    v-model="headerParams.serviceTitle" 
+    :service-title="headerParams.serviceTitle"
+    :service-description="headerParams.serviceDescription" 
+    :logo-text="headerParams.logoText"
     :quick-links="headerParams.quickLinks">
-    <DsfrNavigation :nav-items="navItems" v-show="!largeScreen" />
+    <DsfrNavigation 
+      :nav-items="navItems" 
+      v-show="!largeScreen" />
   </DsfrHeader>
-
-  <Suspense>
-    <StoreDataLoading />
-    <!-- loading state -->
-    <template #fallback>
-      Loading...
-    </template>
-  </Suspense>
-
+  
   <div>
     <router-view />
   </div>
 
-  <DsfrFooter :before-mandatory-links="footerParams.beforeMandatoryLinks" :after-mandatory-links="afterMandatoryLinks"
-    :a11y-compliance="footerParams.a11yCompliance" :logo-text="footerParams.logoText" :legal-link="footerParams.legalLink"
-    :personal-data-link="footerParams.personalDataLink" :cookies-link="footerParams.cookiesLink"
-    :a11y-compliance-link="footerParams.a11yComplianceLink" :desc-text="footerParams.descText"
-    :home-link="footerParams.homeLink" :partners="footerParams.partners" :licence-text="footerParams.licenceText"
-    :licence-to="footerParams.licenceTo" :licence-name="footerParams.licenceName"
-    :licence-link-props="footerParams.licenceLinkProps" :ecosystem-links="footerParams.ecosystemLinks" />
-  <div class="fr-container fr-container--fluid fr-container-md">
-    <DsfrModal ref="modal" :opened="themeModalOpened" :title="footerParams.themeModale.title"
-      :size="footerParams.themeModale.size" @close="onModalClose">
-      <DsfrRadioButtonSet v-model="modelValue" :legend="footerParams.themeModale.legend" name="fr-radios-theme"
-        :options="footerParams.themeModale.themeOptions" @update:model-value="changeTheme" />
-    </DsfrModal>
-  </div>
+  <DsfrFooter 
+    :before-mandatory-links="footerParams.beforeMandatoryLinks" 
+    :after-mandatory-links="afterMandatoryLinks"
+    :a11y-compliance="footerParams.a11yCompliance" 
+    :logo-text="footerParams.logoText" 
+    :legal-link="footerParams.legalLink"
+    :personal-data-link="footerParams.personalDataLink" 
+    :cookies-link="footerParams.cookiesLink"
+    :a11y-compliance-link="footerParams.a11yComplianceLink" 
+    :desc-text="footerParams.descText"
+    :home-link="footerParams.homeLink" 
+    :partners="footerParams.partners" 
+    :licence-text="footerParams.licenceText"
+    :licence-to="footerParams.licenceTo" 
+    :licence-name="footerParams.licenceName"
+    :licence-link-props="footerParams.licenceLinkProps" 
+    :ecosystem-links="footerParams.ecosystemLinks" />
+
+    <div class="fr-container fr-container--fluid fr-container-md">
+      <DsfrModal 
+        ref="modal" 
+        :opened="themeModalOpened" 
+        :title="footerParams.themeModale.title"
+        :size="footerParams.themeModale.size" 
+        @close="onModalClose">
+
+        <DsfrRadioButtonSet 
+          v-model="modelValue" 
+          :legend="footerParams.themeModale.legend" 
+          name="fr-radios-theme"
+          :options="footerParams.themeModale.themeOptions" 
+          @update:model-value="changeTheme" />
+      </DsfrModal>
+    </div>
+    
 </template>

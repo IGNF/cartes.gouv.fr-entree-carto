@@ -4,8 +4,11 @@ import {
   createWebHistory } 
 from 'vue-router'
 
-import Carto from '../views/Carto.vue';
-import Login from '../views/Login.vue';
+import AsyncStorageInit from '../views/AsyncStorageInit.vue'
+import Catalogue from '../views/Catalogue.vue'
+import Login from '../views/Login.vue'
+import Presentation from '../views/Presentation.vue'
+import Accueil from '../views/Accueil.vue'
 
 const MAIN_TITLE = 'Carte.gouv'
 
@@ -13,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Carte',
-    component: Carto,
+    component: AsyncStorageInit,
   },
   {
     path: '/login',

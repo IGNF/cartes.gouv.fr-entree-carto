@@ -2,7 +2,8 @@ export const useControls = {
   OverviewMap: 'OverviewMap',
   SearchEngine: 'SearchEngine',
   ScaleLine: 'ScaleLine',
-  Zoom: 'Zoom',
+  LayerSwitcher: 'LayerSwitcher'
+  // Zoom: 'Zoom',
   // Attributions: 'Attributions'
   // Rotate: 'Rotate'
 }
