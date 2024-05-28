@@ -1,12 +1,16 @@
-<script setup lang="js">
-import { useControls } from '@/composables/configuration'
+<script lang="js">
+import { useControls } from '@/composables/controls'
+const availableControls = Object.values(useControls);
 
-// Définit un modèle sur un modèle de composant enfant
-const modelValue = defineModel()
+</script>
+<script setup lang="js">
+
+const selectedControls = defineModel()
+const initCheckbox = ref(availableControls)
 
 const legend = 'Configuration des contrôles openlayers'
 const disabled = false
-const inline = true
+const inline = false
 const required = false
 const small = false
 const options = [
@@ -28,19 +32,32 @@ const options = [
     name: useControls.ScaleLine,
     hint: 'Echelle',
   },
-]
+  {
+    label: 'Gestionnaire de couches',
+    id: 'layerSwitcher',
+    name: useControls.LayerSwitcher,
+    hint: 'Gestionnaire de couches',
+  },
+].filter(opt => Object.values(availableControls).includes(opt.name))
+
+const side = "right"
+
+onUpdated(() => {
+  initCheckbox.value = selectedControls.value
+})
 </script>
 
 <template>
   <DsfrCheckboxSet
-    v-model="modelValue"
+    v-model="selectedControls"
     :legend="legend"
     :disabled="disabled"
     :inline="inline"
     :small="small"
     :required="required"
     :options="options"
-  />
+    :model-value="selectedControls"
+  /> 
 </template>
 
 <style scoped>

@@ -11,3 +11,15 @@ export {
 export {
   FaUserCircle
 } from 'oh-vue-icons/icons/fa/index.js'
+
+export {
+  BiChevronDoubleRight
+} from 'oh-vue-icons/icons/bi/index.js'
+
+export {
+  CoListLowPriority
+} from 'oh-vue-icons/icons/co/index.js'
+
+export {
+  IoSettingsSharp
+} from 'oh-vue-icons/icons/io/index.js'

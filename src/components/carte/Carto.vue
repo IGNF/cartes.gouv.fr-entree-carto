@@ -1,0 +1,37 @@
+<script setup lang="js">
+import Map from '@/components/carte/Map.vue'
+import View from '@/components/carte/View.vue'
+import Control from '@/components/carte/Control.vue'
+import LayerManager from '@/components/carte/Layer/LayerManager.vue'
+
+import { useMapStore } from "@/stores/mapStore"
+
+const props = defineProps({
+  selectedControls : Array,
+  layersList : Object,
+  mapWidth: Number
+})
+
+const mapStore = useMapStore()
+
+</script>
+
+<template>
+    <Map
+    :width="props.mapWidth">
+      <View
+        :center="mapStore.center"
+        :zoom="mapStore.zoom"/>
+      <Control
+        v-if="selectedControls"
+        :control-options="props.selectedControls"/>
+      <!-- FIXME c'est un composant pour l'exemple
+      donc provisoire ! -->
+      <LayerManager
+        :layers-list="props.layersList"/>
+    </Map>
+</template>
+
+<style scoped>
+
+</style>
