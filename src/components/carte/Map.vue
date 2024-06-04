@@ -56,7 +56,6 @@ provide('map', map)
 
 <style>
   #map {
-    width: inherit;
-    height: inherit;
+    width: 100%;
   }
 </style>

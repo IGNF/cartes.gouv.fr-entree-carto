@@ -4,7 +4,6 @@ import MenuControl from '@/components/menu/MenuControl.vue';
 
 const props = defineProps({
     catalogueProps : Object,
-    width: Number
 })
 
 const emit = defineEmits(['catalogueEvent'])
@@ -47,8 +46,7 @@ function tabIsActive(componentName) {
 
 <template>
 <MenuLateralWrapper
-    :side="side"
-    :width="props.width">
+    :side="side">
         <template #content>
             <div id="MenuCatalogueContent1" 
                 :class="[activeTab === 'MenuCatalogueContent1' ? 'activeTab' : 'inactiveTab']" >
