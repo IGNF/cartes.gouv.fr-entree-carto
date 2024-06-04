@@ -1,5 +1,6 @@
 <script setup lang="js">
 
+import { useMatchMedia } from '@/composables/matchMedia';
 import OverviewMap from 'ol/control/OverviewMap'
 
 const props = defineProps({
@@ -10,20 +11,31 @@ const props = defineProps({
 const map = inject('map')
 const overviewMap = ref(new OverviewMap(props.overviewMapOptions))
 
+const isSmallScreen =  useMatchMedia("SM")
+
+watch(isSmallScreen, () => {
+  if (props.visibility && !isSmallScreen.value) {
+    map.addControl(overviewMap.value)
+  }
+  else {
+    map.removeControl(overviewMap.value)
+  }
+})  
+
 onMounted(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value)
   }
 })
 
 onBeforeUpdate(() => {
-  if (!props.visibility) {
+  if (!props.visibility  || isSmallScreen.value) {
     map.removeControl(overviewMap.value)
   }
 })
 
 onUpdated(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value)
   }
 })
