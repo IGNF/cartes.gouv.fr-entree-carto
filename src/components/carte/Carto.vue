@@ -9,7 +9,6 @@ import { useMapStore } from "@/stores/mapStore"
 const props = defineProps({
   selectedControls : Array,
   layersList : Object,
-  mapWidth: Number
 })
 
 const mapStore = useMapStore()
@@ -17,8 +16,7 @@ const mapStore = useMapStore()
 </script>
 
 <template>
-    <Map
-    :width="props.mapWidth">
+    <Map>
       <View
         :center="mapStore.center"
         :zoom="mapStore.zoom"/>

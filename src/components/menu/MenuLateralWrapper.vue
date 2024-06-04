@@ -5,7 +5,6 @@ import { vOnClickOutside } from '@vueuse/components'
 
 const props = defineProps({
   side: String,
-  width: Number,
   menuObjectArray : Array
 })
 
@@ -19,7 +18,7 @@ const iconProps = computed(() => typeof icon === 'string'
 const is_expanded = ref(false)
 const width = ref()
 const resizer = ref()
-width.value = props.width
+width.value = 30
 const cssWidth = computed(() => {
   return width.value + "vw";
 })
@@ -122,10 +121,8 @@ left: 0;
     margin-bottom: 20px;
 }
 .menu-toggle-wrap {
-    position: absolute;
     height: inherit;
     display: inline-flex;
-    flex-flow: row wrap;
     z-index: 1;
     background-color: v-bind(backgroundColor);
     &.is_expanded {
