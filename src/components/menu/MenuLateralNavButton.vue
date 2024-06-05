@@ -28,7 +28,7 @@ const changeTab = (e) => {
 
 <template>
     <button :id="id" 
-    :class="`${active ? 'active': ''}  'navBarIcon'`"
+    :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
     @click="changeTab">
         <div class="noclick">
             <VIcon
@@ -46,6 +46,15 @@ const changeTab = (e) => {
 
 .active {
     color : #8585f6;
+}
+.navButton {
+  background-color: #8585f6;
+  width: 40px;
+  height: 40px;
+  color: white;
+  &:hover {
+    background-color: #b1b1f9;
+  }
 }
 
 </style>
