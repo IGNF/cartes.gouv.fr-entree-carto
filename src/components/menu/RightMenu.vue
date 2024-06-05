@@ -33,9 +33,11 @@ const tabArray = computed(() => {
 
 const activeTab = ref("MenuCatalogueContent1")
 const selectedControls = defineModel([])
+const wrapper = ref(null)
 
 function changeTab(newTab) {
     activeTab.value = newTab + "Content1";
+    wrapper.value.openMenu()
 }
 
 function tabIsActive(componentName) {
@@ -46,7 +48,8 @@ function tabIsActive(componentName) {
 
 <template>
 <MenuLateralWrapper
-    :side="side">
+    :side="side"
+    ref="wrapper">
         <template #content>
             <div id="MenuCatalogueContent1" 
                 :class="[activeTab === 'MenuCatalogueContent1' ? 'activeTab' : 'inactiveTab']" >
