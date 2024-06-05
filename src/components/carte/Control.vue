@@ -33,7 +33,7 @@ const scaleLineOptions = {
 
 const searchEngineOptions = {
   collapsed: false,
-  opened: true,
+  collapsible: false,
   displayButtonAdvancedSearch: true,
   displayButtonGeolocate: true,
   displayButtonCoordinateSearch: true,
