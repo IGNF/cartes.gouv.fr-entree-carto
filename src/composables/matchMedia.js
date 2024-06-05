@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@vueuse/core';
 import { ref } from 'vue';
 
 export function useMatchMedia(size) {
@@ -10,10 +11,7 @@ export function useMatchMedia(size) {
     };
 
     if (sizes[size] !== undefined) {
-        var query = "(max-width: " + sizes[size] + ")";
-        const match = window.matchMedia(query);
-        const isMatching = ref(match.matches);
-        match.addEventListener('change', e => isMatching.value = e.matches);
-        return isMatching;
+        const query = "(max-width: " + sizes[size] + ")";
+        return useMediaQuery(query)
     }
 };
