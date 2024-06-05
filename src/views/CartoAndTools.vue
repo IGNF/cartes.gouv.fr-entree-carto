@@ -40,29 +40,23 @@ function addLayer(layername) {
   listBeforeUpdate.value.concat(layername)
 }
 
-
-const mapWidth=70
-const menuWidth = 100 - mapWidth;
 </script>
 
 <template>
 <div id="map-and-tools-container">
   <LeftMenu
-    :width="menuWidth"
-    :catalogue-props="catalogueProps"
-    v-model="selectedControls"
-     @catalogue-event="addLayer"
-    />
-  <RightMenu
-    :width="menuWidth"
     :catalogue-props="catalogueProps"
     v-model="selectedControls"
      @catalogue-event="addLayer"
     />
   <Carto
     :layers-list="layersList"
-    :selected-controls="selectedControls"
-    :map-width="mapWidth"/>
+    :selected-controls="selectedControls"/>
+  <RightMenu
+    :catalogue-props="catalogueProps"
+    v-model="selectedControls"
+     @catalogue-event="addLayer"
+    />
 </div>
 
 </template>
@@ -72,5 +66,6 @@ const menuWidth = 100 - mapWidth;
     margin-left: 0;
     width: inherit;
     height: 70vh;
+    display: flex;
   }
 </style>
