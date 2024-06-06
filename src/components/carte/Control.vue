@@ -61,7 +61,9 @@ const overviewMapOptions = {
   ]
 }
 
-const zoomOptions = {}
+const zoomOptions = {
+  position: "bottom-right"
+}
 const attributionsOptions = {}
 
 </script>

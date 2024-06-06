@@ -1,6 +1,6 @@
 <script setup lang="js">
 
-import Zoom from 'ol/control/Zoom'
+import { GeoportalZoom } from 'geoportal-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
@@ -8,7 +8,7 @@ const props = defineProps({
 })
 
 const map = inject('map')
-const zoom = ref(new Zoom(props.zoomOptions))
+const zoom = ref(new GeoportalZoom(props.zoomOptions))
 
 onMounted(() => {
   if (props.visibility) {
@@ -30,7 +30,3 @@ onUpdated(() => {
 </script>
 
 <template></template>
-
-<style scoped>
-  /* TODO style DSFR */
-</style>
