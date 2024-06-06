@@ -28,6 +28,15 @@ onMounted(() => {
   }
 })
 
+onBeforeUpdate(() => {
+  if (props.visibility && !isSmallScreen.value) {
+    map.addControl(overviewMap.value)
+  }
+  else {
+    map.removeControl(overviewMap.value)
+  }
+})
+
 </script>
 
 <template></template>
