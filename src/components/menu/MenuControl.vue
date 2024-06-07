@@ -1,6 +1,6 @@
 <script lang="js">
 import { useControls } from '@/composables/controls'
-const availableControls = Object.values(useControls);
+const availableControls = Object.keys(useControls);
 
 </script>
 <script setup lang="js">
@@ -17,28 +17,52 @@ const options = [
   {
     label: 'Barre de Recherche',
     id: 'searchEngine',
-    name: useControls.SearchEngine,
+    name: useControls.SearchEngine.active ? useControls.SearchEngine.id : null,
     hint: 'Barre de recherche sur la carte',
   },
   {
     label: 'Mini carte',
     id: 'overview',
-    name: useControls.OverviewMap,
+    name: useControls.OverviewMap.active ? useControls.OverviewMap.id : null,
     hint: 'Petite carte pour se repérer',
   },
   {
     label: 'Scale Line',
     id: 'route',
-    name: useControls.ScaleLine,
+    name: useControls.ScaleLine.active ? useControls.ScaleLine.id : null,
     hint: 'Echelle',
   },
   {
     label: 'Gestionnaire de couches',
     id: 'layerSwitcher',
-    name: useControls.LayerSwitcher,
+    name: useControls.LayerSwitcher.active ? useControls.LayerSwitcher.id : null,
     hint: 'Gestionnaire de couches',
   },
-].filter(opt => Object.values(availableControls).includes(opt.name))
+  {
+    label: 'Geocodage inverse',
+    id: 'reverseGeocode',
+    name: useControls.ReverseGeocode.active ? useControls.ReverseGeocode.id : null,
+    hint: 'Geocodage inverse',
+  },
+  {
+    label: 'Calcul d\'isochrone',
+    id: 'isocurve',
+    name: useControls.Isocurve.active ? useControls.Isocurve.id : null,
+    hint: 'Calcul d\'isochrone',
+  },
+  {
+    label: 'Zoom',
+    id: 'zoom',
+    name: useControls.Zoom.active ? useControls.Zoom.id : null,
+    hint: 'Zoom',
+  },
+  {
+    label: 'Attributions',
+    id: 'attributions',
+    name: useControls.Attributions.active ? useControls.Attributions.id : null,
+    hint: 'Attributions',
+  },
+].filter(opt => availableControls.includes(opt.name))
 
 const side = "right"
 

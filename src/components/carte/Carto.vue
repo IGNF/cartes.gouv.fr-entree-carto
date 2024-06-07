@@ -7,7 +7,7 @@ import LayerManager from '@/components/carte/Layer/LayerManager.vue'
 import { useMapStore } from "@/stores/mapStore"
 
 const props = defineProps({
-  selectedControls : Array,
+  selectedControls : Object,
   layersList : Object,
 })
 
