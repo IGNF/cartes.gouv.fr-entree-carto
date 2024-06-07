@@ -14,7 +14,7 @@ const iconProps = computed(() => typeof icon === 'string'
   : { scale: defaultScale.value, ...icon },
 );
 
-const is_expanded = ref()
+const is_expanded = defineModel(false)
 const width = ref()
 width.value = 30
 const cssWidth = computed(() => {

@@ -46,7 +46,6 @@ function addLayer(layername) {
 <div id="map-and-tools-container">
   <LeftMenu
     :catalogue-props="catalogueProps"
-    v-model="selectedControls"
      @catalogue-event="addLayer"
     />
   <Carto
