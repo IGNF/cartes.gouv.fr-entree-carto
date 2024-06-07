@@ -1,6 +1,10 @@
 <script lang="js">
 import { useControls } from '@/composables/controls'
-const availableControls = Object.keys(useControls);
+const availableControls =  Object.keys(useControls).map(key => {
+  if (useControls[key].active) {
+    return key;
+  }
+});
 
 </script>
 <script setup lang="js">
@@ -17,58 +21,67 @@ const options = [
   {
     label: 'Barre de Recherche',
     id: 'searchEngine',
-    name: useControls.SearchEngine.active ? useControls.SearchEngine.id : null,
+    name: useControls.SearchEngine.id,
     hint: 'Barre de recherche sur la carte',
+    disabled: !useControls.SearchEngine.active
   },
   {
     label: 'Mini carte',
     id: 'overview',
-    name: useControls.OverviewMap.active ? useControls.OverviewMap.id : null,
+    name: useControls.OverviewMap.id,
     hint: 'Petite carte pour se repérer',
+    disabled: !useControls.OverviewMap.active
   },
   {
     label: 'Scale Line',
     id: 'route',
-    name: useControls.ScaleLine.active ? useControls.ScaleLine.id : null,
+    name: useControls.ScaleLine.id,
     hint: 'Echelle',
+    disabled: !useControls.ScaleLine.active
   },
   {
     label: 'Gestionnaire de couches',
     id: 'layerSwitcher',
-    name: useControls.LayerSwitcher.active ? useControls.LayerSwitcher.id : null,
+    name: useControls.LayerSwitcher.id,
     hint: 'Gestionnaire de couches',
+    disabled: !useControls.LayerSwitcher.active
   },
   {
     label: 'Geocodage inverse',
     id: 'reverseGeocode',
-    name: useControls.ReverseGeocode.active ? useControls.ReverseGeocode.id : null,
+    name: useControls.ReverseGeocode.id,
     hint: 'Geocodage inverse',
+    disabled: !useControls.ReverseGeocode.active
   },
   {
     label: 'Calcul d\'isochrone',
     id: 'isocurve',
-    name: useControls.Isocurve.active ? useControls.Isocurve.id : null,
+    name: useControls.Isocurve.id,
     hint: 'Calcul d\'isochrone',
+    disabled: !useControls.Isocurve.active
   },
   {
     label: 'Zoom',
     id: 'zoom',
-    name: useControls.Zoom.active ? useControls.Zoom.id : null,
+    name: useControls.Zoom.id,
     hint: 'Zoom',
+    disabled: !useControls.Zoom.active
   },
   {
     label: 'Attributions',
     id: 'attributions',
-    name: useControls.Attributions.active ? useControls.Attributions.id : null,
+    name: useControls.Attributions.id,
     hint: 'Attributions',
+    disabled: !useControls.Attributions.active
   },
   {
     label: 'Rotation de la carte',
     id: 'rotate',
-    name: useControls.Rotate.active ? useControls.Rotate.id : null,
+    name: useControls.Rotate.id,
     hint: 'Rotate',
+    disabled: !useControls.Rotate.active
   },
-].filter(opt => availableControls.includes(opt.name))
+].filter(opt => Object.keys(useControls).includes(opt.name))
 
 const side = "right"
 
