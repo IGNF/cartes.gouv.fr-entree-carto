@@ -1,6 +1,5 @@
 <script setup lang="js">
 import MenuCatalogue from '@/components/menu/MenuCatalogue.vue';
-import MenuControl from '@/components/menu/MenuControl.vue';
 
 const props = defineProps({
     catalogueProps : Object,
@@ -13,17 +12,13 @@ function addLayer(newLayername) {
 }
 
 const side = "left"
-
+const is_expanded = ref()
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuCatalogue",
             icon : "co-list-low-priority",
-        },
-        {
-            componentName : "MenuControl",
-            icon : "io-settings-sharp",
         }
     ];
 
@@ -32,12 +27,15 @@ const tabArray = computed(() => {
 
 
 const activeTab = ref("MenuCatalogueContent")
-const selectedControls = defineModel([])
 const wrapper = ref(null)
 
-function changeTab(newTab) {
-    activeTab.value = newTab + "Content";
-    wrapper.value.openMenu()
+function tabClicked(newTab) {
+    if (tabIsActive(newTab) && is_expanded.value)
+        wrapper.value.closeMenu()
+    else{
+        activeTab.value = newTab + "Content";
+        wrapper.value.openMenu()
+    }
 }
 
 function tabIsActive(componentName) {
@@ -48,6 +46,7 @@ function tabIsActive(componentName) {
 <template>
 <MenuLateralWrapper
     :side="side"
+    v-model="is_expanded"
     ref="wrapper">
         <template #content>
             <div id="MenuCatalogueContent" 
@@ -57,12 +56,6 @@ function tabIsActive(componentName) {
                     @add-layer="addLayer"
                 />
             </div>
-            <div id="MenuControlContent"
-                :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
-                <MenuControl
-                v-model="selectedControls"/>
-            </div>
-
         </template>
         <template #navButtons>
                  <MenuLateralNavButton
@@ -70,7 +63,7 @@ function tabIsActive(componentName) {
                 :icon="tab.icon"
                 :id="tab.componentName"
                 :active="tabIsActive(tab.componentName)"
-                @change-tab="changeTab"/>
+                @tab-clicked="tabClicked"/>
         </template>
 </MenuLateralWrapper>
 </template>
