@@ -10,7 +10,7 @@ import Login from '../views/Login.vue'
 import Presentation from '../views/Presentation.vue'
 import Accueil from '../views/Accueil.vue'
 
-const MAIN_TITLE = 'Carte.gouv'
+const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
 const routes: Array<RouteRecordRaw> = [
   {
