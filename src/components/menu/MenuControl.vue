@@ -62,6 +62,12 @@ const options = [
     name: useControls.Attributions.active ? useControls.Attributions.id : null,
     hint: 'Attributions',
   },
+  {
+    label: 'Rotation de la carte',
+    id: 'rotate',
+    name: useControls.Rotate.active ? useControls.Rotate.id : null,
+    hint: 'Rotate',
+  },
 ].filter(opt => availableControls.includes(opt.name))
 
 const side = "right"

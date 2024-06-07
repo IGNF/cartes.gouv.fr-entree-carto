@@ -11,7 +11,11 @@ import { useDataStore } from "@/stores/dataStore"
 const dataStore = useDataStore()
 const catalogueProps = { layersConf : toRaw(dataStore.getLayers()) };
 
-const availableControls = Object.keys(useControls);
+const availableControls = Object.keys(useControls).map(key => {
+  if (useControls[key].active) {
+    return key;
+  }
+});
 const selectedControls = ref(availableControls);
 
 const newLayer = ref("");
@@ -51,7 +55,7 @@ function addLayer(layername) {
     />
   <Carto
     :layers-list="layersList"
-    :selected-controls="useControls"/>
+    :selected-controls="selectedControls"/>
   <RightMenu
     :catalogue-props="catalogueProps"
     v-model="selectedControls"

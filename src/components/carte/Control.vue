@@ -11,8 +11,10 @@ import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
 import Isocurve from './control/Isocurve.vue'
 
+import { useControls } from '@/composables/controls'
+
 const props = defineProps({
-  controlOptions: Object
+  controlOptions: Array
 })
 
 const layerSwitcherOptions = {
@@ -78,35 +80,35 @@ const reverseGeocodeOptions = {
 
 <template>
   <LayerSwitcher
-    :visibility="props.controlOptions.LayerSwitcher.active"
+    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
   />
   <Isocurve
-    :visibility="props.controlOptions.Isocurve.active"
+    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
     :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
-    :visibility="props.controlOptions.ReverseGeocode.active"
+    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
     :reverse-geocode-options="reverseGeocodeOptions"
   />
   <Zoom
-    :visibility="props.controlOptions.Zoom.active"
+    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :zoom-options="zoomOptions"
   />
   <Attributions
-    :visibility="props.controlOptions.Attributions.active"
+    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
-    :visibility="props.controlOptions.SearchEngine.active"
+    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
-    :visibility="props.controlOptions.ScaleLine.active"
+    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
     :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
-    :visibility="props.controlOptions.OverviewMap.active"
+    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
   />
 </template>
