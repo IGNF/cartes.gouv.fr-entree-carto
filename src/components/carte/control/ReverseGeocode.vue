@@ -1,20 +1,20 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin'
+import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 
-import { ReverseGeocode } from 'geoportal-extensions-openlayers'
+import { ReverseGeocode } from 'geoportal-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,
   reverseGeocodeOptions: Object
 })
 
-const log = useLogger()
+const log = useLogger();
 const store = useDataStore();
 
-const map = inject('map')
-const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions))
+const map = inject('map');
+const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 
 onMounted(() => {
   if (props.visibility) {
@@ -30,13 +30,13 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(reverseGeocode.value)
+    map.removeControl(reverseGeocode.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(reverseGeocode.value)
+    map.addControl(reverseGeocode.value);
   }
 })
 

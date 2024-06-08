@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Carto from '@/components/carte/Carto.vue'
-import Patience from '@/components/utils/Patience.vue'
-import StoreDataLoading from '@/components/StoreDataLoading.vue';
 import LeftMenu from '@/components/menu/LeftMenu.vue'
 import RightMenu from '@/components/menu/RightMenu.vue'
 
