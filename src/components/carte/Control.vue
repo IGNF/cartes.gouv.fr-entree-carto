@@ -9,6 +9,7 @@ import OverviewMap from './control/OverviewMap.vue'
 import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
+import Isocurve from './control/Isocurve.vue'
 
 import { useControls } from '@/composables/controls'
 
@@ -18,7 +19,6 @@ const props = defineProps({
 
 const layerSwitcherOptions = {
   options : {
-    // FIXME 
     // position : "top-right",
     collapsed : true,
     panel : true,
@@ -61,35 +61,63 @@ const overviewMapOptions = {
   ]
 }
 
-const zoomOptions = {}
+const zoomOptions = {
+  position : "bottom-left",
+}
+
 const attributionsOptions = {}
+
+// FIXME exception
+const isocurveOptions = {
+  position : "top-left"
+}
+
+const reverseGeocodeOptions = {
+  position : "top-left"
+}
 
 </script>
 
 <template>
   <LayerSwitcher
-    :visibility="props.controlOptions.includes(useControls.LayerSwitcher)"
+    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
   />
+  <Isocurve
+    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
+    :isocurve-options="isocurveOptions"
+  />
+  <ReverseGeocode
+    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
+    :reverse-geocode-options="reverseGeocodeOptions"
+  />
   <Zoom
-    :visibility="props.controlOptions.includes(useControls.Zoom)"
+    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :zoom-options="zoomOptions"
   />
   <Attributions
-    :visibility="props.controlOptions.includes(useControls.Attributions)"
+    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
-    :visibility="props.controlOptions.includes(useControls.SearchEngine)"
+    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
-    :visibility="props.controlOptions.includes(useControls.ScaleLine)"
+    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
     :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
-    :visibility="props.controlOptions.includes(useControls.OverviewMap)"
+    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
   />
 </template>
 
+<style>
+  .position-container-bottom-left, 
+  .position-container-bottom-right, 
+  .position-container-top-left, 
+  .position-container-top-right {
+    border-style: unset;
+  }
+</style>
