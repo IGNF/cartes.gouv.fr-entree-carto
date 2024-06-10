@@ -12,6 +12,7 @@ const log = useLogger()
 const props = defineProps({
     layers: Object
 })
+
 const headingTitle = "Catalogue de données";
 const buttonLabel = "bouton label sensé déplier le side menu";
 const collapsable = true;
@@ -20,14 +21,14 @@ const menuItems = Object.values(props.layers).map((layer) => {
     return {
         text: layer.title,
         to: "/",
-        id:layer.name
+        id: layer.name
     }
-}).slice(0, 50);
+})
 
 
-const emit = defineEmits(['selectLayer'])
+const emit = defineEmits(['onClickSelectLayer'])
 
-function selectLayer(e) {
+function onClickSelectLayer(e) {
     const newLayername = e.target.textContent
     emit("addLayer", newLayername);
 }
@@ -35,12 +36,12 @@ function selectLayer(e) {
 </script>
 
 <template>
-    <DsfrSideMenu
+  <DsfrSideMenu
     :heading-title="headingTitle"
     :button-label="buttonLabel"
     :collapsable="collapsable"
     :menu-items="menuItems"
-    @click="selectLayer"
+    @click="onClickSelectLayer"
   />
 </template>
 
