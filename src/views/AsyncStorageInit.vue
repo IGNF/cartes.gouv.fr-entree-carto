@@ -11,11 +11,21 @@ import StoreDataLoading from '@/components/StoreDataLoading.vue';
       <StoreDataLoading>
         <CartoAndTools/>
       </StoreDataLoading>
+
       <!-- loading state via #fallback slot -->
       <template #fallback>
-        <div id="patience-container">
+        <div class="patience-container">
           <Patience/>
         </div>
       </template>
     </Suspense>
   </template>
+
+  <style>
+  .patience-container{
+    margin-left: 0;
+    width: inherit;
+    height: 70vh;
+    display: flex;
+  }
+</style>

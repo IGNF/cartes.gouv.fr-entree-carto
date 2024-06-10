@@ -45,7 +45,7 @@ onBeforeUpdate(() => {
   #map .ol-custom-overviewmap {
     bottom: 30px;
     left: auto;
-    right: 20px;
+    right: 50px;
     top: auto;
   }
 </style>

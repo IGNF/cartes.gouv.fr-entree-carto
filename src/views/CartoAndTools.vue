@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Carto from '@/components/carte/Carto.vue'
-import Patience from '@/components/utils/Patience.vue'
-import StoreDataLoading from '@/components/StoreDataLoading.vue';
 import LeftMenu from '@/components/menu/LeftMenu.vue'
 import RightMenu from '@/components/menu/RightMenu.vue'
 
@@ -13,7 +11,11 @@ const log = useLogger()
 const dataStore = useDataStore()
 const catalogueProps = { layersConf : toRaw(dataStore.getLayers()) };
 
-const availableControls = Object.values(useControls);
+const availableControls = Object.keys(useControls).map(key => {
+  if (useControls[key].active) {
+    return key;
+  }
+});
 const selectedControls = ref(availableControls);
 
 const newLayer = ref("");
