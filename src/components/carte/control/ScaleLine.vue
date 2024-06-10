@@ -31,4 +31,8 @@ onUpdated(() => {
 
 <template></template>
 
-<style scoped></style>
+<style>
+  .ol-scale-line {
+    left: 50px;
+  }
+</style>

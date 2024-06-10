@@ -95,8 +95,8 @@ const onChangeVisibilityLayer = (e) => {
 <template></template>
 
 <style>
-  div[id^=GPlayerSwitcher-] {
-      top: 85px;
-      right: 35px;
+  div[id^="GPlayerSwitcher-"] {
+    top: 85px;
+    right: 50px;
   }
 </style>
