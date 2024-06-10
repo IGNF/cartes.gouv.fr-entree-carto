@@ -3,9 +3,11 @@ import Carto from '@/components/carte/Carto.vue'
 import LeftMenu from '@/components/menu/LeftMenu.vue'
 import RightMenu from '@/components/menu/RightMenu.vue'
 
+import { useLogger } from 'vue-logger-plugin'
 import { useControls } from '@/composables/controls'
 import { useDataStore } from "@/stores/dataStore"
 
+const log = useLogger()
 const dataStore = useDataStore()
 const catalogueProps = { layersConf : toRaw(dataStore.getLayers()) };
 
@@ -40,6 +42,7 @@ function getLayerConfFromTitle(layername) {
 function addLayer(layername) {
   newLayer.value = layername;
   listBeforeUpdate.value.concat(layername)
+  log.debug(listBeforeUpdate);
 }
 
 </script>
