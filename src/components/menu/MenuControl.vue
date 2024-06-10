@@ -78,7 +78,7 @@ const options = [
     label: 'Rotation de la carte',
     id: 'rotate',
     name: useControls.Rotate.id,
-    hint: 'Rotate',
+    hint: 'Rotation de la carte',
     disabled: !useControls.Rotate.active
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))

@@ -62,7 +62,7 @@ const overviewMapOptions = {
 }
 
 const zoomOptions = {
-  position : "top-right",
+  position : "bottom-left",
 }
 
 const attributionsOptions = {}
