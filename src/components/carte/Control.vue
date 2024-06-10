@@ -19,7 +19,7 @@ const props = defineProps({
 
 const layerSwitcherOptions = {
   options : {
-    position : "top-right",
+    // position : "top-right",
     collapsed : true,
     panel : true,
     counter : true
@@ -113,3 +113,11 @@ const reverseGeocodeOptions = {
   />
 </template>
 
+<style>
+  .position-container-bottom-left, 
+  .position-container-bottom-right, 
+  .position-container-top-left, 
+  .position-container-top-right {
+    border-style: unset;
+  }
+</style>

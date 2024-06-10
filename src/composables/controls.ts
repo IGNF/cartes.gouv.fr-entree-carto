@@ -21,7 +21,7 @@ export const useControls = {
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
-    active: true
+    active: false
   },
   Zoom: {
     id: 'Zoom',
