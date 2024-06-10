@@ -51,9 +51,9 @@ const searchEngineOptions = {
 
 const overviewMapOptions = {
   className: 'ol-overviewmap ol-custom-overviewmap',
-  collapseLabel: '\u00BB',
-  label: '\u00AB',
-  collapsed: false,
+  collapseLabel: '',
+  label: '',
+  collapsed: true,
   layers : [
     new TileLayer({
       source: new OSM(),
@@ -74,6 +74,12 @@ const isocurveOptions = {
 
 const reverseGeocodeOptions = {
   position : "top-left"
+}
+
+const fullscreenOptions = {
+  className: "ol-custom-full-screen",
+  label : "",
+  labelActive : ""
 }
 
 </script>
@@ -110,6 +116,10 @@ const reverseGeocodeOptions = {
   <OverviewMap
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
+  />
+  <FullScreen
+    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :fullscreen-options="fullscreenOptions"
   />
 </template>
 

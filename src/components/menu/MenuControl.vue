@@ -81,6 +81,13 @@ const options = [
     hint: 'Rotation de la carte',
     disabled: !useControls.Rotate.active
   },
+  {
+    label: 'Plein écran',
+    id: 'fullscreen',
+    name: useControls.FullScreen.id,
+    hint: 'Plein écran',
+    disabled: !useControls.FullScreen.active
+  },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 
 const side = "right"

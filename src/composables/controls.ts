@@ -35,4 +35,8 @@ export const useControls = {
     id: 'Rotate',
     active: false
   },
+  FullScreen: {
+    id: 'FullScreen',
+    active: true
+  },
 }
