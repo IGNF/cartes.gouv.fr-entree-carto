@@ -15,7 +15,7 @@ RUN apk add git
 WORKDIR /app
 COPY . .
 
-RUN npm ci \
+RUN npm install \
     && BASE_URL="/" npm run build-only
 
 #----------------------------------------------------------------------
