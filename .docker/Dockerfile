@@ -8,7 +8,7 @@
 #----------------------------------------------------------------------
 # cartes.gouv.fr-entree-carto : Génération d'un build statique
 #----------------------------------------------------------------------
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 RUN apk add git
 
