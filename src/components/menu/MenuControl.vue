@@ -23,63 +23,70 @@ const options = [
     id: 'searchEngine',
     name: useControls.SearchEngine.id,
     hint: 'Barre de recherche sur la carte',
-    disabled: !useControls.SearchEngine.active
+    disabled: useControls.SearchEngine.disable
   },
   {
     label: 'Mini carte',
     id: 'overview',
     name: useControls.OverviewMap.id,
     hint: 'Petite carte pour se repérer',
-    disabled: !useControls.OverviewMap.active
+    disabled: useControls.OverviewMap.disable
   },
   {
     label: 'Scale Line',
     id: 'route',
     name: useControls.ScaleLine.id,
     hint: 'Echelle',
-    disabled: !useControls.ScaleLine.active
+    disabled: useControls.ScaleLine.disable
   },
   {
     label: 'Gestionnaire de couches',
     id: 'layerSwitcher',
     name: useControls.LayerSwitcher.id,
     hint: 'Gestionnaire de couches',
-    disabled: !useControls.LayerSwitcher.active
+    disabled: useControls.LayerSwitcher.disable
   },
   {
     label: 'Geocodage inverse',
     id: 'reverseGeocode',
     name: useControls.ReverseGeocode.id,
     hint: 'Geocodage inverse',
-    disabled: !useControls.ReverseGeocode.active
+    disabled: useControls.ReverseGeocode.disable
   },
   {
     label: 'Calcul d\'isochrone',
     id: 'isocurve',
     name: useControls.Isocurve.id,
     hint: 'Calcul d\'isochrone',
-    disabled: !useControls.Isocurve.active
+    disabled: useControls.Isocurve.disable
   },
   {
     label: 'Zoom',
     id: 'zoom',
     name: useControls.Zoom.id,
     hint: 'Zoom',
-    disabled: !useControls.Zoom.active
+    disabled: useControls.Zoom.disable
   },
   {
     label: 'Attributions',
     id: 'attributions',
     name: useControls.Attributions.id,
     hint: 'Attributions',
-    disabled: !useControls.Attributions.active
+    disabled: useControls.Attributions.disable
   },
   {
     label: 'Rotation de la carte',
     id: 'rotate',
     name: useControls.Rotate.id,
     hint: 'Rotation de la carte',
-    disabled: !useControls.Rotate.active
+    disabled: useControls.Rotate.disable
+  },
+  {
+    label: 'Plein écran',
+    id: 'fullscreen',
+    name: useControls.FullScreen.id,
+    hint: 'Plein écran',
+    disabled: useControls.FullScreen.disable
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 

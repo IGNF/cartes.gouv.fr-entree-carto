@@ -68,7 +68,7 @@ defineExpose({
 <style scoped lang="scss">
 .left {
   .menu-logo-list {
-left: 40px;
+left: 7px;
   }
   &.is_expanded {
   .menu-logo-list {
@@ -78,7 +78,7 @@ left: 40px;
 }
 .right {
   .menu-logo-list {
-  right: 77px;
+  right: 47px;
   }
   &.is_expanded {
     .menu-logo-list {
@@ -124,7 +124,7 @@ left: 40px;
   flex-direction: column;
   display: flex;
   row-gap: 20px;
-  margin-top: 150px;
+  margin-top: 10px;
   width: 0;
   position: absolute;
 }

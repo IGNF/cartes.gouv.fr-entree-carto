@@ -51,9 +51,9 @@ const searchEngineOptions = {
 
 const overviewMapOptions = {
   className: 'ol-overviewmap ol-custom-overviewmap',
-  collapseLabel: '\u00BB',
-  label: '\u00AB',
-  collapsed: false,
+  collapseLabel: '',
+  label: '',
+  collapsed: true,
   layers : [
     new TileLayer({
       source: new OSM(),
@@ -62,18 +62,24 @@ const overviewMapOptions = {
 }
 
 const zoomOptions = {
-  position : "bottom-left",
+  position : "bottom-right",
 }
 
 const attributionsOptions = {}
 
 // FIXME exception
 const isocurveOptions = {
-  position : "top-left"
+  position : "bottom-right"
 }
 
 const reverseGeocodeOptions = {
-  position : "top-left"
+  position : "bottom-right"
+}
+
+const fullscreenOptions = {
+  className: "ol-custom-full-screen",
+  label : "",
+  labelActive : ""
 }
 
 </script>
@@ -111,6 +117,10 @@ const reverseGeocodeOptions = {
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
   />
+  <FullScreen
+    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :fullscreen-options="fullscreenOptions"
+  />
 </template>
 
 <style>
@@ -119,5 +129,8 @@ const reverseGeocodeOptions = {
   .position-container-top-left, 
   .position-container-top-right {
     border-style: unset;
+  }
+  .position-container-top-right {
+    top: 90px;
   }
 </style>
