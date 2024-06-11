@@ -1,26 +1,14 @@
 <script setup lang="js">
-import MenuCatalogue from '@/components/menu/MenuCatalogue.vue';
 import MenuControl from '@/components/menu/MenuControl.vue';
 
 const props = defineProps({
-    catalogueProps : Object,
 })
-
-const emit = defineEmits(['catalogueEvent'])
-
-function addLayer(newLayername) {
-    emit("catalogueEvent", newLayername);
-}
 
 const side = "right"
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
-        {
-            componentName : "MenuCatalogue",
-            icon : "co-list-low-priority",
-        },
         {
             componentName : "MenuControl",
             icon : "io-settings-sharp",
@@ -31,32 +19,33 @@ const tabArray = computed(() => {
 })
 
 
-const activeTab = ref("MenuCatalogueContent1")
-const selectedControls = defineModel([])
+const activeTab = ref("MenuControlContent")
+const selectedControls = defineModel()
+const is_expanded = ref()
+const wrapper = ref(null)
 
-function changeTab(newTab) {
-    activeTab.value = newTab + "Content1";
+function tabClicked(newTab) {
+    if (tabIsActive(newTab) && is_expanded.value)
+        wrapper.value.closeMenu()
+    else{
+        activeTab.value = newTab + "Content";
+        wrapper.value.openMenu()
+    }
 }
 
 function tabIsActive(componentName) {
-    return activeTab.value.replace("Content1" , '') === componentName ? true : false
+    return activeTab.value.replace("Content" , '') === componentName ? true : false
 }
-
 </script>
 
 <template>
 <MenuLateralWrapper
-    :side="side">
+    :side="side"
+    v-model="is_expanded"
+    ref="wrapper">
         <template #content>
-            <div id="MenuCatalogueContent1" 
-                :class="[activeTab === 'MenuCatalogueContent1' ? 'activeTab' : 'inactiveTab']" >
-                <MenuCatalogue
-                    :layers="catalogueProps.layersConf"
-                    @add-layer="addLayer"
-                />
-            </div>
-            <div id="MenuControlContent1"
-                :class="[activeTab === 'MenuControlContent1' ? 'activeTab' : 'inactiveTab']" >
+            <div id="MenuControlContent"
+                :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
                 <MenuControl
                 v-model="selectedControls"/>
             </div>
@@ -68,7 +57,7 @@ function tabIsActive(componentName) {
                 :icon="tab.icon"
                 :id="tab.componentName"
                 :active="tabIsActive(tab.componentName)"
-                @change-tab="changeTab"/>
+                @tab-clicked="tabClicked"/>
         </template>
 </MenuLateralWrapper>
 </template>

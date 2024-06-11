@@ -21,5 +21,6 @@ export {
 } from 'oh-vue-icons/icons/co/index.js'
 
 export {
-  IoSettingsSharp
+  IoSettingsSharp,
+  IoClose
 } from 'oh-vue-icons/icons/io/index.js'
