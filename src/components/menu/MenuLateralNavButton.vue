@@ -15,21 +15,20 @@ const iconProps = computed(() => typeof icon === 'string'
   : { scale: defaultScale.value, ...icon },
 );
 
-const emit = defineEmits(['changeTab'])
+const emit = defineEmits(['tabClicked'])
 
-const changeTab = (e) => {
+const tabClicked = (e) => {
     const tabId = e.target.id
-    emit("changeTab", tabId);
+    emit("tabClicked", tabId);
 }
-
 </script>
 
 
 
 <template>
     <button :id="id" 
-    :class="`${active ? 'active': ''}  'navBarIcon'`"
-    @click="changeTab">
+    :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
+    @click="tabClicked">
         <div class="noclick">
             <VIcon
         v-bind="iconProps"/>  
@@ -46,6 +45,15 @@ const changeTab = (e) => {
 
 .active {
     color : #8585f6;
+}
+.navButton {
+  background-color: #8585f6;
+  width: 40px;
+  height: 40px;
+  color: white;
+  &:hover {
+    background-color: #b1b1f9;
+  }
 }
 
 </style>
