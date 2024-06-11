@@ -31,16 +31,14 @@ onBeforeUpdate(() => {
 
 <style>
   #map .ol-custom-full-screen {
-    bottom: 78px;
-    left: auto;
-    right: 50px;
-    top: auto;
+    bottom: 54px;
+    left: 5px;
   }
 
   /* surcharge en mode dsfr */
   .ol-custom-full-screen button {
-    height: 44px;
-    width: 44px;
+    height: 40px;
+    width: 40px;
     background-color: #000091;
     background-image: url("../../../assets/fullscreen.svg");
     background-position: center center;

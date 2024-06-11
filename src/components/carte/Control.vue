@@ -62,7 +62,7 @@ const overviewMapOptions = {
 }
 
 const zoomOptions = {
-  position : "bottom-left",
+  position : "bottom-right",
 }
 
 const attributionsOptions = {}
@@ -129,5 +129,8 @@ const fullscreenOptions = {
   .position-container-top-left, 
   .position-container-top-right {
     border-style: unset;
+  }
+  .position-container-top-right {
+    top: 90px;
   }
 </style>
