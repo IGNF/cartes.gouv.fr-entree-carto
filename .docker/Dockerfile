@@ -15,7 +15,8 @@ RUN apk add git
 WORKDIR /app
 COPY . .
 
-RUN BASE_URL="/" npm run build-only
+RUN npm ci \
+    && BASE_URL="/" npm run build-only
 
 #----------------------------------------------------------------------
 # cartes.gouv.fr-entree-carto : Config d'un serveur statique avec nginx
