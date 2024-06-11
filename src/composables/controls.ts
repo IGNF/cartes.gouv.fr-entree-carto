@@ -1,42 +1,54 @@
+import type { disable } from "ol/rotationconstraint";
+
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
-    active: true
+    active: true,
+    disable: false
   },
   SearchEngine: {
     id: 'SearchEngine',
-    active: true
+    active: true,
+    disable: false,
   },
   ScaleLine: {
     id: 'ScaleLine',
-    active: true
+    active: true,
+    disable: false
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
-    active: true
+    active: true,
+    disable: false
   },
   Isocurve: {
     id: 'Isocurve',
-    active: false
+    active: false,
+    disable: true
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
-    active: false
+    active: false,
+    disable: false
   },
   Zoom: {
     id: 'Zoom',
-    active: true
+    active: true,
+    disable: false
   },
   Attributions: {
     id: 'Attributions',
-    active: false
+    active: false,
+    disable: true
   },
   Rotate: {
     id: 'Rotate',
-    active: false
+    active: false,
+    disable: true
   },
   FullScreen: {
     id: 'FullScreen',
-    active: true
+    active: true,
+    disable: false
   },
 }

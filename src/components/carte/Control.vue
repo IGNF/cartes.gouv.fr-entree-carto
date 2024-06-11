@@ -69,11 +69,11 @@ const attributionsOptions = {}
 
 // FIXME exception
 const isocurveOptions = {
-  position : "top-left"
+  position : "bottom-right"
 }
 
 const reverseGeocodeOptions = {
-  position : "top-left"
+  position : "bottom-right"
 }
 
 const fullscreenOptions = {
