@@ -43,9 +43,20 @@ onBeforeUpdate(() => {
 
 <style>
   #map .ol-custom-overviewmap {
-    bottom: 30px;
-    left: auto;
-    right: 50px;
-    top: auto;
+    bottom: 10px;
+    left: 5px;
+  }
+
+  /* surcharge en mode dsfr */
+  .ol-custom-overviewmap button {
+    height: 40px;
+    width: 40px;
+    background-color: #000091;
+    background-image: url("../../../assets/map.svg");
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  .ol-custom-overviewmap button:hover {
+    background-color: #1212ff;
   }
 </style>

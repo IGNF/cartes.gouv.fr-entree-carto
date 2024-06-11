@@ -17,6 +17,7 @@ declare module 'vue' {
     DsfrNavigation: typeof import('@gouvminint/vue-dsfr')['DsfrNavigation']
     DsfrRadioButtonSet: typeof import('@gouvminint/vue-dsfr')['DsfrRadioButtonSet']
     DsfrSideMenu: typeof import('@gouvminint/vue-dsfr')['DsfrSideMenu']
+    FullScreen: typeof import('./components/carte/control/FullScreen.vue')['default']
     Isocurve: typeof import('./components/carte/control/Isocurve.vue')['default']
     Layer: typeof import('./components/carte/Layer/Layer.vue')['default']
     LayerManager: typeof import('./components/carte/Layer/LayerManager.vue')['default']
