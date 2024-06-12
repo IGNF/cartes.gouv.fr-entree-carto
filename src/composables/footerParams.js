@@ -5,19 +5,25 @@ import LogoCNIG from "../assets/logo-cnig.png"
 import LogoSun from "@gouvfr/dsfr/dist/artwork/pictograms/environment/sun.svg"
 import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
 import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg"
+import { useBaseUrl } from '@/composables/baseUrl';
 
 export function useFooterParams() {
 
     // Paramètres pour le Footer
     const footerParams = {
-        beforeMandatoryLinks: [{ label: 'Plan du site', to: '/plan-du-site' }],
+        beforeMandatoryLinks: [
+          { 
+            label: 'Plan du site', 
+            href: useBaseUrl() + '/plan-du-site' 
+          }
+        ],
         a11yCompliance: 'partiellement conforme',
-        legalLink: '/mentions-legales',
-        personalDataLink: '/donnees-personnelles',
-        cookiesLink: '/cookies',
-        a11yComplianceLink: '/accessibilite',
+        legalLink: '/mentions-legales', // FIXME pas d'url externe !
+        personalDataLink: '/donnees-personnelles', // FIXME pas d'url externe !
+        cookiesLink: '/cookies', // FIXME pas d'url externe !
+        a11yComplianceLink: '/accessibilite', // FIXME pas d'url externe !
         descText: 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.',
-        homeLink: '/',
+        homeLink: '/', // FIXME pas d'url externe !
         licenceText: undefined,
         licenceTo: undefined,
         licenceName: undefined,
