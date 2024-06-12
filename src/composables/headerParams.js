@@ -2,7 +2,6 @@ import { ref } from 'vue';
 import { useBaseUrl } from '@/composables/baseUrl';
 
 export function useHeaderParams() {
-  console.error(location)
     // Paramètres pour le Header
     const headerParams = {
         serviceTitle: 'cartes.gouv.fr',
