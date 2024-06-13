@@ -3,11 +3,11 @@
 #
 # build :
 # > docker image build -f .docker/Dockerfile --tag cartes.gouv.fr-entree-carto:latest .
+#   choisir un environnement :
+#   --build-arg  MODE_ENV="production|development|test"
 #
 # run :
 # > docker run -d --restart=always  -p 8082:8082 cartes.gouv.fr-entree-carto:latest
-#   ajouter un environnement :
-#   -e VITE_GPF_BASE_URL_EXTERNAL="https://cartes.gouv.fr"
 #
 # > http://localhost:8082/cartes
 #----------------------------------------------------------------------
@@ -19,6 +19,7 @@
 FROM node:20-alpine as builder
 
 ARG BASE_URL="/cartes"
+ARG MODE_ENV="development"
 
 RUN apk add git
 
@@ -26,7 +27,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm install \
-    && BASE_URL=${BASE_URL} npm run build-only
+    && BASE_URL=${BASE_URL} npm run build-only -- --mode=${MODE_ENV}
 
 #----------------------------------------------------------------------
 # cartes.gouv.fr-entree-carto : Config d'un serveur statique avec nginx

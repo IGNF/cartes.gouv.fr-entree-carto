@@ -11,12 +11,11 @@ services:
             dockerfile: ./.docker/Dockerfile
             args:
               BASE_URL: "/cartes"
+              MODE_ENV: "production"
         image: cartes.gouv.fr-entree-carto:latest
         container_name: cartes.gouv.fr-entree-carto
         ports:
           - 8082:8082
-        environment:
-          VITE_GPF_BASE_URL_EXTERNAL: "https://cartes.gouv.fr"
         networks:
           - cartes.gouv.fr-network
 
