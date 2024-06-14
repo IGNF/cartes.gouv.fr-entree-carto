@@ -18,8 +18,8 @@ export function useFooterParams() {
           }
         ],
         a11yCompliance: 'partiellement conforme',
-        legalLink: '/mentions-legales', // FIXME pas d'url externe !
-        personalDataLink: '/donnees-personnelles', // FIXME pas d'url externe !
+        legalLink: '/mentions-legales', 
+        personalDataLink: '/donnees-personnelles',
         cookiesLink: '/cookies',
         a11yComplianceLink: '/accessibilite',
         descText: 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.',
@@ -100,7 +100,25 @@ export function useFooterParams() {
                     img: LogoSystem,
                 }
             ]
-        }
+        },
+        mandatoryLinks: [
+          {
+            label: 'Accessibilité : partiellement conforme',
+            href: useBaseUrl() + '/accessibilite'
+          },
+          {
+            label: 'Mentions légales',
+            href: useBaseUrl() + '/mentions-legales'
+          },
+          {
+            label: 'Données personnelles',
+            href: useBaseUrl() + '/donnees-personnelles'
+          },
+          {
+            label: 'Gestion des cookies',
+            href: useBaseUrl() + '/cookies'
+          }
+        ],
     }
 
     return footerParams;
