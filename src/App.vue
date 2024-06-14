@@ -104,15 +104,19 @@ const navItems: DsfrNavigationProps['navItems'] = [
     <router-view />
   </div>
 
+  <!-- INFO 
+      On retire les valeurs par defaut pour ajouter 
+      des valeurs customisées de mandatoryLinks.
+        :a11y-compliance="footerParams.a11yCompliance" 
+        :legal-link="footerParams.legalLink"
+        :personal-data-link="footerParams.personalDataLink" 
+        :cookies-link="footerParams.cookiesLink"
+        :a11y-compliance-link="footerParams.a11yComplianceLink"  
+  -->
   <DsfrFooter 
     :before-mandatory-links="footerParams.beforeMandatoryLinks" 
     :after-mandatory-links="afterMandatoryLinks"
-    :a11y-compliance="footerParams.a11yCompliance" 
     :logo-text="footerParams.logoText" 
-    :legal-link="footerParams.legalLink"
-    :personal-data-link="footerParams.personalDataLink" 
-    :cookies-link="footerParams.cookiesLink"
-    :a11y-compliance-link="footerParams.a11yComplianceLink" 
     :desc-text="footerParams.descText"
     :home-link="footerParams.homeLink" 
     :partners="footerParams.partners" 
@@ -121,6 +125,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" 
     :ecosystem-links="footerParams.ecosystemLinks" 
+    :mandatory-links="footerParams.mandatoryLinks"
   />
 
     <div class="fr-container fr-container--fluid fr-container-md">
