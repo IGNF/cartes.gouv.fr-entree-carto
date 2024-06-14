@@ -3,7 +3,7 @@
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
 
-import { 
+import {
   SearchEngine,
   LayerMapBox as GeoportalMapBox,
   LayerWMS as GeoportalWMS,
@@ -43,7 +43,7 @@ onUpdated(() => {
 
 onUnmounted(() => {})
 
-/** 
+/**
 * gestionnaire d'evenement sur l'abonnement à la recherche de couche
 */
 const onClickSearch = (e) => {
@@ -53,7 +53,7 @@ const onClickSearch = (e) => {
   log.debug("search", e, value);
   // INFO
   // on reimplemente l'ajout des couches
-  // car on préfère utiliser le dataStore 
+  // car on préfère utiliser le dataStore
   // pour configurer la couche à ajouter
   var service = e.suggest.service;
   var name = e.suggest.name;
@@ -110,6 +110,17 @@ const onClickSearch = (e) => {
       top: unset;
       left: unset;
       width: 100%;
+    }
+
+    .gpf-widget-padding > div[id^="GPautoCompleteList"] {
+      margin-left: 0;
+      top: 53px;
+      margin-top: 53px;
+      width: 100%;
+    }
+
+    [id^="GPautocompleteResults-"] {
+      border: 1px solid #000091;
     }
   }
 </style>
