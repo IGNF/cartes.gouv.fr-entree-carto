@@ -4,10 +4,12 @@ import { useRoute } from 'vue-router';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
+import { useBaseUrl } from '@/composables/baseUrl';
+import { useLogger } from 'vue-logger-plugin'
+
+const log = useLogger()
 
 useScheme()
-
-import { useModel } from 'vue';
 
 // Paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia("LG");
@@ -54,29 +56,32 @@ const navItems: DsfrNavigationProps['navItems'] = [
   {
     title: 'Commencer avec cartes.gouv',
     get active() {
-      return ['Documentation Géoplateforme', 'Questions fréquentes', 'Nous écrire'].includes(route.name as string)
+      return [
+        'Documentation Géoplateforme',
+        'Questions fréquentes',
+        'Nous écrire'].includes(route.name as string)
     },
     links: [
       {
-        to: '/documentation',
+        to: useBaseUrl() + '/documentation',
         text: 'Documentation Géoplateforme',
       },
       {
-        to: '/faq',
+        to: useBaseUrl() + '/faq',
         text: 'Questions fréquentes',
       },
       {
-        to: '/nous-ecrire',
+        to: useBaseUrl() + '/nous-ecrire',
         text: 'Nous écrire',
       },
     ],
   },
   {
-    to: '/actualites',
+    to: useBaseUrl() + '/actualites',
     text: 'Actualités',
   },
   {
-    to: '/a-propos',
+    to: useBaseUrl() + '/a-propos',
     text: '\u00c0 propos',
   }
 ]
@@ -91,7 +96,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :quick-links="headerParams.quickLinks">
     <DsfrNavigation 
       :nav-items="navItems" 
-      v-show="!largeScreen" />
+      v-show="!largeScreen" 
+    />
   </DsfrHeader>
   
   <div>
@@ -114,7 +120,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :licence-to="footerParams.licenceTo" 
     :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" 
-    :ecosystem-links="footerParams.ecosystemLinks" />
+    :ecosystem-links="footerParams.ecosystemLinks" 
+  />
 
     <div class="fr-container fr-container--fluid fr-container-md">
       <DsfrModal 

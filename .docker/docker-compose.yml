@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+
+    # build du projet :
+    # > docker image build -f .docker/Dockerfile --tag cartes.gouv.fr-entree-carto:latest .
+    # > docker run -d --restart=always  -p 8082:8082 cartes.gouv.fr-entree-carto:latest
+    run:
+        build:
+            context: ..
+            dockerfile: ./.docker/Dockerfile
+            args:
+              BASE_URL: "/cartes"
+              MODE_ENV: "production"
+        image: cartes.gouv.fr-entree-carto:latest
+        container_name: cartes.gouv.fr-entree-carto
+        ports:
+          - 8082:8082
+        networks:
+          - cartes.gouv.fr-network
+
+networks:
+  cartes.gouv.fr-network:
+    name: cartes.gouv.fr-network
+    driver: bridge
+    ipam:
+      driver: default
