@@ -5,6 +5,9 @@ import { useMatchMedia } from '@/composables/matchMedia';
 import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
 import { useBaseUrl } from '@/composables/baseUrl';
+import { useLogger } from 'vue-logger-plugin'
+
+const log = useLogger()
 
 useScheme()
 
@@ -93,7 +96,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :quick-links="headerParams.quickLinks">
     <DsfrNavigation 
       :nav-items="navItems" 
-      v-show="!largeScreen" />
+      v-show="!largeScreen" 
+    />
   </DsfrHeader>
   
   <div>
@@ -116,7 +120,8 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :licence-to="footerParams.licenceTo" 
     :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" 
-    :ecosystem-links="footerParams.ecosystemLinks" />
+    :ecosystem-links="footerParams.ecosystemLinks" 
+  />
 
     <div class="fr-container fr-container--fluid fr-container-md">
       <DsfrModal 

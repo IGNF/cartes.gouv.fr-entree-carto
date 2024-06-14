@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build-only -- --mode=developpment
+        run: npm run build-only -- --mode=demo
   
       - name: Upload Binary artifacts
         uses: actions/upload-artifact@v4
