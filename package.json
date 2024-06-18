@@ -13,6 +13,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@floating-ui/vue": "^1.0.6",
     "@gouvfr/dsfr": "^1.11.2",
     "@gouvminint/vue-dsfr": "^5.14.2",
     "@vueuse/components": "^10.9.0",

@@ -82,12 +82,46 @@ const fullscreenOptions = {
   labelActive : ""
 }
 
+
+
+import {useFloating} from '@floating-ui/vue';
+
+
+const searchEngineDiv = ref(null);
+const layerSwitcherDiv = ref(null);
+const refreshStyle = ref(0)
+const floatingStylesLayerSwitcher = computed(() => {
+    refreshStyle;
+    return useFloating(searchEngineDiv, layerSwitcherDiv);
+})
+
+
+
+
+onUpdated(() => {
+  console.log("update floating style")
+  console.log(floatingStylesLayerSwitcher.value)
+})
+
+watch(layerSwitcherDiv, () => {
+  console.log("update layerswitcherdiv")
+  console.log(layerSwitcherDiv.value)
+  refreshStyle.value++;
+})
+
+watch(floatingStylesLayerSwitcher, () => {
+  console.log("update style")
+  console.log(floatingStylesLayerSwitcher.value.floatingStyles)
+})
+
 </script>
 
 <template>
   <LayerSwitcher
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
+    v-model="layerSwitcherDiv"
+    :floating-styles-layer-switcher="floatingStylesLayerSwitcher"
   />
   <Isocurve
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
@@ -108,6 +142,7 @@ const fullscreenOptions = {
   <SearchEngine
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :search-engine-options="searchEngineOptions"
+    v-model="searchEngineDiv"
   />
   <ScaleLine
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"

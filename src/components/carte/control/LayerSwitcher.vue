@@ -11,7 +11,8 @@ import { LayerSwitcher } from 'geoportal-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
-  layerSwitcherOptions: Object
+  layerSwitcherOptions: Object,
+  floatingStylesLayerSwitcher: Object
 })
 
 const log = useLogger()
@@ -19,6 +20,8 @@ const store = useDataStore();
 
 const map = inject('map')
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions))
+
+const layerSwitcherDiv = defineModel()
 
 onMounted(() => {
   if (props.visibility) {
@@ -29,7 +32,15 @@ onMounted(() => {
     layerSwitcher.value.on("layerswitcher:extent", onZoomToExtentLayer);
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
+    layerSwitcherDiv.value = layerSwitcher.value.element
   }
+  console.log(props.floatingStylesLayerSwitcher)
+
+  if(props.floatingStylesLayerSwitcher)
+  {
+    console.log(props.floatingStylesLayerSwitcher)
+  }
+
 })
 
 onBeforeUpdate(() => {
@@ -42,6 +53,8 @@ onUpdated(() => {
   if (props.visibility) {
     map.addControl(layerSwitcher.value)
   }
+  console.log("update layer switcher")
+  console.log(props.floatingStylesLayerSwitcher)
 })
 
 /** 

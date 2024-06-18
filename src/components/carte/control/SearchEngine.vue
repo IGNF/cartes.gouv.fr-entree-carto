@@ -21,11 +21,14 @@ const store = useDataStore()
 const map = inject('map')
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
 
+const searchEngineDiv = defineModel()
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngine.value)
     /** abonnement au widget */
     searchEngine.value.on("searchengine:search:click", onClickSearch);
+    searchEngineDiv.value = searchEngine.value.element
   }
 })
 
