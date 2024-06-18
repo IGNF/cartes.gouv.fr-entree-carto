@@ -34,6 +34,7 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
+    searchEngineDiv.value = null
     map.removeControl(searchEngine.value)
   }
 })
@@ -41,6 +42,7 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(searchEngine.value)
+    searchEngineDiv.value = searchEngine.value.element
   }
 })
 

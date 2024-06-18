@@ -84,20 +84,44 @@ const fullscreenOptions = {
 
 
 import {offset} from '@floating-ui/dom';
-import {useFloating, autoUpdate} from '@floating-ui/vue';
+import {useFloating, autoUpdate } from '@floating-ui/vue';
 
 const searchEngineDiv = ref(null);
 const layerSwitcherDiv = ref(null);
+const virtualEl = ref(null)
+/**
+ *  reference utilisée pour les collisions
+ * quand le search engine est désélectionné on utilise un virtual element
+ *  */
 
+const reference = computed(() => {
+  if(searchEngineDiv.value) return searchEngineDiv.value
+  else if (virtualEl.value) return virtualEl.value
+})
 const {
   floatingStyles : floatingStylesLayerSwitcher,
   update : updatefloatingStylesLayerSwitcher 
-} = useFloating(searchEngineDiv, layerSwitcherDiv, {
+} = useFloating(reference, layerSwitcherDiv, {
       placement: 'bottom-end',
       transform: false,
       middleware: [offset(10)],
       whileElementsMounted: autoUpdate,
     })
+  
+onMounted(() => {
+  /**
+   * Assign the virtual element to reference inside
+   * a lifecycle hook or effect or event handler.
+   */
+  virtualEl.value = {
+    getBoundingClientRect() {
+      return {
+      top: 90
+    }
+    }
+  }
+
+})
 
 </script>
 
