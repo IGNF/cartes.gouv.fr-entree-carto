@@ -83,36 +83,21 @@ const fullscreenOptions = {
 }
 
 
-
-import {useFloating} from '@floating-ui/vue';
-
+import {offset} from '@floating-ui/dom';
+import {useFloating, autoUpdate} from '@floating-ui/vue';
 
 const searchEngineDiv = ref(null);
 const layerSwitcherDiv = ref(null);
-const refreshStyle = ref(0)
-const floatingStylesLayerSwitcher = computed(() => {
-    refreshStyle;
-    return useFloating(searchEngineDiv, layerSwitcherDiv);
-})
 
-
-
-
-onUpdated(() => {
-  console.log("update floating style")
-  console.log(floatingStylesLayerSwitcher.value)
-})
-
-watch(layerSwitcherDiv, () => {
-  console.log("update layerswitcherdiv")
-  console.log(layerSwitcherDiv.value)
-  refreshStyle.value++;
-})
-
-watch(floatingStylesLayerSwitcher, () => {
-  console.log("update style")
-  console.log(floatingStylesLayerSwitcher.value.floatingStyles)
-})
+const {
+  floatingStyles : floatingStylesLayerSwitcher,
+  update : updatefloatingStylesLayerSwitcher 
+} = useFloating(searchEngineDiv, layerSwitcherDiv, {
+      placement: 'bottom-end',
+      transform: false,
+      middleware: [offset(10)],
+      whileElementsMounted: autoUpdate,
+    })
 
 </script>
 
