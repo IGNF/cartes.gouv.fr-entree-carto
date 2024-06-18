@@ -112,15 +112,8 @@ const onClickSearch = (e) => {
       width: 100%;
     }
 
-    .gpf-widget-padding > div[id^="GPautoCompleteList"] {
-      margin-left: 0;
-      top: 53px;
-      margin-top: 53px;
-      width: 100%;
-    }
-
     [id^="GPautocompleteResults-"] {
-      border: 1px solid #000091;
+      height: 70vh;
     }
   }
 </style>
