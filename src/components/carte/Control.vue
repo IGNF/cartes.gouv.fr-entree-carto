@@ -1,5 +1,4 @@
 <script setup lang="js">
-
 import TileLayer from 'ol/layer/Tile.js'
 import OSM from 'ol/source/OSM'
 
@@ -18,11 +17,11 @@ const props = defineProps({
 })
 
 const layerSwitcherOptions = {
-  options : {
+  options: {
     // position : "top-right",
-    collapsed : true,
-    panel : true,
-    counter : true
+    collapsed: true,
+    panel: true,
+    counter: true
   }
 }
 
@@ -42,46 +41,35 @@ const searchEngineOptions = {
     search: true
   },
   searchOptions: {
-    addToMap : false,
-    serviceOptions : {
-      services: "WMTS,WMS,TMS"
+    addToMap: false,
+    serviceOptions: {
+      services: 'WMTS,WMS,TMS'
     }
   }
 }
 
 const overviewMapOptions = {
-  className: 'ol-overviewmap ol-custom-overviewmap',
-  collapseLabel: '',
-  label: '',
-  collapsed: true,
-  layers : [
-    new TileLayer({
-      source: new OSM(),
-    })
-  ]
+  position: 'bottom-left'
 }
 
 const zoomOptions = {
-  position : "bottom-right",
+  position: 'bottom-right',
 }
 
 const attributionsOptions = {}
 
-// FIXME exception
+// FIXME exception sur la position
 const isocurveOptions = {
-  position : "bottom-right"
+  position: 'bottom-right'
 }
 
 const reverseGeocodeOptions = {
-  position : "bottom-right"
+  position: 'bottom-right'
 }
 
 const fullscreenOptions = {
-  className: "ol-custom-full-screen",
-  label : "",
-  labelActive : ""
+  position: 'bottom-right'
 }
-
 </script>
 
 <template>
@@ -96,6 +84,10 @@ const fullscreenOptions = {
   <ReverseGeocode
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
     :reverse-geocode-options="reverseGeocodeOptions"
+  />
+  <FullScreen
+    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :fullscreen-options="fullscreenOptions"
   />
   <Zoom
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
@@ -117,16 +109,12 @@ const fullscreenOptions = {
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
   />
-  <FullScreen
-    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-    :fullscreen-options="fullscreenOptions"
-  />
 </template>
 
 <style>
-  .position-container-bottom-left, 
-  .position-container-bottom-right, 
-  .position-container-top-left, 
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
   .position-container-top-right {
     border-style: unset;
   }

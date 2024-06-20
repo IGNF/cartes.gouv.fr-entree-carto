@@ -17,7 +17,7 @@
     "@gouvminint/vue-dsfr": "^5.14.2",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
-    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.80.tgz",
+    "geoportal-extensions-openlayers": "./geoportal-extensions-openlayers-1.0.0-beta.81.tgz",
     "ol": "8.2.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
