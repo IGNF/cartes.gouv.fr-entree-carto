@@ -1,6 +1,6 @@
 <script setup lang="js">
-
-import { 
+import { useLogger } from 'vue-logger-plugin'
+import {
   GeoportalZoom
 } from 'geoportal-extensions-openlayers'
 
@@ -9,12 +9,16 @@ const props = defineProps({
   zoomOptions: Object
 })
 
+const log = useLogger()
+
 const map = inject('map')
 const zoom = ref(new GeoportalZoom(props.zoomOptions))
 
 onMounted(() => {
   if (props.visibility) {
     map.addControl(zoom.value)
+    zoom.value.on('zoom:in', onClickZoomIn)
+    zoom.value.on('zoom:out', onClickZoomOut)
   }
 })
 
@@ -29,6 +33,14 @@ onUpdated(() => {
     map.addControl(zoom.value)
   }
 })
+
+function onClickZoomIn (e) {
+  log.debug(e)
+}
+
+function onClickZoomOut (e) {
+  log.debug(e)
+}
 </script>
 
 <template></template>

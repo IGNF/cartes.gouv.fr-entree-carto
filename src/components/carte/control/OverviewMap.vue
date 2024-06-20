@@ -1,17 +1,19 @@
 <script setup lang="js">
-
-import { useMatchMedia } from '@/composables/matchMedia';
-import OverviewMap from 'ol/control/OverviewMap'
+import { useLogger } from 'vue-logger-plugin'
+import { GeoportalOverviewMap } from 'geoportal-extensions-openlayers'
+import { useMatchMedia } from '@/composables/matchMedia'
 
 const props = defineProps({
   visibility: Boolean,
   overviewMapOptions: Object
 })
 
-const map = inject('map')
-const overviewMap = ref(new OverviewMap(props.overviewMapOptions))
+const log = useLogger()
 
-const isSmallScreen =  useMatchMedia("SM")
+const map = inject('map')
+const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions))
+
+const isSmallScreen = useMatchMedia('SM')
 
 watch(isSmallScreen, () => {
   if (props.visibility && !isSmallScreen.value) {
@@ -20,11 +22,12 @@ watch(isSmallScreen, () => {
   else {
     map.removeControl(overviewMap.value)
   }
-})  
+})
 
 onMounted(() => {
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value)
+    overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap)
   }
 })
 
@@ -37,26 +40,11 @@ onBeforeUpdate(() => {
   }
 })
 
+function onToggleOverviewMap (e) {
+  log.debug(e)
+}
 </script>
 
 <template></template>
 
-<style>
-  #map .ol-custom-overviewmap {
-    bottom: 10px;
-    left: 5px;
-  }
-
-  /* surcharge en mode dsfr */
-  .ol-custom-overviewmap button {
-    height: 40px;
-    width: 40px;
-    background-color: #000091;
-    background-image: url("../../../assets/map.svg");
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-  .ol-custom-overviewmap button:hover {
-    background-color: #1212ff;
-  }
-</style>
+<style></style>
