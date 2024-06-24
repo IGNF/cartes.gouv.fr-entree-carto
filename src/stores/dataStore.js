@@ -147,7 +147,7 @@ export const useDataStore = defineStore('data', () => {
       params.title = l.title;
       params.description = l.description;
 
-      // Informations  non disponibles avec les getCap
+      // FIXME : Informations  non disponibles avec les getCap
       // params.metadata = l.getMetadata();
       // params.originators = l.getOriginators();
       // params.quicklookUrl = l.getQuicklookUrl();
@@ -159,12 +159,12 @@ export const useDataStore = defineStore('data', () => {
         if (TMSLink) {
           params.TMSLink = TMSLink;
           var tmsConf = this.getTileMatrixSetByID(TMSLink);
-          // Get matrix origin : Gp.Point = Object{x:Float, y:Float}
+          // TODO : Get matrix origin : Gp.Point = Object{x:Float, y:Float}
           // params.matrixOrigin = tmsConf.getTopLeftCorner();
           params.matrixIds = Object.keys(tmsConf.tileMatrices);
           params.tileMatrices = tmsConf.tileMatrices;
-          // by default, pseudo mercator resolutions
-          params.nativeResolutions = tmsConf.nativeResolutions || this.getTMSConf("PM").nativeResolutions;
+          // FIXME : pseudo mercator resolutions by default ? Mauvaise idée...
+          params.nativeResolutions = tmsConf.nativeResolutions;
         }
       }
     }
