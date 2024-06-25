@@ -40,13 +40,13 @@ const menuItems = computed(() => {
 })
 })
 
-const emit = defineEmits(['onClickSelectedLayer'])
+const emit = defineEmits(['onClickSelectLayer'])
 
 /**
  * La selection d'un titre du catalogue permet son affichage
  * @param e 
  */
-function onClickSelectedLayer(e) {
+function onClickSelectLayer(e) {
     // INFO
     // l'ajout de la couche est realisé via la modification
     // du mapStore et la reactivité : cf. src/components/CartoAndTools.vue
@@ -111,7 +111,7 @@ function updateSearch(e) {
         :button-label="buttonLabel"
         :collapsable="collapsable"
         :menu-items="menuItems"
-        @click="onClickSelectedLayer"
+        @click="onClickSelectLayer"
       />
     </DsfrTabContent>
     <DsfrTabContent
@@ -124,9 +124,10 @@ function updateSearch(e) {
         :button-label="buttonLabel"
         :collapsable="collapsable"
         :menu-items="menuItems"
-        @click="onClickSelectedLayer"
+        @click="onClickSelectLayer"
       />
     </DsfrTabContent>
+   
   </DsfrTabs>
 </template>
 

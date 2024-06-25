@@ -106,7 +106,8 @@ left: 10px;
     z-index: 1;
     &.is_expanded {
       .menu-content-list {
-        width: v-bind(cssWidth);
+        width: 550px;
+        // width: v-bind(cssWidth);
       }
 
     }
