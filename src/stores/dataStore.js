@@ -83,6 +83,14 @@ export const useDataStore = defineStore('data', () => {
     return m_layers.value[id];
   }
 
+  function getLayerByTitle(title) {
+    return Object.values(m_layers.value).filter((layer) => {
+      if (title && layer.title == title) {
+        return layer;
+      }
+    })
+  }
+
   function getLayerKeysByID(id) {
     var layerKeys = [];
     var resourcesByKey = m_generalOptions.value.apiKeys;
@@ -209,6 +217,7 @@ export const useDataStore = defineStore('data', () => {
     getLayerIdByName,
     getLayerByName,
     getLayerByID,
+    getLayerByTitle,
     getTileMatrixSets,
     getTileMatrixSetByID,
     getLayerParamsByName,

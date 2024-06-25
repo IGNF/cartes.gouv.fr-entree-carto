@@ -1,5 +1,8 @@
 <script setup lang="js">
 import View from 'ol/View'
+import {
+  toLonLat as toLonLatProj
+} from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 const store = useMapStore()
@@ -25,8 +28,12 @@ const view = new View({
  * pour mise à jour du centre de la carte
  */
 view.on("change:center", (e) => {
-  store.lat =  e.target.getCenter()[0]
-  store.long =  e.target.getCenter()[1]
+  store.x = e.target.getCenter()[0];
+  store.y = e.target.getCenter()[1];
+
+  var coordinate = toLonLatProj(e.target.getCenter());
+  store.lon = coordinate[0];
+  store.lat = coordinate[1];
 })
 
 /**
@@ -41,7 +48,7 @@ onMounted(() => {
   if (map) {
     map.setView(view)
     // enregistrement
-    store.map = map
+    store.setMap(map)
   }
 })
 </script>

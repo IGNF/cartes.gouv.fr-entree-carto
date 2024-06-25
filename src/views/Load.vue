@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import CartoAndTools from '../views/CartoAndTools.vue'
+import CartoAndTools from '@/components/CartoAndTools.vue'
 import Patience from '@/components/utils/Patience.vue'
-import StoreDataLoading from '@/components/StoreDataLoading.vue';
-
+import StoreData from '@/components/StoreData.vue';
 </script>
 
 <template>
     <Suspense>
       <!-- component with nested async dependencies -->
-      <StoreDataLoading>
+      <StoreData>
         <CartoAndTools/>
-      </StoreDataLoading>
+      </StoreData>
 
       <!-- loading state via #fallback slot -->
       <template #fallback>
@@ -19,9 +18,9 @@ import StoreDataLoading from '@/components/StoreDataLoading.vue';
         </div>
       </template>
     </Suspense>
-  </template>
+</template>
 
-  <style>
+<style>
   .patience-container{
     margin-left: 0;
     width: inherit;

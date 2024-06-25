@@ -5,32 +5,42 @@
 </script>
 
 <script setup lang="js">
+
 import { useLogger } from 'vue-logger-plugin'
+import { useMapStore } from "@/stores/mapStore"
 
 const log = useLogger()
+const store = useMapStore()
 
 const props = defineProps({
-    layers: Object
+  layers: Object
 })
 
 const headingTitle = "Catalogue de données";
 const buttonLabel = "bouton label sensé déplier le side menu";
 const collapsable = true;
 
-const menuItems = Object.values(props.layers).map((layer) => {
+const menuItems = Object.keys(props.layers).map((key) => {
     return {
-        text: layer.title,
-        to: "/",
-        id: layer.name
+        text: props.layers[key].title,
+        to: "/?key=" + key, // FIXME 
+        id: key // FIXME !?
     }
 })
 
-
 const emit = defineEmits(['onClickSelectLayer'])
 
-function onClickSelectLayer(e) {
-    const newLayername = e.target.textContent
-    emit("addLayer", newLayername);
+/**
+ * La selection d'un titre du catalogue permet son affichage
+ * @param e 
+ */
+function onClickSelectedLayer(e) {
+    // INFO
+    // l'ajout de la couche est realisé via la modification
+    // du mapStore et la reactivité : cf. src/components/CartoAndTools.vue
+    const layerId = e.target.baseURI.split("?key=")[1];
+    log.debug(layerId);
+    store.addLayer(layerId);
 }
 
 </script>
@@ -41,11 +51,9 @@ function onClickSelectLayer(e) {
     :button-label="buttonLabel"
     :collapsable="collapsable"
     :menu-items="menuItems"
-    @click="onClickSelectLayer"
+    @click="onClickSelectedLayer"
   />
 </template>
-
-
 
 <style scoped>
 </style>

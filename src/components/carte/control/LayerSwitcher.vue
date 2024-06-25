@@ -2,6 +2,7 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from '@/stores/dataStore';
+import { useMapStore } from '@/stores/mapStore';
 
 import {
     transformExtent as olTransformExtentProj
@@ -15,7 +16,8 @@ const props = defineProps({
 })
 
 const log = useLogger()
-const store = useDataStore();
+const mapStore = useMapStore();
+const dataStore = useDataStore();
 
 const map = inject('map')
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions))
@@ -45,22 +47,26 @@ onUpdated(() => {
 })
 
 /** 
- * gestionnaire d'evenement sur les abonnements
+ * Gestionnaires d'evenement sur les abonnements
  */
 const onAddLayer = (e) => {
-  log.debug("layer", e);
+  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  log.debug("onAddLayer", id);
+  mapStore.addLayer(id);
 }
 const onRemoveLayer = (e) => {
-  log.debug("layer", e);
+  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  log.debug("onRemoveLayer", id);
+  mapStore.removeLayer(id);
 }
 const onZoomToExtentLayer = (e) => {
-  log.debug("layer", e);
+  log.debug("onZoomToExtentLayer", e);
   // INFO
   // on reimplemente le ZoomToExtent
   // car on préfère utiliser le dataStore 
   // pour le configurer
   if (e.error) {
-    var globalConstraints = store.getGlobalConstraintsByName(e.layer.name, e.layer.service);
+    var globalConstraints = dataStore.getGlobalConstraintsByName(e.layer.name, e.layer.service);
     if (globalConstraints) {
       var view = map.getView();
       var crsTarget = view.getProjection();
@@ -85,10 +91,10 @@ const onZoomToExtentLayer = (e) => {
   }
 }
 const onChangeOpacityLayer = (e) => {
-  log.debug("layer", e);
+  log.debug("onChangeOpacityLayer", e);
 }
 const onChangeVisibilityLayer = (e) => {
-  log.debug("layer", e);
+  log.debug("onChangeVisibilityLayer", e);
 }
 </script>
 

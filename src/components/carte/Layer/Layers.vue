@@ -4,12 +4,11 @@
 import Layer from '@/components/carte/Layer/Layer.vue'
 
 const props = defineProps({
-  layersList: Object
+  selectedLayers: Object
 })
 
-// ça me semble inutile ?
-var layersConfList = computed(() => {
-  return toRaw(props.layersList).map(layer => {
+var layers = computed(() => {
+  return toRaw(props.selectedLayers).map(layer => {
     return {
       name : layer.name,
       service : layer.serviceParams.id.split(":")[1]
@@ -21,7 +20,6 @@ var layersConfList = computed(() => {
 
 <template>
     <Layer
-    v-for="layer in layersConfList"
-    :layer-options="layer"
-    />
+      v-for="layer in layers"
+      :layer-options="layer" />
 </template>

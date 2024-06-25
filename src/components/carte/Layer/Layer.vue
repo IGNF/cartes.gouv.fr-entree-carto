@@ -56,7 +56,6 @@ onMounted(() => {
   }
 })
 
-
 onUnmounted(() => {
   map.removeLayer(layer.value)
 })

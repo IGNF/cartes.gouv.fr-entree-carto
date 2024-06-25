@@ -17,10 +17,10 @@ const map = new Map({
 })
 
 onMounted(() => {
-  // ecriture dans le dom
+  // On déclenche l'ecriture dans le dom
   map.setTarget(mapRef.value)
 
-  // accessibilité
+  // On ajoute une option d'accessibilité
   const canvas = document.getElementById('map').getElementsByTagName('canvas')
   if (canvas.length) {
     canvas[0].tabIndex = 0
@@ -38,7 +38,9 @@ const onFocusOnMap = () => {
   }
 }
 
-// rendre disponible 'map' aux composants enfants imbriqués
+// INFO
+// Option permettant de rendre disponible 'map' 
+// aux composants enfants imbriqués
 provide('map', map)
 
 </script>
@@ -48,8 +50,7 @@ provide('map', map)
     id="map"
     ref="mapRef"
     tabindex="0"
-    @mouseover="onFocusOnMap"
-  >
+    @mouseover="onFocusOnMap">
     <slot />
   </div>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="js">
-import MenuControl from '@/components/menu/MenuControl.vue';
 
 const props = defineProps({
 })
@@ -18,9 +17,7 @@ const tabArray = computed(() => {
     return arr
 })
 
-
 const activeTab = ref("MenuControlContent")
-const selectedControls = defineModel()
 const is_expanded = ref()
 const wrapper = ref(null)
 
@@ -39,27 +36,25 @@ function tabIsActive(componentName) {
 </script>
 
 <template>
-<MenuLateralWrapper
+  <MenuLateralWrapper
     :side="side"
     v-model="is_expanded"
     ref="wrapper">
-        <template #content>
-            <div id="MenuControlContent"
-                :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
-                <MenuControl
-                v-model="selectedControls"/>
-            </div>
-
-        </template>
-        <template #navButtons>
-                 <MenuLateralNavButton
-                v-for="tab in tabArray"
-                :icon="tab.icon"
-                :id="tab.componentName"
-                :active="tabIsActive(tab.componentName)"
-                @tab-clicked="tabClicked"/>
-        </template>
-</MenuLateralWrapper>
+    <template #content>
+      <div id="MenuControlContent"
+        :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
+        <slot></slot>
+      </div>
+    </template>
+    <template #navButtons>
+      <MenuLateralNavButton
+        v-for="tab in tabArray"
+        :icon="tab.icon"
+        :id="tab.componentName"
+        :active="tabIsActive(tab.componentName)"
+        @tab-clicked="tabClicked"/>
+    </template>
+  </MenuLateralWrapper>
 </template>
 
 
