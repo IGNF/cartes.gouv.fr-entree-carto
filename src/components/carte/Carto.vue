@@ -18,16 +18,22 @@ const props = defineProps({
 
 const mapStore = useMapStore()
 
+// INFO
+// Les listes sont transmises aux composants Controls et Layers
+
 </script>
 
 <template>
     <Map>
+      <!-- Initialisation de la vue -->
       <View
         :center="mapStore.center"
         :zoom="mapStore.zoom"/>
+      <!-- Composant pour selectionner les widgets à afficher sur la carte -->
       <Controls
         v-if="selectedControls"
         :control-options="props.selectedControls"/>
+      <!-- Composant pour ajouter les couches sur la carte -->
       <Layers
         :v-if="selectedLayers"
         :selected-layers="props.selectedLayers"/>

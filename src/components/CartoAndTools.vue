@@ -62,7 +62,10 @@ const selectedControls = ref(availableControls);
 
     <!-- Le menu des contrôles est dans le menu droite -->
     <RightMenuTool>
-      <!-- On transmet la liste des contrôles selectionnés -->
+      <!-- On transmet la liste des contrôles selectionnés
+        >>> Choix du v-model pour une communication entre Parent <-> Child
+        >>> afin de remonter les infos de selections vers le composant Carto
+      -->
       <MenuControl 
         v-model="selectedControls"/>
     </RightMenuTool>

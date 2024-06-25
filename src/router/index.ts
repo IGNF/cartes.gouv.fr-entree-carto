@@ -8,7 +8,7 @@ import Load from '../views/Load.vue'
 
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
-// liste des routes
+// liste des routes disponibles
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

@@ -6,7 +6,9 @@ import StoreData from '@/components/StoreData.vue';
 
 <template>
     <Suspense>
-      <!-- component with nested async dependencies -->
+      <!-- Chargement du dataStore avec une patience 
+          avant afficahge de la cartographie 
+      -->
       <StoreData>
         <CartoAndTools/>
       </StoreData>

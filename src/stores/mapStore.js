@@ -7,8 +7,8 @@ import {
   useStorage
 } from '@vueuse/core';
 
-const layerByDefault = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS";
-
+const layersByDefault = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS";
+const controlsByDefault = "";
 /**
  * Store des objets de la carte
  * Enregistrement dans le LocalStorage
@@ -24,9 +24,23 @@ export const useMapStore = defineStore('map', () => {
   var center = computed(() => {
     return [x.value, y.value];
   });
-  var layers = useStorage('layers', layerByDefault);
+  var layers = useStorage('layers', layersByDefault);
   if (!layers.value) {
-    addLayer(layerByDefault);
+    var l = layersByDefault.split(",").filter(function (l) {
+      return !!l;
+    });
+    for (let i = 0; i < l.length; i++) {
+      addLayer(l[i]);
+    }
+  }
+  var controls = useStorage('controls', controlsByDefault);
+  if (!controls.value) {
+    var c = controlsByDefault.split(",").filter(function (c) {
+      return !!c;
+    });
+    for (let j = 0; j < c.length; j++) {
+      addControl(c[j]);
+    }
   }
 
   watch(zoom, () => {
@@ -49,6 +63,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(center, () => {
     localStorage.setItem('center', center.value.toString()); // string
+  })
+  watch(controls, () => {
+    localStorage.setItem('controls', controls.value.toString()); // string
   })
 
   function getMap () {
@@ -83,6 +100,10 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  function getControls () {}
+  function addControl (id) {}
+  function removeControl (id) {}
+
   return {
     map,
     zoom,
@@ -95,6 +116,9 @@ export const useMapStore = defineStore('map', () => {
     setMap,
     getLayers,
     addLayer,
-    removeLayer
+    removeLayer,
+    getControls,
+    addControl,
+    removeControl
   }
 })

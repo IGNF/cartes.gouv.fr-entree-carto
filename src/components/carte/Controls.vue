@@ -1,7 +1,4 @@
 <script setup lang="js">
-import TileLayer from 'ol/layer/Tile.js'
-import OSM from 'ol/source/OSM'
-
 import SearchEngine from './control/SearchEngine.vue'
 import ScaleLine from './control/ScaleLine.vue'
 import OverviewMap from './control/OverviewMap.vue'
@@ -11,11 +8,31 @@ import LayerSwitcher from './control/LayerSwitcher.vue'
 import Isocurve from './control/Isocurve.vue'
 
 import { useControls } from '@/composables/controls'
+import { useLogger } from 'vue-logger-plugin'
 
 const props = defineProps({
   controlOptions: Array
 })
 
+// INFO
+// liste des contrôles à activer
+// Ex. 
+// Array(10) : [
+//  "OverviewMap",
+//  "SearchEngine",
+//  "ScaleLine",
+//  "LayerSwitcher",
+//  undefined,
+//  undefined,
+//  "Zoom",
+//  undefined,
+//  undefined,
+//  "FullScreen"
+// ]
+const log = useLogger()
+log.debug(props.controlOptions);
+
+// liste des options pour les contrôles
 const layerSwitcherOptions = {
   options: {
     // position : "top-right",
@@ -71,7 +88,10 @@ const fullscreenOptions = {
   position: 'bottom-right'
 }
 </script>
-
+<!-- INFO : Affichage du contrôle
+  >>> option visibility:true, si le contrôle est dans la liste
+  >>> sinon, visibility:false
+-->
 <template>
   <LayerSwitcher
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"

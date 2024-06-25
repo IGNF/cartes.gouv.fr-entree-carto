@@ -16,8 +16,13 @@ const props = defineProps({
   layers: Object
 })
 
+// INFO
+// liste des configurations des couches du catalogue
+// cf. dataStore.getLayers()
+log.debug(props.layers);
+
 const headingTitle = "Catalogue de données";
-const buttonLabel = "bouton label sensé déplier le side menu";
+const buttonLabel = "Liste des couches du catalogue";
 const collapsable = true;
 
 const menuItems = Object.keys(props.layers).map((key) => {

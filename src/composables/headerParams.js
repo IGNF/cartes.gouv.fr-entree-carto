@@ -1,6 +1,10 @@
 import { ref } from 'vue';
 import { useBaseUrl } from '@/composables/baseUrl';
 
+/**
+ * Paramètres du composant DSFR Header
+ * @returns 
+ */
 export function useHeaderParams() {
     // Paramètres pour le Header
     const headerParams = {
