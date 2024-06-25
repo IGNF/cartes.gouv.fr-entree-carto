@@ -5,6 +5,10 @@ import { useDataStore } from '@/stores/dataStore';
 
 import { Isocurve } from 'geoportal-extensions-openlayers'
 
+// FIXME
+// l'intégration de ce widget ne fonctionne pas car le constructeur 
+// n'utilise pas de shadow dom !
+
 const props = defineProps({
   visibility: Boolean,
   isocurveOptions: Object
@@ -56,6 +60,8 @@ const onCompute = (e) => {
 }
 </script>
 
-<template></template>
+<template>
+  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+</template>
 
 <style></style>

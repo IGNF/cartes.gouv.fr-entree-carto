@@ -58,7 +58,9 @@ const onClickSearch = (e) => {
 
 </script>
 
-<template></template>
+<template>
+  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+</template>
 
 <style>
 /* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */

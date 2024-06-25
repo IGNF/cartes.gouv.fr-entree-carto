@@ -43,8 +43,8 @@ function onClickZoomOut (e) {
 }
 </script>
 
-<template></template>
+<template><
+  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+/template>
 
-<style scoped>
-  /* TODO style DSFR */
-</style>
+<style scoped></style>

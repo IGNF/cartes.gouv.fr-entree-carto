@@ -2,6 +2,9 @@
 
 import ScaleLine from 'ol/control/ScaleLine'
 
+// TODO
+// utiliser le widget GeoportalScaleLine !
+
 const props = defineProps({
   visibility: Boolean,
   scaleLineOptions: Object
@@ -29,7 +32,9 @@ onUpdated(() => {
 })
 </script>
 
-<template></template>
+<template>
+  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+</template>
 
 <style>
   .ol-scale-line {
