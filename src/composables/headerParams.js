@@ -9,7 +9,7 @@ export function useHeaderParams() {
     // Paramètres pour le Header
     const headerParams = {
         serviceTitle: 'cartes.gouv.fr',
-        serviceDescription: 'Portail Cartographique',
+        serviceDescription: 'Le service public des cartes et données du territoire',
         logoText: ['RÉPUBLIQUE', 'FRANÇAISE'],
         quickLinks: [
             {
