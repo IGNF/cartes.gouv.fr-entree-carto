@@ -6,32 +6,37 @@ import "geoportal-extensions-openlayers/css/Dsfr.css";
 
 import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
-import Control from '@/components/carte/Control.vue'
-import LayerManager from '@/components/carte/Layer/LayerManager.vue'
+import Controls from '@/components/carte/Controls.vue'
+import Layers from '@/components/carte/Layer/Layers.vue'
 
 import { useMapStore } from "@/stores/mapStore"
 
 const props = defineProps({
   selectedControls : Array,
-  layersList : Object,
+  selectedLayers : Object,
 })
 
 const mapStore = useMapStore()
+
+// INFO
+// Les listes sont transmises aux composants Controls et Layers
 
 </script>
 
 <template>
     <Map>
+      <!-- Initialisation de la vue -->
       <View
         :center="mapStore.center"
         :zoom="mapStore.zoom"/>
-      <Control
+      <!-- Composant pour selectionner les widgets à afficher sur la carte -->
+      <Controls
         v-if="selectedControls"
         :control-options="props.selectedControls"/>
-      <!-- FIXME c'est un composant pour l'exemple
-      donc provisoire ! -->
-      <LayerManager
-        :layers-list="props.layersList"/>
+      <!-- Composant pour ajouter les couches sur la carte -->
+      <Layers
+        :v-if="selectedLayers"
+        :selected-layers="props.selectedLayers"/>
     </Map>
 </template>
 

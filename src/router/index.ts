@@ -4,24 +4,16 @@ import {
   createWebHistory } 
 from 'vue-router'
 
-import AsyncStorageInit from '../views/AsyncStorageInit.vue'
-import Catalogue from '../views/Catalogue.vue'
-import Login from '../views/Login.vue'
-import Presentation from '../views/Presentation.vue'
-import Accueil from '../views/Accueil.vue'
+import Load from '../views/Load.vue'
 
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
+// liste des routes disponibles
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Carte',
-    component: AsyncStorageInit,
-  },
-  {
-    path: '/login',
-    name: 'Se connecter',
-    component: Login,
+    component: Load,
   }
 ]
 

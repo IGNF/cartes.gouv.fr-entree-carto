@@ -3,8 +3,6 @@
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
 
-// FIXME c'est pour l'exemple car les couches sont gérées par les extensions !
-// cf. LayerManager
 import { 
   LayerMapBox as GeoportalMapBox,
   LayerWMS as GeoportalWMS,
@@ -15,14 +13,19 @@ const props = defineProps({
   layerOptions: Object
 })
 
+// INFO
+// liste des informations utiles pour recuperer tous les paramètres de la couche
+// Array(Object) : [{name, service}]
 const log = useLogger()
+log.debug(props.layerOptions);
+
 const store = useDataStore()
 
 const map = inject('map')
 const layer = ref(null)
 
 onMounted(() => {
-  var value = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
+  var value  = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
   var params = store.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
   value.params = params; // fusion
   log.debug("layer to add", value);
@@ -55,7 +58,6 @@ onMounted(() => {
     map.addLayer(layer.value);
   }
 })
-
 
 onUnmounted(() => {
   map.removeLayer(layer.value)

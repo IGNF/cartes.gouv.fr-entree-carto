@@ -1,5 +1,13 @@
-import type { disable } from "ol/rotationconstraint";
-
+/**
+ * Liste des contrôles (widgets)
+ * @example
+ * {
+ *  OverviewMap: {
+ *    id: 'OverviewMap',
+ *    active: true,      // afficher ou non sur la carte
+ *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
+ * }
+ */
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',

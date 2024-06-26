@@ -7,6 +7,10 @@ import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
 import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg"
 import { useBaseUrl } from '@/composables/baseUrl';
 
+/**
+ * Paramètres du composant DSFR Footer
+ * @returns 
+ */
 export function useFooterParams() {
 
     // Paramètres pour le Footer
