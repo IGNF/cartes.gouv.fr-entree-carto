@@ -1,10 +1,9 @@
 <script setup lang="js">
 import { OhVueIcon as VIcon } from 'oh-vue-icons'
-import { useElementSize, useEventListener } from '@vueuse/core'
-import { vOnClickOutside } from '@vueuse/components'
 
 const props = defineProps({
   side: String,
+  visibility: Boolean
 })
 
 const icon = "io-close"
@@ -42,7 +41,11 @@ defineExpose({
 
 
 <template>
-  <div class="menu-toggle-wrap" :class="`${is_expanded  && 'is_expanded'} ${props.side}`">
+  <div 
+  class="menu-toggle-wrap" 
+  :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
+  v-if="visibility"
+  >
 
     <div class="menu-content-list"
     v-show="is_expanded">
