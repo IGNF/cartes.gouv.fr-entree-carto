@@ -1,6 +1,10 @@
 import { useMediaQuery } from '@vueuse/core';
-import { ref } from 'vue';
 
+/**
+ * Taille des écrans
+ * @param {*} size 
+ * @returns 
+ */
 export function useMatchMedia(size) {
     // breakpoints définis par le DSFR
     var sizes = {

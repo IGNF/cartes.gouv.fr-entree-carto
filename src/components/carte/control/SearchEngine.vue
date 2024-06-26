@@ -2,6 +2,7 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
+import { useMapStore } from '@/stores/mapStore';
 
 import {
   SearchEngine,
@@ -16,7 +17,9 @@ const props = defineProps({
 })
 
 const log = useLogger()
-const store = useDataStore()
+
+const mapStore = useMapStore();
+const dataStore = useDataStore();
 
 const map = inject('map')
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
@@ -44,50 +47,20 @@ onUpdated(() => {
 onUnmounted(() => {})
 
 /**
-* gestionnaire d'evenement sur l'abonnement à la recherche de couche
-*/
+ * Gestionnaire d'evenement sur l'abonnement 
+ * à la recherche de couche
+ */
 const onClickSearch = (e) => {
-  var value = store.getLayerByName(e.suggest.name, e.suggest.service);
-  var params = store.getLayerParamsByName(e.suggest.name, e.suggest.service);
-  value.params = params; // fusion
-  log.debug("search", e, value);
-  // INFO
-  // on reimplemente l'ajout des couches
-  // car on préfère utiliser le dataStore
-  // pour configurer la couche à ajouter
-  var service = e.suggest.service;
-  var name = e.suggest.name;
-  var layer = null;
-  switch (service) {
-    case "WMS":
-      layer = new GeoportalWMS({
-        layer : name,
-        configuration : value
-      });
-      break;
-    case "WMTS":
-      layer = new GeoportalWMTS({
-        layer : name,
-        configuration : value
-      });
-      break;
-    case "TMS":
-      // INFO le style par defaut est utilisé !
-      layer = new GeoportalMapBox({
-        layer : name,
-        configuration : value
-      });
-      break;
-    default:
-  }
-  if (layer) {
-    map.addLayer(layer);
-  }
+  var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
+  log.debug("onClickSearch", id);
+  mapStore.addLayer(id);
 }
 
 </script>
 
-<template></template>
+<template>
+  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+</template>
 
 <style>
 /* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
