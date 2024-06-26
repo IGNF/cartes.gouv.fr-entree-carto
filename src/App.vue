@@ -57,15 +57,42 @@ const navItems: DsfrNavigationProps['navItems'] = [
     title: 'Commencer avec cartes.gouv',
     get active() {
       return [
-        'Documentation Géoplateforme',
-        'Questions fréquentes',
-        'Nous écrire'].includes(route.name as string)
+        'Documentation',
+        'Offre',
+        'Nous rejoindre'].includes(route.name as string)
     },
     links: [
       {
         to: useBaseUrl() + '/documentation',
-        text: 'Documentation Géoplateforme',
+        text: 'Documentation',
       },
+      {
+        to: useBaseUrl() + '/offre',
+        text: 'Offre',
+      },
+      {
+        to: useBaseUrl() + '/nous-rejoindre',
+        text: 'Nous rejoindre',
+      },
+    ],
+  },
+  {
+    to: useBaseUrl() + '/catalogue',
+    text: 'Catalogue',
+  },
+  {
+    to: useBaseUrl() + '/actualites',
+    text: 'Actualités',
+  },
+  {
+    title: 'Assistance',
+    get active() {
+      return [
+        'Questions fréquentes',
+        'Nous écrire',
+        'Niveau de service'].includes(route.name as string)
+    },
+    links: [
       {
         to: useBaseUrl() + '/faq',
         text: 'Questions fréquentes',
@@ -74,11 +101,11 @@ const navItems: DsfrNavigationProps['navItems'] = [
         to: useBaseUrl() + '/nous-ecrire',
         text: 'Nous écrire',
       },
+      {
+        to: useBaseUrl() + '/niveau-de-service',
+        text: 'Niveau de service',
+      },
     ],
-  },
-  {
-    to: useBaseUrl() + '/actualites',
-    text: 'Actualités',
   },
   {
     to: useBaseUrl() + '/a-propos',
