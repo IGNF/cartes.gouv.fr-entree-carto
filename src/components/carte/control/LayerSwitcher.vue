@@ -12,7 +12,7 @@ import { LayerSwitcher } from 'geoportal-extensions-openlayers'
 const props = defineProps({
   visibility: Boolean,
   layerSwitcherOptions: Object,
-  floatingStylesLayerSwitcher: Object
+  floatingLayerSwitcher: Object,
 })
 
 const log = useLogger()
@@ -45,10 +45,22 @@ onUpdated(() => {
   if (props.visibility) {
     map.addControl(layerSwitcher.value)
   }
-  if (props.floatingStylesLayerSwitcher) {
-    layerSwitcherDiv.value.style.top = props.floatingStylesLayerSwitcher.top
-    layerSwitcherDiv.value.style.position = props.floatingStylesLayerSwitcher.position
+  if (!props.floatingLayerSwitcher.position) {
+    return;
   }
+  if (!props.floatingLayerSwitcher.middleware.collision.status) {
+    layerSwitcherDiv.value.style.top = props.floatingLayerSwitcher.initialStyle.top
+    layerSwitcherDiv.value.style.left = props.floatingLayerSwitcher.initialStyle.left
+    layerSwitcherDiv.value.style.right = props.floatingLayerSwitcher.initialStyle.right
+    layerSwitcherDiv.value.style.bottom = props.floatingLayerSwitcher.initialStyle.bottom
+    layerSwitcherDiv.value.style.position = props.floatingLayerSwitcher.initialStyle.position
+    return;
+  }
+  layerSwitcherDiv.value.style.top = props.floatingLayerSwitcher.style.top
+  layerSwitcherDiv.value.style.left = props.floatingLayerSwitcher.style.left
+  layerSwitcherDiv.value.style.right = "unset"
+  layerSwitcherDiv.value.style.bottom = "unset"
+  layerSwitcherDiv.value.style.position = props.floatingLayerSwitcher.style.position
  
 })
 
@@ -104,7 +116,7 @@ const onChangeVisibilityLayer = (e) => {
 
 <style>
   div[id^="GPlayerSwitcher-"] {
-    top: 85px;
+    top: 55px;
     right: 5px;
   }
 </style>

@@ -11,7 +11,10 @@ import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
 import Isocurve from './control/Isocurve.vue'
 
+import { useLogger } from 'vue-logger-plugin'
 import { useControls } from '@/composables/controls'
+
+const log = useLogger()
 
 const props = defineProps({
   controlOptions: Array
@@ -83,45 +86,97 @@ const fullscreenOptions = {
 }
 
 
-import {offset} from '@floating-ui/dom';
-import {useFloating, autoUpdate } from '@floating-ui/vue';
+import {
+  useFloating, 
+  autoUpdate, 
+  offset, 
+  hide, 
+  detectOverflow 
+} from '@floating-ui/vue';
 
 const searchEngineDiv = ref(null);
 const layerSwitcherDiv = ref(null);
-const virtualEl = ref(null)
-/**
- *  reference utilisée pour les collisions
- * quand le search engine est désélectionné on utilise un virtual element
- *  */
 
 const reference = computed(() => {
   if(searchEngineDiv.value) return searchEngineDiv.value
-  else if (virtualEl.value) return virtualEl.value
 })
-const {
-  floatingStyles : floatingStylesLayerSwitcher,
-  update : updatefloatingStylesLayerSwitcher 
-} = useFloating(reference, layerSwitcherDiv, {
-      placement: 'bottom-end',
-      transform: false,
-      middleware: [offset(10)],
-      whileElementsMounted: autoUpdate,
-    })
-  
-onMounted(() => {
-  /**
-   * Assign the virtual element to reference inside
-   * a lifecycle hook or effect or event handler.
-   */
-  virtualEl.value = {
-    getBoundingClientRect() {
+const floating = computed(() => {
+  if(layerSwitcherDiv.value) return layerSwitcherDiv.value
+})
+
+const floatingInitialStyles = ref({})
+
+const collision = {
+  name: 'collision',
+  async fn(state) {
+    const overflow = await detectOverflow(state, {});
+    if (overflow.top >= 0 ||
+        overflow.bottom >= 0 ||
+        overflow.left >= 0 ||
+        overflow.right >= 0
+    ) {
       return {
-      top: 90
+        data: {
+          status: true,
+          overflow,
+          state
+        },
+        reset: {
+          placement: "bottom-end",
+        },
+      };
     }
+    return {
+      data : {
+        status: false
+      },
+      reset: {
+         placement: state.initialPlacement,
+      },
+    };
+  },
+};
+const {
+  x, y,
+  strategy,
+  placement,
+  middlewareData,
+  isPositioned,
+  floatingStyles,
+  update
+} = useFloating(reference, floating, {
+      placement: 'none',
+      transform: false,
+      middleware: [collision, offset(10)],
+      whileElementsMounted: autoUpdate,
+})
+
+watch(middlewareData, (middlewareData) => {
+  log.debug("middlewareData", middlewareData)
+});
+watch(floatingStyles, (floatingStyles) => {
+  if (floatingStyles) {
+    log.debug("floatingStyles", floatingStyles)
+  }
+});
+watch(isPositioned, (isPositioned) => {
+  if (isPositioned) {
+    log.debug("isPositioned", isPositioned)
+    log.debug(layerSwitcherDiv.value.style)
+    floatingInitialStyles.value = {
+      top: layerSwitcherDiv.value.style.top,
+      left: layerSwitcherDiv.value.style.left,
+      right: layerSwitcherDiv.value.style.right,
+      bottom: layerSwitcherDiv.value.style.bottom,
+      position: layerSwitcherDiv.value.style.position
     }
   }
+});
+watch(placement, (placement) => {
+  log.debug("placement", placement)
+});
 
-})
+onMounted(() => {})
 
 </script>
 
@@ -130,7 +185,14 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
     v-model="layerSwitcherDiv"
-    :floating-styles-layer-switcher="floatingStylesLayerSwitcher"
+    :floating-layer-switcher="{
+      style: floatingStyles,
+      initialStyle : floatingInitialStyles,
+      placement: placement,
+      middleware: middlewareData,
+      position: isPositioned
+    }"
+
   />
   <Isocurve
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
