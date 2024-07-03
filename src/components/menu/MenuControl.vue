@@ -8,6 +8,8 @@ const availableControls =  Object.keys(useControls).map(key => {
 
 </script>
 <script setup lang="js">
+import { useLogger } from 'vue-logger-plugin'
+const log = useLogger()
 
 const selectedControls = defineModel()
 const initCheckbox = ref(availableControls)

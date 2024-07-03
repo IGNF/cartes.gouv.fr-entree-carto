@@ -38,7 +38,6 @@ declare module 'vue' {
     ScaleLine: typeof import('./components/carte/control/ScaleLine.vue')['default']
     SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
     StoreData: typeof import('./components/StoreData.vue')['default']
-    Test: typeof import('./components/carte/control/Test.vue')['default']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }
