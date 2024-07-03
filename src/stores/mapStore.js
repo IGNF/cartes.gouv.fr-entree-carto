@@ -11,9 +11,27 @@ const layersByDefault = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS";
 const controlsByDefault = "";
 /**
  * Store des objets de la carte
- * Enregistrement dans le LocalStorage
  * 
-*/
+ * Enregistrement dans le LocalStorage des informations suivantes :
+ * cartes.gouv.fr.center --> webmercator
+ * cartes.gouv.fr.permalink --> (?)
+ * cartes.gouv.fr.firstVisit
+ * cartes.gouv.fr.layers
+ * cartes.gouv.fr.zoom	
+ * cartes.gouv.fr.lon --> geographic
+ * cartes.gouv.fr.lat --> geographic
+ * cartes.gouv.fr.controls
+ * 
+ * structure des couches :
+ * LAYERID(opacity<number>;(h)idden;(g)ray)<Array>
+ * ex. ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1;h;g)
+ * avec caractére de séparation des elements de la liste : ','
+ * 
+ * structure des contrôles :
+ * CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
+ * ex. Isocurve(1;0;bottom-left)
+ * avec caractére de séparation des elements de la liste : ','
+ */
 export const useMapStore = defineStore('map', () => {
   const map = ref({});
   var zoom = useStorage('zoom', 12); // FIXME zoom absolu ?

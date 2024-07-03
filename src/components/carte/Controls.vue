@@ -6,6 +6,7 @@ import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
 import Isocurve from './control/Isocurve.vue'
+import Test from './control/Test.vue'
 
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
@@ -93,6 +94,7 @@ const fullscreenOptions = {
   >>> sinon, visibility:false
 -->
 <template>
+  <Test></Test>
   <LayerSwitcher
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
