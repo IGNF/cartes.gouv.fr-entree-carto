@@ -8,10 +8,12 @@ import {
 
 /**
  * Valeurs par defaut
+ * @fixme pour la liste des contrôles par defaut, on utilise toujours 
+ * le composable 'src/composables/controls.js'
  */
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS",
-  CONTROLS: "SearchEngine,OverviewMap,ScaleLine,LayerSwitcher,FullScreen,Zoom",
+  CONTROLS: "",
   X: 283734.248995,
   Y: 5655117.100650,
   LON: 2.5479878714752027, // informatif
@@ -43,16 +45,22 @@ const ns = ((value) => {
  * cartes.gouv.fr.lon --> geographic
  * cartes.gouv.fr.lat --> geographic
  * cartes.gouv.fr.controls
+ *
+ * @todo construction du permalien
  * 
- * structure des couches :
- * LAYERID(opacity<number>;(h)idden;(g)ray)<Array>
- * ex. ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1;h;g)
- * avec caractére de séparation des elements de la liste : ','
+ * @todo mettre à jour le flag 'firstVisit'
  * 
- * structure des contrôles :
- * CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
- * ex. Isocurve(1;0;bottom-left)
- * avec caractére de séparation des elements de la liste : ','
+ * @todo structure des couches
+ *   LAYERID(opacity<number>;(h)idden;(g)ray)<Array>
+ *   ex. ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1;h;g)
+ *   avec caractére de séparation des elements de la liste : ','
+ * 
+ * @todo structure des contrôles
+ *   CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
+ *   ex. Isocurve(1;0;bottom-left)
+ *   avec caractére de séparation des elements de la liste : ','
+ * 
+ * @fixme zoom absolu ?
  */
 export const useMapStore = defineStore('map', () => {
   const map = ref({});
@@ -61,7 +69,7 @@ export const useMapStore = defineStore('map', () => {
   // objets simples
   //////////////////
 
-  var zoom = useStorage(ns('zoom'), DEFAULT.ZOOM); // FIXME zoom absolu ?
+  var zoom = useStorage(ns('zoom'), DEFAULT.ZOOM);
   var x = useStorage(ns('x'), DEFAULT.X);
   var y = useStorage(ns('y'), DEFAULT.Y);
   var lon = useStorage(ns('lon'), DEFAULT.LON);
@@ -131,7 +139,7 @@ export const useMapStore = defineStore('map', () => {
     localStorage.setItem(ns('center'), center.value.toString()); // string
   })
   watch(firstVisit, () => {
-    localStorage.setItem(ns('firstVisit'), firstVisit.value.toString());
+    localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
@@ -152,6 +160,9 @@ export const useMapStore = defineStore('map', () => {
     return layers.value.split(",").filter(function (l) {
       return !!l;
     }); // array
+  }
+  function cleanLayers() {
+    layers.value = "";
   }
   function addLayer (id) {
     if (getLayers().includes(id)) {
@@ -174,6 +185,9 @@ export const useMapStore = defineStore('map', () => {
     return controls.value.split(",").filter(function (l) {
       return !!l;
     }); // array
+  }
+  function cleanControls() {
+    controls.value = "";
   }
   function addControl (id) {
     if (getControls().includes(id)) {
@@ -203,9 +217,11 @@ export const useMapStore = defineStore('map', () => {
     getMap,
     setMap,
     getLayers,
+    cleanLayers,
     addLayer,
     removeLayer,
     getControls,
+    cleanControls,
     addControl,
     removeControl
   }
