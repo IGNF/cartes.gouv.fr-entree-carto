@@ -59,4 +59,19 @@ export const useControls = {
     active: true,
     disable: false
   },
+  MeasureLength: {
+    id: 'MeasureLength',
+    active: true,
+    disable: false
+  },
+  MeasureArea: {
+    id: 'MeasureArea',
+    active: true,
+    disable: false
+  },
+  MeasureAzimuth: {
+    id: 'MeasureAzimuth',
+    active: true,
+    disable: false
+  },
 }
