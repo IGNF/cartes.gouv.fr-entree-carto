@@ -21,23 +21,29 @@ const dataStore = useDataStore();
 // ajoutant des couches (ex. LayerSwitcher), on repasse 
 // via la reactivité dans ce cycle.
 
-// TODO
-// La liste des contrôles est un paramètre utilisateur !
-// Elle doit donc être placée dans le mapStore
-
 // liste des couches utilisateurs disponibles
+// (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
   let layers = mapStore.getLayers();
   return layers.map((layerId: string) => dataStore.getLayerByID(layerId));
 });
 
-// liste des contrôles disponibles
-const availableControls = Object.keys(useControls).map((key: string) => {
-  if (useControls[key].active) {
-    return key;
+// liste des contrôles utilisateurs disponibles
+const getAvailableControls = () => {
+  let controls = mapStore.getControls();
+  if (controls.length) {
+    return controls;
   }
-});
+  // si le store est vide, on regarde les contrôles par defaut 
+  // sur le composable
+  return Object.keys(useControls).map((key) => {
+    if (useControls[key].active) {
+      return key;
+    }
+  });
+};
 
+const availableControls = getAvailableControls();
 const selectedControls = ref(availableControls);
 
 </script>

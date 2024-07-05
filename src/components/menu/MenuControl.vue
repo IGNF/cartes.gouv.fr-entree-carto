@@ -1,16 +1,12 @@
-<script lang="js">
-import { useControls } from '@/composables/controls'
-const availableControls =  Object.keys(useControls).map(key => {
-  if (useControls[key].active) {
-    return key;
-  }
-});
-
-</script>
 <script setup lang="js">
+import { useControls } from '@/composables/controls'
+import { useLogger } from 'vue-logger-plugin'
+import { useMapStore } from "@/stores/mapStore"
+
+const log = useLogger()
+const mapStore = useMapStore();
 
 const selectedControls = defineModel()
-const initCheckbox = ref(availableControls)
 
 const legend = 'Configuration des contrôles openlayers'
 const disabled = false
@@ -113,9 +109,16 @@ const options = [
 
 const side = "right"
 
-onUpdated(() => {
-  initCheckbox.value = selectedControls.value
+watch(selectedControls, (values) => {
+  mapStore.cleanControls();
+  for (let index = 0; index < values.length; index++) {
+    const key = values[index];
+    mapStore.addControl(key);
+  }
 })
+
+onUpdated(() => {})
+
 </script>
 
 <template>
