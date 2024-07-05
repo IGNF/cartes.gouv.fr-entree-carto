@@ -30,7 +30,7 @@ const options = [
   },
   {
     label: 'Scale Line',
-    id: 'route',
+    id: 'scaleLine',
     name: useControls.ScaleLine.id,
     hint: 'Echelle',
     disabled: useControls.ScaleLine.disable
@@ -83,6 +83,27 @@ const options = [
     name: useControls.FullScreen.id,
     hint: 'Plein écran',
     disabled: useControls.FullScreen.disable
+  },
+  {
+    label: 'Mesure de distance',
+    id: 'measureLength',
+    name: useControls.MeasureLength.id,
+    hint: 'Mesures',
+    disabled: useControls.MeasureLength.disable
+  },
+  {
+    label: 'Mesure d\'aire',
+    id: 'measureArea',
+    name: useControls.MeasureArea.id,
+    hint: 'Mesures',
+    disabled: useControls.MeasureArea.disable
+  },
+  {
+    label: 'Mesure d\'azimut',
+    id: 'measureAzimuth',
+    name: useControls.MeasureAzimuth.id,
+    hint: 'Mesures',
+    disabled: useControls.MeasureAzimuth.disable
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 
