@@ -6,6 +6,9 @@ import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
 import Isocurve from './control/Isocurve.vue'
+import MeasureLength from './control/MeasureLength.vue'
+import MeasureArea from './control/MeasureArea.vue'
+import MeasureAzimuth from './control/MeasureAzimuth.vue'
 
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
@@ -87,6 +90,18 @@ const reverseGeocodeOptions = {
 const fullscreenOptions = {
   position: 'bottom-right'
 }
+
+// FIXME map.getTargetElement() n'existe pas encore !
+const measureLengthOptions = {
+  position: 'top-left'
+}
+const measureAreaOptions = {
+  position: 'top-left'
+}
+const measureAzimuthOptions = {
+  position: 'top-left'
+}
+
 </script>
 <!-- INFO : Affichage du contrôle
   >>> option visibility:true, si le contrôle est dans la liste
@@ -128,6 +143,18 @@ const fullscreenOptions = {
   <OverviewMap
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
+  />
+  <MeasureLength
+    :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
+    :measure-length-options="measureLengthOptions"
+  />
+  <MeasureArea
+    :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
+    :measure-area-options="measureAreaOptions"
+  />
+  <MeasureAzimuth
+    :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
+    :measure-azimuth-options="measureAzimuthOptions"
   />
 </template>
 
