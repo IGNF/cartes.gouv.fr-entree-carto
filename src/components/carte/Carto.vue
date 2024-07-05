@@ -8,6 +8,7 @@ import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
+import PointerInteraction from "@/components/carte/interaction/PointerInteraction.vue";
 
 import { useMapStore } from "@/stores/mapStore"
 
@@ -32,11 +33,11 @@ const mapStore = useMapStore()
       <!-- Composant pour selectionner les widgets à afficher sur la carte -->
       <Controls
         v-if="selectedControls"
-        :control-options="props.selectedControls"/>
+        :control-options="selectedControls"/>
       <!-- Composant pour ajouter les couches sur la carte -->
       <Layers
-        :v-if="selectedLayers"
-        :selected-layers="props.selectedLayers"/>
+        v-if="selectedLayers"
+        :selected-layers="selectedLayers"/>
     </Map>
 </template>
 

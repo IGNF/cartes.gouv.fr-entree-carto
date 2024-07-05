@@ -2,6 +2,8 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
+import { useMapStore } from '@/stores/mapStore';
+import { useLayerStore } from '@/stores/layerStore';
 
 import { 
   LayerMapBox as GeoportalMapBox,
@@ -19,14 +21,15 @@ const props = defineProps({
 const log = useLogger()
 log.debug(props.layerOptions);
 
-const store = useDataStore()
+const dataStore = useDataStore()
+const layerStore = useLayerStore()
 
 const map = inject('map')
 const layer = ref(null)
 
 onMounted(() => {
-  var value  = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
-  var params = store.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
+  var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
+  var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
   value.params = params; // fusion
   log.debug("layer to add", value);
 
@@ -55,11 +58,14 @@ onMounted(() => {
     default:
   }
   if (layer.value) {
+    console.log("add ol layer")
+    layerStore.addOlLayer(layer.value)
     map.addLayer(layer.value);
   }
 })
 
 onUnmounted(() => {
+  // layerStore.removeOl1Layer(layer.value)
   map.removeLayer(layer.value)
 })
 

@@ -9,6 +9,7 @@ import Isocurve from './control/Isocurve.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
+import GetFeatureInfo from './control/GetFeatureInfo.vue'
 
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
@@ -70,6 +71,14 @@ const searchEngineOptions = {
 
 const overviewMapOptions = {
   position: 'bottom-left'
+}
+
+const getFeatureInfoOptions = {
+  position: 'bottom-left',
+  options : {
+    hidden: false,
+    auto: true
+  }
 }
 
 const zoomOptions = {
@@ -155,6 +164,10 @@ const measureAzimuthOptions = {
   <MeasureAzimuth
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
     :measure-azimuth-options="measureAzimuthOptions"
+  />
+  <GetFeatureInfo
+    :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
+    :get-feature-info-options="getFeatureInfoOptions"
   />
 </template>
 

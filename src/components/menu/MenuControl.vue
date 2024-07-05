@@ -105,6 +105,13 @@ const options = [
     hint: 'Mesures',
     disabled: useControls.MeasureAzimuth.disable
   },
+  {
+    label: 'Clic interactif',
+    id: 'getfeatureinfo',
+    name: useControls.GetFeatureInfo.id,
+    hint: 'Active l\'interactivité de la carte',
+    disabled: useControls.GetFeatureInfo.disable
+  },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 
 const side = "right"
