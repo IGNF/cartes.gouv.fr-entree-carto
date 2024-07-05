@@ -15,7 +15,8 @@ export const useDataStore = defineStore('data', () => {
   const isLoaded = ref(false);
   const error = ref("");
 
-
+  // TODO utiliser l'implementation officielle 
+  // https://vueuse.org/core/useFetch/
   async function fetchData() {
     try {
 
