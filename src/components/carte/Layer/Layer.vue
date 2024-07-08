@@ -3,7 +3,6 @@
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from '@/stores/mapStore';
-import { useLayerStore } from '@/stores/layerStore';
 
 import { 
   LayerMapBox as GeoportalMapBox,
@@ -21,8 +20,7 @@ const props = defineProps({
 const log = useLogger()
 log.debug(props.layerOptions);
 
-const dataStore = useDataStore()
-const layerStore = useLayerStore()
+const dataStore = useDataStore();
 
 const map = inject('map')
 const layer = ref(null)
@@ -58,13 +56,11 @@ onMounted(() => {
     default:
   }
   if (layer.value) {
-    layerStore.addOlLayer(layer.value)
     map.addLayer(layer.value);
   }
 })
 
 onUnmounted(() => {
-  layerStore.removeOlLayer(layer.value)
   map.removeLayer(layer.value.ol_uid)
 })
 
