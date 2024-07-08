@@ -74,10 +74,11 @@ const overviewMapOptions = {
 }
 
 const getFeatureInfoOptions = {
-  position: 'bottom-left',
   options : {
+    position: 'bottom-left',
     hidden: false,
-    auto: true
+    auto: true,
+    active: true
   }
 }
 
