@@ -8,7 +8,6 @@ import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
-import PointerInteraction from "@/components/carte/interaction/PointerInteraction.vue";
 
 import { useMapStore } from "@/stores/mapStore"
 
