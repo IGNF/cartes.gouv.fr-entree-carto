@@ -58,15 +58,14 @@ onMounted(() => {
     default:
   }
   if (layer.value) {
-    console.log("add ol layer")
     layerStore.addOlLayer(layer.value)
     map.addLayer(layer.value);
   }
 })
 
 onUnmounted(() => {
-  // layerStore.removeOl1Layer(layer.value)
-  map.removeLayer(layer.value)
+  layerStore.removeOlLayer(layer.value)
+  map.removeLayer(layer.value.ol_uid)
 })
 
 </script>

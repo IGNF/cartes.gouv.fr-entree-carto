@@ -14,9 +14,7 @@ const props = defineProps({
   getFeatureInfoOptions: Object
 })
 
-const log = useLogger()
 const layerStore = useLayerStore();
-const mapStore = useMapStore();
 const map = inject('map')
 const getFeatureInfo = reactive(new GetFeatureInfo(props.getFeatureInfoOptions))
 const { olLayers } = storeToRefs(layerStore)
@@ -31,14 +29,15 @@ onUnmounted(() => {
 })
 
 watch(olLayers.value, (oldval, newval) => {   
-      console.log(toRaw(newval))
-      let l = Object.values(toRaw(map.getLayers().getArray()).map((ls) => toRaw(ls)));
-      console.log(l)
-
-      // getFeatureInfo.setLayers(toRaw(newval).map((l) => l.values_))
+      let l = Object.values(toRaw(map.getLayers().getArray())
+                        .map((layer) => {
+                          return {
+                            obj : toRaw(layer),
+                            event: 'singleClick',
+                            infoFormat : "text/html"
+                          }
+                        }));
       getFeatureInfo.setLayers(l)
-      console.log(mapStore.getMap().getLayers().getArray()[0].getZIndex())
-      getFeatureInfo.setLayers(mapStore.getMap().getLayers().getArray())
     },
     { deep: false }
   )

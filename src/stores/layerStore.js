@@ -13,12 +13,14 @@ import {
     function addOlLayer (l) {
       olLayers.push(l)
     }
-    // function removeOlLayer (l) {
-    //   olLayers.push(l)
-    //  }
+    function removeOlLayer (ol_uid) {
+      let index = olLayers.map(l => l.ol_uid).indexOf(ol_uid)
+      delete olLayers[index]
+     }
   
     return {
       olLayers,
-      addOlLayer
+      addOlLayer,
+      removeOlLayer
     }
   })
