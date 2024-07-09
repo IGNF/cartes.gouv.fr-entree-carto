@@ -7,12 +7,14 @@ import Map from 'ol/Map'
  * Reference (DOM)
  */
 const mapRef = ref(0)
+const id = "map"
 
 /**
  * Map
  * default controls are removed (rotate, zoom and attributions)
  */
 const map = new Map({
+  target: id,
   controls: [] // on supprime les contrôles par defaut !
 })
 
@@ -21,7 +23,7 @@ onMounted(() => {
   map.setTarget(mapRef.value)
 
   // On ajoute une option d'accessibilité
-  const canvas = document.getElementById('map').getElementsByTagName('canvas')
+  const canvas = document.getElementById(id).getElementsByTagName('canvas')
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
@@ -47,7 +49,7 @@ provide('map', map)
 
 <template>
   <div
-    id="map"
+    :id="id"
     ref="mapRef"
     tabindex="0"
     @mouseover="onFocusOnMap">
