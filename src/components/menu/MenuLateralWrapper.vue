@@ -81,7 +81,7 @@ left: 7px;
 }
 .right {
   .menu-logo-list {
-  right: 47px;
+  right: 56px;
   }
   &.is_expanded {
     .menu-logo-list {
@@ -127,7 +127,7 @@ left: 7px;
   flex-direction: column;
   display: flex;
   row-gap: 20px;
-  margin-top: 10px;
+  margin-top: 12px;
   width: 0;
   position: absolute;
 }
