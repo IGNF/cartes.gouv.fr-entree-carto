@@ -122,6 +122,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
   <DsfrHeader 
     v-model="headerParams.serviceTitle" 
     :service-title="headerParams.serviceTitle"
+    :show-beta=true
     :service-description="headerParams.serviceDescription" 
     :logo-text="headerParams.logoText"
     :quick-links="headerParams.quickLinks">
