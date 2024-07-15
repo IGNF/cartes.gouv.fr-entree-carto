@@ -38,7 +38,7 @@ log.debug(props.controlOptions);
 // liste des options pour les contrôles
 const layerSwitcherOptions = {
   options: {
-    // position : "top-right",
+    position : "top-right",
     collapsed: true,
     panel: true,
     counter: true
@@ -159,13 +159,31 @@ const measureAzimuthOptions = {
 </template>
 
 <style>
+
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
   .position-container-top-right {
-    border-style: unset;
+    margin: 0;
+    padding: 0;
   }
-  .position-container-top-right {
-    top: 90px;
+
+  @media (min-width: 576px) {
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 56px;
+    }
+  }
+  @media (max-width: 576px) {
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 210px;
+    }
+  }
+  @media (max-width: 627px) and (min-width: 576px){
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 120px;
+    }
   }
 </style>

@@ -38,6 +38,6 @@ onUpdated(() => {
 
 <style>
   .ol-scale-line {
-    left: 50px;
+    left: 58px;
   }
 </style>
