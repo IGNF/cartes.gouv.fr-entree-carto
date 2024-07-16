@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useLogger } from 'vue-logger-plugin'
+// plugin local
+import { useEulerian } from '../plugins/Eulerian.js';
 
 const log = useLogger()
+const router = useRouter()
+const eulerian = useEulerian()
 
 useScheme()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia("LG");
-
 
 // paramètres pour le Header
 const headerParams = useHeaderParams();
@@ -24,7 +27,6 @@ const footerParams = useFooterParams();
 // gestion de la modale de changement de thème d'affichage
 const modelValue = ref();
 
-
 const { setScheme, theme } = useScheme();
 
 const changeTheme = () => {
@@ -34,11 +36,10 @@ const changeTheme = () => {
 const themeModalOpened = ref(false)
 
 const openModalTheme = () => {
-  console.log(themeModalOpened);
   themeModalOpened.value = true;
 }
 
-const onModalClose = () => {
+const onModalThemeClose = () => {
   themeModalOpened.value = false;
 }
 
@@ -51,6 +52,34 @@ const afterMandatoryLinks = [
     onclick: openModalTheme
   },
 ];
+
+// gestion de la modale de consentement 'eulerian'
+const consentModalOpened = ref(false)
+
+const openModalConsent = () => {
+  consentModalOpened.value = true;
+}
+
+const onModalConsentClose = () => {
+  consentModalOpened.value = false;
+  router.push({ path : '/' })
+}
+
+footerParams.mandatoryLinks.forEach((element: any) => {
+  if (element.label === "Gestion des cookies") {
+    element.onclick = openModalConsent;
+    element.to = "/";
+  }
+});
+
+const onAcceptConsentAll = () => {
+  eulerian.enable();
+  onModalConsentClose();
+}
+const onRefuseConsentAll = () => {
+  eulerian.disable();
+  onModalConsentClose();
+}
 
 // paramètre pour la barre de navigations
 const route = useRoute();
@@ -161,12 +190,14 @@ const navItems: DsfrNavigationProps['navItems'] = [
   />
 
   <div class="fr-container fr-container--fluid fr-container-md">
+
+    <!-- Modale : Paramètres d’affichage -->
     <DsfrModal 
       ref="modal" 
       :opened="themeModalOpened" 
       :title="footerParams.themeModale.title"
       :size="footerParams.themeModale.size" 
-      @close="onModalClose">
+      @close="onModalThemeClose">
 
       <DsfrRadioButtonSet 
         v-model="modelValue" 
@@ -176,6 +207,45 @@ const navItems: DsfrNavigationProps['navItems'] = [
         @update:model-value="changeTheme" />
 
     </DsfrModal>
+
+    <!-- Modale : Gestion des cookies (+ Eulerian) -->
+    <DsfrModal 
+        :opened="consentModalOpened" 
+        :title="footerParams.consentModale.title"
+        :size="footerParams.consentModale.size" 
+        @close="onModalConsentClose">
+          <!-- slot : c'est ici que l'on customise le contenu ! -->
+          <p>
+            <DsfrConsent
+              :url="useBaseUrl() + '/donnees-personnelles'"
+              @accept-all="onAcceptConsentAll()"
+              @refuse-all="onRefuseConsentAll()">
+
+              Préférences pour tous les services.
+              <a href="/donnees-personnelles">Données personnelles et cookies</a>
+            </DsfrConsent>
+          </p>
+          <hr>
+          <p>
+            <h5>Eulerian Analytics</h5>
+            En cliquant sur 'Accepter', vous consentez à l'utilisation des cookies pour nous aider
+            à améliorer notre site web en collectant et en rapportant des informations sur votre
+            utilisation grâce à Eulerian Analytics. <br>
+            Si vous n'êtes pas d'accord, veuillez cliquer sur 'Refuser'. 
+            Votre expérience de navigation ne sera pas affectée.
+          </p>
+    </DsfrModal>
+
   </div>
-    
+
 </template>
+
+<style>
+/* Surcharge sur le composant DsfrConsent */
+button[title="Personnaliser les cookies"] {
+  display: none;
+}
+.fr-btns-group--inline-sm.fr-btns-group--right.fr-btns-group--inline-reverse {
+  justify-content: center;
+}
+</style>

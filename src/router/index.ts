@@ -14,7 +14,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Carte',
     component: Load,
-  }
+  },
 ]
 
 const router = createRouter({

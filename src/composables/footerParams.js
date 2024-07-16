@@ -105,6 +105,11 @@ export function useFooterParams() {
                 }
             ]
         },
+        consentModale: {
+          title: "Panneau de gestion des cookies",
+          size: "md",
+          legend: "" // par defaut !
+        },
         mandatoryLinks: [
           {
             label: 'Accessibilité : partiellement conforme',
@@ -120,7 +125,7 @@ export function useFooterParams() {
           },
           {
             label: 'Gestion des cookies',
-            href: useBaseUrl() + '/cookies'
+            to: '/cookies' // par defaut
           }
         ],
     }
