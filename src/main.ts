@@ -9,6 +9,8 @@ import '@gouvfr/dsfr/dist/utility/icons/icons.min.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
+// plugin local
+import { createEulerian } from './plugins/Eulerian'
 
 import App from './App.vue'
 import router from './router/index'
@@ -19,6 +21,15 @@ import './main.css'
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
 const isProduction = (import.meta.env.MODE === "production")
+
+const eulerian = createEulerian({
+  domain: "acwg.cartes.gouv.fr", // domaine de tracking Eulerian
+  site: {
+    environment: isProduction ? "production" : "development",
+    entity: "IGN"
+  }
+})
+
 const logger = createLogger({
   enabled: true,
   level: isProduction ? 'error' : 'debug',
@@ -30,4 +41,5 @@ createApp(App)
   .use(pinia)
   .use(router)
   .use(logger)
+  .use(eulerian)
   .mount('#app')

@@ -2,9 +2,7 @@ import LogoIGN from "../assets/logo-ign.png"
 import LogoTRANSFO from "../assets/logo-transformation-fonction-publiques.png"
 import LogoECOLO from "../assets/logo-transition-ecologique.png"
 import LogoCNIG from "../assets/logo-cnig.png"
-import LogoSun from "@gouvfr/dsfr/dist/artwork/pictograms/environment/sun.svg"
-import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
-import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg"
+
 import { useBaseUrl } from '@/composables/baseUrl';
 
 /**
@@ -76,35 +74,6 @@ export function useFooterParams() {
                 },
             ]
         },
-        themeModale: {
-            title: "Paramètres d'affichage",
-            size: "md",
-            legend: "Choisissez un thème pour personnaliser l'apparence du site.",
-            themeOptions: [
-                {
-                    label: 'Thème clair',
-                    value: 'light',
-                    id: 'fr-radios-theme-light',
-                    name: 'fr-radios-theme',
-                    img: LogoSun,
-                },
-                {
-                    label: 'Thème sombre',
-                    id: 'fr-radios-theme-dark',
-                    value: 'dark',
-                    name: 'fr-radios-theme',
-                    img: LogoMoon,
-                },
-                {
-                    label: 'Système',
-                    id: 'fr-radios-theme-system',
-                    value: 'system',
-                    name: 'fr-radios-theme',
-                    hint: 'Utilise les paramètres sytème.',
-                    img: LogoSystem,
-                }
-            ]
-        },
         mandatoryLinks: [
           {
             label: 'Accessibilité : partiellement conforme',
@@ -120,7 +89,7 @@ export function useFooterParams() {
           },
           {
             label: 'Gestion des cookies',
-            href: useBaseUrl() + '/cookies'
+            href: useBaseUrl() + '/cookies' // par defaut, mais on surcharge pour avoir les cookies en local !
           }
         ],
     }

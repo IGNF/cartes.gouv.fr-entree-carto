@@ -6,14 +6,14 @@ import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useLogger } from 'vue-logger-plugin'
+// components
+import ModalConsent from '@/components/modals/ModalConsent.vue'
+import ModalTheme from '@/components/modals/ModalTheme.vue'
 
 const log = useLogger()
 
-useScheme()
-
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia("LG");
-
 
 // paramètres pour le Header
 const headerParams = useHeaderParams();
@@ -21,36 +21,40 @@ const headerParams = useHeaderParams();
 // paramètres pour le Footer
 const footerParams = useFooterParams();
 
-// gestion de la modale de changement de thème d'affichage
-const modelValue = ref();
+// ref sur le component ModalTheme
+const refModalTheme = ref(null);
 
+// INFO
+// on met à jour les afterMandatoryLinks pour y ajouter des
+// options sur la 'gestion des themes'
+const afterMandatoryLinks = computed(() => {
+  return [
+    {
+      label: 'Paramètres d’affichage',
+      button: true,
+      class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
+      to: '/settings',
+      onclick: refModalTheme.value ? refModalTheme.value.openModalTheme : null
+    },
+  ];
+})
 
-const { setScheme, theme } = useScheme();
+// ref sur le component ModalConsent
+const refModalConsent = ref(null);
 
-const changeTheme = () => {
-  setScheme(modelValue.value);
-}
-
-const themeModalOpened = ref(false)
-
-const openModalTheme = () => {
-  console.log(themeModalOpened);
-  themeModalOpened.value = true;
-}
-
-const onModalClose = () => {
-  themeModalOpened.value = false;
-}
-
-const afterMandatoryLinks = [
-  {
-    label: 'Paramètres d’affichage',
-    button: true,
-    class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
-    to: '/settings',
-    onclick: openModalTheme
-  },
-];
+// INFO
+// on met à jour les mandatoryLinks pour y ajouter des
+// options sur la 'gestion des cookies'
+const mandatoryLinks = computed(() => {
+  return footerParams.mandatoryLinks.map((element: any) => {
+    if (element.label === "Gestion des cookies") {
+      delete element.href;
+      element.onclick = refModalConsent.value ? refModalConsent.value.openModalConsent : null;
+      element.to = "/";
+    }
+    return element;
+  });
+})
 
 // paramètre pour la barre de navigations
 const route = useRoute();
@@ -157,25 +161,19 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" 
     :ecosystem-links="footerParams.ecosystemLinks" 
-    :mandatory-links="footerParams.mandatoryLinks"
+    :mandatory-links="mandatoryLinks"
   />
 
   <div class="fr-container fr-container--fluid fr-container-md">
-    <DsfrModal 
-      ref="modal" 
-      :opened="themeModalOpened" 
-      :title="footerParams.themeModale.title"
-      :size="footerParams.themeModale.size" 
-      @close="onModalClose">
 
-      <DsfrRadioButtonSet 
-        v-model="modelValue" 
-        :legend="footerParams.themeModale.legend" 
-        name="fr-radios-theme"
-        :options="footerParams.themeModale.themeOptions" 
-        @update:model-value="changeTheme" />
+    <!-- Modale : Paramètres d’affichage -->
+    <ModalTheme ref="refModalTheme" />
 
-    </DsfrModal>
+    <!-- Modale : Gestion des cookies (+ Eulerian) -->
+    <ModalConsent ref="refModalConsent"/>
+
   </div>
-    
+
 </template>
+
+<style></style>
