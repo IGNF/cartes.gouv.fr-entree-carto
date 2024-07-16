@@ -3,14 +3,11 @@ import { Legends } from 'geoportal-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
-  panel: Boolean,
-  auto: Boolean,
-  info: Boolean,
-  draggable: Boolean
+  legendsOptions: Object
 })
 
 const map = inject('map')
-const legends = ref(new Legends(props))
+const legends = ref(new Legends(props.legendsOptions))
 
 onMounted(() => {
   if (props.visibility) {

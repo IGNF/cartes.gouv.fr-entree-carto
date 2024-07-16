@@ -48,17 +48,9 @@ const layerSwitcherOptions = {
 }
 const legendsOptions = {
   position : "top-right",
-    panel: true,
-    auto: true,
-    info: true,
-    draggable: false,
-  options: {
-    position : "top-right",
-    panel: true,
-    auto: true,
-    info: true,
-    draggable: false
-  }
+  panel: true,
+  auto: true,
+  draggable: false
 }
 
 const scaleLineOptions = {
