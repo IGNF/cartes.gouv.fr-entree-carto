@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { type DsfrNavigationProps } from '@gouvminint/vue-dsfr';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useHeaderParams } from '@/composables/headerParams';
 import { useFooterParams } from '@/composables/footerParams';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useLogger } from 'vue-logger-plugin'
-// plugin local
-import { useEulerian } from '../plugins/Eulerian.js';
+// components
+import ModalConsent from '@/components/modals/ModalConsent.vue'
+import ModalTheme from '@/components/modals/ModalTheme.vue'
 
 const log = useLogger()
-const router = useRouter()
-const eulerian = useEulerian()
-
-useScheme()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia("LG");
@@ -24,63 +21,40 @@ const headerParams = useHeaderParams();
 // paramètres pour le Footer
 const footerParams = useFooterParams();
 
-// gestion de la modale de changement de thème d'affichage
-const modelValue = ref();
+// ref sur le component ModalTheme
+const refModalTheme = ref(null);
 
-const { setScheme, theme } = useScheme();
+// INFO
+// on met à jour les afterMandatoryLinks pour y ajouter des
+// options sur la 'gestion des themes'
+const afterMandatoryLinks = computed(() => {
+  return [
+    {
+      label: 'Paramètres d’affichage',
+      button: true,
+      class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
+      to: '/settings',
+      onclick: refModalTheme.value ? refModalTheme.value.openModalTheme : null
+    },
+  ];
+})
 
-const changeTheme = () => {
-  setScheme(modelValue.value);
-}
+// ref sur le component ModalConsent
+const refModalConsent = ref(null);
 
-const themeModalOpened = ref(false)
-
-const openModalTheme = () => {
-  themeModalOpened.value = true;
-}
-
-const onModalThemeClose = () => {
-  themeModalOpened.value = false;
-}
-
-const afterMandatoryLinks = [
-  {
-    label: 'Paramètres d’affichage',
-    button: true,
-    class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
-    to: '/settings',
-    onclick: openModalTheme
-  },
-];
-
-// gestion de la modale de consentement 'eulerian'
-var open = eulerian.hasKey();
-const consentModalOpened = ref(!open)
-
-const openModalConsent = () => {
-  consentModalOpened.value = true;
-}
-
-const onModalConsentClose = () => {
-  consentModalOpened.value = false;
-  router.push({ path : '/' })
-}
-
-footerParams.mandatoryLinks.forEach((element: any) => {
-  if (element.label === "Gestion des cookies") {
-    element.onclick = openModalConsent;
-    element.to = "/";
-  }
-});
-
-const onAcceptConsentAll = () => {
-  eulerian.enable();
-  onModalConsentClose();
-}
-const onRefuseConsentAll = () => {
-  eulerian.disable();
-  onModalConsentClose();
-}
+// INFO
+// on met à jour les mandatoryLinks pour y ajouter des
+// options sur la 'gestion des cookies'
+const mandatoryLinks = computed(() => {
+  return footerParams.mandatoryLinks.map((element: any) => {
+    if (element.label === "Gestion des cookies") {
+      delete element.href;
+      element.onclick = refModalConsent.value ? refModalConsent.value.openModalConsent : null;
+      element.to = "/";
+    }
+    return element;
+  });
+})
 
 // paramètre pour la barre de navigations
 const route = useRoute();
@@ -187,71 +161,19 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :licence-name="footerParams.licenceName"
     :licence-link-props="footerParams.licenceLinkProps" 
     :ecosystem-links="footerParams.ecosystemLinks" 
-    :mandatory-links="footerParams.mandatoryLinks"
+    :mandatory-links="mandatoryLinks"
   />
 
   <div class="fr-container fr-container--fluid fr-container-md">
 
     <!-- Modale : Paramètres d’affichage -->
-    <DsfrModal 
-      ref="modal" 
-      :opened="themeModalOpened" 
-      :title="footerParams.themeModale.title"
-      :size="footerParams.themeModale.size" 
-      @close="onModalThemeClose">
-
-      <DsfrRadioButtonSet 
-        v-model="modelValue" 
-        :legend="footerParams.themeModale.legend" 
-        name="fr-radios-theme"
-        :options="footerParams.themeModale.themeOptions" 
-        @update:model-value="changeTheme" />
-
-    </DsfrModal>
+    <ModalTheme ref="refModalTheme" />
 
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
-    <DsfrModal 
-        :opened="consentModalOpened" 
-        :title="footerParams.consentModale.title"
-        :size="footerParams.consentModale.size" 
-        @close="onModalConsentClose">
-          <!-- slot : c'est ici que l'on customise le contenu ! -->
-          <p>
-            <DsfrConsent
-              :url="useBaseUrl() + '/donnees-personnelles'"
-              @accept-all="onAcceptConsentAll()"
-              @refuse-all="onRefuseConsentAll()">
-
-              Préférences pour tous les services.
-              <a href="/donnees-personnelles">Données personnelles et cookies</a>
-            </DsfrConsent>
-          </p>
-          <hr>
-          <p>
-            <h5>Eulerian Analytics</h5>
-            En cliquant sur 'Tout accepter', vous consentez à l'utilisation des cookies pour nous aider
-            à améliorer notre site web en collectant et en rapportant des informations sur votre
-            utilisation grâce à Eulerian Analytics. <br>
-            Si vous n'êtes pas d'accord, veuillez cliquer sur 'Tout refuser'. 
-            Votre expérience de navigation ne sera pas affectée.
-          </p>
-    </DsfrModal>
+    <ModalConsent ref="refModalConsent"/>
 
   </div>
 
 </template>
 
-<style>
-/* Surcharge sur le composant DsfrConsent : 
-  > on n'affiche pas le bouton 'Personnaliser' 
-*/
-button[title="Personnaliser les cookies"] {
-  display: none;
-}
-/* Surcharge sur le composant DsfrConsent : 
-  > on centre les boutons 
-*/
-.fr-btns-group--inline-sm.fr-btns-group--right.fr-btns-group--inline-reverse {
-  justify-content: center;
-}
-</style>
+<style></style>

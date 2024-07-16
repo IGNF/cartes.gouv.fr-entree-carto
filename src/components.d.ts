@@ -33,6 +33,8 @@ declare module 'vue' {
     MenuControl: typeof import('./components/menu/MenuControl.vue')['default']
     MenuLateralNavButton: typeof import('./components/menu/MenuLateralNavButton.vue')['default']
     MenuLateralWrapper: typeof import('./components/menu/MenuLateralWrapper.vue')['default']
+    ModalConsent: typeof import('./components/modals/ModalConsent.vue')['default']
+    ModalTheme: typeof import('./components/modals/ModalTheme.vue')['default']
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
     ReverseGeocode: typeof import('./components/carte/control/ReverseGeocode.vue')['default']
