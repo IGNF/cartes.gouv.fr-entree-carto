@@ -9,6 +9,11 @@ import Map from 'ol/Map'
 const mapRef = ref(0)
 const id = "map"
 
+// on expose en publique la reference au DOM
+defineExpose({
+  mapRef
+});
+
 /**
  * Map
  * default controls are removed (rotate, zoom and attributions)
@@ -17,6 +22,7 @@ const map = new Map({
   target: id,
   controls: [] // on supprime les contrôles par defaut !
 })
+
 
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
