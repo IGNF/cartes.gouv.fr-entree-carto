@@ -53,6 +53,9 @@ export default defineConfig({
       ],
     }),
   ],
+  // INFO
+  // pour tester la collecte des statistiques en local, il faut modifier l'URL (filtre Eulerian) :
+  // > BASE_URL=stat.cartes.gouv.fr npm run dev
   base: process.env.BASE_URL || '/cartes.gouv.fr-entree-carto',
   envDir : "env",
   resolve: {

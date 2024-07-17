@@ -6,6 +6,10 @@ import { useMapStore } from "@/stores/mapStore"
 const log = useLogger()
 const mapStore = useMapStore();
 
+const props = defineProps({
+  selectedControls : Array
+})
+
 const selectedControls = defineModel()
 
 const legend = 'Configuration des contrôles openlayers'
@@ -137,7 +141,7 @@ onUpdated(() => {})
     :small="small"
     :required="required"
     :options="options"
-    :model-value="selectedControls"
+    :model-value="props.selectedControls"
   /> 
 </template>
 
