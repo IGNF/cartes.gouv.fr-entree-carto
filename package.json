@@ -5,7 +5,7 @@
   "scripts": {
     "clean:dist": "rimraf dist",
     "build-only": "vite build",
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "run-p type-check \"build-only {@}\" --",
     "format": "eslint ./src --fix",
     "lint": "eslint ./src",
