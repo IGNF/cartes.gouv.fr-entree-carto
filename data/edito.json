@@ -24,9 +24,9 @@
       "base": true,
       "thumbnail": "img/thumbnails/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg",
       "legends": [{
-        "format": "image/jpeg",
+        "format": "image/png",
         "minScaleDenominator": "200",
-        "url": "img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.jpg"
+        "url": "img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.png"
       }]
     },
     "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN$GEOPORTAIL:OGC:WMTS": {
