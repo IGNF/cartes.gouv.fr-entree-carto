@@ -70,9 +70,8 @@ const searchEngineOptions = {
   },
   searchOptions: {
     addToMap: false,
-    serviceOptions: {
-      services: 'WMTS,WMS,TMS'
-    }
+    filterServices : "WMTS,WMS,TMS",
+    serviceOptions: {}
   }
 }
 
