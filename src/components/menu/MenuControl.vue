@@ -6,6 +6,10 @@ import { useMapStore } from "@/stores/mapStore"
 const log = useLogger()
 const mapStore = useMapStore();
 
+const props = defineProps({
+  selectedControls : Array
+})
+
 const selectedControls = defineModel()
 
 const legend = 'Configuration des contrôles openlayers'
@@ -41,6 +45,13 @@ const options = [
     name: useControls.LayerSwitcher.id,
     hint: 'Gestionnaire de couches',
     disabled: useControls.LayerSwitcher.disable
+  },
+  {
+    label: 'Légendes',
+    id: 'legends',
+    name: useControls.Legends.id,
+    hint: 'Légendes',
+    disabled: useControls.Legends.disable
   },
   {
     label: 'Geocodage inverse',
@@ -137,7 +148,7 @@ onUpdated(() => {})
     :small="small"
     :required="required"
     :options="options"
-    :model-value="selectedControls"
+    :model-value="props.selectedControls"
   /> 
 </template>
 

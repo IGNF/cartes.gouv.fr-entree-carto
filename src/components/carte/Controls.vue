@@ -5,6 +5,7 @@ import OverviewMap from './control/OverviewMap.vue'
 import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
+import Legends from './control/Legends.vue'
 import Isocurve from './control/Isocurve.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
@@ -26,6 +27,7 @@ const props = defineProps({
 //  "SearchEngine",
 //  "ScaleLine",
 //  "LayerSwitcher",
+//  "Legends",
 //  undefined,
 //  undefined,
 //  "Zoom",
@@ -39,11 +41,17 @@ log.debug(props.controlOptions);
 // liste des options pour les contrôles
 const layerSwitcherOptions = {
   options: {
-    // position : "top-right",
+    position : "top-right",
     collapsed: true,
     panel: true,
     counter: true
   }
+}
+const legendsOptions = {
+  position : "top-right",
+  panel: true,
+  auto: true,
+  draggable: false
 }
 
 const scaleLineOptions = {
@@ -122,6 +130,10 @@ const measureAzimuthOptions = {
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
   />
+  <Legends
+    :visibility="props.controlOptions.includes(useControls.Legends.id)"
+    :legends-options="legendsOptions"
+  />
   <Isocurve
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
     :isocurve-options="isocurveOptions"
@@ -173,13 +185,31 @@ const measureAzimuthOptions = {
 </template>
 
 <style>
+
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
   .position-container-top-right {
-    border-style: unset;
+    margin: 0;
+    padding: 0;
   }
-  .position-container-top-right {
-    top: 90px;
+
+  @media (min-width: 576px) {
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 56px;
+    }
+  }
+  @media (max-width: 576px) {
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 210px;
+    }
+  }
+  @media (max-width: 627px) and (min-width: 576px){
+    .position-container-top-right,
+    .position-container-top-left {
+      top: 120px;
+    }
   }
 </style>

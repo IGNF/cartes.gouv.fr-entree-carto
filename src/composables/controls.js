@@ -29,6 +29,11 @@ export const useControls = {
     active: true,
     disable: false
   },
+  Legends: {
+    id: 'Legends',
+    active: true,
+    disable: false
+  },
   Isocurve: {
     id: 'Isocurve',
     active: false,

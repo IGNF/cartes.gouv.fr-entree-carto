@@ -81,21 +81,21 @@ left: 7px;
 }
 .right {
   .menu-logo-list {
-  right: 47px;
+  right: 56px;
   }
   &.is_expanded {
+    flex-direction: row-reverse;
     .menu-logo-list {
         transform: translateX(v-bind(translateRight));
       }
-    flex-direction: row-reverse;
 }
 }
 
 .menu-collapse-icon {
+    margin-bottom: 20px;
     &:hover{
       color : #8585f6;
     }
-    margin-bottom: 20px;
 }
 
 .menu-collapse-icon-wrapper{
@@ -127,7 +127,7 @@ left: 7px;
   flex-direction: column;
   display: flex;
   row-gap: 20px;
-  margin-top: 10px;
+  margin-top: 12px;
   width: 0;
   position: absolute;
 }

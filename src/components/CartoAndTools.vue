@@ -29,7 +29,8 @@ const selectedLayers = computed(() => {
 });
 
 // liste des contrôles utilisateurs disponibles
-const getAvailableControls = () => {
+// (cette liste est recalculée à chaque fois que le mapStore est modifié)
+const selectedControls = computed(() => {
   let controls = mapStore.getControls();
   if (controls.length) {
     return controls;
@@ -41,10 +42,7 @@ const getAvailableControls = () => {
       return key;
     }
   });
-};
-
-const availableControls = getAvailableControls();
-const selectedControls = ref(availableControls);
+});
 
 </script>
 
@@ -68,12 +66,14 @@ const selectedControls = ref(availableControls);
 
     <!-- Le menu des contrôles est dans le menu droite -->
     <RightMenuTool>
-      <!-- On transmet la liste des contrôles selectionnés
-        >>> Choix du v-model pour une communication entre Parent <-> Child
-        >>> afin de remonter les infos de selections vers le composant Carto
+      <!-- On transmet la liste des contrôles selectionnés : 
+        >>> les controles du mapStore sont reactifs, donc dès que le 
+        >>> composant MenuControl modifie une valeur, il modifie le 
+        >>> mapStore des controles, ce qui repercute la selection sur 
+        >>> la méthode computed()
       -->
       <MenuControl 
-        v-model="selectedControls"/>
+      :selected-controls="selectedControls"/>
     </RightMenuTool>
 
   </div>
