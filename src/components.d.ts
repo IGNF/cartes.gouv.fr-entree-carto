@@ -11,6 +11,7 @@ declare module 'vue' {
     Carto: typeof import('./components/carte/Carto.vue')['default']
     CartoAndTools: typeof import('./components/CartoAndTools.vue')['default']
     Controls: typeof import('./components/carte/Controls.vue')['default']
+    DsfrButton: typeof import('@gouvminint/vue-dsfr')['DsfrButton']
     DsfrCheckboxSet: typeof import('@gouvminint/vue-dsfr')['DsfrCheckboxSet']
     DsfrConsent: typeof import('@gouvminint/vue-dsfr')['DsfrConsent']
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']

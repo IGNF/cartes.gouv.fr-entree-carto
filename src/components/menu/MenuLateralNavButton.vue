@@ -26,14 +26,12 @@ const tabClicked = (e) => {
 
 
 <template>
-    <button :id="id" 
+    <DsfrButton :id="id" 
+    primary
     :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
+    icon="fr-icon-settings-5-line"
     @click="tabClicked">
-        <div class="noclick">
-            <VIcon
-        v-bind="iconProps"/>  
-        </div>
-    </button>
+    </DsfrButton>
 </template>
 
 
@@ -44,16 +42,16 @@ const tabClicked = (e) => {
 }
 
 .active {
-    color : #8585f6;
+    /* color : #8585f6;*/
 }
 .navButton {
-  background-color: #8585f6;
+  /* background-color: #8585f6;*/
   width: 40px;
   height: 40px;
   color: white;
-  &:hover {
+  /*&:hover {
     background-color: #b1b1f9;
-  }
+  }*/
 }
 
 </style>
