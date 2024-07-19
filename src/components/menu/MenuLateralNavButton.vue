@@ -9,17 +9,11 @@ const props = defineProps({
 
 
 const icon = props.icon
-const defaultScale = 2;
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
 
 const emit = defineEmits(['tabClicked'])
 
-const tabClicked = (e) => {
-    const tabId = e.target.id
-    emit("tabClicked", tabId);
+const tabClicked = () => {
+    emit("tabClicked", props.id);
 }
 </script>
 
@@ -29,7 +23,8 @@ const tabClicked = (e) => {
     <DsfrButton :id="id" 
     primary
     :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
-    icon="fr-icon-settings-5-line"
+    :icon="icon"
+    :iconOnly="true"
     @click="tabClicked">
     </DsfrButton>
 </template>
@@ -41,17 +36,10 @@ const tabClicked = (e) => {
     pointer-events: none;
 }
 
-.active {
-    /* color : #8585f6;*/
-}
 .navButton {
-  /* background-color: #8585f6;*/
   width: 40px;
   height: 40px;
   color: white;
-  /*&:hover {
-    background-color: #b1b1f9;
-  }*/
 }
 
 </style>
