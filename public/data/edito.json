@@ -13,7 +13,7 @@
   "informations" : {
     "title": "Intervention technique",
     "description": "Une opération de maintenance aura lieu le lundi 15 juillet à partir de 19h. Elle entraînera une coupure des données et services de l’application pendant 30 minutes. Nous mettrons tout en œuvre pour rétablir les services dans les plus brefs délais.",
-    "type": "error",
+    "type": "warning",
     "opened": false,
     "version": 1
   },
