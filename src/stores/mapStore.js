@@ -19,7 +19,8 @@ const DEFAULT = {
   LON: 2.5479878714752027, // informatif
   LAT: 50.800781249995744, // informatif
   ZOOM: 12,
-  FIRSTVISIT: false
+  FIRSTVISIT: false,
+  NOINFORMATION: null
 }
 
 /**
@@ -75,6 +76,7 @@ export const useMapStore = defineStore('map', () => {
   var lon = useStorage(ns('lon'), DEFAULT.LON);
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
+  var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
 
   //////////////////
   // objets calculés
@@ -140,6 +142,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(firstVisit, () => {
     localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
+  })
+  watch(noInformation, () => {
+    localStorage.setItem(ns('noInformation'), noInformation.value); // number
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
@@ -214,6 +219,8 @@ export const useMapStore = defineStore('map', () => {
     y,
     lon,
     lat,
+    firstVisit,
+    noInformation,
     getMap,
     setMap,
     getLayers,

@@ -5,6 +5,7 @@ import OverviewMap from './control/OverviewMap.vue'
 import Zoom from './control/Zoom.vue'
 import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
+import Legends from './control/Legends.vue'
 import Isocurve from './control/Isocurve.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
@@ -25,6 +26,7 @@ const props = defineProps({
 //  "SearchEngine",
 //  "ScaleLine",
 //  "LayerSwitcher",
+//  "Legends",
 //  undefined,
 //  undefined,
 //  "Zoom",
@@ -44,6 +46,12 @@ const layerSwitcherOptions = {
     counter: true
   }
 }
+const legendsOptions = {
+  position : "top-right",
+  panel: true,
+  auto: true,
+  draggable: false
+}
 
 const scaleLineOptions = {
   units: 'metric',
@@ -62,9 +70,8 @@ const searchEngineOptions = {
   },
   searchOptions: {
     addToMap: false,
-    serviceOptions: {
-      services: 'WMTS,WMS,TMS'
-    }
+    filterServices : "WMTS,WMS,TMS",
+    serviceOptions: {}
   }
 }
 
@@ -111,6 +118,10 @@ const measureAzimuthOptions = {
   <LayerSwitcher
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
+  />
+  <Legends
+    :visibility="props.controlOptions.includes(useControls.Legends.id)"
+    :legends-options="legendsOptions"
   />
   <Isocurve
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
