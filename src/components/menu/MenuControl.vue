@@ -47,6 +47,13 @@ const options = [
     disabled: useControls.LayerSwitcher.disable
   },
   {
+    label: 'Légendes',
+    id: 'legends',
+    name: useControls.Legends.id,
+    hint: 'Légendes',
+    disabled: useControls.Legends.disable
+  },
+  {
     label: 'Geocodage inverse',
     id: 'reverseGeocode',
     name: useControls.ReverseGeocode.id,
