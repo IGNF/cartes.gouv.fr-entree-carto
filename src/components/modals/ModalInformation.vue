@@ -41,8 +41,17 @@ const onModalNoInformationClose = () => {
       title="ne plus afficher ce message"
       type="button"
       @click="onModalNoInformationClose">
-      <span>ne plus afficher</span>
+      <span>Ne plus afficher ce message</span>
     </button>
   
   </DsfrModal>
 </template>
+
+<style>
+/* Surcharge sur le composant DsfrConsent : 
+  > on n'affiche pas le bouton 'Personnaliser' 
+*/
+button[title="ne plus afficher ce message"] {
+  margin-top: 16px;
+}
+</style>
