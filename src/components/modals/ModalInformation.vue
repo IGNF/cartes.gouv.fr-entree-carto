@@ -1,17 +1,25 @@
 <script setup lang="js">
-import { useDataStore } from "@/stores/dataStore"
+import { useDataStore } from "@/stores/dataStore";
+import { useMapStore } from "@/stores/mapStore";
 
+const store = useMapStore();
 const data = useDataStore();
 
 const info = data.getInformations();
 const title = info.title;
 const description = info.description;
 const type = info.type;
-const opened = ref(info.opened);
+const version = info.version;
+const opened = ref(info.opened && (version !== parseInt(store.noInformation, 10)));
 
 const onModalInformationClose = () => {
   opened.value = false;
-}
+};
+
+const onModalNoInformationClose = () => {
+  opened.value = false;
+  store.noInformation = version;
+};
 
 </script>
 
@@ -27,6 +35,14 @@ const onModalInformationClose = () => {
       :description="description"
       :type="type"
     />
+    <!-- fr-btn--close -->
+    <button
+      class="fr-btn--tertiary-no-outline" 
+      title="ne plus afficher ce message"
+      type="button"
+      @click="onModalNoInformationClose">
+      <span>ne plus afficher</span>
+    </button>
   
   </DsfrModal>
 </template>
