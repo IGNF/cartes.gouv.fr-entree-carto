@@ -9,6 +9,8 @@ import {
  * - ressources additionnelles : metadonnées, vignettes, ...
  */
 export const useDataStore = defineStore('data', () => {
+  const m_informations = ref({});
+  const m_thematics = ref([]);
   const m_layers = ref({});
   const m_generalOptions = ref({});
   const m_tileMatrixSets = ref({});
@@ -43,6 +45,8 @@ export const useDataStore = defineStore('data', () => {
         ...editoWithTech
       }; // merge
 
+      m_informations.value = edito.informations;
+      m_thematics.value = edito.thematics;
       m_layers.value = res;
       m_generalOptions.value = tech.generalOptions;
       m_tileMatrixSets.value = tech.tileMatrixSets;
@@ -55,6 +59,14 @@ export const useDataStore = defineStore('data', () => {
       error.value = err.message;
     }
 
+  }
+
+  function getInformations() {
+    return m_informations.value;
+  }
+
+  function getThematics() {
+    return m_thematics.value;
   }
 
   function getLayers() {
@@ -213,6 +225,8 @@ export const useDataStore = defineStore('data', () => {
     error,
     isLoaded,
     fetchData,
+    getInformations,
+    getThematics,
     getLayers,
     getLayerKeysByID,
     getLayerIdByName,
