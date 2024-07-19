@@ -354,3 +354,5 @@ auto-imports.d.ts
 # npm package lock CI/CD
 package-lock.json
 
+# trace / debug
+Trace-*.json
