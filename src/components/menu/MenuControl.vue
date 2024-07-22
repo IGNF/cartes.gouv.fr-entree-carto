@@ -11,11 +11,6 @@ const props = defineProps({
 })
 
 const selectedControls = defineModel()
-const favoriteControls = computed(() => { 
-  if (mapStore.getControls())
-    return mapStore.getControls()
-  else return []
-})
 
 const disabled = false
 const inline = false
@@ -33,10 +28,12 @@ const allOptions = computed(() => {
 })
 
 const favOptions = computed(() => {
-  return allOptions.value.filter((opt) => {
-    if (favoriteControls.value.includes(opt.name))
-      return opt
-  })
+  if (props.selectedControls)
+    return allOptions.value.filter((opt) => {
+      if (props.selectedControls.includes(opt.name))
+        return opt
+      })
+  else return []
 })
 
 const tabListName = "Gestion d'outils"
@@ -73,6 +70,7 @@ watch(selectedControls, (values) => {
   }
 })
 
+onMounted(() => {})
 onUpdated(() => {})
 
 </script>
