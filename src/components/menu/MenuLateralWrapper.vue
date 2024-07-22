@@ -81,7 +81,7 @@ left: 7px;
 }
 .right {
   .menu-logo-list {
-  right: 56px;
+  right: 16px;
   }
   .menu-content-list {
     right: 60px;
@@ -130,7 +130,7 @@ left: 7px;
   display: flex;
   row-gap: 20px;
   margin-top: 12px;
-  width: 0;
+  width: 40px;
   position: absolute;
 }
 
