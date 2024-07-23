@@ -23,7 +23,6 @@ const translateRight = computed(() => {
   return "-" + cssWidth.value;
 })
 const menuTabs = ref()
-const backgroundColor = getComputedStyle(document.body)?.backgroundColor;
 
 function closeMenu() {
   is_expanded.value = false
@@ -120,7 +119,7 @@ left: 7px;
   height: inherit;
   overflow-y: scroll;
   scrollbar-width: thin;
-  background-color: v-bind(backgroundColor);
+  background-color: var(--background-default-grey);
   padding-left: 30px;
 }
 .menu-logo-list {
