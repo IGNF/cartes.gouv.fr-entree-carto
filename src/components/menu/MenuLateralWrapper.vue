@@ -50,11 +50,15 @@ defineExpose({
     <div class="menu-content-list"
     v-show="is_expanded">
       <div class="menu-collapse-icon-wrapper">
-        <button class="menu-collapse-icon" @click="closeMenu">
-        Fermer
-        <VIcon
+        <DsfrButton :id="id" 
+          tertiary
+          no-outline
+          class="menu-collapse-icon"
+          @click="closeMenu">
+          Fermer
+          <VIcon
         v-bind="iconProps"/>  
-      </button>
+        </DsfrButton>
       </div>
 
       <div class="menu-content">
@@ -69,7 +73,7 @@ defineExpose({
 <style scoped lang="scss">
 .left {
   .menu-logo-list {
-left: 7px;
+left: 10px;
   }
   .menu-content-list {
     left: 60px;
