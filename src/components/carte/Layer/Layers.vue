@@ -1,7 +1,6 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
-
 const props = defineProps({
   selectedLayers: Object
 })

@@ -79,4 +79,9 @@ export const useControls = {
     active: true,
     disable: false
   },
+  GetFeatureInfo: {
+    id: 'GetFeatureInfo',
+    active: true,
+    disable: false
+  }
 }
