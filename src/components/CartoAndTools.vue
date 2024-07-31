@@ -35,13 +35,14 @@ const selectedControls = computed(() => {
   if (controls.length) {
     return controls;
   }
-  // si le store est vide, on regarde les contrôles par defaut 
-  // sur le composable
-  return Object.keys(useControls).map((key) => {
-    if (useControls[key].active) {
-      return key;
-    }
-  });
+  else return []
+  // // si le store est vide, on regarde les contrôles par defaut 
+  // // sur le composable
+  // return Object.keys(useControls).map((key) => {
+  //   if (useControls[key].active) {
+  //     return key;
+  //   }
+  // });
 });
 
 </script>
