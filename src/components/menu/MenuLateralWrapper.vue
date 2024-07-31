@@ -19,9 +19,6 @@ width.value = 30
 const cssWidth = computed(() => {
   return width.value + "vw";
 })
-const translateRight = computed(() => {
-  return "-" + cssWidth.value;
-})
 const menuTabs = ref()
 
 function closeMenu() {
@@ -45,22 +42,28 @@ defineExpose({
   :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
   v-if="visibility"
   >
+    <div ref="menuTabs" class="menu-logo-list">
+      <slot name="navButtons"></slot>
+    </div>
 
+  
     <div class="menu-content-list"
     v-show="is_expanded">
       <div class="menu-collapse-icon-wrapper">
-        <button class="menu-collapse-icon" @click="closeMenu">
-        Fermer
-        <VIcon
+        <DsfrButton :id="id" 
+          tertiary
+          no-outline
+          class="menu-collapse-icon"
+          @click="closeMenu">
+          Fermer
+          <VIcon
         v-bind="iconProps"/>  
-      </button>
+        </DsfrButton>
       </div>
 
-      <slot name="content"></slot>
-    </div>
-
-    <div ref="menuTabs" class="menu-logo-list">
-      <slot name="navButtons"></slot>
+      <div class="menu-content">
+        <slot name="content"></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -70,24 +73,19 @@ defineExpose({
 <style scoped lang="scss">
 .left {
   .menu-logo-list {
-left: 7px;
+left: 10px;
   }
-  &.is_expanded {
-  .menu-logo-list {
-        transform: translateX(v-bind(cssWidth));
-      }
-    }
+  .menu-content-list {
+    left: 60px;
+  }
 }
 .right {
   .menu-logo-list {
   right: 16px;
   }
-  &.is_expanded {
-    flex-direction: row-reverse;
-    .menu-logo-list {
-        transform: translateX(v-bind(translateRight));
-      }
-}
+  .menu-content-list {
+    right: 60px;
+  }
 }
 
 .menu-collapse-icon {
@@ -105,7 +103,6 @@ left: 7px;
 
 .menu-toggle-wrap {
     height: inherit;
-    display: inline-flex;
     z-index: 1;
     &.is_expanded {
       .menu-content-list {
@@ -117,10 +114,16 @@ left: 7px;
 
 .menu-content-list {
   height: inherit;
-  overflow-y: scroll;
-  scrollbar-width: thin;
   background-color: var(--background-default-grey);
   padding-left: 30px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+.menu-content {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  overflow-x: hidden;
 }
 .menu-logo-list {
   flex-direction: column;

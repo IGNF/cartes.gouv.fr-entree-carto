@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { useControls } from '@/composables/controls'
+import { useControlsMenuOptions } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
 import { useMapStore } from "@/stores/mapStore"
 
@@ -12,113 +12,55 @@ const props = defineProps({
 
 const selectedControls = defineModel()
 
-const legend = 'Configuration des contrôles openlayers'
 const disabled = false
 const inline = false
 const required = false
 const small = false
-const options = [
-  {
-    label: 'Barre de Recherche',
-    id: 'searchEngine',
-    name: useControls.SearchEngine.id,
-    hint: 'Barre de recherche sur la carte',
-    disabled: useControls.SearchEngine.disable
-  },
-  {
-    label: 'Mini carte',
-    id: 'overview',
-    name: useControls.OverviewMap.id,
-    hint: 'Petite carte pour se repérer',
-    disabled: useControls.OverviewMap.disable
-  },
-  {
-    label: 'Scale Line',
-    id: 'scaleLine',
-    name: useControls.ScaleLine.id,
-    hint: 'Echelle',
-    disabled: useControls.ScaleLine.disable
-  },
-  {
-    label: 'Gestionnaire de couches',
-    id: 'layerSwitcher',
-    name: useControls.LayerSwitcher.id,
-    hint: 'Gestionnaire de couches',
-    disabled: useControls.LayerSwitcher.disable
-  },
-  {
-    label: 'Légendes',
-    id: 'legends',
-    name: useControls.Legends.id,
-    hint: 'Légendes',
-    disabled: useControls.Legends.disable
-  },
-  {
-    label: 'Geocodage inverse',
-    id: 'reverseGeocode',
-    name: useControls.ReverseGeocode.id,
-    hint: 'Geocodage inverse',
-    disabled: useControls.ReverseGeocode.disable
-  },
-  {
-    label: 'Calcul d\'isochrone',
-    id: 'isocurve',
-    name: useControls.Isocurve.id,
-    hint: 'Calcul d\'isochrone',
-    disabled: useControls.Isocurve.disable
-  },
-  {
-    label: 'Zoom',
-    id: 'zoom',
-    name: useControls.Zoom.id,
-    hint: 'Zoom',
-    disabled: useControls.Zoom.disable
-  },
-  {
-    label: 'Attributions',
-    id: 'attributions',
-    name: useControls.Attributions.id,
-    hint: 'Attributions',
-    disabled: useControls.Attributions.disable
-  },
-  {
-    label: 'Rotation de la carte',
-    id: 'rotate',
-    name: useControls.Rotate.id,
-    hint: 'Rotation de la carte',
-    disabled: useControls.Rotate.disable
-  },
-  {
-    label: 'Plein écran',
-    id: 'fullscreen',
-    name: useControls.FullScreen.id,
-    hint: 'Plein écran',
-    disabled: useControls.FullScreen.disable
-  },
-  {
-    label: 'Mesure de distance',
-    id: 'measureLength',
-    name: useControls.MeasureLength.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureLength.disable
-  },
-  {
-    label: 'Mesure d\'aire',
-    id: 'measureArea',
-    name: useControls.MeasureArea.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureArea.disable
-  },
-  {
-    label: 'Mesure d\'azimut',
-    id: 'measureAzimuth',
-    name: useControls.MeasureAzimuth.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureAzimuth.disable
-  },
-].filter(opt => Object.keys(useControls).includes(opt.name))
+const opts = useControlsMenuOptions()
 
-const side = "right"
+const allOptions = computed(() => {
+  return opts.filter((opt) => {
+    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) 
+    || opt.hint.toLowerCase().includes(searchString.value.toLowerCase())
+    || opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
+      return opt
+  })
+})
+
+const favOptions = computed(() => {
+  if (props.selectedControls)
+    return allOptions.value.filter((opt) => {
+      if (props.selectedControls.includes(opt.name))
+        return opt
+      })
+  else return []
+})
+
+const tabListName = "Gestion d'outils"
+const tabTitles = [
+  {
+    title : "Mes Outils",
+    tabId : "tab-0",
+    panelId : "tab-content-0"
+  },
+  {
+    title : "Ajouter des outils",
+    tabId : "tab-1",
+    panelId : "tab-content-10"
+  }
+]
+const selectedTabIndex = ref(0)
+const asc = ref(true)
+const initialSelectedIndex = 0
+function selectTab (idx) {
+  asc.value = selectedTabIndex.value < idx
+  selectedTabIndex.value = idx
+}
+const searchString = ref("")
+function updateSearch(e) {
+  searchString.value = e
+}
+
 
 watch(selectedControls, (values) => {
   mapStore.cleanControls();
@@ -128,22 +70,65 @@ watch(selectedControls, (values) => {
   }
 })
 
+onMounted(() => {})
 onUpdated(() => {})
 
 </script>
 
 <template>
-  <DsfrCheckboxSet
-    v-model="selectedControls"
-    :legend="legend"
-    :disabled="disabled"
-    :inline="inline"
-    :small="small"
-    :required="required"
-    :options="options"
-    :model-value="props.selectedControls"
-  /> 
+    <h4>Gestion d'outils</h4>
+    <div class="control-search-bar">
+    <DsfrSearchBar
+    :model-value="searchString"
+    @update:model-value="updateSearch"
+  />
+  </div>
+  <DsfrTabs
+    :tab-list-name="tabListName"
+    :tab-titles="tabTitles"
+    :initial-selected-index="initialSelectedIndex"
+    @select-tab="selectTab"
+  >
+    <DsfrTabContent
+      panel-id="tab-content-0"
+      tab-id="tab-0"
+      :selected="selectedTabIndex === 0"
+      :asc="asc"
+    >
+        <DsfrCheckboxSet
+        v-model="selectedControls"
+        :disabled="disabled"
+        :inline="inline"
+        :small="small"
+        :required="required"
+        :options="favOptions"
+        :model-value="props.selectedControls"
+      /> 
+    </DsfrTabContent>
+    <DsfrTabContent
+      panel-id="tab-content-1"
+      tab-id="tab-1"
+      :selected="selectedTabIndex === 1"
+      :asc="asc"
+    >
+        <DsfrCheckboxSet
+        v-model="selectedControls"
+        :disabled="disabled"
+        :inline="inline"
+        :small="small"
+        :required="required"
+        :options="allOptions"
+        :model-value="props.selectedControls"
+      /> 
+    </DsfrTabContent>
+
+  </DsfrTabs>
+
 </template>
 
 <style scoped>
+.control-search-bar {
+  margin-bottom: 30px;
+  margin-right: 40px;
+}
 </style>

@@ -116,54 +116,67 @@ const measureAzimuthOptions = {
 -->
 <template>
   <LayerSwitcher
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :layer-switcher-options="layerSwitcherOptions"
   />
   <Legends
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
     :legends-options="legendsOptions"
   />
   <Isocurve
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
     :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
     :reverse-geocode-options="reverseGeocodeOptions"
   />
   <FullScreen
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
     :fullscreen-options="fullscreenOptions"
   />
   <Zoom
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :zoom-options="zoomOptions"
   />
   <Attributions
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Attributions.id)"
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
     :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :overview-map-options="overviewMapOptions"
   />
   <MeasureLength
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
     :measure-length-options="measureLengthOptions"
   />
   <MeasureArea
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
     :measure-area-options="measureAreaOptions"
   />
   <MeasureAzimuth
+    v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
     :measure-azimuth-options="measureAzimuthOptions"
   />
