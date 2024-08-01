@@ -2,7 +2,7 @@
  
 * Repo entrée carto : https://github.com/IGNF/cartes.gouv.fr-entree-carto
 * Projet entrée carto : https://github.com/orgs/IGNF/projects/20
-* Repo extensions DSFR : https://github.com/IGNF/geoportal-extensions-openlayers
+* Repo extensions DSFR : https://github.com/IGNF/geopf-extensions-openlayers
 * Repo démonstrateur widgets DSFR : https://github.com/IGNF/geoportal-extensions-openlayers-samples
 * Maquette initiale entrée carto : https://6tapsu.axshare.com/#g=1&p=accueil__utilisateur_non_connect__
 * Maquette Figma espace Co (dont on doit s'inspirer) : https://2fresh-studio.com/projets/ign/2-map.html

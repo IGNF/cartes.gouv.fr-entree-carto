@@ -1,6 +1,6 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin'
-import { GeoportalOverviewMap } from 'geoportal-extensions-openlayers'
+import { GeoportalOverviewMap } from 'geopf-extensions-openlayers'
 import { useMatchMedia } from '@/composables/matchMedia'
 
 const props = defineProps({

@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { MeasureArea } from 'geoportal-extensions-openlayers'
+import { MeasureArea } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,

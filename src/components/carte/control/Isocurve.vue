@@ -3,7 +3,7 @@
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from '@/stores/dataStore';
 
-import { Isocurve } from 'geoportal-extensions-openlayers'
+import { Isocurve } from 'geopf-extensions-openlayers'
 
 // FIXME
 // l'intégration de ce widget ne fonctionne pas car le constructeur 

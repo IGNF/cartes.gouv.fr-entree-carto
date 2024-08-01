@@ -8,7 +8,7 @@ import {
     transformExtent as olTransformExtentProj
 } from "ol/proj";
 
-import { LayerSwitcher } from 'geoportal-extensions-openlayers'
+import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,

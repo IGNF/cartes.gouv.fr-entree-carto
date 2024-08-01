@@ -3,7 +3,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 
-import { ReverseGeocode } from 'geoportal-extensions-openlayers';
+import { ReverseGeocode } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,

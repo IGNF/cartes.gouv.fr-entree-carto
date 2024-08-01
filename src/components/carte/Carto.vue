@@ -2,7 +2,7 @@
 
 // chargement des CSS de la carte et des extensions
 import "ol/ol.css";
-import "geoportal-extensions-openlayers/css/Dsfr.css";
+import "geopf-extensions-openlayers/css/Dsfr.css";
 
 import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'

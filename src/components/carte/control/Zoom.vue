@@ -2,7 +2,7 @@
 import { useLogger } from 'vue-logger-plugin'
 import {
   GeoportalZoom
-} from 'geoportal-extensions-openlayers'
+} from 'geopf-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
