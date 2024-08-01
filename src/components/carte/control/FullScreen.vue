@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { GeoportalFullScreen } from 'geoportal-extensions-openlayers'
+import { GeoportalFullScreen } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,

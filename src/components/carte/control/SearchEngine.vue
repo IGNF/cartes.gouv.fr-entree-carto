@@ -9,7 +9,7 @@ import {
   LayerMapBox as GeoportalMapBox,
   LayerWMS as GeoportalWMS,
   LayerWMTS as GeoportalWMTS
-} from 'geoportal-extensions-openlayers'
+} from 'geopf-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,

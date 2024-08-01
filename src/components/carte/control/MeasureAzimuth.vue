@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { MeasureAzimuth } from 'geoportal-extensions-openlayers'
+import { MeasureAzimuth } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,

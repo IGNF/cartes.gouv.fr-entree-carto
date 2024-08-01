@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { Legends } from 'geoportal-extensions-openlayers'
+import { Legends } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
