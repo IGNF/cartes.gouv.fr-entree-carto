@@ -134,5 +134,24 @@ left: 10px;
   position: absolute;
 }
 
+/* FIX ME : le bouton widget n'est pas intégré à la grille des widgets
+On gère donc sa position de manière absolue */
+@media (max-width: 382px) {
+  .menu-logo-list {
+    top : 308px;
+  }
+}
+
+@media (max-width: 576px) and (min-width: 382px){
+  .menu-logo-list {
+    top : 286px;
+  }
+}
+
+@media (max-width: 627px) and (min-width: 576px){
+  .menu-logo-list {
+    top : 228px;
+  }
+}
 
 </style>
