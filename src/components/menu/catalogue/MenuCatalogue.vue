@@ -165,7 +165,6 @@ function onClickSelectLayer(e) {
     // INFO
     // l'ajout de la couche est realisé via la modification
     // du mapStore et la reactivité : cf. src/components/CartoAndTools.vue
-    console.log(e)
     const layerId = e.target.baseURI.split("?key=")[1];
     log.debug(layerId);
     store.addLayer(layerId);
