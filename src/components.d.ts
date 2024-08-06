@@ -29,6 +29,7 @@ declare module 'vue' {
     Layer: typeof import('./components/carte/Layer/Layer.vue')['default']
     Layers: typeof import('./components/carte/Layer/Layers.vue')['default']
     LayerSwitcher: typeof import('./components/carte/control/LayerSwitcher.vue')['default']
+    LeftMenu: typeof import('./components/menu/LeftMenu.vue')['default']
     LeftMenuTool: typeof import('./components/menu/LeftMenuTool.vue')['default']
     Legends: typeof import('./components/carte/control/Legends.vue')['default']
     Map: typeof import('./components/carte/Map.vue')['default']
