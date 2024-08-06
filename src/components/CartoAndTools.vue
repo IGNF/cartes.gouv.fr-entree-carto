@@ -2,7 +2,7 @@
 import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
-import MenuCatalogue from '@/components/menu/MenuCatalogue.vue'
+import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
 import MenuControl from '@/components/menu/MenuControl.vue';
 
 import { useControls } from '@/composables/controls'

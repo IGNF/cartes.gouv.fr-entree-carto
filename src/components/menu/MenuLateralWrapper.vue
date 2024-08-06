@@ -122,9 +122,7 @@ left: 10px;
   flex-direction: column;
 }
 .menu-content {
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  overflow-x: hidden;
+  width : inherit
 }
 .menu-logo-list {
   flex-direction: column;
