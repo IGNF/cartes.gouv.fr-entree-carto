@@ -24,8 +24,36 @@ log.debug(props.layers);
 const buttonLabel = "Liste des couches du catalogue";
 const collapsable = true;
 
-const menuItems = computed(() => {
+// Fonds de carte
+const menuItems0 = computed(() => {
   return Object.keys(props.layers)
+  .filter((key) => {
+    if (props.layers[key].hasOwnProperty("base")
+    &&  props.layers[key].base)
+      return key
+  })
+  .filter((key) => {
+    if (props.layers[key].title.toLowerCase().includes(searchString.value.toLowerCase()) 
+    || props.layers[key].name.toLowerCase().includes(searchString.value.toLowerCase()))
+      return key
+  })
+  .map((key) => {
+    return {
+        text: props.layers[key].title,
+        to: "/?key=" + key,
+        id: key
+    }
+})
+})
+
+// Données
+const menuItems1 = computed(() => {
+  return Object.keys(props.layers)
+  .filter((key) => {
+    if (!props.layers[key].hasOwnProperty("base")
+    ||  !props.layers[key].base)
+      return key
+  })
   .filter((key) => {
     if (props.layers[key].title.toLowerCase().includes(searchString.value.toLowerCase()) 
     || props.layers[key].name.toLowerCase().includes(searchString.value.toLowerCase()))
@@ -110,7 +138,7 @@ function updateSearch(e) {
       <DsfrSideMenu
         :button-label="buttonLabel"
         :collapsable="collapsable"
-        :menu-items="menuItems"
+        :menu-items="menuItems0"
         @click="onClickSelectLayer"
       />
     </DsfrTabContent>
@@ -123,7 +151,7 @@ function updateSearch(e) {
     <DsfrSideMenu
         :button-label="buttonLabel"
         :collapsable="collapsable"
-        :menu-items="menuItems"
+        :menu-items="menuItems1"
         @click="onClickSelectLayer"
       />
     </DsfrTabContent>
