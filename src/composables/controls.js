@@ -81,6 +81,17 @@ export const useControls = {
   },
 }
 
+export function getDefaultControls() {
+  var defaultControls = [];
+  /* récupération des controls par défaut */
+  for (var control in useControls) {
+    if (useControls[control].active === true) {
+      defaultControls.push(useControls[control].id);
+    }
+  }
+  return defaultControls;
+}
+
 export function useControlsMenuOptions() {
   return [
   {
