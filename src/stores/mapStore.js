@@ -6,14 +6,18 @@ import {
   useStorage
 } from '@vueuse/core';
 
+import { getDefaultControls } from '@/composables/controls'
+
 /**
  * Valeurs par defaut
  * @fixme pour la liste des contrôles par defaut, on utilise toujours 
  * le composable 'src/composables/controls.js'
  */
+var defaultControls = getDefaultControls().toString();
+
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS",
-  CONTROLS: "",
+  CONTROLS: defaultControls,
   X: 283734.248995,
   Y: 5655117.100650,
   LON: 2.5479878714752027, // informatif
