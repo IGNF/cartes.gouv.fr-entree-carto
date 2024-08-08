@@ -44,6 +44,13 @@ export const useDataStore = defineStore('data', () => {
         ...tech.layers,
         ...editoWithTech
       }; // merge
+      // ajoute la clé aux props
+      Object.keys(res).map((key) => { 
+        res[key].key = key
+        let ret = {}
+        ret[key] = res[key]
+        return ret
+      })
 
       m_informations.value = edito.informations;
       m_thematics.value = edito.thematics;

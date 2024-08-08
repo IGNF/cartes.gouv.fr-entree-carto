@@ -76,14 +76,16 @@ onUpdated(() => {})
 </script>
 
 <template>
+  <div class="control-container">
     <h4>Gestion d'outils</h4>
     <div class="control-search-bar">
-    <DsfrSearchBar
-    :model-value="searchString"
-    @update:model-value="updateSearch"
-  />
-  </div>
-  <DsfrTabs
+      <DsfrSearchBar
+      :model-value="searchString"
+      @update:model-value="updateSearch"
+      />
+    </div>
+    <div class="control-content">
+      <DsfrTabs
     :tab-list-name="tabListName"
     :tab-titles="tabTitles"
     :initial-selected-index="initialSelectedIndex"
@@ -123,6 +125,9 @@ onUpdated(() => {})
     </DsfrTabContent>
 
   </DsfrTabs>
+    </div>
+ 
+</div>
 
 </template>
 
@@ -130,5 +135,20 @@ onUpdated(() => {})
 .control-search-bar {
   margin-bottom: 30px;
   margin-right: 40px;
+  top: 0px;
+}
+
+.control-content {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  overflow-x: hidden;
+}
+
+.control-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
 }
 </style>
