@@ -36,8 +36,8 @@ export const useControls = {
   },
   Isocurve: {
     id: 'Isocurve',
-    active: false,
-    disable: true
+    active: true,
+    disable: false
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
@@ -58,6 +58,11 @@ export const useControls = {
     id: 'Rotate',
     active: false,
     disable: true
+  },
+  Route: {
+    id: 'Route',
+    active: true,
+    disable: false
   },
   FullScreen: {
     id: 'FullScreen',
@@ -142,6 +147,13 @@ export function useControlsMenuOptions() {
     name: useControls.Isocurve.id,
     hint: 'Calcul d\'isochrone',
     disabled: useControls.Isocurve.disable
+  },
+  {
+    label: 'Calcul d\'itinéraire',
+    id: 'route',
+    name: useControls.Route.id,
+    hint: 'Calcul d\'itinéraire',
+    disabled: useControls.Route.disable
   },
   {
     label: 'Zoom',
