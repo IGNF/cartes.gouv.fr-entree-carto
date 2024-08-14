@@ -46,6 +46,7 @@ declare module 'vue' {
     Patience: typeof import('./components/utils/Patience.vue')['default']
     ReverseGeocode: typeof import('./components/carte/control/ReverseGeocode.vue')['default']
     RightMenuTool: typeof import('./components/menu/RightMenuTool.vue')['default']
+    Route: typeof import('./components/carte/control/Route.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScaleLine: typeof import('./components/carte/control/ScaleLine.vue')['default']
