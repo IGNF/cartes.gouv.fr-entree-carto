@@ -86,7 +86,6 @@ const zoomOptions = {
 
 const attributionsOptions = {}
 
-// FIXME exception sur la position
 const isocurveOptions = {
   position: 'bottom-right'
 }
@@ -138,6 +137,7 @@ const measureAzimuthOptions = {
   <Isocurve
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
+    :analytic="useControls.Isocurve.analytic"
     :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
