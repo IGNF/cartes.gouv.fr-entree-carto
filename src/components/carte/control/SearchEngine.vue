@@ -66,7 +66,7 @@ const onClickSearch = (e) => {
 /* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
   div[id^="GPsearchEngine-"] {
     position: relative;
-    width: 520px;
+    width: 480px;
     margin: 0 auto;
     left: unset;
   }
