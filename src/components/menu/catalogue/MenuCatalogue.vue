@@ -6,6 +6,9 @@
 
 <script setup lang="js">
 import MenuCatalogueThematique from  '@/components/menu/catalogue/MenuCatalogueThematique.vue'
+import LayerList from '@/components/menu/catalogue/LayerList.vue'
+import DataLayerCatalogue from '@/components/menu/catalogue/DataLayerCatalogue.vue'
+import {getSearchResults} from '@/composables/searchInArray'
 
 import { useLogger } from 'vue-logger-plugin'
 import { useMapStore } from "@/stores/mapStore"
@@ -25,137 +28,22 @@ log.debug(props.layers);
 const collapsable = true;
 const searchString = ref("")
 
-// Fonds de carte
 const baseLayers = computed(() => {
-  return Object.values(props.layers)
-  .filter((layer) => {
+  return Object.values(props.layers).filter((layer) => {
     if (layer.hasOwnProperty("base")
     &&  layer.base)
       return layer
   })
-  .map((layer) => {
-    return {
-        text: layer.title,
-        to: "/?key=" + layer.key,
-        id: layer.key
-    }
-})
 })
 
-// Données
 const dataLayers = computed(() => {
-  return Object.values(props.layers)
-  .filter((layer) => {
+    return Object.values(props.layers).filter((layer) => {
     if (!layer.hasOwnProperty("base")
     ||  !layer.base)
       return layer
   })
-  .map((layer) => {
-    return {
-        text: layer.title,
-        to: "/?key=" + layer.key,
-        id: layer.key
-    }
-})
 })
 
-const thematicDataLayers = computed(() => {
-  let arr = [... new Set(Object.values(props.layers)
-  .filter((layer) => {
-    if (layer.hasOwnProperty("thematic")
-      && layer.thematic.length > 0)
-      return layer.thematic
-  })
-  .map(l => l.thematic)
-)]
-.map((thematic) => {
-  return {
-    thematicLabel : thematic,
-    layers : Object.values(props.layers)
-                    .filter(l => l.hasOwnProperty("thematic") && thematic == l.thematic)
-                    .map(l => l)
-  }
-})
-
-arr.push({
-    thematicLabel : "Autres",
-    layers : Object.values(props.layers)
-                    .filter((l) => {
-                      if(!l.hasOwnProperty("thematic") || l.thematic.length == 0)
-                        return l
-                    })
-  })
-
-  return arr
-})
-
-
-
-const thematicBaseLayers = computed(() => {
-  let arr = [... new Set(Object.values(props.layers)
-  .filter((layer) => {
-    if (layer.hasOwnProperty("base")
-    &&  layer.base
-      && layer.hasOwnProperty("thematic")
-      && layer.thematic.length > 0)
-      return layer.thematic
-  })
-  .map(l => l.thematic)
-)]
-.map((thematic) => {
-  return {
-    thematicLabel : thematic,
-    layers : Object.values(props.layers)
-                    .filter(l => layer.hasOwnProperty("base") && l.hasOwnProperty("thematic") && thematic == l.thematic)
-                    .map(l => l)
-  }
-})
-
-arr.push({
-    thematicLabel : "Autres",
-    layers : Object.values(props.layers)
-                    .filter((l) => {
-                      if(l.hasOwnProperty("base")
-                      &&  l.base
-                      && (!l.hasOwnProperty("thematic") || l.thematic.length == 0))
-                        return l
-                    })
-  })
-
-  return arr
-})
-
-const baseLayerMenu = computed(() => {
-  return createMenuConf(thematicBaseLayers)
-})
-
-const dataLayerMenu = computed(() => {
-  return createMenuConf(thematicDataLayers)
-
-})
-
-function createMenuConf(thematicLayers) {
-  return thematicLayers.value.map(thematic => {
-    let l = thematic.layers.filter((layer) => {
-        if (layer.title.toLowerCase().includes(searchString.value.toLowerCase()) 
-        || layer.name.toLowerCase().includes(searchString.value.toLowerCase()))
-          return layer
-      })
-      let ret = l.map((layer) => {
-          return {
-              text: layer.title,
-              to: "/?key=" + layer.key,
-              id: layer.key
-          }
-      })
-      return {
-        thematicLabel : thematic.thematicLabel,
-        layers: ret
-      }
-  });
-}
-
-const emit = defineEmits(['onClickSelectLayer'])
 
 /**
  * La selection d'un titre du catalogue permet son affichage
@@ -193,18 +81,33 @@ function selectTab (idx) {
   selectedTabIndex.value = idx
 }
 
-
 function updateSearch(e) {
   searchString.value = e
 }
 
+const dataFilters = [
+  {
+    label: "Producteur",
+    value: "producteur"
+  },
+  {
+    label: "Thème",
+    value: "theme"
+  },
+  {
+    label: "Tout",
+    value: "tout"
+  }
+]
+
+const currDataFilter = ref('producteur')
 
 </script>
 
 <template>
 <div class="catalogue-container">
   <div class="catalogue-search-bar">
-    <DsfrSearchBar
+  <DsfrSearchBar
     :model-value="searchString"
     @update:model-value="updateSearch"
   />
@@ -224,19 +127,8 @@ function updateSearch(e) {
       :selected="selectedTabIndex === 0"
       :asc="asc"
     >
-      <template v-for="thematic in baseLayerMenu" :key="thematic.thematicLabel">
-        <DsfrAccordionsGroup>
-        <MenuCatalogueThematique v-if="thematic.layers.length > 0"
-          :thematic-label="thematic.thematicLabel"
-          :layers-count="thematic.layers.length">
-          <DsfrSideMenu
-            :collapsable="collapsable"
-            :menu-items="thematic.layers"
-            @click="onClickSelectLayer"
-          />
-        </MenuCatalogueThematique>
-      </DsfrAccordionsGroup>
-      </template>
+    <LayerList
+      :layers="getSearchResults(baseLayers, searchString, ['title', 'description', 'name'])"/>
     </DsfrTabContent>
 
     <DsfrTabContent
@@ -245,19 +137,20 @@ function updateSearch(e) {
       :selected="selectedTabIndex === 1"
       :asc="asc"
     >
-      <template v-for="thematic in dataLayerMenu" :key="thematic.thematicLabel">
-      <DsfrAccordionsGroup>
-        <MenuCatalogueThematique v-if="thematic.layers.length > 0"
-          :thematic-label="thematic.thematicLabel"
-          :layers-count="thematic.layers.length">
-          <DsfrSideMenu
-          :collapsable="collapsable"
-          :menu-items="thematic.layers"
-          @click="onClickSelectLayer"
-        /> 
-        </MenuCatalogueThematique>
-      </DsfrAccordionsGroup>
-      </template>
+    <DsfrRadioButtonSet
+    :inline="true"
+    :model-value="currDataFilter"
+    :small="true"
+    :name="'filtre'"
+    :options="dataFilters"
+    @update:model-value="currDataFilter = $event"
+    />
+    <DataLayerCatalogue
+    :data-layers="dataLayers"
+    :curr-data-filter="currDataFilter"
+    :search-string="searchString"
+    />
+  
     </DsfrTabContent>
    
   </DsfrTabs>
