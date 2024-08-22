@@ -4,7 +4,8 @@ import {getSearchResults} from '@/composables/searchInArray'
 const props = defineProps({
     dataLayers: Object,
     currDataFilter : String,
-    searchString: String
+    searchString: String,
+    selectedLayers: Object
 })
 
 
@@ -102,6 +103,7 @@ arr.push({
           :thematic-label="producer.producerLabel"
           :layers-count="producer.layers.length">
           <LayerList
+            :selected-layers="selectedLayers"
             :layers="producer.layers"/>
         </MenuCatalogueThematique>
       </DsfrAccordionsGroup>
@@ -113,6 +115,7 @@ arr.push({
           :thematic-label="thematic.thematicLabel"
           :layers-count="thematic.layers.length">
           <LayerList
+            :selected-layers="selectedLayers"
             :layers="thematic.layers"/>
         </MenuCatalogueThematique>
       </DsfrAccordionsGroup>
@@ -120,6 +123,7 @@ arr.push({
 
   <LayerList
       v-if="currDataFilter == 'tout'"
+      :selected-layers="selectedLayers"
       :layers="getSearchResults(props.dataLayers, searchString, ['title', 'description', 'name'])"/>
 
 

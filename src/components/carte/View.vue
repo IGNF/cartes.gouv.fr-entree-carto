@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 // recuperation de l'objet 'map' du composant parent
-const map = inject('map')
+const map = store.getMap()
 
 /**
  * creation de la vue
@@ -47,8 +47,6 @@ view.on("change:resolution", (e) => {
 onMounted(() => {
   if (map) {
     map.setView(view)
-    // enregistrement
-    store.setMap(map)
   }
 })
 </script>

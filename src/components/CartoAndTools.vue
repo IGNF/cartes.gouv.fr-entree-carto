@@ -54,6 +54,7 @@ const selectedControls = computed(() => {
     <LeftMenuTool>
       <!-- On transmet la liste complète des couches du catalogue -->
       <MenuCatalogue
+        :selected-layers="selectedLayers"
         :layers="dataStore.getLayers()"/>
     </LeftMenuTool>
 

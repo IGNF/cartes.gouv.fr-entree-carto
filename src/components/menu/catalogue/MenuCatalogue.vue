@@ -17,7 +17,8 @@ const log = useLogger()
 const store = useMapStore()
 
 const props = defineProps({
-  layers: Object
+  layers: Object,
+  selectedLayers: Object
 })
 
 // INFO
@@ -43,20 +44,6 @@ const dataLayers = computed(() => {
       return layer
   })
 })
-
-
-/**
- * La selection d'un titre du catalogue permet son affichage
- * @param e 
- */
-function onClickSelectLayer(e) {
-    // INFO
-    // l'ajout de la couche est realisé via la modification
-    // du mapStore et la reactivité : cf. src/components/CartoAndTools.vue
-    const layerId = e.target.baseURI.split("?key=")[1];
-    log.debug(layerId);
-    store.addLayer(layerId);
-}
 
 const tabListName = "Liste des couches"
 const tabTitles = [
@@ -113,7 +100,6 @@ const currDataFilter = ref('producteur')
   />
   </div>
   <div class="catalogue-content">
-    <KeepAlive>
   <DsfrTabs
     :tab-list-name="tabListName"
     :tab-titles="tabTitles"
@@ -128,6 +114,7 @@ const currDataFilter = ref('producteur')
       :asc="asc"
     >
     <LayerList
+      :selected-layers="selectedLayers"
       :layers="getSearchResults(baseLayers, searchString, ['title', 'description', 'name'])"/>
     </DsfrTabContent>
 
@@ -149,12 +136,12 @@ const currDataFilter = ref('producteur')
     :data-layers="dataLayers"
     :curr-data-filter="currDataFilter"
     :search-string="searchString"
+    :selected-layers="selectedLayers"
     />
   
     </DsfrTabContent>
    
   </DsfrTabs>
-</KeepAlive>
 </div>
 </div>
   

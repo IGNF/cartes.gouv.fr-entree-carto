@@ -1,18 +1,26 @@
 <script setup lang="js">
+import { useMapStore } from "@/stores/mapStore"
+import { useDataStore } from "@/stores/dataStore"
+import LayerCatalogue from "@/components/menu/catalogue/LayerCatalogue.vue"
+
+const mapStore = useMapStore();
+const dataStore = useDataStore();
+
 const props = defineProps({
-    layers: Object
+    layers: Object,
+    selectedLayers: Object
 })
 
-const modelValue = ref()
+onMounted(() => {
+})
+
 </script>
 
 <template>
     <template v-for="layer in layers" :key="layer.id">
-        <DsfrCheckbox
-        :model-value="modelValue"
-        :label="layer.title"
-        :id="layer.id"
-        :hint="layer.description"
+        <LayerCatalogue
+            :active="selectedLayers?.filter(l => l.key == layer.key).length > 0"    
+            :layer="layer"    
         />
     </template>
 </template>
