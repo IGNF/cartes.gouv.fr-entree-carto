@@ -1,4 +1,5 @@
 <script setup lang="js">
+import { useControlsMenuOptions } from "@/composables/controls";
 import { useMapStore } from "@/stores/mapStore"
 
 const mapStore = useMapStore();
@@ -8,14 +9,19 @@ const props = defineProps({
     active: Boolean
 })
 
-function layerInteraction(layer) {
-    if(!props.active) {
+const active = ref(props.active)
+
+function layerInteraction(e, layer) {
+    active.value = e
+    if(active.value) {
         mapStore.addLayer(layer.key);
     }
     else {
         mapStore.removeLayer(layer.key)
     }
 }
+
+
 
 </script>
 
@@ -25,6 +31,6 @@ function layerInteraction(layer) {
         :label="layer.title"
         :id="layer.id"
         :hint="layer.description"
-        @update:modelValue="layerInteraction(layer)"
+        @update:modelValue="layerInteraction($event, layer)"
         />
 </template>

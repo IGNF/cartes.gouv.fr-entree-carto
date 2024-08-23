@@ -114,6 +114,7 @@ const currDataFilter = ref('producteur')
       :asc="asc"
     >
     <LayerList
+      :list-name="'dataLayer'"
       :selected-layers="selectedLayers"
       :layers="getSearchResults(baseLayers, searchString, ['title', 'description', 'name'])"/>
     </DsfrTabContent>

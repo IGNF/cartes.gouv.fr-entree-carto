@@ -95,7 +95,6 @@ arr.push({
 </script>
 
 <template>
-    <KeepAlive>
 <div>
   <template v-if="currDataFilter == 'producteur'" v-for="producer in producerDataLayers" :key="producer.producerLabel">
       <DsfrAccordionsGroup>
@@ -103,6 +102,7 @@ arr.push({
           :thematic-label="producer.producerLabel"
           :layers-count="producer.layers.length">
           <LayerList
+            :list-name="currDataFilter"
             :selected-layers="selectedLayers"
             :layers="producer.layers"/>
         </MenuCatalogueThematique>
@@ -115,6 +115,7 @@ arr.push({
           :thematic-label="thematic.thematicLabel"
           :layers-count="thematic.layers.length">
           <LayerList
+            :list-name="currDataFilter"
             :selected-layers="selectedLayers"
             :layers="thematic.layers"/>
         </MenuCatalogueThematique>
@@ -123,11 +124,10 @@ arr.push({
 
   <LayerList
       v-if="currDataFilter == 'tout'"
+      :list-name="currDataFilter"
       :selected-layers="selectedLayers"
       :layers="getSearchResults(props.dataLayers, searchString, ['title', 'description', 'name'])"/>
 
 
 </div>
-   
-    </KeepAlive>
 </template>
