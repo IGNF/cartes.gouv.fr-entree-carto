@@ -6,83 +6,99 @@
  *    id: 'OverviewMap',
  *    active: true,      // afficher ou non sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
+ *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
  * }
  */
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   SearchEngine: {
     id: 'SearchEngine',
     active: true,
     disable: false,
+    analytic: false
   },
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Legends: {
     id: 'Legends',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Isocurve: {
     id: 'Isocurve',
     active: true,
-    disable: false
+    disable: false,
+    analytic: true
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
     active: false,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Zoom: {
     id: 'Zoom',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Attributions: {
     id: 'Attributions',
     active: false,
-    disable: true
+    disable: true,
+    analytic: false
   },
   Rotate: {
     id: 'Rotate',
     active: false,
-    disable: true
+    disable: true,
+    analytic: false
   },
   Route: {
     id: 'Route',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   FullScreen: {
     id: 'FullScreen',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureLength: {
     id: 'MeasureLength',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
 }
 

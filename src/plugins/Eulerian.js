@@ -39,10 +39,10 @@ export class Eulerian {
     this.load().then(() => {
       console.debug("import dynamic dsfr !");
       // activation de la collecte si la clef de consentement est déjà active
-      var value = localStorage.getItem(this.key);
+      var value = JSON.parse(localStorage.getItem(this.key));
       if (value) {
-        if (value.eulerianAnalytics) {
-          this.enable();
+        if (!value.eulerianAnalytics) {
+          this.disable();
         }
       }
     });
