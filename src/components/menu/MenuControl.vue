@@ -39,14 +39,14 @@ const favOptions = computed(() => {
 const tabListName = "Gestion d'outils"
 const tabTitles = [
   {
-    title : "Mes Outils",
+    title : "Ajouter des outils",
     tabId : "tab-0",
     panelId : "tab-content-0"
   },
   {
-    title : "Ajouter des outils",
+    title : "Mes Outils",
     tabId : "tab-1",
-    panelId : "tab-content-10"
+    panelId : "tab-content-1"
   }
 ]
 const selectedTabIndex = ref(0)
@@ -103,7 +103,7 @@ onUpdated(() => {})
         :inline="inline"
         :small="small"
         :required="required"
-        :options="favOptions"
+        :options="allOptions"
         :model-value="props.selectedControls"
       /> 
     </DsfrTabContent>
@@ -119,11 +119,10 @@ onUpdated(() => {})
         :inline="inline"
         :small="small"
         :required="required"
-        :options="allOptions"
+        :options="favOptions"
         :model-value="props.selectedControls"
       /> 
     </DsfrTabContent>
-
   </DsfrTabs>
     </div>
  

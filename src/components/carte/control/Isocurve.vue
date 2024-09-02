@@ -5,12 +5,9 @@ import { useDataStore } from '@/stores/dataStore';
 
 import { Isocurve } from 'geopf-extensions-openlayers'
 
-// FIXME
-// l'intégration de ce widget ne fonctionne pas car le constructeur 
-// n'utilise pas de shadow dom !
-
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   isocurveOptions: Object
 })
 
@@ -23,6 +20,10 @@ const isocurve = ref(new Isocurve(props.isocurveOptions))
 onMounted(() => {
   if (props.visibility) {
     map.addControl(isocurve.value)
+    if (props.analytic) {
+      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
+      el.setAttribute("data-fr-analytics-action", el.title);
+    }
     /* abonnement au widget 
     * @fires isocurve:drawstart
     * @fires isocurve:drawend
@@ -43,6 +44,10 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(isocurve.value)
+    if (props.analytic) {
+      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
+      el.setAttribute("data-fr-analytics-action",  el.title);
+    }
   }
 })
 

@@ -7,6 +7,7 @@ import Attributions from './control/Attributions.vue'
 import LayerSwitcher from './control/LayerSwitcher.vue'
 import Legends from './control/Legends.vue'
 import Isocurve from './control/Isocurve.vue'
+import Route from './control/Route.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
@@ -85,8 +86,11 @@ const zoomOptions = {
 
 const attributionsOptions = {}
 
-// FIXME exception sur la position
 const isocurveOptions = {
+  position: 'bottom-right'
+}
+
+const routeOptions = {
   position: 'bottom-right'
 }
 
@@ -125,9 +129,15 @@ const measureAzimuthOptions = {
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
     :legends-options="legendsOptions"
   />
+  <Route
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Route.id)"
+    :route-options="routeOptions"
+  />
   <Isocurve
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
+    :analytic="useControls.Isocurve.analytic"
     :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode

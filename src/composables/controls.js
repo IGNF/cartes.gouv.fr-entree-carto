@@ -6,79 +6,111 @@
  *    id: 'OverviewMap',
  *    active: true,      // afficher ou non sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
+ *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
  * }
  */
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   SearchEngine: {
     id: 'SearchEngine',
     active: true,
     disable: false,
+    analytic: false
   },
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Legends: {
     id: 'Legends',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Isocurve: {
     id: 'Isocurve',
-    active: false,
-    disable: true
+    active: true,
+    disable: false,
+    analytic: true
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
     active: false,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Zoom: {
     id: 'Zoom',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   Attributions: {
     id: 'Attributions',
     active: false,
-    disable: true
+    disable: true,
+    analytic: false
   },
   Rotate: {
     id: 'Rotate',
     active: false,
-    disable: true
+    disable: true,
+    analytic: false
+  },
+  Route: {
+    id: 'Route',
+    active: true,
+    disable: false,
+    analytic: false
   },
   FullScreen: {
     id: 'FullScreen',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureLength: {
     id: 'MeasureLength',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
     active: true,
-    disable: false
+    disable: false,
+    analytic: false
   },
+}
+
+export function getDefaultControls() {
+  var defaultControls = [];
+  /* récupération des controls par défaut */
+  for (var control in useControls) {
+    if (useControls[control].active === true) {
+      defaultControls.push(useControls[control].id);
+    }
+  }
+  return defaultControls;
 }
 
 export function useControlsMenuOptions() {
@@ -131,6 +163,13 @@ export function useControlsMenuOptions() {
     name: useControls.Isocurve.id,
     hint: 'Calcul d\'isochrone',
     disabled: useControls.Isocurve.disable
+  },
+  {
+    label: 'Calcul d\'itinéraire',
+    id: 'route',
+    name: useControls.Route.id,
+    hint: 'Calcul d\'itinéraire',
+    disabled: useControls.Route.disable
   },
   {
     label: 'Zoom',

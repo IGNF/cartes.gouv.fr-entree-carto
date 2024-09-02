@@ -129,13 +129,15 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :show-beta=true
     :service-description="headerParams.serviceDescription" 
     :logo-text="headerParams.logoText"
-    :quick-links="headerParams.quickLinks">
-    <DsfrNavigation 
-      :nav-items="navItems" 
-      v-show="!largeScreen" 
-    />
+    :quick-links="headerParams.quickLinks"
+  >
+    <template #mainnav>
+      <DsfrNavigation 
+        :nav-items="navItems"
+      /> 
+    </template>
   </DsfrHeader>
-  
+
   <div>
     <router-view />
   </div>
