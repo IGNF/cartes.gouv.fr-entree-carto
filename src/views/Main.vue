@@ -214,6 +214,18 @@ const navItems: DsfrNavigationProps['navItems'] = [
     }
   }
   @media (max-width: 576px){
+    /* mini header */
+    .fr-header__service-tagline {
+      display: none;
+    }
+    .fr-header__service {
+      position: absolute;
+      left: 100px;
+    }
+    .fr-header__service::before {
+      display: none;
+    }
+    /* mini footer */
     .fr-footer {
       padding: 0.5rem 0;
     }
