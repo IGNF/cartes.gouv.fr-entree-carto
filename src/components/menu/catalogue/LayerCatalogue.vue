@@ -30,7 +30,15 @@ function layerInteraction(e, layer) {
         :model-value="active"
         :label="layer.title"
         :id="layer.id"
-        :hint="layer.description"
         @update:modelValue="layerInteraction($event, layer)"
         />
+        <div class="layer-description" v-html="layer.description"></div>
+
 </template>
+
+<style>
+.layer-description {
+    margin-left: 40px;
+    margin-bottom: 2em;
+}
+</style>
