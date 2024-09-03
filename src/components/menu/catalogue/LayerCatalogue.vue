@@ -1,5 +1,4 @@
 <script setup lang="js">
-import { useControlsMenuOptions } from "@/composables/controls";
 import { useMapStore } from "@/stores/mapStore"
 
 const mapStore = useMapStore();
@@ -21,6 +20,9 @@ function layerInteraction(e, layer) {
     }
 }
 
+onUpdated(() => {
+    active.value = props.active
+})
 
 
 </script>
