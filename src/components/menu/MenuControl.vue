@@ -20,7 +20,7 @@ const opts = useControlsMenuOptions()
 
 const allOptions = computed(() => {
   return opts.filter((opt) => {
-    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) 
+    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase())
     || opt.hint.toLowerCase().includes(searchString.value.toLowerCase())
     || opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
       return opt
@@ -105,7 +105,7 @@ onUpdated(() => {})
         :required="required"
         :options="allOptions"
         :model-value="props.selectedControls"
-      /> 
+      />
     </DsfrTabContent>
     <DsfrTabContent
       panel-id="tab-content-1"
@@ -121,11 +121,11 @@ onUpdated(() => {})
         :required="required"
         :options="favOptions"
         :model-value="props.selectedControls"
-      /> 
+      />
     </DsfrTabContent>
   </DsfrTabs>
     </div>
- 
+
 </div>
 
 </template>
@@ -147,7 +147,7 @@ onUpdated(() => {})
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: -webkit-fill-available;
-  height: -webkit-fill-available;
+  width: calc(100% - 60px);
+  max-height: calc(70vh - 70px);
 }
 </style>

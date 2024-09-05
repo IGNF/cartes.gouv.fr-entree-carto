@@ -139,13 +139,13 @@ const currDataFilter = ref('producteur')
     :search-string="searchString"
     :selected-layers="selectedLayers"
     />
-  
+
     </DsfrTabContent>
-   
+
   </DsfrTabs>
 </div>
 </div>
-  
+
 </template>
 
 <style scoped>
@@ -165,7 +165,7 @@ const currDataFilter = ref('producteur')
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: -webkit-fill-available;
-  height: -webkit-fill-available;
+  width: calc(100% - 60px);
+  max-height: calc(70vh - 70px);
 }
 </style>
