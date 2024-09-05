@@ -4,11 +4,7 @@
 
 L'entrée cartographique de cartes.gouv.fr est la page d'entrée principale de cartes.gouv.fr : elle est constituée d'une interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme.
 
-Des liens vers le catalogue de la Géoplateforme sont également présents.
-
-## Documentation développeur
-
-Voir la [documentation développeur](docs/developer/README.md).
+---
 
 # vue-dsfr-project
 
