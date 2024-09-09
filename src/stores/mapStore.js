@@ -69,6 +69,7 @@ const ns = ((value) => {
  *   avec caractére de séparation des options de la liste : ';'
  *   et ',' pour chaque couches
  * 
+ * @todo structure des contrôles
  * @todo mettre à jour le flag 'firstVisit'
  * @fixme zoom absolu !?
  */
@@ -110,7 +111,9 @@ export const useMapStore = defineStore('map', () => {
       return !!l;
     });
     for (let i = 0; i < l.length; i++) {
-      addLayer(l[i]);
+      var id = l[i].replace(/\(.*\)/, "");
+      addLayer(id); // on veut juste l'ID sans les options !
+      // mais, du coup, on perd les options...
     }
   }
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
@@ -185,20 +188,14 @@ export const useMapStore = defineStore('map', () => {
     layers.value = "";
   }
   function addLayer (id) {
-    if (!id) {
-      return;
-    }
     if (getLayers().includes(id)) {
       return;
     }
-    var l = layers.value.split(",");
-    l.push(id + "(1;1;0)"); // par defaut
+    var l = (layers.value === "") ? [] : layers.value.split(",");
+    l.push(id + "(1;1;0)"); // options par defaut
     layers.value = l.toString(); // string
   }
   function removeLayer (id) {
-    if (!id) {
-      return;
-    }
     const index = getLayers().indexOf(id);
     if (index !== -1) {
       var l = layers.value.split(",");
