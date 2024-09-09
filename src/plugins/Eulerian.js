@@ -1,6 +1,8 @@
 import { inject } from 'vue';
 
-// nom du plugin
+/**
+ * Nom du plugin
+ */
 const eulerianSymbol = Symbol('vue-eulerian-plugin');
 
 /**

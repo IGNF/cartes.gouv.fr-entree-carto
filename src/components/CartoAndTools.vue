@@ -24,25 +24,25 @@ const dataStore = useDataStore();
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
+  // ajouter les options des couches
+  // ex. l'opacité et la visibilité
   let layers = mapStore.getLayers();
-  return layers.map((layerId: string) => dataStore.getLayerByID(layerId));
+  return layers.map((layerId: string) => {
+    var layer = dataStore.getLayerByID(layerId);
+    // les options de la couche sont récuperées dans le mapStore (permalink)
+    var props = mapStore.getLayerProperty(layerId);
+    layer.opacity = props.opacity;
+    layer.visible = props.visible;
+    layer.gray = props.gray;
+    return layer;
+  });
 });
 
 // liste des contrôles utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedControls = computed(() => {
   let controls = mapStore.getControls();
-  if (controls.length) {
-    return controls;
-  }
-  else return []
-  // // si le store est vide, on regarde les contrôles par defaut 
-  // // sur le composable
-  // return Object.keys(useControls).map((key) => {
-  //   if (useControls[key].active) {
-  //     return key;
-  //   }
-  // });
+  return controls;
 });
 
 </script>

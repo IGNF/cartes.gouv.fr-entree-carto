@@ -1,3 +1,33 @@
+<script lang="js">
+/**
+ * @description
+ * Affichage d'une modale d'information afin de prévenir 
+ * les utilisateurs d'une opération de maintenance
+ * 
+ * Cette modale est configurable via l'edito : 
+ * ```json
+ * "informations" : {
+ *    "title": "Intervention technique",
+ *    "description": "Une opération de maintenance aura lieu le lundi 15 juillet à partir de 19h.",
+ *    "type": "error",
+ *    "opened": false,
+ *    "version": 1
+ * }
+ * ```
+ * 
+ * Le champ **type** permet de choisir le type d'alerte :
+ * - error (Erreur), 
+ * - success (Succès), 
+ * - warning (Avertissement),
+ * - info (Information)
+ * 
+ * Le champ **opened** permet d'activer (true) / désactiver (false) la modale au chargement du site.
+ * 
+ * L'utilisateur a la possibilité de valider le choix afin de ne plus afficher l'information sur la prochaine session
+ * (cf. localStorage : cartes.gouv.fr.noInformation)
+ */
+export default {};
+</script>
 <script setup lang="js">
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
