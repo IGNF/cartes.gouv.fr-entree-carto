@@ -47,7 +47,7 @@ const ns = ((value) => {
  * - cartes.gouv.fr.permalink
  * - cartes.gouv.fr.firstVisit
  * - cartes.gouv.fr.layers
- * - cartes.gouv.fr.zoom	
+ * - cartes.gouv.fr.zoom -> absolue !
  * - cartes.gouv.fr.x --> webmercator
  * - cartes.gouv.fr.y --> webmercator
  * - cartes.gouv.fr.lon --> geographic
@@ -68,10 +68,8 @@ const ns = ((value) => {
  *   ex. Isocurve(1;0;bottom-left)
  *   avec caractére de séparation des options de la liste : ';'
  *   et ',' pour chaque couches
- * 
- * @todo structure des contrôles
- * @todo mettre à jour le flag 'firstVisit'
- * @fixme zoom absolu !?
+ *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
+ *
  */
 export const useMapStore = defineStore('map', () => {
   const map = ref({});
@@ -94,7 +92,7 @@ export const useMapStore = defineStore('map', () => {
 
   var permalink = computed(() => {
     var url = location;
-    return `${url}?c=${center.value}&z=${zoom.value}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
   var center = computed(() => {
@@ -130,8 +128,11 @@ export const useMapStore = defineStore('map', () => {
   // watcher
   ///////////
 
+  localStorage.setItem(ns('center'), center.value);
+  localStorage.setItem(ns('permalink'), permalink.value);
+  
   watch(zoom, () => {
-    localStorage.setItem(ns('zoom'), zoom.value);
+    localStorage.setItem(ns('zoom'), Math.round(zoom.value));
   })
   watch(x, () => {
     localStorage.setItem(ns('x'), x.value);
@@ -218,10 +219,10 @@ export const useMapStore = defineStore('map', () => {
             values[0] = value;
           }
           if (key === "visible") {
-            values[1] = +value; // true -> 1 | false -> 0
+            values[1] = +value; // cast true -> 1 | false -> 0
           }
           if (key === "gray") {
-            values[2] = +value;
+            values[2] = +value; // cast true -> 1 | false -> 0
           }
         }
       }
@@ -237,20 +238,18 @@ export const useMapStore = defineStore('map', () => {
       var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
       var values = strValues.split(";");
       return {
-        opacity : Number(values[0]),
-        visible : !!Number(values[1]),
-        gray : !!Number(values[2])
+        opacity : Number(values[0]), // cast 
+        visible : !!Number(values[1]), // cast 1 -> true | 0 -> false
+        gray : !!Number(values[2]) // cast 
       }
     }
   }
 
   function getControls () {
     // INFO
-    // on retourne la liste des widgets sans les options
-    return controls.value.split(",").map(function (c) {
-      const regex = /\(.*\)/gm;
-      const name = c.replace(regex, "");
-      return name;
+    // on retourne la liste des widgets actifs
+    return controls.value.split(",").filter(function (c) {
+      return !!c;
     }); // array
   }
   function cleanControls() {
@@ -260,8 +259,8 @@ export const useMapStore = defineStore('map', () => {
     if (getControls().includes(id)) {
       return;
     }
-    var c = controls.value.split(",");
-    c.push(id + "(1)");
+    var c = (controls.value === "") ? [] : controls.value.split(",");
+    c.push(id);
     controls.value = c.toString(); // string
   }
   function removeControl (id) {
@@ -271,12 +270,6 @@ export const useMapStore = defineStore('map', () => {
       c.splice(index, 1);
       controls.value = c.toString(); // string
     }
-  }
-  function updateControlProperty (id, props) {
-    // TODO
-  }
-  function getControlProperty (id) {
-    // TODO
   }
 
   return {
@@ -300,8 +293,6 @@ export const useMapStore = defineStore('map', () => {
     getControls,
     cleanControls,
     addControl,
-    removeControl,
-    updateControlProperty,
-    getControlProperty
+    removeControl
   }
 })
