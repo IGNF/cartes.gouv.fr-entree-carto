@@ -1,3 +1,16 @@
+<script lang="js">
+/**
+ * @description
+ * Modale de consentements des cookies / trackers Eulerian
+ * 
+ * La validation enregistre une entrée dans le localStorage :
+ * `{"eulerianAnalytics":true,"isFullConsent":true}`
+ * 
+ * cf. {@link src/plugins/Eulerian.js}
+ * 
+ */
+export default {};
+</script>
 <script setup lang="js">
 import { useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';

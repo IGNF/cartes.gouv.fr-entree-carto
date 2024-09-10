@@ -91,10 +91,18 @@ const onZoomToExtentLayer = (e) => {
   }
 }
 const onChangeOpacityLayer = (e) => {
+  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onChangeOpacityLayer", e);
+  mapStore.updateLayerProperty(id, {
+    opacity : e.opacity
+  });
 }
 const onChangeVisibilityLayer = (e) => {
+  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onChangeVisibilityLayer", e);
+  mapStore.updateLayerProperty(id, {
+    visible : e.visibility
+  });
 }
 </script>
 

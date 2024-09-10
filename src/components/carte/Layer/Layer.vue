@@ -32,17 +32,24 @@ onMounted(() => {
 
   var service = props.layerOptions.service;
   var name = props.layerOptions.name;
+  var options = {
+    visible : props.layerOptions.visible,
+    opacity : props.layerOptions.opacity,
+    gray : props.layerOptions.gray
+  };
   switch (service) {
     case "WMS":
       layer.value = new GeoportalWMS({
         layer : name,
-        configuration : value
+        configuration : value,
+        olParams : options
       });
       break;
     case "WMTS":
       layer.value = new GeoportalWMTS({
         layer : name,
-        configuration : value
+        configuration : value,
+        olParams : options
       });
       break;
     case "TMS":
@@ -50,7 +57,7 @@ onMounted(() => {
       layer.value = new GeoportalMapBox({
         layer : name,
         configuration : value
-      });
+      }, options);
       break;
     default:
   }
