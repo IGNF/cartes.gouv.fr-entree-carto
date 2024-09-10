@@ -6,17 +6,17 @@ import {
   useStorage
 } from '@vueuse/core';
 
-import { getDefaultControls } from '@/composables/controls'
+import { getDefaultControls } from '@/composables/controls';
 
 /**
  * Valeurs par defaut
- * @fixme pour la liste des contrôles par defaut, on utilise toujours 
+ * pour la liste des contrôles par defaut, on utilise toujours 
  * le composable 'src/composables/controls.js'
  */
 var defaultControls = getDefaultControls().toString();
 
 const DEFAULT = {
-  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS",
+  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0)",
   CONTROLS: defaultControls,
   X: 283734.248995,
   Y: 5655117.100650,
@@ -37,35 +37,39 @@ const ns = ((value) => {
 });
 
 /**
+ * @description
  * Store des objets de la carte
  * 
- * Enregistrement dans le LocalStorage des informations suivantes :
- * cartes.gouv.fr.center --> webmercator
- * cartes.gouv.fr.permalink --> (?)
- * cartes.gouv.fr.firstVisit
- * cartes.gouv.fr.layers
- * cartes.gouv.fr.zoom	
- * cartes.gouv.fr.x --> webmercator
- * cartes.gouv.fr.y --> webmercator
- * cartes.gouv.fr.lon --> geographic
- * cartes.gouv.fr.lat --> geographic
- * cartes.gouv.fr.controls
+ * Les clefs préfixées par "cartes.gouv.fr" 
+ * sont les paramètres utilisateurs :
+ * 
+ * - cartes.gouv.fr.center --> webmercator
+ * - cartes.gouv.fr.permalink
+ * - cartes.gouv.fr.firstVisit
+ * - cartes.gouv.fr.layers
+ * - cartes.gouv.fr.zoom -> absolue !
+ * - cartes.gouv.fr.x --> webmercator
+ * - cartes.gouv.fr.y --> webmercator
+ * - cartes.gouv.fr.lon --> geographic
+ * - cartes.gouv.fr.lat --> geographic
+ * - cartes.gouv.fr.controls
+ * - cartes.gouv.fr.noInformation
  *
- * @todo construction du permalien
+ * Construction du permalien :
  * 
- * @todo mettre à jour le flag 'firstVisit'
+ * - La structure des couches
+ *   LAYERID(opacity<number>;visible<boolean>;gray<boolean>)<Array>
+ *   ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
+ *    avec caractére de séparation des options de la liste : ';'
+ *    et ',' pour chaque couches
  * 
- * @todo structure des couches
- *   LAYERID(opacity<number>;(h)idden;(g)ray)<Array>
- *   ex. ORTHOIMAGERY.ORTHOPHOTOS::GEOPORTAIL:OGC:WMTS(1;h;g)
- *   avec caractére de séparation des elements de la liste : ','
- * 
- * @todo structure des contrôles
+ * - La structure des contrôles
  *   CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
  *   ex. Isocurve(1;0;bottom-left)
- *   avec caractére de séparation des elements de la liste : ','
- * 
- * @fixme zoom absolu ?
+ *   avec caractére de séparation des options de la liste : ';'
+ *   et ',' pour chaque couches
+ *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
+ *
  */
 export const useMapStore = defineStore('map', () => {
   const map = ref({});
@@ -87,8 +91,10 @@ export const useMapStore = defineStore('map', () => {
   //////////////////
 
   var permalink = computed(() => {
-
+    var url = location;
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
+
   var center = computed(() => {
     return [x.value, y.value];
   });
@@ -103,7 +109,9 @@ export const useMapStore = defineStore('map', () => {
       return !!l;
     });
     for (let i = 0; i < l.length; i++) {
-      addLayer(l[i]);
+      var id = l[i].replace(/\(.*\)/, "");
+      addLayer(id); // on veut juste l'ID sans les options !
+      // mais, du coup, on perd les options...
     }
   }
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
@@ -120,8 +128,11 @@ export const useMapStore = defineStore('map', () => {
   // watcher
   ///////////
 
+  localStorage.setItem(ns('center'), center.value);
+  localStorage.setItem(ns('permalink'), permalink.value);
+  
   watch(zoom, () => {
-    localStorage.setItem(ns('zoom'), zoom.value);
+    localStorage.setItem(ns('zoom'), Math.round(zoom.value));
   })
   watch(x, () => {
     localStorage.setItem(ns('x'), x.value);
@@ -166,8 +177,12 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function getLayers () {
-    return layers.value.split(",").filter(function (l) {
-      return !!l;
+    // INFO
+    // on retourne la liste des couches sans les options
+    return layers.value.split(",").map(function (l) {
+      const regex = /\(.*\)/gm;
+      const name = l.replace(regex, "");
+      return name;
     }); // array
   }
   function cleanLayers() {
@@ -177,22 +192,64 @@ export const useMapStore = defineStore('map', () => {
     if (getLayers().includes(id)) {
       return;
     }
-    var l = getLayers();
-    l.push(id);
+    var l = (layers.value === "") ? [] : layers.value.split(",");
+    l.push(id + "(1;1;0)"); // options par defaut
     layers.value = l.toString(); // string
   }
   function removeLayer (id) {
     const index = getLayers().indexOf(id);
     if (index !== -1) {
-      var l = getLayers();
+      var l = layers.value.split(",");
       l.splice(index, 1);
       layers.value = l.toString(); // string
     }
   }
+  function updateLayerProperty (id, props) {
+    const index = getLayers().indexOf(id);
+    if (index !== -1) {
+      var l = layers.value.split(",");
+      // mise à jour des valeurs : opacité, visibilité et couleur
+      var strLayer = l[index];
+      var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
+      var values = strValues.split(";");
+      for (const key in props) {
+        if (Object.prototype.hasOwnProperty.call(props, key)) {
+          const value = props[key];
+          if (key === "opacity") {
+            values[0] = value;
+          }
+          if (key === "visible") {
+            values[1] = +value; // cast true -> 1 | false -> 0
+          }
+          if (key === "gray") {
+            values[2] = +value; // cast true -> 1 | false -> 0
+          }
+        }
+      }
+      layers.value = layers.value.replace(l[index], id + "(" + values.join(";") + ")"); // string
+    }
+  }
+  function getLayerProperty (id) {
+    const index = getLayers().indexOf(id);
+    if (index !== -1) {
+      var l = layers.value.split(",");
+      // extraction des valeurs : opacité, visibilité et couleur
+      var strLayer = l[index];
+      var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
+      var values = strValues.split(";");
+      return {
+        opacity : Number(values[0]), // cast 
+        visible : !!Number(values[1]), // cast 1 -> true | 0 -> false
+        gray : !!Number(values[2]) // cast 
+      }
+    }
+  }
 
   function getControls () {
-    return controls.value.split(",").filter(function (l) {
-      return !!l;
+    // INFO
+    // on retourne la liste des widgets actifs
+    return controls.value.split(",").filter(function (c) {
+      return !!c;
     }); // array
   }
   function cleanControls() {
@@ -202,14 +259,14 @@ export const useMapStore = defineStore('map', () => {
     if (getControls().includes(id)) {
       return;
     }
-    var c = getControls();
+    var c = (controls.value === "") ? [] : controls.value.split(",");
     c.push(id);
     controls.value = c.toString(); // string
   }
   function removeControl (id) {
     const index = getControls().indexOf(id);
     if (index !== -1) {
-      var c = getControls();
+      var c = controls.value.split(",");
       c.splice(index, 1);
       controls.value = c.toString(); // string
     }
@@ -231,6 +288,8 @@ export const useMapStore = defineStore('map', () => {
     cleanLayers,
     addLayer,
     removeLayer,
+    updateLayerProperty,
+    getLayerProperty,
     getControls,
     cleanControls,
     addControl,
