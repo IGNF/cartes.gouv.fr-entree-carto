@@ -2,6 +2,7 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from '@/stores/dataStore';
+import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { Isocurve } from 'geopf-extensions-openlayers'
 
@@ -22,7 +23,7 @@ onMounted(() => {
     map.addControl(isocurve.value)
     if (props.analytic) {
       var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      el.setAttribute("data-fr-analytics-action", el.title);
+      useActionButtonEulerian(el);
     }
     /* abonnement au widget 
     * @fires isocurve:drawstart
@@ -46,7 +47,7 @@ onUpdated(() => {
     map.addControl(isocurve.value)
     if (props.analytic) {
       var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      el.setAttribute("data-fr-analytics-action",  el.title);
+      useActionButtonEulerian(el);
     }
   }
 })

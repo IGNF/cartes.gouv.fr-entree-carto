@@ -2,11 +2,13 @@
 
 import ScaleLine from 'ol/control/ScaleLine'
 
-// TODO
-// utiliser le widget GeoportalScaleLine !
+// FIXME
+// - utiliser le widget GeoportalScaleLine !
+// - tracker Eulerian ?
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   scaleLineOptions: Object
 })
 

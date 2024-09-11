@@ -9,6 +9,9 @@ const eulerianSymbol = Symbol('vue-eulerian-plugin');
  * Gestion de la collecte via Eulerian
  * @see https://github.com/GouvernementFR/dsfr/blob/main/src/analytics/doc/analytics.md
  * @see https://eulerian.wiki/doku.php?id=fr:start
+ * @fixme le mode 'vue' ne permet pas de collecter les actions,
+ * mais en utilisant le mode 'auto' ou 'loaded', on produit des effets de bords 
+ * sur certains composants dsfr-vue...
  */
 export class Eulerian {
   /**
@@ -25,9 +28,12 @@ export class Eulerian {
     // INFO
     // pour activer le mode debug, taper dans la console du navigateur : 
     // > window.dsfr.analytics.isDebugging = true
+    
+    // le mode 'vue' ne permet pas de collecter les actions
+    // > basculer sur le mode 'loaded' ou 'auto'...
     window.dsfr = {
-      verbose: true,
-      mode: "vue"
+      verbose: options.verbose,
+      mode: options.mode // auto | loaded | vue | react | runtime
     }
     window.dsfr.analytics = options;
     

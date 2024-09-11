@@ -1,8 +1,9 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin'
+import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
+import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import {
     transformExtent as olTransformExtentProj
@@ -12,19 +13,24 @@ import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   layerSwitcherOptions: Object
-})
+});
 
-const log = useLogger()
+const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
 const map = inject('map')
-const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions))
+const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(layerSwitcher.value)
+    map.addControl(layerSwitcher.value);
+    if (props.analytic) {
+      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
+      useActionButtonEulerian(el);
+    }
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
     layerSwitcher.value.on("layerswitcher:remove", onRemoveLayer);
@@ -36,13 +42,17 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(layerSwitcher.value)
+    map.removeControl(layerSwitcher.value);
+    if (props.analytic) {
+      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(layerSwitcher.value)
+    map.addControl(layerSwitcher.value);
   }
 })
 

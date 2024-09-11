@@ -2,11 +2,13 @@
 
 import Attributions from 'ol/control/Attribution'
 
-// TODO
-// utiliser le widget GeoportalAttribution !
+// FIXME
+// - utiliser le widget GeoportalAttribution !
+// - tracker Eulerian !?
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   attributionsOptions: Object
 })
 

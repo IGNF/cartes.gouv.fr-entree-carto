@@ -110,8 +110,10 @@ export const useMapStore = defineStore('map', () => {
     });
     for (let i = 0; i < l.length; i++) {
       var id = l[i].replace(/\(.*\)/, "");
-      addLayer(id); // on veut juste l'ID sans les options !
-      // mais, du coup, on perd les options...
+      if (id) {
+        addLayer(id); // on veut juste l'ID sans les options !
+        // mais, du coup, on perd les options...
+      }
     }
   }
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
@@ -189,6 +191,9 @@ export const useMapStore = defineStore('map', () => {
     layers.value = "";
   }
   function addLayer (id) {
+    if (!id) {
+      return;
+    }
     if (getLayers().includes(id)) {
       return;
     }

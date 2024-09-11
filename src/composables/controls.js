@@ -16,7 +16,7 @@ export const useControls = {
     id: 'OverviewMap',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   SearchEngine: {
     id: 'SearchEngine',
@@ -34,13 +34,13 @@ export const useControls = {
     id: 'LayerSwitcher',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   Legends: {
     id: 'Legends',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   Isocurve: {
     id: 'Isocurve',
@@ -52,7 +52,7 @@ export const useControls = {
     id: 'ReverseGeocode',
     active: false,
     disable: false,
-    analytic: false
+    analytic: true
   },
   Zoom: {
     id: 'Zoom',
@@ -76,7 +76,7 @@ export const useControls = {
     id: 'Route',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   FullScreen: {
     id: 'FullScreen',
@@ -88,19 +88,19 @@ export const useControls = {
     id: 'MeasureLength',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
 }
 
