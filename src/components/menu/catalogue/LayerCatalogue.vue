@@ -11,30 +11,30 @@ const props = defineProps({
 const active = ref(props.active)
 
 function layerInteraction(e, layer) {
-    active.value = e
-    if(active.value) {
+    active.value = e;
+    if (active.value) {
         mapStore.addLayer(layer.key);
     }
     else {
-        mapStore.removeLayer(layer.key)
+        mapStore.removeLayer(layer.key);
     }
 }
 
 onUpdated(() => {
-    active.value = props.active
+    active.value = props.active;
 })
-
 
 </script>
 
 <template>
-        <DsfrCheckbox
+
+    <DsfrCheckbox
         :model-value="active"
         :label="layer.title"
         :id="layer.id"
         @update:modelValue="layerInteraction($event, layer)"
-        />
-        <div class="layer-description" v-html="layer.description"></div>
+    />
+    <div class="layer-description" v-html="layer.description"></div>
 
 </template>
 

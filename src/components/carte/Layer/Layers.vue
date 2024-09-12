@@ -18,7 +18,7 @@ var layers = computed(() => {
     return {
       name : layer.name,
       service : layer.serviceParams.id.split(":")[1],
-      key: layer.key
+      key : layer.key,
       opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
       visible : layer.hasOwnProperty("visible") ? layer.visible : true,
       gray : layer.hasOwnProperty("gray") ? layer.gray : true
