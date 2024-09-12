@@ -1,13 +1,27 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @property {String} thematicLabel
+   * @property {Number} layersCount
+   */
+  export default {
+    name: 'MenuCatalogueThematique'
+  };
+</script>
+
 <script setup lang="js">
+
 const props = defineProps({
     thematicLabel: String,
     layersCount: Number
-})
+});
 
 const title = computed(() => {
     return props.thematicLabel + ` (${props.layersCount})`
-})
-const expandedId = ref('')
+});
+const expandedId = ref('');
+
 </script>
 
 <template>

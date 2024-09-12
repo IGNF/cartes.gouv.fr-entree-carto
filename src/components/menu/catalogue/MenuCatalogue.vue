@@ -2,6 +2,10 @@
   /**
    * @description
    * ...
+   * @property {Object} layers - Liste des couches du catalogue
+   * @property {Object} selectedLayers - Liste des couches sélectionnées
+   * @see LayerList
+   * @see DataLayerCatalogue
    */
   export default {
     name: 'CatalogueMenu'
@@ -24,14 +28,22 @@ const props = defineProps({
   selectedLayers: Object
 });
 
+/**
+ * Definition d'une variable reactive
+ * @typedef {Object} Reactif
+ */
+
 // INFO
 // liste des configurations des couches du catalogue
 // cf. dataStore.getLayers()
 log.debug(props.layers);
 
 const collapsable = true;
+
+/** @type {Reactif} property à rechercher */
 const searchString = ref("");
 
+/** Liste des couches de fonds */
 const baseLayers = computed(() => {
   return Object.values(props.layers).filter((layer) => {
     if (layer.hasOwnProperty("base") &&  layer.base) {
@@ -40,6 +52,7 @@ const baseLayers = computed(() => {
   })
 });
 
+/** Liste des couches de données */
 const dataLayers = computed(() => {
   return Object.values(props.layers).filter((layer) => {
     if (!layer.hasOwnProperty("base") || !layer.base) {
@@ -48,7 +61,10 @@ const dataLayers = computed(() => {
   })
 });
 
+/** Titre principal */
 const tabListName = "Liste des couches";
+
+/** Titres des onglets + lien ID et panneaux à afficher */
 const tabTitles = [
   {
     title : "Fonds de carte",
@@ -62,19 +78,27 @@ const tabTitles = [
   }
 ];
 
+/** @type {Reactif} Selection de l'onglet */
 const selectedTabIndex = ref(0);
+
+/** @type {Reactif} Ordre de tri */
 const asc = ref(true);
+
+/** Index de l'onget par defaut (0) */
 const initialSelectedIndex = 0;
 
+/** Mise à jour de l'onget sélectionné */
 function selectTab (idx) {
   asc.value = (selectedTabIndex.value < idx);
   selectedTabIndex.value = idx;
 }
 
+/** Mise à jour du mot clef de recherche */
 function updateSearch(e) {
   searchString.value = e;
 }
 
+/** Sous categories */
 const dataFilters = [
   {
     label: "Producteur",
@@ -90,6 +114,7 @@ const dataFilters = [
   }
 ];
 
+/** @type {Reactif} La sous categore courrante */
 const currDataFilter = ref('producteur');
 
 </script>
@@ -97,36 +122,47 @@ const currDataFilter = ref('producteur');
 <template>
   <div class="catalogue-container">
     <div class="catalogue-search-bar">
+      <!-- Barre de recherche :
+       >>> on transmet le mot clef de recherche
+       >>> on sauvegarde ce mot clef pour les autres composants
+      -->
       <DsfrSearchBar
         :model-value="searchString"
         @update:model-value="updateSearch"
       />
     </div>
     <div class="catalogue-content">
+      <!-- Liste des onglets -->
       <DsfrTabs
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
         :initial-selected-index="initialSelectedIndex"
         @select-tab="selectTab"
       >
+        <!-- Contenu de l'onglet sélectionné par defaut : les fonds de cartes -->
         <DsfrTabContent
           panel-id="tab-content-0"
           tab-id="tab-0"
           :selected="selectedTabIndex === 0"
           :asc="asc"
         >
+          <!-- Liste des fonds de carte et celles selectionnées
+           >>> on transmet aussi la liste des couches issues de la recherche
+          -->
           <LayerList
             :list-name="'dataLayer'"
             :selected-layers="selectedLayers"
             :layers="useSearchInArray(baseLayers, searchString, ['title', 'description', 'name'])"/>
         </DsfrTabContent>
 
+        <!-- Contenu d'un autre onglet : les données catégorisées -->
         <DsfrTabContent
           panel-id="tab-content-1"
           tab-id="tab-1"
           :selected="selectedTabIndex === 1"
           :asc="asc"
         >
+          <!-- Les sous categories -->
           <DsfrRadioButtonSet
             :inline="true"
             :model-value="currDataFilter"

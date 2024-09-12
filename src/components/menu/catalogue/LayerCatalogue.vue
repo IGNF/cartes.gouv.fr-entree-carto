@@ -1,3 +1,15 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @property {Object} layer
+   * @property {Boolean} active
+   */
+  export default {
+    name: 'LayerCatalogue'
+  };
+</script>
+
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
 

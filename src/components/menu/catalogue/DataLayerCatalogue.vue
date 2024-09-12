@@ -1,5 +1,19 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @property {Object} dataLayers
+   * @property {String} currDataFilter
+   * @property {String} searchString
+   * @property {Object} selectedLayers
+   */
+  export default {
+    name: 'DataLayerCatalogue'
+  };
+</script>
+
 <script setup lang="js">
-import {useSearchInArray} from '@/composables/searchInArray'
+import { useSearchInArray } from '@/composables/searchInArray'
 
 const props = defineProps({
   dataLayers: Object,
@@ -79,13 +93,14 @@ function getLayersByProducer(layers) {
   arr.push({
     producerLabel : "IGN",
     layers : useSearchInArray(
-    Object.values(layers)
-    .filter((l) => {
-      if(!l.hasOwnProperty("producer") || l.producer.length == 0)
-      return l
-    }),
-    props.searchString,
-    ['title', 'description', 'name']
+      Object.values(layers)
+        .filter((l) => {
+          if(!l.hasOwnProperty("producer") || l.producer.length == 0) {
+            return l;
+          }
+        }),
+      props.searchString,
+      ['title', 'description', 'name']
     )
   });
   
@@ -96,7 +111,7 @@ function getLayersByProducer(layers) {
 
 <template>
   <div>
-    
+
     <template v-if="currDataFilter === 'producteur'" v-for="producer in producerDataLayers" :key="producer.producerLabel">
       <DsfrAccordionsGroup>
         <MenuCatalogueThematique v-if="producer.layers.length > 0"

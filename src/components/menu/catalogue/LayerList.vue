@@ -1,3 +1,17 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @property {Object} layers
+   * @property {Object} selectedLayers
+   * @property {String} listName
+   * @see LayerCatalogue
+   */
+  export default {
+    name: 'LayerList'
+  };
+</script>
+
 <script setup lang="js">
 import LayerCatalogue from "@/components/menu/catalogue/LayerCatalogue.vue"
 
