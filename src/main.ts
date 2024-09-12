@@ -24,7 +24,7 @@ const isProduction = (import.meta.env.MODE === "production")
 
 const eulerian = createEulerian({
   verbose : true, // option du plugin
-  mode : "auto", // option du plugin
+  mode : "vue",   // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
   isActionEnabled: false, // on desactive le tracking global
   site: {

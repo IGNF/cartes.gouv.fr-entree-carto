@@ -52,6 +52,8 @@ export class Eulerian {
       if (value) {
         if (!value.eulerianAnalytics) {
           this.disable();
+        } else {
+          this.enable();
         }
       }
     });
@@ -77,6 +79,7 @@ export class Eulerian {
     console.debug("enable");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
     window.dsfr.analytics.opt.enable();
+    window.dsfr.start();
   }
 
   /**
@@ -87,6 +90,7 @@ export class Eulerian {
     console.debug("disable");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
     window.dsfr.analytics.opt.disable();
+    window.dsfr.stop();
   }
 
   /**
