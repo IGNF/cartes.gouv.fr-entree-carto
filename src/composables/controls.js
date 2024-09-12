@@ -1,5 +1,7 @@
 /**
+ * @description
  * Liste des contrôles (widgets)
+ * 
  * @example
  * {
  *  OverviewMap: {
@@ -102,9 +104,13 @@ export const useControls = {
   },
 }
 
+/**
+ * Obtenir les contrôles par défaut
+ * @returns 
+ */
 export function getDefaultControls() {
   var defaultControls = [];
-  /* récupération des controls par défaut */
+  // récupération des controls par défaut
   for (var control in useControls) {
     if (useControls[control].active === true) {
       defaultControls.push(useControls[control].id);
@@ -113,6 +119,10 @@ export function getDefaultControls() {
   return defaultControls;
 }
 
+/**
+ * Obtenir les options du menu des contrôles
+ * @returns 
+ */
 export function useControlsMenuOptions() {
   return [
   {

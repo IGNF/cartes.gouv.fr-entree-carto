@@ -1,11 +1,14 @@
 import { inject } from 'vue';
 
-// nom du plugin
+/**
+ * Nom du plugin
+ */
 const eulerianSymbol = Symbol('vue-eulerian-plugin');
 
 /**
  * Gestion de la collecte via Eulerian
  * @see https://github.com/GouvernementFR/dsfr/blob/main/src/analytics/doc/analytics.md
+ * @see https://eulerian.wiki/doku.php?id=fr:start
  */
 export class Eulerian {
   /**

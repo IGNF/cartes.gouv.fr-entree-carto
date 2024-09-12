@@ -5,10 +5,7 @@ import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from '@/stores/mapStore';
 
 import {
-  SearchEngine,
-  LayerMapBox as GeoportalMapBox,
-  LayerWMS as GeoportalWMS,
-  LayerWMTS as GeoportalWMTS
+  SearchEngine
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({

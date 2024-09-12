@@ -102,7 +102,6 @@ const fullscreenOptions = {
   position: 'bottom-right'
 }
 
-// FIXME map.getTargetElement() n'existe pas encore !
 const measureLengthOptions = {
   position: 'top-left'
 }

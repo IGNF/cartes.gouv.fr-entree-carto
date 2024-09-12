@@ -12,13 +12,16 @@ const props = defineProps({
 const log = useLogger()
 
 // liste des informations utiles pour le composant Layer
-// Array(Object) : [{name, service}]
+// Array(Object) : [{name, service, opacity, visible, ...}]
 var layers = computed(() => {
   return toRaw(props.selectedLayers).map(layer => {
     return {
       name : layer.name,
       service : layer.serviceParams.id.split(":")[1],
       key: layer.key
+      opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
+      visible : layer.hasOwnProperty("visible") ? layer.visible : true,
+      gray : layer.hasOwnProperty("gray") ? layer.gray : true
     }
   })
 });
