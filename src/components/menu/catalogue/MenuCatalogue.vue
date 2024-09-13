@@ -131,7 +131,6 @@ const currDataFilter = ref('producteur');
         @update:model-value="updateSearch"
       />
     </div>
-    <div class="catalogue-content">
       <!-- Liste des onglets -->
       <DsfrTabs
         :tab-list-name="tabListName"
@@ -141,6 +140,7 @@ const currDataFilter = ref('producteur');
       >
         <!-- Contenu de l'onglet sélectionné par defaut : les fonds de cartes -->
         <DsfrTabContent
+          class="catalogue-content"
           panel-id="tab-content-0"
           tab-id="tab-0"
           :selected="selectedTabIndex === 0"
@@ -157,6 +157,7 @@ const currDataFilter = ref('producteur');
 
         <!-- Contenu d'un autre onglet : les données catégorisées -->
         <DsfrTabContent
+          class="catalogue-content"
           panel-id="tab-content-1"
           tab-id="tab-1"
           :selected="selectedTabIndex === 1"
@@ -179,7 +180,6 @@ const currDataFilter = ref('producteur');
           />
       </DsfrTabContent>
       </DsfrTabs>
-    </div>
   </div>
 </template>
 
@@ -194,6 +194,7 @@ const currDataFilter = ref('producteur');
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
+  max-height: calc(70vh - 180px);
 }
 
 .catalogue-container {
