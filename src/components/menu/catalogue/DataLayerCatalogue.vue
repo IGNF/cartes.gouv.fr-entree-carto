@@ -110,7 +110,7 @@ function getLayersByProducer(layers) {
 </script>
 
 <template>
-  <div>
+  <div class="catalogue-content-with-radio-btn">
 
     <template v-if="currDataFilter === 'producteur'" v-for="producer in producerDataLayers" :key="producer.producerLabel">
       <DsfrAccordionsGroup>
@@ -146,3 +146,12 @@ function getLayersByProducer(layers) {
     
   </div>
 </template>
+
+<style>
+.catalogue-content-with-radio-btn {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  overflow-x: hidden;
+  max-height: calc(70vh - 270px);
+}
+</style>

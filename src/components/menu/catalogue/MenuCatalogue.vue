@@ -157,7 +157,6 @@ const currDataFilter = ref('producteur');
 
         <!-- Contenu d'un autre onglet : les données catégorisées -->
         <DsfrTabContent
-          class="catalogue-content"
           panel-id="tab-content-1"
           tab-id="tab-1"
           :selected="selectedTabIndex === 1"
