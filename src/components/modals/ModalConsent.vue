@@ -23,6 +23,7 @@ const eulerian = useEulerian();
 
 // gestion de la modale de consentement 'eulerian'
 var open = eulerian.hasKey();
+
 const consentModalOpened = ref(!open);
 
 const title = "Panneau de gestion des cookies";
@@ -31,11 +32,15 @@ const url = useBaseUrl() + "/donnees-personnelles";
 
 const openModalConsent = () => {
   consentModalOpened.value = true;
+  eulerian.pause();
 }
 
 const onModalConsentClose = () => {
   consentModalOpened.value = false;
-  router.push({ path : '/' })
+  router.push({ path : '/' });
+  // INFO
+  // l'utilisateur a t il fait un choix ou fermeture direct ?
+  eulerian.resume();
 }
 
 defineExpose({
@@ -44,11 +49,11 @@ defineExpose({
 });
 
 const onAcceptConsentAll = () => {
-  eulerian.enable();
+  eulerian.start();
   onModalConsentClose();
 }
 const onRefuseConsentAll = () => {
-  eulerian.disable();
+  eulerian.stop();
   onModalConsentClose();
 }
 </script>
