@@ -1,3 +1,12 @@
+<script lang="js">
+/**
+ * @description
+ * Cartographie intégrée pour partage
+ * 
+ */
+export default {};
+</script>
+
 <script setup lang="js">
 import Carto from '@/components/carte/Carto.vue';
 import Patience from '@/components/utils/Patience.vue'
@@ -8,6 +17,7 @@ import { useDataStore } from "@/stores/dataStore";
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
+// On récupère les couches du mapStore
 const selectedLayers = computed(() => {
   let layers = mapStore.getLayers();
   return layers.map((layerId) => {
@@ -20,6 +30,13 @@ const selectedLayers = computed(() => {
     return layer;
   });
 });
+
+// Contrôles par defaut
+const selectedControls = [
+  "ScaleLine", 
+  "OverviewMap",
+  "Zoom"
+];
 
 function hideHeader () {
   var header = document.querySelector(".fr-header");
@@ -41,13 +58,13 @@ onMounted(() => {
 <template>
   <Suspense>
       <!-- Chargement du dataStore avec une patience 
-          avant afficahge de la cartographie 
+          avant affichage de la cartographie 
       -->
       <StoreData>
         <div class="map-container">
           <Carto 
             :selected-layers="selectedLayers"
-            selected-controls="[]">
+            :selected-controls="selectedControls">
           </Carto>
         </div>
       </StoreData>
