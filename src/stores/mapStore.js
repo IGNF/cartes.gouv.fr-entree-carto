@@ -68,6 +68,8 @@ const ns = ((value) => {
  *   avec caractére de séparation des options de la liste : ';'
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
+ * 
+ * @todo ordre des couches
  *
  */
 export const useMapStore = defineStore('map', () => {

@@ -1,5 +1,28 @@
 import { useUrlSearchParams } from '@vueuse/core';
 
+/**
+ * Lecture du permalink pour y extraire les informations.
+ * La structure est identique au permalien de la carte
+ * avec quelques paramètres supplementaires :
+ * - centre : ...
+ * - x / y : ...
+ * - lon / lat : ...
+ * - layers : ... 
+ * - zoom : ...
+ * - commentaire : "m" string avec contenu encodé
+ * - titre : "t" string avec contenu encodé
+ * - localisation : "g" boolean, ajout d'un icone
+ * - informations : "i" boolean, ajout d'informations prédéfinies
+ * 
+ * @example
+ * http://localhost:5173/cartes.gouv.fr-entree-carto/embed?
+ * &c=417070.66959457495,5975301.705064449
+ * &z=10
+ * &l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0),ACCES.BIOMETHANE$GEOPORTAIL:OGC:WMTS(0.47;1;0)
+ * &permalink=yes
+ * 
+ * @see mapStore
+ */
 export function useUrlParams() {
   var params = {};
   const urlParams = useUrlSearchParams("history");
@@ -20,6 +43,7 @@ export function useUrlParams() {
           params.layers = urlParams[key];
           break;
         case "w":
+          // FIXME utile ? la liste devrait être fixe...
           params.controls = urlParams[key];
           break;
         case "m":
