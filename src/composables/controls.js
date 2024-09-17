@@ -108,7 +108,7 @@ export const useControls = {
  * Obtenir les contrôles par défaut
  * @returns 
  */
-export function getDefaultControls() {
+export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {

@@ -14,6 +14,7 @@ import StoreData from '@/components/StoreData.vue';
 
 import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from "@/stores/dataStore";
+
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
@@ -31,7 +32,7 @@ const selectedLayers = computed(() => {
   });
 });
 
-// Contrôles par defaut
+// Contrôles fixés par defaut
 const selectedControls = [
   "ScaleLine", 
   "OverviewMap",

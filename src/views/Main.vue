@@ -144,7 +144,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
   </div>
 
   <!-- INFO
-      Bouton non DSFR pour laffichage du footer en mode mobile comme sur la maquette
+      Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
   <label
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline"

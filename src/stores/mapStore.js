@@ -2,24 +2,23 @@ import {
   defineStore
 } from 'pinia';
 
-import {
-  useStorage
-} from '@vueuse/core';
+import { useStorage } from '@vueuse/core';
 
-import { getDefaultControls } from '@/composables/controls';
+import { useUrlParams } from "@/composables/urlParams.js";
+import { useDefaultControls } from '@/composables/controls';
 
 /**
  * Valeurs par defaut
  * pour la liste des contrôles par defaut, on utilise toujours 
  * le composable 'src/composables/controls.js'
  */
-var defaultControls = getDefaultControls().toString();
+var defaultControls = useDefaultControls();
 
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0)",
-  CONTROLS: defaultControls,
+  CONTROLS: defaultControls.toString(),
   X: 283734.248995,
-  Y: 5655117.100650,
+  Y:  5655117.100650,
   LON: 2.5479878714752027, // informatif
   LAT: 50.800781249995744, // informatif
   ZOOM: 12,
@@ -72,7 +71,19 @@ const ns = ((value) => {
  *
  */
 export const useMapStore = defineStore('map', () => {
+  /////////////
+  // objet map
+  /////////////
   const map = ref({});
+
+  // gestion des KVP dans l'URL (permalink)
+  var params = useUrlParams();
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      const value = params[key];
+      localStorage.setItem(ns(key), value);
+    }
+  }
 
   //////////////////
   // objets simples
@@ -91,7 +102,7 @@ export const useMapStore = defineStore('map', () => {
   //////////////////
 
   var permalink = computed(() => {
-    var url = location;
+    var url = location.origin + location.pathname;
     return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
@@ -130,7 +141,7 @@ export const useMapStore = defineStore('map', () => {
 
   localStorage.setItem(ns('center'), center.value);
   localStorage.setItem(ns('permalink'), permalink.value);
-  
+
   watch(zoom, () => {
     localStorage.setItem(ns('zoom'), Math.round(zoom.value));
   })
