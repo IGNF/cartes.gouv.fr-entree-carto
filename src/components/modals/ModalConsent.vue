@@ -16,7 +16,7 @@ import { useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';
 
 // plugin local
-import { useEulerian } from '../../plugins/Eulerian.js';
+import { useEulerian } from '@/plugins/Eulerian.js';
 
 const router = useRouter();
 const eulerian = useEulerian();
