@@ -339,6 +339,8 @@ export const useMapStore = defineStore('map', () => {
     comment,
     info,
     geolocation,
+    permalink,
+    permalinkShare,
     getMap,
     setMap,
     getLayers,

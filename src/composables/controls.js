@@ -102,6 +102,12 @@ export const useControls = {
     disable: false,
     analytic: false
   },
+  Share: {
+    id: 'Share',
+    active: true,
+    disable: false,
+    analytic: false
+  },
 }
 
 /**
@@ -229,6 +235,13 @@ export function useControlsMenuOptions() {
     name: useControls.MeasureAzimuth.id,
     hint: 'Mesures',
     disabled: useControls.MeasureAzimuth.disable
+  },
+  {
+    label: 'Partager une carte',
+    id: 'share',
+    name: useControls.Share.id,
+    hint: 'Partages',
+    disabled: useControls.Share.disable
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
