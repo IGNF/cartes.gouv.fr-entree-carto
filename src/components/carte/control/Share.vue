@@ -11,7 +11,6 @@ export default {};
 </script>
 
 <script lang="js" setup>
-import { RiShareLine } from "oh-vue-icons/icons";
 
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
@@ -26,7 +25,7 @@ const props = defineProps({
 
 // paramètres du composant bouton
 const btnTitle = "Ouvrir le panneau de partage de carte";
-const btnIcon = "fr-icon-share-fill"; // FIXME icone de partage dsfr !?
+const btnIcon = "fr-icon-link"; // FIXME icone de partage dsfr !?
 const btnLabel = "";
 
 // paramètres du composant de la modale
@@ -81,6 +80,7 @@ const iframe = computed(() => {
   </iframe>`;
 });
 
+const target = ref(null);
 
 onMounted(() => {
   nextTick(function () {
@@ -96,69 +96,76 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <DsfrButton
-    v-if="props.visibility"
-    :label="btnLabel"
-    :title="btnTitle"
-    :icon="RiShareLine"
-    icon-only
-    no-outline
-    style="width: 40px;height: 40px;"
-    @click="onModalShareOpen"
-  />
-  <DsfrModal 
-    :opened="shareModalOpened" 
-    :title="title"
-    :size="size" 
-    @close="onModalShareClose">
-    <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <div>
-      <p>
-        <DsfrShare
-          copyLabel="Copier dans le presse-papier"
-          :mail="shareMail"
-          :networks="shareNetworks"
-          title="Partages"
-        />
-      </p>
-    </div>
-    <div>
-      <p>
-        <DsfrInput
-          v-model="mapStore.permalink"
-          label="Lien permanent vers la carte"
-          placeholder=""
-          label-visible
-          readonly
-          descriptionId=""
-        />
-      </p>
-      <p>
-        <DsfrInput
-          v-model="iframe"
-          label="Copiez le code HTML pour intégrer la carte dans un site"
-          placeholder=""
-          isTextarea="true"
-          label-visible
-          readonly
-          descriptionId=""
-          style="height: 200px;"
-        />
-      </p>
-    </div>
-  </DsfrModal>
+  <div id="share-container" ref="target">
+    <DsfrButton
+      v-if="props.visibility"
+      id="share-button-position"
+      class="fr-btn fr-btn--md inline-flex justify-center share-button-size"
+      :label="btnLabel"
+      :title="btnTitle"
+      :icon="btnIcon"
+      icon-only
+      no-outline
+      @click="onModalShareOpen"
+    />
+    <DsfrModal 
+      :opened="shareModalOpened" 
+      :title="title"
+      :size="size" 
+      @close="onModalShareClose">
+      <!-- slot : c'est ici que l'on customise le contenu ! -->
+      <div>
+        <p>
+          <DsfrShare
+            copyLabel="Copier dans le presse-papier"
+            :mail="shareMail"
+            :networks="shareNetworks"
+            title="Partages"
+          />
+        </p>
+      </div>
+      <div>
+        <p>
+          <DsfrInput
+            v-model="mapStore.permalink"
+            label="Lien permanent vers la carte"
+            placeholder=""
+            label-visible
+            readonly
+            descriptionId=""
+          />
+        </p>
+        <p>
+          <DsfrInput
+            v-model="iframe"
+            label="Copiez le code HTML pour intégrer la carte dans un site"
+            placeholder=""
+            isTextarea="true"
+            label-visible
+            readonly
+            descriptionId=""
+            style="height: 200px;"
+          />
+        </p>
+      </div>
+    </DsfrModal>
+  </div>
 </template>
 
-<!-- TODO 
-    comment faire passer l'attribut className ?
-    comment positionner le bouton sur la carte ? 
--->
-<style>
-  .shareButton {
+<style scoped>
+  #share-container {}
+  #share-button-position {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+  }
+  .share-button-size {
     width: 40px;
     height: 40px;
+    color: white;
   }
-  .shareIframeInput {
+  .share-iframe-input {
     height: 200px;
   }
 </style>

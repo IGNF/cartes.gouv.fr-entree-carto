@@ -65,6 +65,8 @@ provide('map', map)
 
 <style>
   #map {
+    position: absolute;
     width: 100%;
+    height: inherit;
   }
 </style>
