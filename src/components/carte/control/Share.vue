@@ -13,7 +13,10 @@ export default {};
 <script lang="js" setup>
 import { RiShareLine } from "oh-vue-icons/icons";
 
+import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
+
+const dataStore = useDataStore();
 const mapStore = useMapStore();
 
 const props = defineProps({
@@ -34,38 +37,41 @@ const shareModalOpened = ref(false);
 
 const onModalShareOpen = () => {
   shareModalOpened.value = true;
-}
-
+};
 const onModalShareClose = () => {
   shareModalOpened.value = false;
-}
-
-// les paramètres du composant de partage
-// TODO finir de les remplir 
-
-const mail = {
-  "to": "mailto:user@example.com?subject=Sujet&body=Corps du courriel",
-  "label": "Envoyer un mail"
 };
 
-const networks = [
+// les paramètres du composant de partage
+const contacts = dataStore.getContacts();
+var mail = {
+  address : contacts.mail,
+  subject : "Sujet",
+  body : "Corps du courriel"
+};
+const shareMail = {
+  "to" : `mailto:${mail.address}?subject=${mail.subject}&body=${mail.body}`,
+  "label" : "Envoyer un mail"
+};
+const shareNetworks = [
   {
     "name": "facebook",
     "label": "Partager sur Facebook",
-    "url": "https://www.facebook.com/sharer.php?u=[À MODIFIER - url de la page]"
+    "url": contacts.networks.facebook
   },
   {
     "name": "twitter-x",
     "label": "Partager sur X (anciennement Twitter)",
-    "url": "https://twitter.com/intent/tweet?url=[À MODIFIER - url de la page]&text=[À MODIFIER - titre ou texte descriptif de la page]&via=[À MODIFIER - via]&hashtags=[À MODIFIER - hashtags]"
+    "url": contacts.networks.twitter
   },
   {
     "name": "linkedin",
     "label": "Partager sur LinkedIn",
-    "url": "https://www.linkedin.com/shareArticle?url=[À MODIFIER - url de la page]&title=[À MODIFIER - titre ou texte descriptif de la page]"
+    "url": contacts.networks.linkedin
   }
 ];
 
+// creation de l'iframe de partage
 const iframe = computed(() => {
  return `<iframe 
     width="600" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
@@ -75,6 +81,18 @@ const iframe = computed(() => {
   </iframe>`;
 });
 
+
+onMounted(() => {
+  nextTick(function () {
+    //code here
+  })
+});
+
+onBeforeMount(() => {
+  nextTick(function () {
+    //code here
+  })
+});
 </script>
 
 <template>
@@ -98,31 +116,35 @@ const iframe = computed(() => {
       <p>
         <DsfrShare
           copyLabel="Copier dans le presse-papier"
-          :mail="mail"
-          :networks="networks"
+          :mail="shareMail"
+          :networks="shareNetworks"
           title="Partages"
         />
       </p>
     </div>
     <div>
-      <DsfrInput
-        v-model="mapStore.permalink"
-        label="Lien permanent vers la carte"
-        placeholder=""
-        label-visible
-        readonly
-        descriptionId=""
-      />
-      <DsfrInput
-        v-model="iframe"
-        label="Copiez le code HTML pour intégrer la carte dans un site"
-        placeholder=""
-        isTextarea="true"
-        label-visible
-        readonly
-        descriptionId=""
-        style="height: 200px;"
-      />
+      <p>
+        <DsfrInput
+          v-model="mapStore.permalink"
+          label="Lien permanent vers la carte"
+          placeholder=""
+          label-visible
+          readonly
+          descriptionId=""
+        />
+      </p>
+      <p>
+        <DsfrInput
+          v-model="iframe"
+          label="Copiez le code HTML pour intégrer la carte dans un site"
+          placeholder=""
+          isTextarea="true"
+          label-visible
+          readonly
+          descriptionId=""
+          style="height: 200px;"
+        />
+      </p>
     </div>
   </DsfrModal>
 </template>

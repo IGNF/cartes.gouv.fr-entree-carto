@@ -1,4 +1,12 @@
 {
+  "contacts": {
+    "mail": "",
+    "networks": {
+      "facebook": "https://www.facebook.com/ignfr",
+      "twitter": "https://twitter.com/IGNFrance",
+      "linkedin": "https://fr.linkedin.com/company/ignfrance"
+    }
+  },
   "thematics": [
     "Administratif",
     "Foncier",
