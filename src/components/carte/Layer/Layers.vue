@@ -10,7 +10,6 @@ const props = defineProps({
 // liste des couches à ajouter sur la carte
 // Array(Object) : cf. dataStore.getLayerByID(layerId)
 const log = useLogger()
-log.debug(props.selectedLayers);
 
 // liste des informations utiles pour le composant Layer
 // Array(Object) : [{name, service, opacity, visible, ...}]
@@ -19,6 +18,7 @@ var layers = computed(() => {
     return {
       name : layer.name,
       service : layer.serviceParams.id.split(":")[1],
+      key : layer.key,
       opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
       visible : layer.hasOwnProperty("visible") ? layer.visible : true,
       gray : layer.hasOwnProperty("gray") ? layer.gray : true
@@ -31,5 +31,6 @@ var layers = computed(() => {
 <template>
     <Layer
       v-for="layer in layers"
+      :key="layer.key"
       :layer-options="layer" />
 </template>

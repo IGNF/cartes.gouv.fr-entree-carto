@@ -20,7 +20,7 @@ const opts = useControlsMenuOptions()
 
 const allOptions = computed(() => {
   return opts.filter((opt) => {
-    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) 
+    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase())
     || opt.hint.toLowerCase().includes(searchString.value.toLowerCase())
     || opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
       return opt
@@ -76,14 +76,16 @@ onUpdated(() => {})
 </script>
 
 <template>
+  <div class="control-container">
     <h4>Gestion d'outils</h4>
     <div class="control-search-bar">
-    <DsfrSearchBar
-    :model-value="searchString"
-    @update:model-value="updateSearch"
-  />
-  </div>
-  <DsfrTabs
+      <DsfrSearchBar
+      :model-value="searchString"
+      @update:model-value="updateSearch"
+      />
+    </div>
+    <div class="control-content">
+      <DsfrTabs
     :tab-list-name="tabListName"
     :tab-titles="tabTitles"
     :initial-selected-index="initialSelectedIndex"
@@ -103,7 +105,7 @@ onUpdated(() => {})
         :required="required"
         :options="allOptions"
         :model-value="props.selectedControls"
-      /> 
+      />
     </DsfrTabContent>
     <DsfrTabContent
       panel-id="tab-content-1"
@@ -119,9 +121,12 @@ onUpdated(() => {})
         :required="required"
         :options="favOptions"
         :model-value="props.selectedControls"
-      /> 
+      />
     </DsfrTabContent>
   </DsfrTabs>
+    </div>
+
+</div>
 
 </template>
 
@@ -129,5 +134,20 @@ onUpdated(() => {})
 .control-search-bar {
   margin-bottom: 30px;
   margin-right: 40px;
+  top: 0px;
+}
+
+.control-content {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  overflow-x: hidden;
+}
+
+.control-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 60px);
+  max-height: calc(70vh - 70px);
 }
 </style>
