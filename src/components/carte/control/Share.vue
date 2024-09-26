@@ -67,6 +67,11 @@ const shareNetworks = [
     "name": "linkedin",
     "label": "Partager sur LinkedIn",
     "url": contacts.networks.linkedin
+  },
+  {
+    "name": "instagram",
+    "label": "Partager sur Instagram",
+    "url": contacts.networks.instagram
   }
 ];
 
@@ -152,12 +157,19 @@ onBeforeMount(() => {
   </div>
 </template>
 
+<style>
+  .fr-btn--instagram::before {
+    -webkit-mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
+    mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
+  }
+</style>
+
 <style scoped>
   #share-container {}
   #share-button-position {
     position: absolute;
     left: 10px;
-    top: 10px;
+    top: 225px;
     z-index: 1000;
   }
   .share-button-size {
