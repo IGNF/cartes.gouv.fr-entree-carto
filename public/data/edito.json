@@ -29,7 +29,8 @@
   "layers": {
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Foncier",
-      "base": false
+      "base": false,
+      "producer": "DGFIP"
     },
     "FORETS.PUBLIQUES$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Forêt",
@@ -63,7 +64,8 @@
     },
     "PROTECTEDSITES.MNHN.RESERVES-REGIONALES$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Espaces protégés",
-      "base": false
+      "base": false,
+      "producer": "MNHN"
     },
     "TRANSPORTNETWORKS.RAILWAYS$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Transports",

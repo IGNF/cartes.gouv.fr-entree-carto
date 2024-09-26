@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue'
 
 import Map from 'ol/Map'
+import { useMapStore } from "@/stores/mapStore"
+const mapStore = useMapStore()
 
 /**
  * Reference (DOM)
@@ -50,7 +52,7 @@ const onFocusOnMap = () => {
 // Option permettant de rendre disponible 'map' 
 // aux composants enfants imbriqués
 provide('map', map)
-
+mapStore.setMap(map)
 </script>
 
 <template>
