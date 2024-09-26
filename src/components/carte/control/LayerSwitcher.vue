@@ -62,12 +62,16 @@ onUpdated(() => {
 const onAddLayer = (e) => {
   var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onAddLayer", id);
-  mapStore.addLayer(id);
+  if (id) {
+    mapStore.addLayer(id);
+  }
 }
 const onRemoveLayer = (e) => {
   var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onRemoveLayer", id);
-  mapStore.removeLayer(id);
+  if (id) {
+    mapStore.removeLayer(id);
+  }
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);
