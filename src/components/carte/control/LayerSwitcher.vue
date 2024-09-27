@@ -31,6 +31,7 @@ onMounted(() => {
     layerSwitcher.value.on("layerswitcher:extent", onZoomToExtentLayer);
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
+    layerSwitcher.value.on("layerswitcher:change:position", onChangePositionLayer);
   }
 })
 
@@ -108,6 +109,13 @@ const onChangeVisibilityLayer = (e) => {
     visible : e.visibility
   });
 }
+const onChangePositionLayer = (e) => {
+  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  log.debug("onChangePositionLayer", e);
+  // TODO
+  // mise à jour de la position de la couche dans le permalien !
+}
+
 </script>
 
 <template>
