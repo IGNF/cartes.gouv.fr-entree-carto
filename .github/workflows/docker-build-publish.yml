@@ -59,6 +59,7 @@ jobs:
               with:
                   context: .
                   file: .docker/Dockerfile
+                  build-args: MODE_ENV=production
                   pull: true
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
