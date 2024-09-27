@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
-    BaseLayerCatalogue: typeof import('./components/menu/catalogue/BaseLayerCatalogue.vue')['default']
     Carto: typeof import('./components/carte/Carto.vue')['default']
     CartoAndTools: typeof import('./components/CartoAndTools.vue')['default']
     Controls: typeof import('./components/carte/Controls.vue')['default']
@@ -35,11 +34,9 @@ declare module 'vue' {
     Isocurve: typeof import('./components/carte/control/Isocurve.vue')['default']
     Layer: typeof import('./components/carte/Layer/Layer.vue')['default']
     LayerCatalogue: typeof import('./components/menu/catalogue/LayerCatalogue.vue')['default']
-    LayerFilter: typeof import('./components/menu/catalogue/LayerFilter.vue')['default']
     LayerList: typeof import('./components/menu/catalogue/LayerList.vue')['default']
     Layers: typeof import('./components/carte/Layer/Layers.vue')['default']
     LayerSwitcher: typeof import('./components/carte/control/LayerSwitcher.vue')['default']
-    LeftMenu: typeof import('./components/menu/LeftMenu.vue')['default']
     LeftMenuTool: typeof import('./components/menu/LeftMenuTool.vue')['default']
     Legends: typeof import('./components/carte/control/Legends.vue')['default']
     Map: typeof import('./components/carte/Map.vue')['default']
@@ -47,7 +44,6 @@ declare module 'vue' {
     MeasureAzimuth: typeof import('./components/carte/control/MeasureAzimuth.vue')['default']
     MeasureLength: typeof import('./components/carte/control/MeasureLength.vue')['default']
     MenuCatalogue: typeof import('./components/menu/catalogue/MenuCatalogue.vue')['default']
-    MenuCatalogueData: typeof import('./components/menu/catalogue/MenuCatalogueData.vue')['default']
     MenuCatalogueThematique: typeof import('./components/menu/catalogue/MenuCatalogueThematique.vue')['default']
     MenuControl: typeof import('./components/menu/MenuControl.vue')['default']
     MenuLateralNavButton: typeof import('./components/menu/MenuLateralNavButton.vue')['default']
@@ -66,6 +62,7 @@ declare module 'vue' {
     SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
     Share: typeof import('./components/carte/control/Share.vue')['default']
     StoreData: typeof import('./components/StoreData.vue')['default']
+    Territories: typeof import('./components/carte/control/Territories.vue')['default']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }

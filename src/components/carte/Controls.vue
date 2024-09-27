@@ -11,6 +11,7 @@ import Route from './control/Route.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
+import Territories from './control/Territories.vue';
 
 import Share from './control/Share.vue'
 
@@ -44,6 +45,16 @@ log.debug(props.controlOptions);
 
 const shareOptions = {};
 
+const territoriesOptions = {
+  position: 'bottom-left',
+  panel : true,
+  title : "Sélectionner un territoire",
+  auto : true, // chargement auto des territoires par defaut
+  thumbnail : false, // imagette des territoires
+  reduce : false, // tuiles reduites par defaut
+  tiles : 3
+}
+
 const layerSwitcherOptions = {
   options: {
     position : "top-right",
@@ -52,6 +63,7 @@ const layerSwitcherOptions = {
     counter: true
   }
 }
+
 const legendsOptions = {
   position : "top-right",
   panel: true,
@@ -193,6 +205,12 @@ const measureAzimuthOptions = {
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :analytic="useControls.OverviewMap.analytic"
     :overview-map-options="overviewMapOptions"
+  />
+  <Territories
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Territories.id)"
+    :analytic="useControls.Territories.analytic"
+    :territories-options="territoriesOptions"
   />
   <MeasureLength
     v-if="controlOptions"
