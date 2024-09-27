@@ -40,10 +40,7 @@ onMounted(() => {
   // ajout des options de preload par defaut
   var preload = {
     preload : Infinity,
-    cacheSize : 1024,
-    sourceParams : {
-      transition : 0
-    }
+    cacheSize : 1024
   };
   switch (service) {
     case "WMS":
