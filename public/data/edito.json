@@ -1,4 +1,13 @@
 {
+  "contacts": {
+    "mail": "geoplateforme@ign.fr",
+    "networks": {
+      "facebook": "https://www.facebook.com/ignfr",
+      "twitter": "https://twitter.com/IGNFrance",
+      "linkedin": "https://fr.linkedin.com/company/ignfrance",
+      "instagram": "https://www.instagram.com/ign_france/?hl=fr"
+    }
+  },
   "thematics": [
     "Administratif",
     "Foncier",
@@ -20,7 +29,8 @@
   "layers": {
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Foncier",
-      "base": false
+      "base": false,
+      "producer": "DGFIP"
     },
     "FORETS.PUBLIQUES$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Forêt",
@@ -54,7 +64,8 @@
     },
     "PROTECTEDSITES.MNHN.RESERVES-REGIONALES$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Espaces protégés",
-      "base": false
+      "base": false,
+      "producer": "MNHN"
     },
     "TRANSPORTNETWORKS.RAILWAYS$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Transports",

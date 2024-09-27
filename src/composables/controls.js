@@ -102,13 +102,19 @@ export const useControls = {
     disable: false,
     analytic: true
   },
+  Share: {
+    id: 'Share',
+    active: true,
+    disable: false,
+    analytic: false
+  },
 }
 
 /**
  * Obtenir les contrôles par défaut
  * @returns 
  */
-export function getDefaultControls() {
+export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
@@ -229,6 +235,13 @@ export function useControlsMenuOptions() {
     name: useControls.MeasureAzimuth.id,
     hint: 'Mesures',
     disabled: useControls.MeasureAzimuth.disable
+  },
+  {
+    label: 'Partager une carte',
+    id: 'share',
+    name: useControls.Share.id,
+    hint: 'Partages',
+    disabled: useControls.Share.disable
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 

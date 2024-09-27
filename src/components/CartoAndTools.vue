@@ -2,7 +2,7 @@
 import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
-import MenuCatalogue from '@/components/menu/MenuCatalogue.vue'
+import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
 import MenuControl from '@/components/menu/MenuControl.vue';
 
 import { useControls } from '@/composables/controls'
@@ -52,8 +52,12 @@ const selectedControls = computed(() => {
 
     <!-- Le catalogue est dans le menu gauche -->
     <LeftMenuTool>
-      <!-- On transmet la liste complète des couches du catalogue -->
+      <!-- 
+        On transmet la liste complète des couches du catalogue
+        ainsi que la liste des couches sélectionnées
+      -->
       <MenuCatalogue
+        :selected-layers="selectedLayers"
         :layers="dataStore.getLayers()"/>
     </LeftMenuTool>
 
