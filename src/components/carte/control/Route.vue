@@ -1,24 +1,22 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin'
+import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
+import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
-import { Route } from 'geopf-extensions-openlayers'
-
-// FIXME
-// l'intégration de ce widget ne fonctionne pas car le constructeur 
-// n'utilise pas de shadow dom !
+import { Route } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   routeOptions: Object
-})
+});
 
-const log = useLogger()
+const log = useLogger();
 const store = useDataStore();
 
-const map = inject('map')
-const route = ref(new Route(props.routeOptions))
+const map = inject('map');
+const route = ref(new Route(props.routeOptions));
 
 onMounted(() => {
   if (props.visibility) {
@@ -31,18 +29,26 @@ onMounted(() => {
     route.value.on("route:drawstart", onDrawStart);
     route.value.on("route:drawend", onDrawEnd);
     route.value.on("route:compute", onCompute);
+    if (props.analytic) {
+      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(route.value)
+    map.removeControl(route.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(route.value)
+    map.addControl(route.value);
+    if (props.analytic) {
+      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 

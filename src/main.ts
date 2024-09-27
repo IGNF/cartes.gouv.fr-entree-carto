@@ -20,11 +20,13 @@ import './main.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
 
+// https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
 
 const eulerian = createEulerian({
-  domain: "acwg.cartes.gouv.fr", // domaine de tracking Eulerian
-  isActionEnabled: true,
+  verbose : !isProduction, // option du plugin
+  domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
+  isActionEnabled: false, // on desactive le tracking global
   site: {
     environment: isProduction ? "production" : "development",
     entity: "IGN"

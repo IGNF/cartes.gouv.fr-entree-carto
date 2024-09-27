@@ -1,42 +1,57 @@
 <script setup lang="js">
-import { useLogger } from 'vue-logger-plugin'
-import { GeoportalOverviewMap } from 'geopf-extensions-openlayers'
-import { useMatchMedia } from '@/composables/matchMedia'
+import { useLogger } from 'vue-logger-plugin';
+import { useMatchMedia } from '@/composables/matchMedia';
+import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+
+import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   overviewMapOptions: Object
-})
+});
 
-const log = useLogger()
+const log = useLogger();
 
-const map = inject('map')
-const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions))
+const map = inject('map');
+const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions));
 
 const isSmallScreen = useMatchMedia('SM')
 
 watch(isSmallScreen, () => {
   if (props.visibility && !isSmallScreen.value) {
-    map.addControl(overviewMap.value)
+    map.addControl(overviewMap.value);
+    if (props.analytic) {
+      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
+      useActionButtonEulerian(el);
+    }
   }
   else {
-    map.removeControl(overviewMap.value)
+    map.removeControl(overviewMap.value);
   }
 })
 
 onMounted(() => {
   if (props.visibility && !isSmallScreen.value) {
-    map.addControl(overviewMap.value)
-    overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap)
+    map.addControl(overviewMap.value);
+    overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
+    if (props.analytic) {
+      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 
 onBeforeUpdate(() => {
   if (props.visibility && !isSmallScreen.value) {
-    map.addControl(overviewMap.value)
+    map.addControl(overviewMap.value);
+    if (props.analytic) {
+      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
+      useActionButtonEulerian(el);
+    }
   }
   else {
-    map.removeControl(overviewMap.value)
+    map.removeControl(overviewMap.value);
   }
 })
 

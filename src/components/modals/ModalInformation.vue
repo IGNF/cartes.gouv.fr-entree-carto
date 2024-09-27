@@ -31,7 +31,9 @@ export default {};
 <script setup lang="js">
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
+import { useEulerian } from '@/plugins/Eulerian.js';
 
+const eulerian = useEulerian();
 const store = useMapStore();
 const data = useDataStore();
 
@@ -42,13 +44,18 @@ const type = info.type;
 const version = info.version;
 const opened = ref(info.opened && (version !== parseInt(store.noInformation, 10)));
 
+if (opened.value) {
+  eulerian.pause();
+}
 const onModalInformationClose = () => {
   opened.value = false;
+  eulerian.resume();
 };
 
 const onModalNoInformationClose = () => {
   opened.value = false;
   store.noInformation = version;
+  eulerian.resume();
 };
 
 </script>

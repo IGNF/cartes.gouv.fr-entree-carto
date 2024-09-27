@@ -131,16 +131,19 @@ const measureAzimuthOptions = {
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
+    :analytic="useControls.LayerSwitcher.analytic"
     :layer-switcher-options="layerSwitcherOptions"
   />
   <Legends
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
+    :analytic="useControls.Legends.analytic"
     :legends-options="legendsOptions"
   />
   <Route
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Route.id)"
+    :analytic="useControls.Route.analytic"
     :route-options="routeOptions"
   />
   <Isocurve
@@ -152,51 +155,61 @@ const measureAzimuthOptions = {
   <ReverseGeocode
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
+    :analytic="useControls.ReverseGeocode.analytic"
     :reverse-geocode-options="reverseGeocodeOptions"
   />
   <FullScreen
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :analytic="useControls.FullScreen.analytic"
     :fullscreen-options="fullscreenOptions"
   />
   <Zoom
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
+    :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
   />
   <Attributions
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Attributions.id)"
+    :analytic="useControls.Attributions.analytic"
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
+    :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
+    :analytic="useControls.ScaleLine.analytic"
     :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
+    :analytic="useControls.OverviewMap.analytic"
     :overview-map-options="overviewMapOptions"
   />
   <MeasureLength
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
+    :analytic="useControls.MeasureLength.analytic"
     :measure-length-options="measureLengthOptions"
   />
   <MeasureArea
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
+    :analytic="useControls.MeasureArea.analytic"
     :measure-area-options="measureAreaOptions"
   />
   <MeasureAzimuth
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
+    :analytic="useControls.MeasureAzimuth.analytic"
     :measure-azimuth-options="measureAzimuthOptions"
   />
 </template>
