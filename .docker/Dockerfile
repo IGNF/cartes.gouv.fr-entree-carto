@@ -19,7 +19,7 @@
 FROM node:20-alpine as builder
 
 ARG BASE_URL="/cartes"
-ARG MODE_ENV="development"
+ARG MODE_ENV="production"
 
 RUN apk add git
 
