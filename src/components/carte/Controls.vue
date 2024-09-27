@@ -49,7 +49,7 @@ const territoriesOptions = {
   position: 'bottom-left',
   panel : true,
   title : "Sélectionner un territoire",
-  auto : true, // chargement auto des territoires par defaut
+  auto : false, // chargement auto des territoires par defaut
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
   tiles : 3
