@@ -37,19 +37,24 @@ onMounted(() => {
     opacity : props.layerOptions.opacity,
     gray : props.layerOptions.gray
   };
+  // ajout des options de preload par defaut
+  var preload = {
+    preload : Infinity,
+    cacheSize : 1024
+  };
   switch (service) {
     case "WMS":
       layer.value = new GeoportalWMS({
         layer : name,
         configuration : value,
-        olParams : options
+        olParams : Object.assign(options, preload)
       });
       break;
     case "WMTS":
       layer.value = new GeoportalWMTS({
         layer : name,
         configuration : value,
-        olParams : options
+        olParams : Object.assign(options, preload)
       });
       break;
     case "TMS":
