@@ -6,13 +6,23 @@
 
 ### 🎉 Résumé
 
-Ajout d'un CHANGELOG
+* Ajout d'un CHANGELOG
+* Mécanisme de permalien
+* 2 nouveaux composants avec le partage de carte et la  consultation du catalogue
 
 ### 💥 Breaking changes
+
+:warning Nettoyer le localStorage !
 
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+* Partager une carte [#310](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/310)
+
+* Catalogue avec barre de recherche [#245](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/245)
+
+* Gestion du permalien [#308](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/308)
 
 * Ajout d'un CHANGELOG [#307](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/307)
 
@@ -29,6 +39,8 @@ Ajout d'un CHANGELOG
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
+
+* Ajout des options de preload sur les tuiles [#312](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/312)
 
 #### 🔒 [Sécurité]
 
