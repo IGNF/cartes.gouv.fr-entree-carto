@@ -2,29 +2,34 @@ import {
   defineStore
 } from 'pinia';
 
-import {
-  useStorage
-} from '@vueuse/core';
+import { useStorage } from '@vueuse/core';
 
-import { getDefaultControls } from '@/composables/controls';
+import { useUrlParams } from "@/composables/urlParams.js";
+import { useDefaultControls } from '@/composables/controls';
 
 /**
  * Valeurs par defaut
  * pour la liste des contrôles par defaut, on utilise toujours 
  * le composable 'src/composables/controls.js'
  */
-var defaultControls = getDefaultControls().toString();
+var defaultControls = useDefaultControls();
 
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0)",
-  CONTROLS: defaultControls,
+  CONTROLS: defaultControls.toString(),
   X: 283734.248995,
-  Y: 5655117.100650,
+  Y:  5655117.100650,
   LON: 2.5479878714752027, // informatif
   LAT: 50.800781249995744, // informatif
   ZOOM: 12,
   FIRSTVISIT: false,
-  NOINFORMATION: null
+  NOINFORMATION: null,
+  PRINT: {
+    ICON: false,
+    INFO: false,
+    TITLE: "",
+    COMMENT: ""
+  }
 }
 
 /**
@@ -45,6 +50,7 @@ const ns = ((value) => {
  * 
  * - cartes.gouv.fr.center --> webmercator
  * - cartes.gouv.fr.permalink
+ * - cartes.gouv.fr.permalinkShare
  * - cartes.gouv.fr.firstVisit
  * - cartes.gouv.fr.layers
  * - cartes.gouv.fr.zoom -> absolue !
@@ -69,10 +75,24 @@ const ns = ((value) => {
  *   avec caractére de séparation des options de la liste : ';'
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
+ * 
+ * @todo ordre des couches
  *
  */
 export const useMapStore = defineStore('map', () => {
+  /////////////
+  // objet map
+  /////////////
   const map = ref({});
+
+  // gestion des KVP dans l'URL (permalink)
+  var params = useUrlParams();
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      const value = params[key];
+      localStorage.setItem(ns(key), value);
+    }
+  }
 
   //////////////////
   // objets simples
@@ -85,14 +105,31 @@ export const useMapStore = defineStore('map', () => {
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
+  var title = useStorage(ns('print.title'), DEFAULT.PRINT.TITLE);
+  var comment = useStorage(ns('print.comment'), DEFAULT.PRINT.COMMENT);
+  var info = useStorage(ns('print.info'), DEFAULT.PRINT.INFO);
+  var geolocation = useStorage(ns('print.geolocation'), DEFAULT.PRINT.ICON);
 
   //////////////////
   // objets calculés
   //////////////////
 
   var permalink = computed(() => {
-    var url = location;
+    // INFO
+    // on exclue la route /embed
+    var last = location.pathname.slice(-1);
+    var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
+    var url = location.origin + path.replace("/embed", "");
     return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+  });
+
+  var permalinkShare = computed(() => {
+    // INFO
+    // on ajoute la route /embed
+    var last = location.pathname.slice(-1);
+    var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
+    var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&m=${comment.value}&i=${info.value}&t=${title.value}&g=${geolocation.value}&permalink=yes`;
   });
 
   var center = computed(() => {
@@ -130,7 +167,8 @@ export const useMapStore = defineStore('map', () => {
 
   localStorage.setItem(ns('center'), center.value);
   localStorage.setItem(ns('permalink'), permalink.value);
-  
+  localStorage.setItem(ns('permalinkShare'), permalinkShare.value);
+
   watch(zoom, () => {
     localStorage.setItem(ns('zoom'), Math.round(zoom.value));
   })
@@ -152,6 +190,9 @@ export const useMapStore = defineStore('map', () => {
   watch(permalink, () => {
     localStorage.setItem(ns('permalink'), permalink.value.toString()); // string
   })
+  watch(permalinkShare, () => {
+    localStorage.setItem(ns('permalinkShare'), permalinkShare.value.toString()); // string
+  })
   watch(center, () => {
     localStorage.setItem(ns('center'), center.value.toString()); // string
   })
@@ -163,6 +204,18 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
+  })
+  watch(title, () => {
+    localStorage.setItem(ns('print.title'), title.value.toString()); // string
+  })
+  watch(comment, () => {
+    localStorage.setItem(ns('print.comment'), comment.value.toString()); // string
+  })
+  watch(info, () => {
+    localStorage.setItem(ns('print.info'), info.value); // boolean
+  })
+  watch(geolocation, () => {
+    localStorage.setItem(ns('print.geolocation'), icon.value); // boolean
   })
 
   //////////////////
@@ -282,6 +335,12 @@ export const useMapStore = defineStore('map', () => {
     lat,
     firstVisit,
     noInformation,
+    title,
+    comment,
+    info,
+    geolocation,
+    permalink,
+    permalinkShare,
     getMap,
     setMap,
     getLayers,

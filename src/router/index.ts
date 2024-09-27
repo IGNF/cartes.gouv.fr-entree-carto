@@ -5,6 +5,7 @@ import {
 from 'vue-router'
 
 import Load from '../views/Load.vue'
+import Embed from '../views/Embed.vue'
 
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
@@ -14,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Carte',
     component: Load,
+  },
+  {
+    path: '/embed',
+    name: 'Carte embarquée',
+    component: Embed,
   },
 ]
 

@@ -14,6 +14,7 @@ export const useDataStore = defineStore('data', () => {
   const m_layers = ref({});
   const m_generalOptions = ref({});
   const m_tileMatrixSets = ref({});
+  const m_contacts = ref({});
   const isLoaded = ref(false);
   const error = ref("");
 
@@ -52,6 +53,7 @@ export const useDataStore = defineStore('data', () => {
         return ret
       })
 
+      m_contacts.value = edito.contacts;
       m_informations.value = edito.informations;
       m_thematics.value = edito.thematics;
       m_layers.value = res;
@@ -66,6 +68,10 @@ export const useDataStore = defineStore('data', () => {
       error.value = err.message;
     }
 
+  }
+
+  function getContacts () {
+    return m_contacts.value;
   }
 
   function getInformations() {
@@ -232,6 +238,7 @@ export const useDataStore = defineStore('data', () => {
     error,
     isLoaded,
     fetchData,
+    getContacts,
     getInformations,
     getThematics,
     getLayers,
