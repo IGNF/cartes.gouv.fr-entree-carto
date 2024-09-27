@@ -29,6 +29,6 @@
   ],
   "css.validate": false,
   "scss.validate": false,
-  "[vue]": { "editor.defaultFormatter": "dbaeumer.vscode-eslint" },
+  "[vue]": { "editor.defaultFormatter": "stylelint.vscode-stylelint" },
   "[css]": { "editor.defaultFormatter": "stylelint.vscode-stylelint" },
 }

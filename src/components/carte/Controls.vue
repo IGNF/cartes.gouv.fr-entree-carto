@@ -12,6 +12,8 @@ import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
 
+import Share from './control/Share.vue'
+
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
 
@@ -38,7 +40,10 @@ const props = defineProps({
 const log = useLogger()
 log.debug(props.controlOptions);
 
-// liste des options pour les contrôles
+// liste des options pour les contrôles;
+
+const shareOptions = {};
+
 const layerSwitcherOptions = {
   options: {
     position : "top-right",
@@ -118,6 +123,11 @@ const measureAzimuthOptions = {
   >>> sinon, visibility:false
 -->
 <template>
+  <Share
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Share.id)"
+    :share-options="shareOptions"
+  />
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
