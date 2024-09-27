@@ -12,11 +12,13 @@
 
 ### 💥 Breaking changes
 
-:warning Nettoyer le localStorage !
+    > 🔥 Nettoyer le localStorage !
 
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+* Activation des tracker Eulerain sur les actions boutons des widgets [#309](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/309)
 
 * Partager une carte [#310](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/310)
 
