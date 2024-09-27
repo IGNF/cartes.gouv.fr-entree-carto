@@ -1,5 +1,4 @@
 <script setup lang="js">
-import { OhVueIcon as VIcon } from 'oh-vue-icons'
 
 const props = defineProps({
     icon: String,

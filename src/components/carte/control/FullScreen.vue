@@ -1,8 +1,12 @@
 <script setup lang="js">
 import { GeoportalFullScreen } from 'geopf-extensions-openlayers'
 
+// FIXME
+// ajouter un ID sur le bouton pour y ajouter un tracker Eulerian
+
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   fullscreenOptions: Object
 })
 

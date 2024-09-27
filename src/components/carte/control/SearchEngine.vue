@@ -1,25 +1,29 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin'
-import { useDataStore } from "@/stores/dataStore"
+import { useLogger } from 'vue-logger-plugin';
+import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
 
 import {
   SearchEngine
 } from 'geopf-extensions-openlayers'
 
+// FIXME
+// choisir où placer le tracker Eulerian sur ce widget !
+
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   searchEngineOptions: Object
-})
+});
 
-const log = useLogger()
+const log = useLogger();
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const map = inject('map')
-const searchEngine = ref(new SearchEngine(props.searchEngineOptions))
+const map = inject('map');
+const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
 
 onMounted(() => {
   if (props.visibility) {

@@ -2,11 +2,13 @@
 
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
+import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { ReverseGeocode } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   visibility: Boolean,
+  analytic: Boolean,
   reverseGeocodeOptions: Object
 })
 
@@ -25,6 +27,10 @@ onMounted(() => {
     */
     reverseGeocode.value.on("reverseGeocode:onclickresult", onClickResult);
     reverseGeocode.value.on("reverseGeocode:compute", onCompute);
+    if (props.analytic) {
+      var el = reverseGeocode.value.element.querySelector("button[id^=GPshowReverseGeocodingPicto-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 
@@ -37,6 +43,10 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(reverseGeocode.value);
+    if (props.analytic) {
+      var el = reverseGeocode.value.element.querySelector("button[id^=GPshowReverseGeocodingPicto-]");
+      useActionButtonEulerian(el);
+    }
   }
 })
 

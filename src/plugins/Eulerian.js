@@ -19,18 +19,24 @@ export class Eulerian {
   constructor(options) {
     console.debug(options);
     // INFO
-    // pour tester la collecte des statistiques en local, il faut modifier l'URL (filtre Eulerian) :
+    // pour tester la collecte des statistiques en local, 
+    // il faut modifier l'URL (filtre Eulerian) :
     // > BASE_URL=stat.cartes.gouv.fr npm run dev
 
     // INFO
-    // pour activer le mode debug, taper dans la console du navigateur : 
+    // pour activer le mode debug : 
     // > window.dsfr.analytics.isDebugging = true
+    // pour modifier le niveau du logger en mode production
+    // > window.dsfr.inspector.level = 10;
+
+    this.options = options;
+
     window.dsfr = {
-      verbose: true,
+      verbose: options.verbose,
       mode: "vue"
     }
     window.dsfr.analytics = options;
-    
+
     /**
      * clef du consentement
      * @example
@@ -38,14 +44,22 @@ export class Eulerian {
      */
     this.key = "@codegouvfr/react-dsfr finalityConsent eulerianAnalytics";
 
+    /**
+     * Statut de l'activation de la collecte
+     * @returns {Boolean} - true|false
+     */
+    this.status = false;
+
     // chargement des scripts de l'API Analytics Eulerain
     this.load().then(() => {
       console.debug("import dynamic dsfr !");
       // activation de la collecte si la clef de consentement est déjà active
       var value = JSON.parse(localStorage.getItem(this.key));
       if (value) {
-        if (!value.eulerianAnalytics) {
-          this.disable();
+        if (value.eulerianAnalytics) {
+          this.start();
+        } else {
+          this.stop();
         }
       }
     });
@@ -67,28 +81,54 @@ export class Eulerian {
    * Activation de la collecte
    * @public
    */
-  enable() {
-    console.debug("enable");
+  start () {
+    console.debug("start");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
     window.dsfr.analytics.opt.enable();
+    window.dsfr.start();
+    window.dsfr.analytics.readiness.then(() => {
+      console.debug("start promise !");
+      if (!this.options.verbose) {
+        window.dsfr.inspector.level = 10;
+      }
+      window.dsfr.analytics.reset();
+      window.dsfr.analytics.collect(); // envoie les données
+    });
+    this.status = true;
   }
 
   /**
    * Desactivation de la collecte
    * @public
    */
-  disable() {
-    console.debug("disable");
+  stop () {
+    console.debug("stop");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
-    window.dsfr.analytics.opt.disable();
+    // window.dsfr.analytics.opt.disable();
+    window.dsfr.stop();
+    this.status = false;
   }
 
   /**
-   * Statut de l'activation de la collecte
-   * @returns {Boolean} - true|false
+   * Pause dans la collecte
+   * @public
    */
-  isDisabled() {
-    return window.dsfr.analytics.opt.isDisabled;
+  pause () {
+    if (this.status) {
+      window.dsfr.stop();
+    }
+    console.debug("pause", this.status);
+  }
+  
+  /**
+   * Reprise de la collecte
+   * @public
+   */
+  resume () {
+    if (this.status) {
+      window.dsfr.start();
+    }
+    console.debug("resume", this.status);
   }
 
   /**
@@ -107,6 +147,10 @@ export class Eulerian {
     this.key = key;
   }
 
+  /**
+   * La clef exsite t elle ?
+   * @returns {Boolean} - true/false
+   */
   hasKey() {
     var value = localStorage.getItem(this.key);
     return !!value;
