@@ -55,6 +55,7 @@ declare module 'vue' {
     ModalConsent: typeof import('./components/modals/ModalConsent.vue')['default']
     ModalInformation: typeof import('./components/modals/ModalInformation.vue')['default']
     ModalTheme: typeof import('./components/modals/ModalTheme.vue')['default']
+    MousePosition: typeof import('./components/carte/control/MousePosition.vue')['default']
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
     ReverseGeocode: typeof import('./components/carte/control/ReverseGeocode.vue')['default']

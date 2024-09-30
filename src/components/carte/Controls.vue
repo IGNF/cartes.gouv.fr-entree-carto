@@ -11,6 +11,7 @@ import Route from './control/Route.vue'
 import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
+import MousePosition from './control/MousePosition.vue'
 
 import Share from './control/Share.vue'
 
@@ -117,6 +118,10 @@ const measureAzimuthOptions = {
   position: 'top-left'
 }
 
+const mousePositionOptions = {
+  position: 'bottom-left'
+}
+
 </script>
 <!-- INFO : Affichage du contrôle
   >>> option visibility:true, si le contrôle est dans la liste
@@ -211,6 +216,11 @@ const measureAzimuthOptions = {
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
     :analytic="useControls.MeasureAzimuth.analytic"
     :measure-azimuth-options="measureAzimuthOptions"
+  />
+  <MousePosition
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
+    :mouse-position-options="mousePositionOptions"
   />
 </template>
 
