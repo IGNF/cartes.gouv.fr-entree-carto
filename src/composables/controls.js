@@ -106,8 +106,14 @@ export const useControls = {
     id: 'Share',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
+  Territories: {
+    id: 'Territories',
+    active: true,
+    disable: false,
+    analytic: true
+  }
 }
 
 /**
@@ -243,5 +249,12 @@ export function useControlsMenuOptions() {
     hint: 'Partages',
     disabled: useControls.Share.disable
   },
+  {
+    label: 'Selectionner un territoire',
+    id: 'territories',
+    name: useControls.Territories.id,
+    hint: 'Territoires',
+    disabled: useControls.Territories.disable
+  }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 

@@ -1,4 +1,78 @@
 {
+  "territories": [
+    {
+      "id": "FXX",
+      "title": "France métropolitaine",
+      "description": "",
+      "zoom": null,
+      "bbox": [-9.86, 41.15, 10.38, 51.56],
+      "thumbnail": ""
+    },
+    {
+      "id": "GLP",
+      "title": "Gualdeloupe",
+      "description": "",
+      "zoom": null,
+      "bbox": [ -61.97, 15.72, -60.93, 16.66],
+      "thumbnail": ""
+    },
+    {
+      "id": "GUF",
+      "title": "Guyane",
+      "description": "",
+      "zoom": null,
+      "bbox": [-55.65, 1.49, -51.20, 6.21],
+      "thumbnail": ""
+    },
+    {
+      "id": "MTQ",
+      "title": "Martinique",
+      "description": "",
+      "zoom": null,
+      "bbox": [-61.40, 14.25, -60.67, 15.04],
+      "thumbnail": ""
+    },
+    {
+      "id": "REU",
+      "title": "Reunion",
+      "description": "",
+      "zoom": 8,
+      "bbox": [51.83, -24.72, 58.24, -18.28],
+      "thumbnail": ""
+    },
+    {
+      "id": "SPM",
+      "title": "Saint-Pierre-et-Miquelon",
+      "description": "",
+      "zoom": null,
+      "bbox": [-56.48, 46.69, -56.07, 47.19],
+      "thumbnail": ""
+    },
+    {
+      "id": "IDF",
+      "title": "Paris",
+      "description": "",
+      "zoom": null,
+      "bbox": [2.21, 48.80, 2.43, 48.92],
+      "thumbnail": ""
+    },
+    {
+        "id": "MYT",
+        "title": "Mayotte",
+        "description": "",
+        "zoom": null,
+        "bbox": [44.95, -13.049, 45.32, -12.57],
+        "thumbnail": ""
+    },
+    {
+        "id": "NCL",
+        "title": "Nouvelle Calédonie",
+        "description": "",
+        "zoom": null,
+        "bbox": [163.02,-23.08, 167.86,-19.50],
+        "thumbnail": ""
+    }
+  ],
   "contacts": {
     "mail": "geoplateforme@ign.fr",
     "networks": {
