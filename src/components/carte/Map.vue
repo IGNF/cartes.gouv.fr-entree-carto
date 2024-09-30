@@ -1,5 +1,6 @@
 <script setup lang="js">
 import { onMounted, ref } from 'vue'
+import { CRS } from 'geopf-extensions-openlayers'
 
 import Map from 'ol/Map'
 import { useMapStore } from "@/stores/mapStore"
@@ -28,6 +29,7 @@ const map = new Map({
 
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
+  CRS.load();
   map.setTarget(mapRef.value)
 
   // On ajoute une option d'accessibilité
