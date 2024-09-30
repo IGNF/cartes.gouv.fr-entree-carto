@@ -108,6 +108,12 @@ export const useControls = {
     disable: false,
     analytic: false
   },
+  MousePosition: {
+    id: 'MousePosition',
+    active: true,
+    disable: false,
+    analytic: false
+  },
 }
 
 /**
@@ -242,6 +248,13 @@ export function useControlsMenuOptions() {
     name: useControls.Share.id,
     hint: 'Partages',
     disabled: useControls.Share.disable
+  },
+  {
+    label: 'Connaître les coordonnées sous la souris',
+    id: 'mousePosition',
+    name: useControls.MousePosition.id,
+    hint: 'Position de la souris',
+    disabled: useControls.MousePosition.disable
   },
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
