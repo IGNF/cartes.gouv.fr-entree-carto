@@ -136,6 +136,10 @@
       "thematic": "Administratif",
       "base": false
     },
+    "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "producer": "IGN"
+    },
     "PROTECTEDSITES.MNHN.RESERVES-REGIONALES$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Espaces protégés",
       "base": false,
