@@ -11,10 +11,11 @@ export default {};
 </script>
 
 <script lang="js" setup>
-
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
+import { useEulerian } from '@/plugins/Eulerian.js';
 
+const eulerian = useEulerian();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
 
@@ -36,9 +37,11 @@ const shareModalOpened = ref(false);
 
 const onModalShareOpen = () => {
   shareModalOpened.value = true;
+  eulerian.pause();
 };
 const onModalShareClose = () => {
   shareModalOpened.value = false;
+  eulerian.resume();
 };
 
 // les paramètres du composant de partage
