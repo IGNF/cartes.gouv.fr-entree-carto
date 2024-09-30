@@ -262,6 +262,7 @@ export function useControlsMenuOptions() {
     hint: 'Position de la souris',
     disabled: useControls.MousePosition.disable
   },
+  {
     label: 'Selectionner un territoire',
     id: 'territories',
     name: useControls.Territories.id,
