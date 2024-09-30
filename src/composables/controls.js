@@ -106,7 +106,7 @@ export const useControls = {
     id: 'Share',
     active: true,
     disable: false,
-    analytic: false
+    analytic: true
   },
   MousePosition: {
     id: 'MousePosition',
@@ -114,6 +114,12 @@ export const useControls = {
     disable: false,
     analytic: false
   },
+  Territories: {
+    id: 'Territories',
+    active: true,
+    disable: false,
+    analytic: true
+  }
 }
 
 /**
@@ -256,5 +262,11 @@ export function useControlsMenuOptions() {
     hint: 'Position de la souris',
     disabled: useControls.MousePosition.disable
   },
+    label: 'Selectionner un territoire',
+    id: 'territories',
+    name: useControls.Territories.id,
+    hint: 'Territoires',
+    disabled: useControls.Territories.disable
+  }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
