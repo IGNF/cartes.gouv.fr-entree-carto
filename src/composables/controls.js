@@ -250,7 +250,7 @@ export function useControlsMenuOptions() {
     disabled: useControls.Share.disable
   },
   {
-    label: 'Connaître les coordonnées sous la souris',
+    label: 'Afficher les coordonnées',
     id: 'mousePosition',
     name: useControls.MousePosition.id,
     hint: 'Position de la souris',
