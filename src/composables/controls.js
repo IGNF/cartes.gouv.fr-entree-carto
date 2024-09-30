@@ -108,6 +108,12 @@ export const useControls = {
     disable: false,
     analytic: true
   },
+  MousePosition: {
+    id: 'MousePosition',
+    active: true,
+    disable: false,
+    analytic: false
+  },
   Territories: {
     id: 'Territories',
     active: true,
@@ -250,6 +256,12 @@ export function useControlsMenuOptions() {
     disabled: useControls.Share.disable
   },
   {
+    label: 'Afficher les coordonnées',
+    id: 'mousePosition',
+    name: useControls.MousePosition.id,
+    hint: 'Position de la souris',
+    disabled: useControls.MousePosition.disable
+  },
     label: 'Selectionner un territoire',
     id: 'territories',
     name: useControls.Territories.id,
