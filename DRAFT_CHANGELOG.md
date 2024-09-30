@@ -8,7 +8,7 @@
 
 * Ajout d'un CHANGELOG
 * Mécanisme de permalien
-* 2 nouveaux composants avec le partage de carte et la  consultation du catalogue
+* 4 nouveaux composants avec - le partage de carte - la consultation du catalogue - Les coordonnées de la souris - le centrage sur territoires
 
 ### 💥 Breaking changes
 
@@ -21,6 +21,8 @@
 * Activation des tracker Eulerain sur les actions boutons des widgets [#309](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/309)
 
 * Partager une carte [#310](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/310)
+
+* Coordonnées de la souris [315](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/315)
 
 * Catalogue avec barre de recherche [#245](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/245)
 
