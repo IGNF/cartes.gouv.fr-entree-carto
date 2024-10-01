@@ -386,7 +386,7 @@ const mousePositionOptions = {
   v-if="controlOptions"
   :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
   :analytic="useControls.ElevationPath.analytic"
-  :mouse-position-options="elevationPathOptions"
+  :elevation-path-options="elevationPathOptions"
   />
 </template>
 
