@@ -119,6 +119,12 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: true
+  },
+  LayerImport: {
+    id: 'LayerImport',
+    active: true,
+    disable: false,
+    analytic: true
   }
 }
 
@@ -268,6 +274,13 @@ export function useControlsMenuOptions() {
     name: useControls.Territories.id,
     hint: 'Territoires',
     disabled: useControls.Territories.disable
+  },
+  {
+    label: 'Importer des données',
+    id: 'layerImport',
+    name: useControls.LayerImport.id,
+    hint: 'Import de données',
+    disabled: useControls.LayerImport.disable
   }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
