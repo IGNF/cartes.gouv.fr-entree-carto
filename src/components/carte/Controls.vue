@@ -12,6 +12,7 @@ import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
 import MousePosition from './control/MousePosition.vue'
+import ElevationPath from './control/ElevationPath.vue'
 import Territories from './control/Territories.vue';
 
 import Share from './control/Share.vue'
@@ -128,6 +129,9 @@ const measureAreaOptions = {
 }
 const measureAzimuthOptions = {
   position: 'top-left'
+}
+const elevationPathOptions = {
+  position: 'bottom-left'
 }
 
 const mousePositionOptions = {
@@ -377,6 +381,12 @@ const mousePositionOptions = {
   :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
   :analytic="useControls.MousePosition.analytic"
   :mouse-position-options="mousePositionOptions"
+  />
+  <ElevationPath
+  v-if="controlOptions"
+  :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
+  :analytic="useControls.ElevationPath.analytic"
+  :mouse-position-options="elevationPathOptions"
   />
 </template>
 

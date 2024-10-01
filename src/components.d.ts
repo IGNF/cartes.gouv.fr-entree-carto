@@ -30,6 +30,7 @@ declare module 'vue' {
     DsfrSideMenu: typeof import('@gouvminint/vue-dsfr')['DsfrSideMenu']
     DsfrTabContent: typeof import('@gouvminint/vue-dsfr')['DsfrTabContent']
     DsfrTabs: typeof import('@gouvminint/vue-dsfr')['DsfrTabs']
+    ElevationPath: typeof import('./components/carte/control/ElevationPath.vue')['default']
     FullScreen: typeof import('./components/carte/control/FullScreen.vue')['default']
     Isocurve: typeof import('./components/carte/control/Isocurve.vue')['default']
     Layer: typeof import('./components/carte/Layer/Layer.vue')['default']
