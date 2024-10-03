@@ -14,6 +14,7 @@ export default {};
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
+import { useClipboard } from '@vueuse/core'
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
@@ -87,8 +88,17 @@ const iframe = computed(() => {
     allowfullscreen>
   </iframe>`;
 });
+const clipboardSource = ref('')
+const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
 const target = ref(null);
+
+const icon = "co-copy"
+const defaultScale = 0.8325;
+const iconProps = computed(() => typeof icon === 'string'
+  ? { scale: defaultScale.value, name: icon }
+  : { scale: defaultScale.value, ...icon },
+);
 
 onMounted(() => {
   nextTick(function () {
@@ -141,19 +151,40 @@ onBeforeMount(() => {
             label-visible
             readonly
             descriptionId=""
-          />
+          >
+          <template #label>
+            Lien permanent vers la carte
+            <DsfrButton
+            tertiary
+            :noOutline="true"
+            @click="copy(mapStore.permalink)">
+            <VIcon
+            v-bind="iconProps"/>  
+          </DsfrButton>
+          </template>
+          </DsfrInput>
         </p>
         <p>
           <DsfrInput
             v-model="iframe"
-            label="Copiez le code HTML pour intégrer la carte dans un site"
             placeholder=""
             isTextarea="true"
             label-visible
             readonly
             descriptionId=""
             style="height: 200px;"
-          />
+          >
+          <template #label>
+            Copiez le code HTML pour intégrer la carte dans un site
+            <DsfrButton
+            tertiary
+            :noOutline="true"
+            @click="copy(iframe)">
+            <VIcon
+            v-bind="iconProps"/>  
+          </DsfrButton>
+          </template>
+          </DsfrInput>
         </p>
       </div>
     </DsfrModal>
