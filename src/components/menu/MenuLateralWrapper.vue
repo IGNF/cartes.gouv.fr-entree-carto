@@ -142,7 +142,7 @@ En mode petit écran on le positione tout en haut en attendant mieux */
   }
 }
 
-@media (max-width: 576px) and (min-width: 382px){
+@media (max-width: 576px) and (min-width: 382px) {
   .menu-logo-list {
     margin-top: 13px;
   }
@@ -151,6 +151,31 @@ En mode petit écran on le positione tout en haut en attendant mieux */
 @media (max-width: 627px) and (min-width: 576px){
   .menu-logo-list {
     top : 228px;
+  }
+}
+
+/* Les panels de gestion des widgets et du catalogue prennent toute la largeur
+sur petits écrans (<627px de large) */
+@media (max-width: 627px) {
+  .menu-toggle-wrap {
+    z-index: 1001;
+    &.is_expanded {
+      .menu-content-list {
+        width: 100%;
+      }
+    }
+  }
+
+  .left {
+    .menu-content-list {
+      left: 0px;
+    }
+  }
+
+  .right {
+    .menu-content-list {
+      right: 0px;
+    }
   }
 }
 </style>
