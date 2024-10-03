@@ -134,16 +134,17 @@ left: 10px;
 }
 
 /* FIX ME : le bouton widget n'est pas intégré à la grille des widgets
-On gère donc sa position de manière absolue */
+On gère donc sa position de manière absolue
+En mode petit écran on le positione tout en haut en attendant mieux */
 @media (max-width: 382px) {
   .menu-logo-list {
-    top : 308px;
+    margin-top: 13px;
   }
 }
 
 @media (max-width: 576px) and (min-width: 382px){
   .menu-logo-list {
-    top : 286px;
+    margin-top: 13px;
   }
 }
 
@@ -152,5 +153,4 @@ On gère donc sa position de manière absolue */
     top : 228px;
   }
 }
-
 </style>
