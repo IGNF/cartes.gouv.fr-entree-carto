@@ -91,4 +91,11 @@ const selectedControls = computed(() => {
     height: 70vh;
     display: flex;
   }
+
+  @media (max-width: 576px) {
+    #map-and-tools-container {
+      /* FIXME : la hauteur de la carto dépend de la hauteur du footer et du header, ici en dur */
+      height: calc(100vh - 92.5px - 56px);
+    }
+  }
 </style>
