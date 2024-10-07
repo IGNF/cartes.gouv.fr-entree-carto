@@ -238,7 +238,7 @@ export const useMapStore = defineStore('map', () => {
       const regex = /\(.*\)/gm;
       const name = l.replace(regex, "");
       return name;
-    }); // array
+    }).filter(name => name != ''); // array
   }
   function cleanLayers() {
     layers.value = "";
