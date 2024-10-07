@@ -34,30 +34,27 @@ defineExpose({
 })
 </script>
 
-
-
 <template>
-  <div 
-  class="menu-toggle-wrap" 
-  :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
-  v-if="visibility"
+  <div
+    class="menu-toggle-wrap"
+    :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
+    v-if="visibility"
   >
     <div ref="menuTabs" class="menu-logo-list">
       <slot name="navButtons"></slot>
     </div>
 
-  
     <div class="menu-content-list"
     v-show="is_expanded">
       <div class="menu-collapse-icon-wrapper">
-        <DsfrButton :id="id" 
+        <DsfrButton :id="id"
           tertiary
           no-outline
           class="menu-collapse-icon"
           @click="closeMenu">
           Fermer
           <VIcon
-        v-bind="iconProps"/>  
+        v-bind="iconProps"/>
         </DsfrButton>
       </div>
 
@@ -68,12 +65,10 @@ defineExpose({
   </div>
 </template>
 
-
-
 <style scoped lang="scss">
 .left {
   .menu-logo-list {
-left: 10px;
+    left: 10px;
   }
   .menu-content-list {
     left: 60px;
@@ -133,17 +128,18 @@ left: 10px;
   position: absolute;
 }
 
-/* FIX ME : le bouton widget n'est pas intégré à la grille des widgets
-On gère donc sa position de manière absolue */
+/* FIXME : le bouton widget n'est pas intégré à la grille des widgets
+On gère donc sa position de manière absolue
+En mode petit écran on le positionne tout en haut en attendant mieux */
 @media (max-width: 382px) {
   .menu-logo-list {
-    top : 308px;
+    margin-top: 13px;
   }
 }
 
-@media (max-width: 576px) and (min-width: 382px){
+@media (max-width: 576px) and (min-width: 382px) {
   .menu-logo-list {
-    top : 286px;
+    margin-top: 13px;
   }
 }
 
@@ -152,5 +148,39 @@ On gère donc sa position de manière absolue */
     top : 228px;
   }
 }
+/* Petits écrans */
+@media (max-width: 627px) {
+  // FIXME : on cache les bouton "rouage" et "catalogue" si un menu latéral est ouvert.
+  // Cette instruction contourne le css scopé pour selectionner le menu suivant (tild) si le menu scopé est expanded
+  .menu-toggle-wrap.is_expanded ~ .menu-toggle-wrap > .menu-logo-list {
+    display : none;
+  }
 
+  // Cette instruction contourne le css scopé pour selectionner le menu scopé s'il y a un menu expanded après (tild)
+  .menu-toggle-wrap:has(~ .menu-toggle-wrap.is_expanded) > .menu-logo-list {
+    display: none
+  }
+  /* Les panels de gestion des widgets et du catalogue prennent toute la largeur
+  sur petits écrans (<627px de large) et passent au dessus du reste */
+  .menu-toggle-wrap {
+    z-index: 1001;
+    &.is_expanded {
+      .menu-content-list {
+        width: 100%;
+      }
+    }
+  }
+
+  .left {
+    .menu-content-list {
+      left: 0px;
+    }
+  }
+
+  .right {
+    .menu-content-list {
+      right: 0px;
+    }
+  }
+}
 </style>
