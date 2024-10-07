@@ -205,7 +205,7 @@ onBeforeMount(() => {
   #share-button-position {
     position: absolute;
     left: 10px;
-    top: 225px;
+    top: 56px;
     z-index: 1000;
   }
   .share-button-size {
@@ -215,5 +215,19 @@ onBeforeMount(() => {
   }
   .share-iframe-input {
     height: 200px;
+  }
+
+  /* positionnement absolu à adapter en fonction du positionnement
+  des autres boutons car n'est pas dans la grille */
+  @media (max-width: 576px){
+    #share-button-position {
+      top: 60px;
+    }
+  }
+
+  @media (max-width: 627px) and (min-width: 576px){
+    #share-button-position {
+      top: 120px;
+    }
   }
 </style>
