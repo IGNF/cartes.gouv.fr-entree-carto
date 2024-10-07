@@ -17,7 +17,8 @@ export {
 } from 'oh-vue-icons/icons/bi/index.js'
 
 export {
-  CoListLowPriority
+  CoListLowPriority,
+  CoCopy
 } from 'oh-vue-icons/icons/co/index.js'
 
 export {
