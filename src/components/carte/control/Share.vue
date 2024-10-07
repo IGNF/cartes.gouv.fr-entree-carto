@@ -56,28 +56,30 @@ const shareMail = {
   "to" : `mailto:${mail.address}?subject=${mail.subject}&body=${mail.body}`,
   "label" : "Envoyer un mail"
 };
-const shareNetworks = [
-  {
+const shareNetworks = computed(() => {
+  return [
+    {
     "name": "facebook",
     "label": "Partager sur Facebook",
-    "url": contacts.networks.facebook
+    "url": contacts.networks.facebook + "?display=popup&u=" + mapStore.permalink
   },
   {
     "name": "twitter-x",
     "label": "Partager sur X (anciennement Twitter)",
-    "url": contacts.networks.twitter
+    "url": contacts.networks.twitter + "?url=" + mapStore.permalink + "&text=Ma carte IGN&via=&hashtags=IGNFrance"
   },
   {
     "name": "linkedin",
     "label": "Partager sur LinkedIn",
-    "url": contacts.networks.linkedin
+    "url": contacts.networks.linkedin + "?url=" + mapStore.permalink + "&title=Ma%20carte%20IGN"
+    
   },
   {
     "name": "instagram",
     "label": "Partager sur Instagram",
     "url": contacts.networks.instagram
   }
-];
+]});
 
 // creation de l'iframe de partage
 const iframe = computed(() => {
