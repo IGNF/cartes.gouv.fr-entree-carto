@@ -119,6 +119,12 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: true
+  },
+  ElevationPath: {
+    id: 'ElevationPath',
+    active: true,
+    disable: false,
+    analytic: false
   }
 }
 
@@ -268,6 +274,13 @@ export function useControlsMenuOptions() {
     name: useControls.Territories.id,
     hint: 'Territoires',
     disabled: useControls.Territories.disable
+  },
+  {
+    label: 'Profil altimétrique',
+    id: 'elevationPath',
+    name: useControls.ElevationPath.id,
+    hint: 'Profil altimétrique',
+    disabled: useControls.ElevationPath.disable
   }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
