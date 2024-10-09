@@ -133,7 +133,7 @@ export const useMapStore = defineStore('map', () => {
   });
 
   var center = computed(() => {
-    return [x.value, y.value];
+    return [lon.value, lat.value];
   });
 
   ////////////////////
