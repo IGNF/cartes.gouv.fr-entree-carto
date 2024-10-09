@@ -1,7 +1,8 @@
 <script setup lang="js">
 import View from 'ol/View'
 import {
-  toLonLat as toLonLatProj
+  toLonLat as toLonLatProj,
+  fromLonLat as fromLonLatProj
 } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
@@ -20,7 +21,7 @@ const map = store.getMap()
  */
 const view = new View({ 
   zoom: props.zoom, 
-  center: props.center 
+  center: fromLonLatProj(props.center)
 })
 
 /**
