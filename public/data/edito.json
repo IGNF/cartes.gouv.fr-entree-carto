@@ -10,10 +10,10 @@
     },
     {
       "id": "GLP",
-      "title": "Gualdeloupe",
+      "title": "Guadeloupe",
       "description": "",
       "zoom": null,
-      "bbox": [ -61.97, 15.72, -60.93, 16.66],
+      "bbox": [-61.97, 15.72, -60.93, 16.66],
       "thumbnail": ""
     },
     {
@@ -34,10 +34,10 @@
     },
     {
       "id": "REU",
-      "title": "Reunion",
+      "title": "Réunion",
       "description": "",
-      "zoom": 8,
-      "bbox": [51.83, -24.72, 58.24, -18.28],
+      "zoom": 10,
+      "bbox": [55.07, -21.46, 55.86, -20.79],
       "thumbnail": ""
     },
     {
@@ -50,27 +50,27 @@
     },
     {
       "id": "IDF",
-      "title": "Paris",
+      "title": "Paris petite couronne",
       "description": "",
-      "zoom": null,
-      "bbox": [2.21, 48.80, 2.43, 48.92],
+      "zoom": 12,
+      "bbox": [2.18, 48.77, 2.52, 48.95],
       "thumbnail": ""
     },
     {
-        "id": "MYT",
-        "title": "Mayotte",
-        "description": "",
-        "zoom": null,
-        "bbox": [44.95, -13.049, 45.32, -12.57],
-        "thumbnail": ""
+      "id": "MYT",
+      "title": "Mayotte",
+      "description": "",
+      "zoom": null,
+      "bbox": [44.95, -13.049, 45.32, -12.57],
+      "thumbnail": ""
     },
     {
-        "id": "NCL",
-        "title": "Nouvelle Calédonie",
-        "description": "",
-        "zoom": null,
-        "bbox": [163.02,-23.08, 167.86,-19.50],
-        "thumbnail": ""
+      "id": "NCL",
+      "title": "Nouvelle Calédonie",
+      "description": "",
+      "zoom": null,
+      "bbox": [163.02,-23.08, 167.86,-19.50],
+      "thumbnail": ""
     }
   ],
   "contacts": {
