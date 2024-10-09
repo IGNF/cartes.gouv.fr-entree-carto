@@ -1,3 +1,16 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property { String } side position sur la carte du menu : valeur possible 'left' ou 'right'
+   * @property { Boolean } visibility  boolean assurant l'activation du menu
+   * 
+   */
+  export default {
+    name: 'MenuLateralWrapper'
+  };
+</script>
+
 <script setup lang="js">
 import { OhVueIcon as VIcon } from 'oh-vue-icons'
 

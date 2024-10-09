@@ -1,3 +1,14 @@
+<script lang="js">
+  /**
+   * @description
+   * Initialisation de la carte OpenLayer
+   * 
+   */
+  export default {
+    name: 'Map'
+  };
+</script>
+
 <script setup lang="js">
 import { onMounted, ref } from 'vue'
 import { CRS } from 'geopf-extensions-openlayers'
