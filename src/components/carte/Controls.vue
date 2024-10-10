@@ -47,7 +47,7 @@ log.debug(props.controlOptions);
 // les controles exposent à minima leur container (dom) et les options
 const refControls = {};
 for (var control in useControls) {
-  if (useControls[control].active === true) {
+  if (useControls[control].disable === false) {
     const id = useControls[control].id;
     refControls[id] = useTemplateRef(id);
   }
@@ -287,10 +287,45 @@ const mousePositionOptions = {
 // La solution est d'empecher l'ouverture de plusieurs modales des widgets.
 function handleWidgetDisplayModals () {
   log.debug("handleWidgetDisplayModals");
+  const closeWidgetModals = (id) => {
+    for (const key in refControls) {
+      if (Object.prototype.hasOwnProperty.call(refControls, key)) {
+        const element = refControls[key];
+        if (key !== id) {
+          if (element.value.container) {
+            var button = element.value.container.querySelector("div.gpf-widget>button.gpf-btn");
+            var dialog = element.value.container.querySelector("div.gpf-widget>dialog.GPpanel.gpf-panel.fr-modal");
+            if (button && dialog) {
+              if (button.ariaPressed === "true") {
+                button.click();
+              }
+            }
+          }
+        }
+      }
+    }
+  };
   for (const key in refControls) {
     if (Object.prototype.hasOwnProperty.call(refControls, key)) {
       const element = refControls[key];
       log.debug(key, element.value);
+      // ajout d'un ecouteur sur les boutons de widgets qui ouvrent des modales
+      if (element.value.container) {
+        var button = element.value.container.querySelector("div.gpf-widget>button.gpf-btn");
+        var dialog = element.value.container.querySelector("div.gpf-widget>dialog.GPpanel.gpf-panel.fr-modal");
+        if (button && dialog) {
+          button.dataset.ref = key;
+          button.addEventListener("click", (e) => {
+            // si on clique sur le bouton pour ouvrir une modale,
+            if (e.target.ariaPressed === "true") {
+              log.debug(e);
+              // on ferme les autres !
+              // > comment fermer les autres ?
+              closeWidgetModals(e.target.dataset.ref);
+            }
+          });
+        }
+      }
     }
   }
 }
