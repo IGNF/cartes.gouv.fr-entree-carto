@@ -48,6 +48,8 @@ Par rapport à la version 0.0.8, cette version intègre les changements suivants
 
 #### 🐛 [Correction]
 
+* Gestion des ouvertures simultanées des formulaires des widgets [338](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/338)
+
 * Ajout des options de preload sur les tuiles [#312](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/312)
 
 #### 🔒 [Sécurité]
