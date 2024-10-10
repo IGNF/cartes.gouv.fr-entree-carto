@@ -18,6 +18,11 @@ const log = useLogger()
 const map = inject('map')
 const zoom = ref(new GeoportalZoom(props.zoomOptions))
 
+defineExpose({
+  container: zoom.value.getContainer(),
+  options: zoom.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(zoom.value)

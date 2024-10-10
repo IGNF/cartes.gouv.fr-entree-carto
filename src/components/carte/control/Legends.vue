@@ -11,6 +11,11 @@ const props = defineProps({
 const map = inject('map');
 const legends = ref(new Legends(props.legendsOptions));
 
+defineExpose({
+  container: legends.value.getContainer(),
+  options: legends.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(legends.value);

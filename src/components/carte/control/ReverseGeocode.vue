@@ -18,6 +18,11 @@ const store = useDataStore();
 const map = inject('map');
 const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 
+defineExpose({
+  container: reverseGeocode.value.getContainer(),
+  options: reverseGeocode.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(reverseGeocode.value)

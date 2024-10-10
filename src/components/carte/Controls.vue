@@ -42,8 +42,18 @@ const props = defineProps({
 const log = useLogger()
 log.debug(props.controlOptions);
 
-// liste des options pour les contrôles;
+// INFO
+// ref sur les controles
+// les controles exposent à minima leur container (dom) et les options
+const refControls = {};
+for (var control in useControls) {
+  if (useControls[control].active === true) {
+    const id = useControls[control].id;
+    refControls[id] = useTemplateRef(id);
+  }
+}
 
+// liste des options pour les contrôles;
 const shareOptions = {};
 
 const territoriesOptions = {
@@ -271,6 +281,26 @@ const mousePositionOptions = {
   ]
 }
 
+// INFO
+// On met en place une gestion de l'affichage des modales (<dialog/>) des widgets
+// afin de limiter les collisions et superpositions des fenêtres. 
+// La solution est d'empecher l'ouverture de plusieurs modales des widgets.
+function handleWidgetDisplayModals () {
+  log.debug("handleWidgetDisplayModals");
+  for (const key in refControls) {
+    if (Object.prototype.hasOwnProperty.call(refControls, key)) {
+      const element = refControls[key];
+      log.debug(key, element.value);
+    }
+  }
+}
+
+onMounted(() => {
+  handleWidgetDisplayModals();
+})
+
+onUpdated(() => {})
+
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
@@ -278,105 +308,122 @@ const mousePositionOptions = {
 -->
 <template>
   <Share
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Share.id)"
-  :share-options="shareOptions"
+    v-if="controlOptions"
+    :ref="useControls.Share.id"
+    :visibility="props.controlOptions.includes(useControls.Share.id)"
+    :share-options="shareOptions"
   />
   <LayerSwitcher
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
-  :analytic="useControls.LayerSwitcher.analytic"
-  :layer-switcher-options="layerSwitcherOptions"
+    v-if="controlOptions"
+    :ref="useControls.LayerSwitcher.id"
+    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
+    :analytic="useControls.LayerSwitcher.analytic"
+    :layer-switcher-options="layerSwitcherOptions"
   />
   <Legends
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Legends.id)"
-  :analytic="useControls.Legends.analytic"
-  :legends-options="legendsOptions"
+    v-if="controlOptions"
+    :ref="useControls.Legends.id"
+    :visibility="props.controlOptions.includes(useControls.Legends.id)"
+    :analytic="useControls.Legends.analytic"
+    :legends-options="legendsOptions"
   />
   <Route
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Route.id)"
-  :analytic="useControls.Route.analytic"
-  :route-options="routeOptions"
+    v-if="controlOptions"
+    :ref="useControls.Route.id"
+    :visibility="props.controlOptions.includes(useControls.Route.id)"
+    :analytic="useControls.Route.analytic"
+    :route-options="routeOptions"
   />
   <Isocurve
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
-  :analytic="useControls.Isocurve.analytic"
-  :isocurve-options="isocurveOptions"
+    v-if="controlOptions"
+    :ref="useControls.Isocurve.id"
+    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
+    :analytic="useControls.Isocurve.analytic"
+    :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
-  :analytic="useControls.ReverseGeocode.analytic"
-  :reverse-geocode-options="reverseGeocodeOptions"
+    v-if="controlOptions"
+    :ref="useControls.ReverseGeocode.id"
+    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
+    :analytic="useControls.ReverseGeocode.analytic"
+    :reverse-geocode-options="reverseGeocodeOptions"
   />
   <FullScreen
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-  :analytic="useControls.FullScreen.analytic"
-  :fullscreen-options="fullscreenOptions"
+    v-if="controlOptions"
+    :ref="useControls.FullScreen.id"
+    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :analytic="useControls.FullScreen.analytic"
+    :fullscreen-options="fullscreenOptions"
   />
   <Zoom
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Zoom.id)"
-  :analytic="useControls.Zoom.analytic"
-  :zoom-options="zoomOptions"
+    v-if="controlOptions"
+    :ref="useControls.Zoom.id"
+    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
+    :analytic="useControls.Zoom.analytic"
+    :zoom-options="zoomOptions"
   />
   <Attributions
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Attributions.id)"
-  :analytic="useControls.Attributions.analytic"
-  :attributions-options="attributionsOptions"
+    v-if="controlOptions"
+    :ref="useControls.Attributions.id"
+    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
+    :analytic="useControls.Attributions.analytic"
+    :attributions-options="attributionsOptions"
   />
   <SearchEngine
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
-  :analytic="useControls.SearchEngine.analytic"
-  :search-engine-options="searchEngineOptions"
+    v-if="controlOptions"
+    :ref="useControls.SearchEngine.id"
+    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
+    :analytic="useControls.SearchEngine.analytic"
+    :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
-  :analytic="useControls.ScaleLine.analytic"
-  :scale-line-options="scaleLineOptions"
+    v-if="controlOptions"
+    :ref="useControls.ScaleLine.id"
+    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
+    :analytic="useControls.ScaleLine.analytic"
+    :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
-  :analytic="useControls.OverviewMap.analytic"
-  :overview-map-options="overviewMapOptions"
+    v-if="controlOptions"
+    :ref="useControls.OverviewMap.id"
+    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
+    :analytic="useControls.OverviewMap.analytic"
+    :overview-map-options="overviewMapOptions"
   />
   <Territories
     v-if="controlOptions"
+    :ref="useControls.Territories.id"
     :visibility="props.controlOptions.includes(useControls.Territories.id)"
     :analytic="useControls.Territories.analytic"
     :territories-options="territoriesOptions"
   />
   <MeasureLength
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
-  :analytic="useControls.MeasureLength.analytic"
-  :measure-length-options="measureLengthOptions"
+    v-if="controlOptions"
+    :ref="useControls.MeasureLength.id"
+    :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
+    :analytic="useControls.MeasureLength.analytic"
+    :measure-length-options="measureLengthOptions"
   />
   <MeasureArea
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
-  :analytic="useControls.MeasureArea.analytic"
-  :measure-area-options="measureAreaOptions"
+    v-if="controlOptions"
+    :ref="useControls.MeasureArea.id"
+    :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
+    :analytic="useControls.MeasureArea.analytic"
+    :measure-area-options="measureAreaOptions"
   />
   <MeasureAzimuth
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
-  :analytic="useControls.MeasureAzimuth.analytic"
-  :measure-azimuth-options="measureAzimuthOptions"
+    v-if="controlOptions"
+    :ref="useControls.MeasureAzimuth.id"
+    :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
+    :analytic="useControls.MeasureAzimuth.analytic"
+    :measure-azimuth-options="measureAzimuthOptions"
   />
   <MousePosition
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
-  :analytic="useControls.MousePosition.analytic"
-  :mouse-position-options="mousePositionOptions"
+    v-if="controlOptions"
+    :ref="useControls.MousePosition.id"
+    :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
+    :analytic="useControls.MousePosition.analytic"
+    :mouse-position-options="mousePositionOptions"
   />
 </template>
 

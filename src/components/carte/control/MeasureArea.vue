@@ -11,6 +11,11 @@ const props = defineProps({
 const map = inject('map');
 const measureArea = ref(new MeasureArea(props.measureAreaOptions));
 
+defineExpose({
+  container: measureArea.value.getContainer(),
+  options: measureArea.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(measureArea.value);

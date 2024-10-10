@@ -24,6 +24,11 @@ const dataStore = useDataStore();
 const map = inject('map')
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
+defineExpose({
+  container: layerSwitcher.value.getContainer(),
+  options: layerSwitcher.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(layerSwitcher.value);

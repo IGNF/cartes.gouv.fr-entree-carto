@@ -11,6 +11,11 @@ const props = defineProps({
 const map = inject('map')
 const measureAzimuth = ref(new MeasureAzimuth(props.measureAzimuthOptions))
 
+defineExpose({
+  container: measureAzimuth.value.getContainer(),
+  options: measureAzimuth.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(measureAzimuth.value);

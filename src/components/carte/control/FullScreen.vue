@@ -13,6 +13,11 @@ const props = defineProps({
 const map = inject('map')
 const fullscreen = ref(new GeoportalFullScreen(props.fullscreenOptions))
 
+defineExpose({
+  container: fullscreen.value.getContainer(),
+  options: fullscreen.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(fullscreen.value)

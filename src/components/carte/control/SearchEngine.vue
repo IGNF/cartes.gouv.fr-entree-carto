@@ -25,6 +25,11 @@ const dataStore = useDataStore();
 const map = inject('map');
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
 
+defineExpose({
+  container: searchEngine.value.getContainer(),
+  options: searchEngine.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngine.value)

@@ -16,6 +16,11 @@ const log = useLogger();
 const map = inject('map');
 const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions));
 
+defineExpose({
+  container: overviewMap.value.getContainer(),
+  options: overviewMap.value.options
+});
+
 const isSmallScreen = useMatchMedia('SM')
 
 watch(isSmallScreen, () => {

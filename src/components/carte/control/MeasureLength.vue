@@ -11,6 +11,11 @@ const props = defineProps({
 const map = inject('map');
 const measureLength = ref(new MeasureLength(props.measureLengthOptions));
 
+defineExpose({
+  container: measureLength.value.getContainer(),
+  options: measureLength.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(measureLength.value);
