@@ -18,6 +18,11 @@ const store = useDataStore();
 const map = inject('map')
 const territories = ref(new Territories(props.territoriesOptions));
 
+defineExpose({
+  container: territories.value.getContainer(),
+  options: territories.value.options
+});
+
 function addTerritories () {
   var t = store.getTerritories();
   for (let i = 0; i < t.length; i++) {

@@ -16,6 +16,11 @@ const log = useLogger()
 const map = inject('map')
 const mousePosition = ref(new MousePosition(props.mousePositionOptions))
 
+defineExpose({
+  container: mousePosition.value.getContainer(),
+  options: mousePosition.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(mousePosition.value);

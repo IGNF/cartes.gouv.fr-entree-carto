@@ -18,6 +18,11 @@ const store = useDataStore();
 const map = inject('map');
 const route = ref(new Route(props.routeOptions));
 
+defineExpose({
+  container: route.value.getContainer(),
+  options: route.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(route.value)
