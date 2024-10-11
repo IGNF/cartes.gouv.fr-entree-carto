@@ -1,3 +1,15 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property { Array } controlOptions tableau contenant les controls disponibles
+   * 
+   */
+  export default {
+    name: 'Controls'
+  };
+</script>
+
 <script setup lang="js">
 import SearchEngine from './control/SearchEngine.vue'
 import ScaleLine from './control/ScaleLine.vue'
