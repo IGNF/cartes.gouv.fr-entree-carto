@@ -25,7 +25,7 @@ const props = defineProps({
 
 // INFO
 // liste des contrôles à activer
-// Ex. 
+// Ex.
 // Array(10) : [
 //  "OverviewMap",
 //  "SearchEngine",
@@ -166,7 +166,7 @@ const mousePositionOptions = {
       label : "UTM 20N (Guadeloupe, Martinique)",
       type : "Metric",
       geoBBox : { left: -66.00, bottom : 0.00, right : -60.00, top : 84.00 }
-      
+
     },{
       crs : "EPSG:4467",
       label : "UTM 21N (Saint-Pierre-et-Miquelon)",
@@ -400,6 +400,12 @@ const mousePositionOptions = {
   .position-container-top-right,
   .position-container-top-left {
     top: 210px;
+  }
+  .position-container-top-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-top-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-bottom-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-bottom-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) {
+    top: 126px;
   }
 }
 @media (max-width: 627px) and (min-width: 576px){
