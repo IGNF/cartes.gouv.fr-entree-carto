@@ -36,7 +36,7 @@ const mapStore = useMapStore()
 // fonctions computed() où on récupère la liste via le mapStore
 
 // INFO
-// On place une ref sur l'objet Map afin de savoir quang le DOM
+// On place une ref sur l'objet Map afin de savoir quand le DOM
 // est écrit. Une fonction computed() permet de savoir quand le DOM
 // est ready
 
