@@ -50,7 +50,7 @@ const contacts = dataStore.getContacts();
 var mail = {
   address : contacts.mail,
   subject : "Cartes à consulter sur cartes.gouv.fr",
-  body : "Bonjour, Je vous invite à consulter cette carte sur Cartes.gouv.fr : " + mapStore.permalink
+  body : "Bonjour,%0AJe vous invite à consulter cette carte sur Cartes.gouv.fr :%0A" + mapStore.permalink
 };
 const shareMail = {
   "to" : `mailto:${mail.address}?subject=${mail.subject}&body=${mail.body}`,
