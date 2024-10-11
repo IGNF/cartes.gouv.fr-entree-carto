@@ -1,3 +1,16 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property { Number } zoom niveau de zoom à l'initialisation de la view Openlayer
+   * @property { Array } center tableau des coordonnées du centre de la carte à l'initialisation de la view Openlayer
+   * 
+   */
+  export default {
+    name: 'View'
+  };
+</script>
+
 <script setup lang="js">
 import View from 'ol/View'
 import {
