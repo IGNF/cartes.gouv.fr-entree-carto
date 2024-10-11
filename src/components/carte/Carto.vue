@@ -1,3 +1,15 @@
+<script lang="js">
+  /**
+   * @description
+   * Composant définissant la configuration de la carte :
+   * @property { Object } selectedLayers liste des Layers sélectionnés ajoutés à la carte par l'utilisateur
+   * @property { Array } selectedControls tableau des controls (gpf-extension) sélectionnés par l'utilisateur pour s'afficher sur la carte
+   * 
+   */
+  export default {
+    name: 'Carto'
+  };
+</script>
 <script setup lang="js">
 
 // chargement des CSS de la carte et des extensions
@@ -24,7 +36,7 @@ const mapStore = useMapStore()
 // fonctions computed() où on récupère la liste via le mapStore
 
 // INFO
-// On place une ref sur l'objet Map afin de savoir quang le DOM
+// On place une ref sur l'objet Map afin de savoir quand le DOM
 // est écrit. Une fonction computed() permet de savoir quand le DOM
 // est ready
 
