@@ -1,4 +1,7 @@
 import { useUrlSearchParams } from '@vueuse/core';
+import {
+  fromLonLat as fromLonLatProj
+} from "ol/proj";
 
 /**
  * Lecture du permalink pour y extraire les informations.
@@ -16,7 +19,7 @@ import { useUrlSearchParams } from '@vueuse/core';
  * 
  * @example
  * http://localhost:5173/cartes.gouv.fr-entree-carto/embed?
- * &c=417070.66959457495,5975301.705064449
+ * &c=-4.088682731825065,47.99263846894371
  * &z=10
  * &l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0),ACCES.BIOMETHANE$GEOPORTAIL:OGC:WMTS(0.47;1;0)
  * &permalink=yes
@@ -32,12 +35,13 @@ export function useUrlParams() {
       const key = keys[index];
       switch (key) {
         case "c":
-          var xy = urlParams[key].split(",");
+          var lonlat = urlParams[key].split(",");
+          params.lon = lonlat[0];
+          params.lat = lonlat[1];
+          var xy = fromLonLatProj(lonlat);
           params.x = xy[0];
           params.y = xy[1];
-          params.lon = 0; // on ne fait pas la conversion...
-          params.lat = 0;
-          params.center = [params.x, params.y];
+          params.center = [params.lon, params.lat];
           break;
         case "l":
           params.layers = urlParams[key];
