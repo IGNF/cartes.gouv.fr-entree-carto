@@ -2,7 +2,7 @@
 
 <https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v0.0.8...HEAD>
 
-## 🔖 version 0.0.9 - __DATE__
+## 🔖 version 0.0.10 - __DATE__
 
 ### 🎉 Résumé
 
