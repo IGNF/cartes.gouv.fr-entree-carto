@@ -2,9 +2,13 @@
 
 <https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v0.0.8...HEAD>
 
-## 🔖 version 0.0.9 - __DATE__
+## 🔖 version 1.0.0 - __DATE__
 
 ### 🎉 Résumé
+
+Version 1 de l'entrée cartographique de la Géoplateforme. Cette version correspond au MVP (Produit Minimal Viable) du composant cartographique de cartes.gouv.fr.
+
+Par rapport à la version 0.0.8, cette version intègre les changements suivants :
 
 * Ajout d'un CHANGELOG
 * Mécanisme de permalien
