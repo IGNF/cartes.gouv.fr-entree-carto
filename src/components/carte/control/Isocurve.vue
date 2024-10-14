@@ -18,6 +18,11 @@ const store = useDataStore();
 const map = inject('map')
 const isocurve = ref(new Isocurve(props.isocurveOptions))
 
+defineExpose({
+  container: isocurve.value.getContainer(),
+  options: isocurve.value.options
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(isocurve.value)
