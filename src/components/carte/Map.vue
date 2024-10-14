@@ -1,3 +1,14 @@
+<script lang="js">
+  /**
+   * @description
+   * Initialisation de la carte OpenLayer
+   *
+   */
+  export default {
+    name: 'Map'
+  };
+</script>
+
 <script setup lang="js">
 import { onMounted, ref } from 'vue'
 import { CRS } from 'geopf-extensions-openlayers'
@@ -44,14 +55,14 @@ onMounted(() => {
  *  Trigerred on mouse over
  */
 const onFocusOnMap = () => {
-  // Si le focus est actuellement sur une balise <input>, on ne change pas de focus
-  if (document.activeElement.tagName !== "INPUT") {
+  // Si le focus est actuellement sur une balise <input> ou <select>, on ne change pas de focus
+  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
     mapRef.value.focus();
   }
 }
 
 // INFO
-// Option permettant de rendre disponible 'map' 
+// Option permettant de rendre disponible 'map'
 // aux composants enfants imbriqués
 provide('map', map)
 mapStore.setMap(map)

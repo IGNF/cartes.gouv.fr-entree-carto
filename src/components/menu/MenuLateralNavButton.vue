@@ -1,3 +1,17 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property { String } icon nom de l'icône à afficher
+   * @property { String } id du menu à ouvrir au clic sur l'icone
+   * @property { Boolean } active boolean assurant le style actif ou inactif du bouton
+   * 
+   */
+  export default {
+    name: 'MenuLateralButton'
+  };
+</script>
+
 <script setup lang="js">
 
 const props = defineProps({

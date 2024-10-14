@@ -65,4 +65,10 @@ onUpdated(() => {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style></style>
+<style>
+  @media (max-width: 576px){
+    .gpf-panel__body_territories {
+      max-height: calc(100vh - 92.5px - 56px);
+    }
+  }
+</style>

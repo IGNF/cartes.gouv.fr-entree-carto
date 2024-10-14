@@ -1,3 +1,15 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property {Object} selectedControls Tableau des contrôles sélectionnés ajoutés à la carte
+   * 
+   */
+  export default {
+    name: 'MenuControl'
+  };
+</script>
+
 <script setup lang="js">
 import { useControlsMenuOptions } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
