@@ -50,7 +50,7 @@ const contacts = dataStore.getContacts();
 var mail = {
   address : contacts.mail,
   subject : "Cartes à consulter sur cartes.gouv.fr",
-  body : "Bonjour,%0AJe vous invite à consulter cette carte sur Cartes.gouv.fr :%0A" + mapStore.permalink
+  body : "Bonjour,%0AJe vous invite à consulter cette carte sur Cartes.gouv.fr :%0A" + encodeURIComponent(mapStore.permalink)
 };
 const shareMail = {
   "to" : `mailto:${mail.address}?subject=${mail.subject}&body=${mail.body}`,
@@ -61,17 +61,17 @@ const shareNetworks = computed(() => {
     {
     "name": "facebook",
     "label": "Partager sur Facebook",
-    "url": contacts.networks.facebook + "?display=popup&u=" + mapStore.permalink
+    "url": contacts.networks.facebook + "?display=popup&u=" + encodeURIComponent(mapStore.permalink)
   },
   {
     "name": "twitter-x",
     "label": "Partager sur X (anciennement Twitter)",
-    "url": contacts.networks.twitter + "?url=" + mapStore.permalink + "&text=Ma carte IGN&via=&hashtags=IGNFrance"
+    "url": contacts.networks.twitter + "?url=" + encodeURIComponent(mapStore.permalink) + "&text=Ma carte IGN&via=&hashtags=IGNFrance"
   },
   {
     "name": "linkedin",
     "label": "Partager sur LinkedIn",
-    "url": contacts.networks.linkedin + "?url=" + mapStore.permalink + "&title=Ma%20carte%20IGN"
+    "url": contacts.networks.linkedin + "?url=" + encodeURIComponent(mapStore.permalink) + "&title=Ma%20carte%20IGN"
     
   },
   {
