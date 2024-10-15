@@ -58,11 +58,12 @@ const mail = computed(() => {
   }
 });
 
-
-const shareMail = {
-  "to" : `mailto:${mail.value.address}?subject=${mail.value.subject}&body=${mail.value.body}`,
-  "label" : "Envoyer un mail"
-};
+const shareMail = computed(() => {
+  {
+    "to" : `mailto:${mail.value.address}?subject=${mail.value.subject}&body=${mail.value.body}`,
+    "label" : "Envoyer un mail"
+  };
+})
 const shareNetworks = computed(() => {
   return [
     {
