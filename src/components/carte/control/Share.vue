@@ -59,7 +59,7 @@ const mail = computed(() => {
 });
 
 const shareMail = computed(() => {
-  {
+  return {
     "to" : `mailto:${mail.value.address}?subject=${mail.value.subject}&body=${mail.value.body}`,
     "label" : "Envoyer un mail"
   };
