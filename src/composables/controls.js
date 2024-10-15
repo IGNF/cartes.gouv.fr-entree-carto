@@ -20,8 +20,8 @@ export const useControls = {
   },
   SearchEngine: {
     id: 'SearchEngine',
-    active: true,
-    disable: false,
+    active: false,
+    disable: true,
     analytic: false
   },
   ScaleLine: {
@@ -32,8 +32,8 @@ export const useControls = {
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
-    active: true,
-    disable: false,
+    active: false,
+    disable: true,
     analytic: true
   },
   Legends: {
@@ -270,4 +270,5 @@ export function useControlsMenuOptions() {
     disabled: useControls.Territories.disable
   }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
+.filter(opt => opt.disabled === false)
 } 
