@@ -120,7 +120,7 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
-    return `${url}?c=${center.value}%26z=${Math.round(zoom.value)}%26l=${layers.value}%26w=${controls.value}%26permalink=yes`;
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
   var permalinkShare = computed(() => {
