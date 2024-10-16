@@ -30,6 +30,10 @@ onMounted(() => {
     map.addControl(searchEngine.value)
     /** abonnement au widget */
     searchEngine.value.on("searchengine:search:click", onClickSearch);
+    searchEngine.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
+    searchEngine.value.on("searchengine:geocode:click", onClickGeocodeResult);
+    searchEngine.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
+    searchEngine.value.on("searchengine:geolocation:click", onClickSearchGeolocation);
   }
 })
 
@@ -55,6 +59,17 @@ const onClickSearch = (e) => {
   var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
   log.debug("onClickSearch", id);
   mapStore.addLayer(id);
+}
+const onClickAutocompletResult = (e) => {}
+const onClickGeocodeResult = (e) => {}
+const onClickSeachByCoordinates = (e) => {}
+const onClickSearchGeolocation = (e) => {
+  // TODO geolocalisation demandée :
+  // on enregistre les informations utiles dans une couche "geolocalisation" : 
+  // > l'icone de geolocalisation est à afficher avec ses coordonnées
+  // > dans la popup d'information (+ adresse par geocodage ?)
+  // en mode connecté, elle est enregistrée afin d'être utilisé pour un partage (permalien),
+  // sinon, il n'est pas possible de l'ajouter dans le permalien...
 }
 
 </script>
