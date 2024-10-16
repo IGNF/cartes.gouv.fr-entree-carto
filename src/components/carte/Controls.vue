@@ -300,8 +300,7 @@ const mousePositionOptions = {
     :share-options="shareOptions"
   />
   <LayerSwitcher
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
+    :visibility="true"
     :analytic="useControls.LayerSwitcher.analytic"
     :layer-switcher-options="layerSwitcherOptions"
   />
@@ -348,8 +347,7 @@ const mousePositionOptions = {
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
+    :visibility="true"
     :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
   />
