@@ -14,6 +14,7 @@ export default {};
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
+import { useClipboard } from '@vueuse/core'
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
@@ -46,37 +47,47 @@ const onModalShareClose = () => {
 
 // les paramètres du composant de partage
 const contacts = dataStore.getContacts();
-var mail = {
-  address : contacts.mail,
-  subject : "Sujet",
-  body : "Corps du courriel"
-};
-const shareMail = {
-  "to" : `mailto:${mail.address}?subject=${mail.subject}&body=${mail.body}`,
-  "label" : "Envoyer un mail"
-};
-const shareNetworks = [
-  {
+const permalinkEncoded = computed(() => {
+  return encodeURI(mapStore.permalink).replaceAll("&", "%26")
+})
+const mail = computed(() => {
+  return  {
+    address : contacts.mail,
+    subject : "Cartes à consulter sur cartes.gouv.fr",
+    body : "Bonjour,%0AJe vous invite à consulter cette carte sur Cartes.gouv.fr :%0A" + `${permalinkEncoded.value}`
+  }
+});
+
+const shareMail = computed(() => {
+  return {
+    "to" : `mailto:${mail.value.address}?subject=${mail.value.subject}&body=${mail.value.body}`,
+    "label" : "Envoyer un mail"
+  };
+})
+const shareNetworks = computed(() => {
+  return [
+    {
     "name": "facebook",
     "label": "Partager sur Facebook",
-    "url": contacts.networks.facebook
-  },
-  {
-    "name": "twitter-x",
-    "label": "Partager sur X (anciennement Twitter)",
-    "url": contacts.networks.twitter
-  },
-  {
-    "name": "linkedin",
-    "label": "Partager sur LinkedIn",
-    "url": contacts.networks.linkedin
-  },
-  {
-    "name": "instagram",
-    "label": "Partager sur Instagram",
-    "url": contacts.networks.instagram
-  }
-];
+    "url": contacts.networks.facebook + "?display=popup&u=" + mapStore.permalink
+    },
+    {
+      "name": "twitter-x",
+      "label": "Partager sur X (anciennement Twitter)",
+      "url": contacts.networks.twitter + "?url=" + permalinkEncoded.value + "&text=Ma carte IGN&via=&hashtags=IGNFrance"
+    },
+    {
+      "name": "linkedin",
+      "label": "Partager sur LinkedIn",
+      "url": contacts.networks.linkedin + "?url=" + mapStore.permalink + "&title=Ma%20carte%20IGN"
+    },
+    {
+      "name": "instagram",
+      "label": "Partager sur Instagram",
+      "url": contacts.networks.instagram
+    }
+  ]
+});
 
 // creation de l'iframe de partage
 const iframe = computed(() => {
@@ -87,8 +98,17 @@ const iframe = computed(() => {
     allowfullscreen>
   </iframe>`;
 });
+const clipboardSource = ref('')
+const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
 const target = ref(null);
+
+const icon = "co-copy"
+const defaultScale = ref(0.8325);
+const iconProps = computed(() => typeof icon === 'string'
+  ? { scale: defaultScale.value, name: icon }
+  : { scale: defaultScale.value, ...icon },
+);
 
 onMounted(() => {
   nextTick(function () {
@@ -141,19 +161,40 @@ onBeforeMount(() => {
             label-visible
             readonly
             descriptionId=""
-          />
+          >
+          <template #label>
+            Lien permanent vers la carte
+            <DsfrButton
+            tertiary
+            :noOutline="true"
+            @click="copy(mapStore.permalink)">
+            <VIcon
+            v-bind="iconProps"/>  
+          </DsfrButton>
+          </template>
+          </DsfrInput>
         </p>
         <p>
           <DsfrInput
             v-model="iframe"
-            label="Copiez le code HTML pour intégrer la carte dans un site"
             placeholder=""
             isTextarea="true"
             label-visible
             readonly
             descriptionId=""
             style="height: 200px;"
-          />
+          >
+          <template #label>
+            Copiez le code HTML pour intégrer la carte dans un site
+            <DsfrButton
+            tertiary
+            :noOutline="true"
+            @click="copy(iframe)">
+            <VIcon
+            v-bind="iconProps"/>  
+          </DsfrButton>
+          </template>
+          </DsfrInput>
         </p>
       </div>
     </DsfrModal>

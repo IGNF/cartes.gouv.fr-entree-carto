@@ -65,6 +65,7 @@ declare module 'vue' {
     Share: typeof import('./components/carte/control/Share.vue')['default']
     StoreData: typeof import('./components/StoreData.vue')['default']
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
+    VIcon: typeof import('oh-vue-icons')['OhVueIcon']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }

@@ -1,3 +1,15 @@
+<script lang="js">
+  /**
+   * @description
+   * 
+   * @property { Array } controlOptions tableau contenant les controls disponibles
+   * 
+   */
+  export default {
+    name: 'Controls'
+  };
+</script>
+
 <script setup lang="js">
 import SearchEngine from './control/SearchEngine.vue'
 import ScaleLine from './control/ScaleLine.vue'
@@ -17,6 +29,9 @@ import Territories from './control/Territories.vue';
 
 import Share from './control/Share.vue'
 
+// Icone pour le marker du widget SearcEngine
+import IconGeolocationSVG from "../../assets/geolocation.svg";
+
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
 
@@ -26,7 +41,7 @@ const props = defineProps({
 
 // INFO
 // liste des contrôles à activer
-// Ex. 
+// Ex.
 // Array(10) : [
 //  "OverviewMap",
 //  "SearchEngine",
@@ -39,6 +54,7 @@ const props = defineProps({
 //  undefined,
 //  undefined,
 //  "FullScreen"
+//  (...)
 // ]
 const log = useLogger()
 log.debug(props.controlOptions);
@@ -92,7 +108,8 @@ const searchEngineOptions = {
     addToMap: false,
     filterServices : "WMTS,WMS,TMS",
     serviceOptions: {}
-  }
+  },
+  markerUrl : IconGeolocationSVG
 }
 
 const overviewMapOptions = {
@@ -170,7 +187,7 @@ const mousePositionOptions = {
       label : "UTM 20N (Guadeloupe, Martinique)",
       type : "Metric",
       geoBBox : { left: -66.00, bottom : 0.00, right : -60.00, top : 84.00 }
-      
+
     },{
       crs : "EPSG:4467",
       label : "UTM 21N (Saint-Pierre-et-Miquelon)",
@@ -282,75 +299,73 @@ const mousePositionOptions = {
 -->
 <template>
   <Share
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Share.id)"
-  :share-options="shareOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Share.id)"
+    :share-options="shareOptions"
   />
   <LayerSwitcher
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
-  :analytic="useControls.LayerSwitcher.analytic"
-  :layer-switcher-options="layerSwitcherOptions"
+    :visibility="true"
+    :analytic="useControls.LayerSwitcher.analytic"
+    :layer-switcher-options="layerSwitcherOptions"
   />
   <Legends
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Legends.id)"
-  :analytic="useControls.Legends.analytic"
-  :legends-options="legendsOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Legends.id)"
+    :analytic="useControls.Legends.analytic"
+    :legends-options="legendsOptions"
   />
   <Route
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Route.id)"
-  :analytic="useControls.Route.analytic"
-  :route-options="routeOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Route.id)"
+    :analytic="useControls.Route.analytic"
+    :route-options="routeOptions"
   />
   <Isocurve
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
-  :analytic="useControls.Isocurve.analytic"
-  :isocurve-options="isocurveOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
+    :analytic="useControls.Isocurve.analytic"
+    :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
-  :analytic="useControls.ReverseGeocode.analytic"
-  :reverse-geocode-options="reverseGeocodeOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
+    :analytic="useControls.ReverseGeocode.analytic"
+    :reverse-geocode-options="reverseGeocodeOptions"
   />
   <FullScreen
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-  :analytic="useControls.FullScreen.analytic"
-  :fullscreen-options="fullscreenOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
+    :analytic="useControls.FullScreen.analytic"
+    :fullscreen-options="fullscreenOptions"
   />
   <Zoom
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Zoom.id)"
-  :analytic="useControls.Zoom.analytic"
-  :zoom-options="zoomOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
+    :analytic="useControls.Zoom.analytic"
+    :zoom-options="zoomOptions"
   />
   <Attributions
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.Attributions.id)"
-  :analytic="useControls.Attributions.analytic"
-  :attributions-options="attributionsOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
+    :analytic="useControls.Attributions.analytic"
+    :attributions-options="attributionsOptions"
   />
   <SearchEngine
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
-  :analytic="useControls.SearchEngine.analytic"
-  :search-engine-options="searchEngineOptions"
+    :visibility="true"
+    :analytic="useControls.SearchEngine.analytic"
+    :search-engine-options="searchEngineOptions"
   />
   <ScaleLine
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
-  :analytic="useControls.ScaleLine.analytic"
-  :scale-line-options="scaleLineOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
+    :analytic="useControls.ScaleLine.analytic"
+    :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
-  :analytic="useControls.OverviewMap.analytic"
-  :overview-map-options="overviewMapOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
+    :analytic="useControls.OverviewMap.analytic"
+    :overview-map-options="overviewMapOptions"
   />
   <Territories
     v-if="controlOptions"
@@ -359,28 +374,28 @@ const mousePositionOptions = {
     :territories-options="territoriesOptions"
   />
   <MeasureLength
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
-  :analytic="useControls.MeasureLength.analytic"
-  :measure-length-options="measureLengthOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
+    :analytic="useControls.MeasureLength.analytic"
+    :measure-length-options="measureLengthOptions"
   />
   <MeasureArea
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
-  :analytic="useControls.MeasureArea.analytic"
-  :measure-area-options="measureAreaOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
+    :analytic="useControls.MeasureArea.analytic"
+    :measure-area-options="measureAreaOptions"
   />
   <MeasureAzimuth
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
-  :analytic="useControls.MeasureAzimuth.analytic"
-  :measure-azimuth-options="measureAzimuthOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
+    :analytic="useControls.MeasureAzimuth.analytic"
+    :measure-azimuth-options="measureAzimuthOptions"
   />
   <MousePosition
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
-  :analytic="useControls.MousePosition.analytic"
-  :mouse-position-options="mousePositionOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
+    :analytic="useControls.MousePosition.analytic"
+    :mouse-position-options="mousePositionOptions"
   />
   <ElevationPath
   v-if="controlOptions"
@@ -410,6 +425,12 @@ const mousePositionOptions = {
   .position-container-top-right,
   .position-container-top-left {
     top: 210px;
+  }
+  .position-container-top-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-top-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-bottom-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
+  .position-container-bottom-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) {
+    top: 126px;
   }
 }
 @media (max-width: 627px) and (min-width: 576px){
