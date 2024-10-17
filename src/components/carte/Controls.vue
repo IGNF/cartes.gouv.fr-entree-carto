@@ -28,6 +28,9 @@ import Territories from './control/Territories.vue';
 
 import Share from './control/Share.vue'
 
+// Icone pour le marker du widget SearcEngine
+import IconGeolocationSVG from "../../assets/geolocation.svg";
+
 import { useControls } from '@/composables/controls'
 import { useLogger } from 'vue-logger-plugin'
 
@@ -50,6 +53,7 @@ const props = defineProps({
 //  undefined,
 //  undefined,
 //  "FullScreen"
+//  (...)
 // ]
 const log = useLogger()
 log.debug(props.controlOptions);
@@ -103,7 +107,8 @@ const searchEngineOptions = {
     addToMap: false,
     filterServices : "WMTS,WMS,TMS",
     serviceOptions: {}
-  }
+  },
+  markerUrl : IconGeolocationSVG
 }
 
 const overviewMapOptions = {

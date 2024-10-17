@@ -24,42 +24,42 @@ Voici quelques étapes pas à pas :
 * Dans votre répertoire local, ajoutez le dépôt principal de cartes.gouv.fr-entree-carto comme source `upstream` (en utilisant l'URL HTTPS)
 * Vous pouvez vérifier l'état de vos remotes avec la commande `git remote -v` et vous devriez avoir :
 
-    ```
-    origin	git@github.com:votre_compte_github/cartes.gouv.fr-entree-carto.git (fetch)
-    origin	git@github.com:votre_compte_github/cartes.gouv.fr-entree-carto.git (push)
-    upstream	https://github.com/IGNF/cartes.gouv.fr-entree-carto.git (fetch)
-    upstream	https://github.com/IGNF/cartes.gouv.fr-entree-carto.git (push)
+    ```bash
+    origin git@github.com:votre_compte_github/cartes.gouv.fr-entree-carto.git (fetch)
+    origin git@github.com:votre_compte_github/cartes.gouv.fr-entree-carto.git (push)
+    upstream https://github.com/IGNF/cartes.gouv.fr-entree-carto.git (fetch)
+    upstream https://github.com/IGNF/cartes.gouv.fr-entree-carto.git (push)
     ```
 
     > :exclamation: Il est important que `origin` pointe sur votre fork du dépôt et pas sur le dépôt principal.
 
 * Mettez à jour avant de créer une branche
 
-    ```
+    ```bash
     git checkout main
     ```
 
 * Téléchargez les mises à jour de toutes les branches `upstream`
 
-    ```
+    ```bash
     git fetch upstream
     ```
 
 * Mettez à jour votre branche `main` locale pour qu'elle soit au même niveau que la branche `main` du dépôt principal
 
-    ```
+    ```bash
     git rebase upstream/main
     ```
 
 Si la commande `rebase` vous envoie un message d'erreur parce que vous avez des changements locaux non commités, placez les de côté dans le "stash"
 
-```
+```bash
 git stash
 ```
 
 Maintenant vous pouvez utiliser rebase puis réappliquer vos changements
 
-```
+```bash
 git rebase upstream/main
 git stash apply
 ```
@@ -68,7 +68,7 @@ Créez une nouvelle branche avec l'outil dont vous avez l'habitude sur votre dé
 
 Ajoutez, commitez et pushez vos changements dans une nouvelle branche (ici `new-feature`) sur votre dépôt.
 
-```
+```bash
 git push origin new-feature
 ```
 
