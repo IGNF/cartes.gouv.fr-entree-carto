@@ -4,6 +4,64 @@ Toutes les modifications notables apportées à ce projet sont documentées dans
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) et ce projet respecte [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 🔖 version 1.0.0 - 15/10/2024
+
+### 🎉 Résumé
+
+Version 1 de l’entrée cartographique de cartes.gouv.fr. Cette version correspond au MVP (Produit Minimal Viable) du composant cartographique de cartes.gouv.fr. 
+
+Par rapport à la version v0.0.8, cette version intègre les changements suivants : 
+
+* Ajout d'un CHANGELOG
+* Mécanisme de permalien qui permet de conserver dans la session le paramétrage de la carte (centre, niveau de zoom, couches affichées, widgets activés) 
+* 4 nouveaux composants avec : 
+    * le partage de carte 
+    * la consultation du catalogue 
+    * les coordonnées de la souris 
+    * le centrage sur territoires
+
+### 💥 Breaking changes
+
+    > 🔥 Nettoyer le localStorage !
+
+Si cela n’est pas fait, la carte risque de ne pas se charger correctement et l’interface cartographique risque d’être inutilisable. 
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+* Activation des tracker Eulerain sur les actions boutons des widgets [#309](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/309)
+
+* Partager une carte [#310](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/310)
+
+* Coordonnées de la souris [315](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/315)
+
+* Catalogue avec barre de recherche [#245](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/245)
+
+* Gestion du permalien [#308](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/308)
+
+* Ajout d'un CHANGELOG [#307](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/307)
+
+* Collecte Eulerian des interaction avec les widgets (test) [#301](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/301)
+
+#### 🔨 [Evolution]
+
+* Header en mode mobile [#305](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/305)
+
+* Footer en mode mobile [#304](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/304)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+* Ajout des options de preload sur les tuiles [#312](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/312)
+
+#### 🔒 [Sécurité]
+
+---
+
 ## 🔖 version 0.0.8 - 21/08/2024
 
 ### 🎉 Résumé
