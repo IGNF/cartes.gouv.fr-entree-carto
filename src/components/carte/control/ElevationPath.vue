@@ -19,6 +19,14 @@ const elevationPath = ref(new ElevationPath(props.elevationPathOptions))
 onMounted(() => {
   if (props.visibility) {
     map.addControl(elevationPath.value);
+    /* abonnement au widget 
+    * @fires elevationpath:drawstart
+    * @fires elevationpath:drawend
+    * @fires elevationpath:compute
+    */
+    route.value.on("elevationpath:drawstart", onDrawStart);
+    route.value.on("elevationpath:drawend", onDrawEnd);
+    route.value.on("elevationpath:compute", onCompute);
     if (props.analytic) {
       var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
       useActionButtonEulerian(el);
@@ -41,6 +49,19 @@ onUpdated(() => {
     }
   }
 })
+
+/** 
+ * gestionnaire d'evenement sur les abonnements
+ */
+ const onDrawStart = (e) => {
+  log.debug(e);
+}
+const onDrawEnd = (e) => {
+  log.debug(e);
+}
+const onCompute = (e) => {
+  log.debug(e);
+}
 
 </script>
 
