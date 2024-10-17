@@ -2,7 +2,7 @@
 /**
  * @description
  * Panneau de partage de carte
- * 
+ *
  * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrButton}
  * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
  * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrShare}
@@ -91,10 +91,10 @@ const shareNetworks = computed(() => {
 
 // creation de l'iframe de partage
 const iframe = computed(() => {
- return `<iframe 
+ return `<iframe
     width="600" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
     sandbox="allow-forms allow-scripts allow-same-origin"
-    src="${mapStore.permalinkShare}" 
+    src="${mapStore.permalinkShare}"
     allowfullscreen>
   </iframe>`;
 });
@@ -128,7 +128,7 @@ onBeforeMount(() => {
     <DsfrButton
       v-if="props.visibility"
       id="share-button-position"
-      class="fr-btn fr-btn--md inline-flex justify-center share-button-size"
+      class="fr-btn fr-btn--md fr-btn fr-btn--secondary inline-flex justify-center share-button-size"
       :label="btnLabel"
       :title="btnTitle"
       :icon="btnIcon"
@@ -136,10 +136,10 @@ onBeforeMount(() => {
       no-outline
       @click="onModalShareOpen"
     />
-    <DsfrModal 
-      :opened="shareModalOpened" 
+    <DsfrModal
+      :opened="shareModalOpened"
       :title="title"
-      :size="size" 
+      :size="size"
       @close="onModalShareClose">
       <!-- slot : c'est ici que l'on customise le contenu ! -->
       <div>
@@ -169,7 +169,7 @@ onBeforeMount(() => {
             :noOutline="true"
             @click="copy(mapStore.permalink)">
             <VIcon
-            v-bind="iconProps"/>  
+            v-bind="iconProps"/>
           </DsfrButton>
           </template>
           </DsfrInput>
@@ -191,7 +191,7 @@ onBeforeMount(() => {
             :noOutline="true"
             @click="copy(iframe)">
             <VIcon
-            v-bind="iconProps"/>  
+            v-bind="iconProps"/>
           </DsfrButton>
           </template>
           </DsfrInput>
@@ -215,11 +215,11 @@ onBeforeMount(() => {
     left: 10px;
     top: 56px;
     z-index: 1000;
+    background-color: var(--background-default-grey);
   }
   .share-button-size {
     width: 40px;
     height: 40px;
-    color: white;
   }
   .share-iframe-input {
     height: 200px;
