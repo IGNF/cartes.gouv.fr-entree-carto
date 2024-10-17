@@ -42,6 +42,20 @@ const ns = ((value) => {
 });
 
 /**
+ * Versionning du localStorage
+ * 
+ * Version à incrementer si "break change" du localStorage, 
+ * on procède à son nettoyage.
+ */
+const VERSION = "0";
+
+var version = localStorage.getItem(ns('version'));
+if (!version || version !== VERSION) {
+  localStorage.clear();
+  localStorage.setItem(ns('version'), VERSION);
+}
+
+/**
  * @description
  * Store des objets de la carte
  * 
