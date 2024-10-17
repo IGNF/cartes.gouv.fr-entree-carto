@@ -1,11 +1,11 @@
 <script lang="js">
   /**
    * @description
-   * 
+   *
    * @property { String } icon nom de l'icône à afficher
    * @property { String } id du menu à ouvrir au clic sur l'icone
    * @property { Boolean } active boolean assurant le style actif ou inactif du bouton
-   * 
+   *
    */
   export default {
     name: 'MenuLateralButton'
@@ -33,8 +33,8 @@ const tabClicked = () => {
 
 
 <template>
-    <DsfrButton :id="id" 
-    primary
+    <DsfrButton :id="id"
+    secondary
     :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
     :icon="icon"
     :iconOnly="true"
@@ -52,7 +52,7 @@ const tabClicked = () => {
 .navButton {
   width: 40px;
   height: 40px;
-  color: white;
+  background-color: var(--background-default-grey);
 }
 
 </style>
