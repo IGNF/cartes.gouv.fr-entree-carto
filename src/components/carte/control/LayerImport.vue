@@ -2,25 +2,26 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin'
 import {
-  MousePosition
+  LayerImport
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
   visibility: Boolean,
   analytic: Boolean,
-  mousePositionOptions: Object
+  layerImportOptions: Object
 })
 
 const log = useLogger()
 
 const map = inject('map')
-const mousePosition = ref(new MousePosition(props.mousePositionOptions))
+const layerImport = ref(new LayerImport(props.layerImportOptions))
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(mousePosition.value);
+    map.addControl(layerImport.value);
     if (props.analytic) {
-      var el = mousePosition.value.element.querySelector("button[id^=GPshowMousePositionPicto-]");
+    log.debug(layerImport.value.element)
+      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
       useActionButtonEulerian(el);
     }
   }
@@ -28,15 +29,15 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(mousePosition.value);
+    map.removeControl(layerImport.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(mousePosition.value);
+    map.addControl(layerImport.value);
     if (props.analytic) {
-      var el = mousePosition.value.element.querySelector("button[id^=GPshowMousePositionPicto-]");
+      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
       useActionButtonEulerian(el);
     }
   }
