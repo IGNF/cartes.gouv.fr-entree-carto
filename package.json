@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "15/10/2024",
+  "date": "18/10/2024",
   "directories": {},
   "engines": {
     "node": ">=20"
@@ -42,8 +42,7 @@
     "@gouvminint/vue-dsfr": "^5.14.2",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
-    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.0-207.tgz",
-
+    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.0-169.tgz",
     "ol": "8.2.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
