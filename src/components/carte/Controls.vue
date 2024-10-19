@@ -406,6 +406,13 @@ const mousePositionOptions = {
 }
 
 @media (min-width: 576px) {
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 102px);
+  }
+
   .position-container-top-right,
   .position-container-top-left {
     top: 98px;
@@ -416,17 +423,23 @@ const mousePositionOptions = {
   .position-container-top-left {
     top: 210px;
   }
-  .position-container-top-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-top-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-bottom-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-bottom-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) {
-    top: 126px;
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 214px);
   }
 }
 @media (max-width: 627px) and (min-width: 576px){
   .position-container-top-right,
   .position-container-top-left {
     top: 164px;
+  }
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 168px);
   }
 }
 </style>
