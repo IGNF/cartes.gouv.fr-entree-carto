@@ -32,16 +32,16 @@ export function useFooterParams() {
         licenceLinkProps: undefined,
         ecosystemLinks: [
             {
-                label: 'legifrance.gouv.fr',
-                href: 'https://legifrance.gouv.fr',
-            },
-            {
-                label: 'gouvernement.fr',
-                href: 'https://gouvernement.fr',
+                label: 'info.gouv.fr',
+                href: 'https://info.gouv.fr',
             },
             {
                 label: 'service-public.fr',
                 href: 'https://service-public.fr',
+            },
+            {
+                label: 'legifrance.gouv.fr',
+                href: 'https://legifrance.gouv.fr',
             },
             {
                 label: 'data.gouv.fr',
