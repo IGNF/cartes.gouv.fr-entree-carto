@@ -7,10 +7,13 @@ import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg";
 import { useEulerian } from '@/plugins/Eulerian.js';
 const eulerian = useEulerian();
 
-useScheme();
-
 // gestion de la modale de changement de thème d'affichage
-const modelValue = ref();
+
+// recuperation du theme / scheme
+const { setScheme, theme, scheme } = useScheme();
+
+// initialisation avec le scheme (light, dark ou system)
+const modelValue = ref(scheme.value);
 
 const title = "Paramètres d'affichage";
 const size = "md";
@@ -40,7 +43,6 @@ const themeOptions = [
   }
 ];
 
-const { setScheme, theme } = useScheme();
 
 const changeTheme = () => {
   setScheme(modelValue.value);
