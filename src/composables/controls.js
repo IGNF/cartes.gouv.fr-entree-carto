@@ -36,6 +36,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  GetFeatureInfo: {
+    id: 'GetFeatureInfo',
+    active: false,
+    disable: true,
+    analytic: true
+  },
   Legends: {
     id: 'Legends',
     active: true,
@@ -176,6 +182,13 @@ export function useControlsMenuOptions() {
     name: useControls.LayerSwitcher.id,
     hint: 'Gestionnaire de couches',
     disabled: useControls.LayerSwitcher.disable
+  },
+  {
+    label: 'GetFeatureInfo',
+    id: 'getFeatureInfo',
+    name: useControls.GetFeatureInfo.id,
+    hint: 'Informations sur les couches',
+    disabled: useControls.GetFeatureInfo.disable
   },
   {
     label: 'Légendes',

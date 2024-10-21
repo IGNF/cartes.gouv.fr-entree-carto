@@ -25,6 +25,7 @@ import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
 import MousePosition from './control/MousePosition.vue'
 import Territories from './control/Territories.vue';
+import GetFeatureInfo from './control/GetFeatureInfo.vue'
 import LayerImport from './control/LayerImport.vue'
 
 import Share from './control/Share.vue'
@@ -110,6 +111,10 @@ const searchEngineOptions = {
     serviceOptions: {}
   },
   markerUrl : IconGeolocationSVG
+}
+
+const getFeatureInfoOptions = {
+  position: 'bottom-left'
 }
 
 const overviewMapOptions = {
@@ -355,6 +360,11 @@ const mousePositionOptions = {
     :visibility="true"
     :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
+  />
+  <GetFeatureInfo
+    :visibility="true"
+    :analytic="useControls.GetFeatureInfo.analytic"
+    :get-feature-info-options="getFeatureInfoOptions"
   />
   <ScaleLine
     v-if="controlOptions"
