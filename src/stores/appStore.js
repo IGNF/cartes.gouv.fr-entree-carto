@@ -4,7 +4,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
-const { setScheme } = useScheme();
+const { setScheme, theme, scheme } = useScheme();
 
 /**
  * Espace de noms des clefs du localStorage
@@ -24,7 +24,7 @@ const VERSION = "0";
  * Clef du localStorage de cartes.gouv.fr
  * sur le choix du thème
  */
-const SCHEME_KEY_LS = "scheme";
+const SCHEME_KEY_LS_MAIN = "scheme";
 
 /**
  * Clef du localStorage de cartes.gouv.fr/cartes
@@ -51,20 +51,26 @@ export const useAppStore = defineStore('app', () => {
     localStorage.setItem(ns('version'), version.value);
   })
 
-  // INFO scheme color
+  // INFO gestion du thème
   // on récupère la valeur du thème de cartes.gouv.fr
-  var scheme = useStorage(SCHEME_KEY_LS);
+  var schemeMain = useStorage(SCHEME_KEY_LS_MAIN);
 
   // si cartes.gouv.fr a défini une valeur,
   // on l'applique pour la carte
-  if (scheme.value) {
-    localStorage.setItem(SCHEME_KEY_LS_CARTES, scheme.value);
-    setScheme(scheme.value);
+  if (schemeMain.value) {
+    localStorage.setItem(SCHEME_KEY_LS_CARTES, schemeMain.value);
+    setScheme(schemeMain.value);
   }
   
+  // mise à jour de la clef et application du thème
+  watch(schemeMain, () => {
+    localStorage.setItem(SCHEME_KEY_LS_CARTES, schemeMain.value);
+    setScheme(schemeMain.value);
+  })
+
+  // mise à jour de la clef de cartes.gouv.fr
   watch(scheme, () => {
-    localStorage.setItem(SCHEME_KEY_LS_CARTES, scheme.value);
-    setScheme(scheme.value);
+    localStorage.setItem(SCHEME_KEY_LS_MAIN, scheme.value);
   })
 
 });
