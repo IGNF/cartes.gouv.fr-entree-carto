@@ -9,11 +9,16 @@ const eulerian = useEulerian();
 
 // gestion de la modale de changement de thème d'affichage
 
-// recuperation du theme / scheme
+// recuperation du theme
 const { setScheme, theme, scheme } = useScheme();
 
-// initialisation avec le scheme (light, dark ou system)
+// initialisation avec le thème (light, dark ou system)
 const modelValue = ref(scheme.value);
+
+// mise à jour du thème (checkbox)
+watch(scheme, () => {
+  modelValue.value = scheme.value;
+})
 
 const title = "Paramètres d'affichage";
 const size = "md";
@@ -42,7 +47,6 @@ const themeOptions = [
     img: LogoSystem,
   }
 ];
-
 
 const changeTheme = () => {
   setScheme(modelValue.value);

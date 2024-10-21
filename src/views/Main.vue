@@ -10,6 +10,9 @@ import { useBaseUrl } from '@/composables/baseUrl'
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 
+import { useAppStore } from "@/stores/appStore"
+useAppStore()
+
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
