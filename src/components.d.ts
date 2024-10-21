@@ -35,6 +35,7 @@ declare module 'vue' {
     Isocurve: typeof import('./components/carte/control/Isocurve.vue')['default']
     Layer: typeof import('./components/carte/Layer/Layer.vue')['default']
     LayerCatalogue: typeof import('./components/menu/catalogue/LayerCatalogue.vue')['default']
+    LayerImport: typeof import('./components/carte/control/LayerImport.vue')['default']
     LayerList: typeof import('./components/menu/catalogue/LayerList.vue')['default']
     Layers: typeof import('./components/carte/Layer/Layers.vue')['default']
     LayerSwitcher: typeof import('./components/carte/control/LayerSwitcher.vue')['default']

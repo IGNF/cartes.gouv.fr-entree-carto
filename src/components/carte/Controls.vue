@@ -26,6 +26,7 @@ import MeasureAzimuth from './control/MeasureAzimuth.vue'
 import MousePosition from './control/MousePosition.vue'
 import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue'
+import LayerImport from './control/LayerImport.vue'
 
 import Share from './control/Share.vue'
 
@@ -150,6 +151,10 @@ const measureAreaOptions = {
 }
 const measureAzimuthOptions = {
   position: 'top-left'
+}
+
+const layerImportOptions = {
+  position: 'bottom-left'
 }
 
 const mousePositionOptions = {
@@ -402,6 +407,12 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
+  />
+  <LayerImport
+  v-if="controlOptions"
+  :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
+  :analytic="useControls.LayerImport.analytic"
+  :layer-import-options="layerImportOptions"
   />
 </template>
 
