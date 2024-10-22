@@ -178,7 +178,7 @@ onBeforeMount(() => {
           <DsfrInput
             v-model="iframe"
             placeholder=""
-            isTextarea="true"
+            isTextarea
             label-visible
             readonly
             descriptionId=""

@@ -33,12 +33,13 @@ const tabClicked = () => {
 
 
 <template>
-    <DsfrButton :id="id"
-    secondary
-    :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
-    :icon="icon"
-    :iconOnly="true"
-    @click="tabClicked">
+    <DsfrButton 
+      :id="id"
+      secondary
+      :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
+      :icon="icon"
+      :iconOnly="true"
+      @click="tabClicked">
     </DsfrButton>
 </template>
 

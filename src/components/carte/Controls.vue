@@ -24,6 +24,7 @@ import MeasureLength from './control/MeasureLength.vue'
 import MeasureArea from './control/MeasureArea.vue'
 import MeasureAzimuth from './control/MeasureAzimuth.vue'
 import MousePosition from './control/MousePosition.vue'
+import ElevationPath from './control/ElevationPath.vue'
 import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue'
 import LayerImport from './control/LayerImport.vue'
@@ -151,6 +152,9 @@ const measureAreaOptions = {
 }
 const measureAzimuthOptions = {
   position: 'top-left'
+}
+const elevationPathOptions = {
+  position: 'bottom-left'
 }
 
 const layerImportOptions = {
@@ -408,11 +412,17 @@ const mousePositionOptions = {
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
   />
+  <ElevationPath
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
+    :analytic="useControls.ElevationPath.analytic"
+    :elevation-path-options="elevationPathOptions"
+  />
   <LayerImport
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
-  :analytic="useControls.LayerImport.analytic"
-  :layer-import-options="layerImportOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
+    :analytic="useControls.LayerImport.analytic"
+    :layer-import-options="layerImportOptions"
   />
 </template>
 
