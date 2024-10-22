@@ -24,9 +24,9 @@ onMounted(() => {
     * @fires elevationpath:drawend
     * @fires elevationpath:compute
     */
-    route.value.on("elevationpath:drawstart", onDrawStart);
-    route.value.on("elevationpath:drawend", onDrawEnd);
-    route.value.on("elevationpath:compute", onCompute);
+    elevationPath.value.on("elevationpath:drawstart", onDrawStart);
+    elevationPath.value.on("elevationpath:drawend", onDrawEnd);
+    elevationPath.value.on("elevationpath:compute", onCompute);
     if (props.analytic) {
       var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
       useActionButtonEulerian(el);

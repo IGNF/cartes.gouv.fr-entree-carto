@@ -413,16 +413,16 @@ const mousePositionOptions = {
     :mouse-position-options="mousePositionOptions"
   />
   <ElevationPath
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
-  :analytic="useControls.ElevationPath.analytic"
-  :elevation-path-options="elevationPathOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
+    :analytic="useControls.ElevationPath.analytic"
+    :elevation-path-options="elevationPathOptions"
   />
   <LayerImport
-  v-if="controlOptions"
-  :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
-  :analytic="useControls.LayerImport.analytic"
-  :layer-import-options="layerImportOptions"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
+    :analytic="useControls.LayerImport.analytic"
+    :layer-import-options="layerImportOptions"
   />
 </template>
 
