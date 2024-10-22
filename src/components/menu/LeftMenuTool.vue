@@ -38,6 +38,7 @@ function tabIsActive(componentName) {
   <MenuLateralWrapper
     :side="side"
     :visibility="true"
+    id="MenuCatalogueContentClose"
     v-model="is_expanded"
     ref="wrapper">
     <template #content>

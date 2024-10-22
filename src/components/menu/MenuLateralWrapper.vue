@@ -16,7 +16,8 @@ import { OhVueIcon as VIcon } from 'oh-vue-icons'
 
 const props = defineProps({
   side: String,
-  visibility: Boolean
+  visibility: Boolean,
+  id: String
 })
 
 const icon = "io-close"
@@ -60,14 +61,14 @@ defineExpose({
     <div class="menu-content-list"
     v-show="is_expanded">
       <div class="menu-collapse-icon-wrapper">
-        <DsfrButton :id="id"
+        <DsfrButton 
+          :id="props.id"
           tertiary
           no-outline
           class="menu-collapse-icon"
           @click="closeMenu">
           Fermer
-          <VIcon
-        v-bind="iconProps"/>
+          <VIcon v-bind="iconProps"/>
         </DsfrButton>
       </div>
 
