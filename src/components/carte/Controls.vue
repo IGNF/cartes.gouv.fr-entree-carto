@@ -26,6 +26,8 @@ import MeasureAzimuth from './control/MeasureAzimuth.vue'
 import MousePosition from './control/MousePosition.vue'
 import ElevationPath from './control/ElevationPath.vue'
 import Territories from './control/Territories.vue';
+import GetFeatureInfo from './control/GetFeatureInfo.vue'
+import LayerImport from './control/LayerImport.vue'
 
 import Share from './control/Share.vue'
 
@@ -112,6 +114,10 @@ const searchEngineOptions = {
   markerUrl : IconGeolocationSVG
 }
 
+const getFeatureInfoOptions = {
+  position: 'bottom-left'
+}
+
 const overviewMapOptions = {
   position: 'bottom-left'
 }
@@ -148,6 +154,10 @@ const measureAzimuthOptions = {
   position: 'top-left'
 }
 const elevationPathOptions = {
+  position: 'bottom-left'
+}
+
+const layerImportOptions = {
   position: 'bottom-left'
 }
 
@@ -355,6 +365,11 @@ const mousePositionOptions = {
     :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
   />
+  <GetFeatureInfo
+    :visibility="true"
+    :analytic="useControls.GetFeatureInfo.analytic"
+    :get-feature-info-options="getFeatureInfoOptions"
+  />
   <ScaleLine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
@@ -403,6 +418,12 @@ const mousePositionOptions = {
   :analytic="useControls.ElevationPath.analytic"
   :elevation-path-options="elevationPathOptions"
   />
+  <LayerImport
+  v-if="controlOptions"
+  :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
+  :analytic="useControls.LayerImport.analytic"
+  :layer-import-options="layerImportOptions"
+  />
 </template>
 
 <style>
@@ -416,6 +437,13 @@ const mousePositionOptions = {
 }
 
 @media (min-width: 576px) {
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 102px);
+  }
+
   .position-container-top-right,
   .position-container-top-left {
     top: 98px;
@@ -426,17 +454,23 @@ const mousePositionOptions = {
   .position-container-top-left {
     top: 210px;
   }
-  .position-container-top-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-top-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-bottom-left:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]),
-  .position-container-bottom-right:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) {
-    top: 126px;
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 214px);
   }
 }
 @media (max-width: 627px) and (min-width: 576px){
   .position-container-top-right,
   .position-container-top-left {
     top: 164px;
+  }
+  .position-container-bottom-left,
+  .position-container-bottom-right,
+  .position-container-top-left,
+  .position-container-top-right {
+    height: calc(100% - 168px);
   }
 }
 </style>

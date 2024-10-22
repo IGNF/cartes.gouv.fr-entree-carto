@@ -36,6 +36,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  GetFeatureInfo: {
+    id: 'GetFeatureInfo',
+    active: false,
+    disable: true,
+    analytic: true
+  },
   Legends: {
     id: 'Legends',
     active: true,
@@ -125,6 +131,12 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: false
+  },
+  LayerImport: {
+    id: 'LayerImport',
+    active: true,
+    disable: false,
+    analytic: true
   }
 }
 
@@ -176,6 +188,13 @@ export function useControlsMenuOptions() {
     name: useControls.LayerSwitcher.id,
     hint: 'Gestionnaire de couches',
     disabled: useControls.LayerSwitcher.disable
+  },
+  {
+    label: 'GetFeatureInfo',
+    id: 'getFeatureInfo',
+    name: useControls.GetFeatureInfo.id,
+    hint: 'Informations sur les couches',
+    disabled: useControls.GetFeatureInfo.disable
   },
   {
     label: 'Légendes',
@@ -281,6 +300,13 @@ export function useControlsMenuOptions() {
     name: useControls.ElevationPath.id,
     hint: 'Profil altimétrique',
     disabled: useControls.ElevationPath.disable
+  },
+  {
+    label: 'Importer des données',
+    id: 'layerImport',
+    name: useControls.LayerImport.id,
+    hint: 'Import de données',
+    disabled: useControls.LayerImport.disable
   }
 ].filter(opt => Object.keys(useControls).includes(opt.name))
 .filter(opt => opt.disabled === false)
