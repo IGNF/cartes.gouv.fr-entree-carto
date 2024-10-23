@@ -1,10 +1,10 @@
 <script lang="js">
   /**
    * @description
-   * 
+   *
    * @property { String } side position sur la carte du menu : valeur possible 'left' ou 'right'
    * @property { Boolean } visibility  boolean assurant l'activation du menu
-   * 
+   *
    */
   export default {
     name: 'MenuLateralWrapper'
@@ -61,7 +61,7 @@ defineExpose({
     <div class="menu-content-list"
     v-show="is_expanded">
       <div class="menu-collapse-icon-wrapper">
-        <DsfrButton 
+        <DsfrButton
           :id="props.id"
           tertiary
           no-outline
@@ -78,6 +78,20 @@ defineExpose({
     </div>
   </div>
 </template>
+
+<style lang="scss">
+  .left .navButton[title]:hover::before {
+    transform: translateX(32px);
+  }
+
+  .right .navButton[title]:hover::before {
+    transform: translateX(calc(-100% - 8px));
+    padding: .5rem 1.25rem .5rem .5rem;
+    background-size: .375rem .5rem, .375rem .5rem, 1px 100%, 100%;
+    background-position: calc(100% - 0.125rem) 50%, 100% 50%, calc(100% - 0.375rem) 0, calc(100% - 0.375rem) 0;
+    background-image: conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--background-overlap-grey) 0deg, var(--background-overlap-grey) 67.38deg, transparent 67.38deg), conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--border-default-grey) 0deg, var(--border-default-grey) 67.38deg, transparent 67.38deg), linear-gradient(90deg, var(--border-default-grey), var(--border-default-grey)), linear-gradient(90deg, var(--background-overlap-grey), var(--background-overlap-grey));
+  }
+</style>
 
 <style scoped lang="scss">
 .left {
