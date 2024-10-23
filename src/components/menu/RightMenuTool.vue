@@ -11,6 +11,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuControl",
             icon : "io-settings-sharp",
+            title : "Catalogue d'outils",
         }
     ];
 
@@ -54,6 +55,7 @@ function tabIsActive(componentName) {
         :icon="tab.icon"
         :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
+        :title="tab.title"
         @tab-clicked="tabClicked"/>
     </template>
   </MenuLateralWrapper>
