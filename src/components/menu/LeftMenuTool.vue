@@ -11,6 +11,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuCatalogue",
             icon : "co-list-low-priority",
+            title : "Catalogue de données",
         }
     ];
 
@@ -42,7 +43,7 @@ function tabIsActive(componentName) {
     v-model="is_expanded"
     ref="wrapper">
     <template #content>
-      <div id="MenuCatalogueContent" 
+      <div id="MenuCatalogueContent"
         :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
         <slot></slot>
       </div>
@@ -53,6 +54,7 @@ function tabIsActive(componentName) {
         :icon="tab.icon"
         :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
+        :title="tab.title"
         @tab-clicked="tabClicked"/>
     </template>
   </MenuLateralWrapper>
