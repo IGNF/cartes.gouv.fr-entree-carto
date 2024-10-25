@@ -1,9 +1,9 @@
 <script lang="js">
   /**
    * @description
-   * 
+   *
    * @property { Array } controlOptions tableau contenant les controls disponibles
-   * 
+   *
    */
   export default {
     name: 'Controls'
@@ -459,6 +459,9 @@ const mousePositionOptions = {
   .position-container-top-left,
   .position-container-top-right {
     height: calc(100% - 214px);
+  }
+  .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
+    margin-top: -88px;
   }
 }
 @media (max-width: 627px) and (min-width: 576px){
