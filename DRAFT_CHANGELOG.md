@@ -50,5 +50,7 @@ Version 1.0.1 de l'entrée cartographique de la Géoplateforme.
 
 * Placement correct de la barre latéral de widget actif sous Firefox et Chrome [extensions:#219](https://github.com/IGNF/geopf-extensions-openlayers/pull/219)
 
+* Ouverture responsive des panels des widgets sur petits écrans [#360](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/360)
+
 #### 🔒 [Sécurité]
 ---
