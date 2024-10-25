@@ -99,3 +99,14 @@ const selectedControls = computed(() => {
     }
   }
 </style>
+
+<style>
+/* FIXME Style non scopé pour cacher les boutons partage et de menu
+à voir si c'est factorisable avec ce qui est fait l153 de MenuLateralWrapper.vue */
+@media (max-width: 576px) {
+  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) .navButton,
+  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) #share-button-position {
+    display: none;
+  }
+}
+</style>
