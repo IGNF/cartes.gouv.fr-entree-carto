@@ -25,7 +25,13 @@ export function useHeaderParams() {
                 href: useBaseUrl() + '/catalogue',
                 icon: 'ri-arrow-right-line',
                 iconRight: true,
-            }
+            },
+            { 
+              label: 'Se connecter', 
+              to: '/login', 
+              href: 'https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth?scope=openid%20profile%20email&response_type=code&approval_prompt=auto&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcartes.gouv.fr-entree-carto',
+              class: 'fr-icon-user-fill'
+            },
         ],
         searchQuery: ref('')
     };
