@@ -6,6 +6,8 @@ from 'vue-router'
 
 import Load from '../views/Load.vue'
 import Embed from '../views/Embed.vue'
+import Login from '../views/Login.vue'
+import Logout from '../views/Logout.vue'
 
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
@@ -20,6 +22,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/embed',
     name: 'Carte embarquée',
     component: Embed,
+  },
+  {
+    path: '/login',
+    name: 'connexion',
+    component: Login,
+  },
+  {
+    path: '/logout',
+    name: 'deconnexion',
+    component: Logout,
   },
 ]
 
