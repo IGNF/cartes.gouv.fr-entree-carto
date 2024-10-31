@@ -1,11 +1,14 @@
 import { ref } from 'vue';
 import { useBaseUrl } from '@/composables/baseUrl';
+import { useServiceStore } from '@/stores/serviceStore';
 
 /**
  * Paramètres du composant DSFR Header
  * @returns 
- */
+*/
 export function useHeaderParams() {
+    var store = useServiceStore();
+
     // Paramètres pour le Header
     const headerParams = {
         serviceTitle: 'cartes.gouv.fr',
@@ -26,12 +29,14 @@ export function useHeaderParams() {
                 icon: 'ri-arrow-right-line',
                 iconRight: true,
             },
-            { 
+            {
               label: 'Se connecter', 
-              to: '/login', 
-              href: 'https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth?scope=openid%20profile%20email&response_type=code&approval_prompt=auto&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcartes.gouv.fr-entree-carto',
-              class: 'fr-icon-user-fill'
-            },
+              href:  store.getService().getAccessLogin(),
+              class: 'fr-icon-user-fill',
+              onClick: (e) => {
+                console.debug(e);
+              }
+            }
         ],
         searchQuery: ref('')
     };
