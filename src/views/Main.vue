@@ -10,9 +10,11 @@ import { useBaseUrl } from '@/composables/baseUrl'
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 
+import { useServiceStore } from '@/stores/serviceStore';
 import { useAppStore } from "@/stores/appStore"
 useAppStore()
 
+const store = useServiceStore()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
@@ -59,6 +61,31 @@ const mandatoryLinks = computed(() => {
   })
 })
 
+// INFO
+// on met à jour les quickLinks pour la connexion
+var service = store.getService();
+service.isAccessValided();
+const quickLinks = computed(() => {
+  return headerParams.quickLinks.map((element: any) => {
+    if (element.label === "Se connecter" && service.authenticated) {
+      element.label = 'Se deconnecter';
+      element.href = service.getAccessLogout();
+      element.class = 'fr-icon-logout-box-r-line';
+      element.onClick = (e:any) => {
+        console.debug(e);
+      };
+    } 
+    if (element.label === "Se deconnecter" && !service.authenticated) {
+      element.label = 'Se connecter';
+      element.href = service.getAccessLogin();
+      element.class = 'fr-icon-user-fill';
+      element.onClick = (e:any) => {
+        console.debug(e);
+      };
+    }
+    return element;
+  })
+})
 // paramètre pour la barre de navigations
 const route = useRoute()
 
@@ -133,7 +160,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :show-beta="true"
     :service-description="headerParams.serviceDescription"
     :logo-text="headerParams.logoText"
-    :quick-links="headerParams.quickLinks"
+    :quick-links="quickLinks"
   >
     <template #mainnav>
       <DsfrNavigation
