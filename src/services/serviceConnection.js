@@ -1,9 +1,11 @@
+import { useRequest } from '@/services/request';
+
 // INFO
 // recuperation des informations sur l'env
 const IAM_URL = import.meta.env.IAM_URL || "https://sso.geopf.fr";
 const IAM_REALM = import.meta.env.IAM_REALM || "geoplateforme";
-const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID || "cartes-gouv-dev"; // TODO ID pour l'entrée carto !
-const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET || ""; // FIXME !?
+const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID || "cartes-gouv-dev"; // FIXME ID de cartes.gouv.fr ?
+const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET || ""; // FIXME SECRET de cartes.gouv.fr s?
 
 /**
  * @description 
@@ -120,6 +122,7 @@ class Service {
    * IAM pour obtenir le token
    * 
    * @see isAccessValided
+   * @todo IAM_CLIENT_SECRET !
    */
   getAccessToken () {
     // ex.
@@ -160,24 +163,7 @@ class Service {
       }
     };
 
-    return fetch(url, settings)
-      .then(function(response) {
-        if(response.ok) {
-          response.json()
-            .then(function (data) {
-              console.log(data);
-              return data;
-            })
-            .catch(function (error) {
-              throw new Error('[getAccessToken] Fetch parsing error : ' + error.message);
-            });
-        } else {
-          throw new Error('[getAccessToken] Not handled exception !?');
-        }
-      })
-      .catch(function(error) {
-        throw error;
-      });
+    return useRequest(url, settings);
   }
 
   /** 
@@ -198,6 +184,9 @@ class Service {
   // méthod public
   /////////////////
 
+  /**
+   * Permet de valider la connexion
+   */
   isAccessValided () {
     // si login via IAM, on récupère le code dans l'url
     const queryString = location.search;
@@ -237,9 +226,28 @@ class Service {
   // méthod private
   //////////////////
 
+  /**
+   * Retourne le token d'authentification du localStorage
+   * @returns {Object} auth
+   * @example
+   * {
+   *  authenticated : {
+   *    "authenticator": "authenticator:oauth2",
+   *    "access_token": "phwt5hfbfzequdvrl9uaqfblucocgdlm62wqvom6",
+   *    "expires_in": 3600,
+   *    "token_type": "Bearer",
+   *    "scope": "basic",
+   *    "refresh_token": "t7vni7a8nptovlbzfl4et15wfmvp9knja0y1fe5v",
+   *    "expires_at": 1730393104613
+   *  }
+   * }
+   */
   #getTokenStorage () {
-    return localStorage.getItem("auth");
+    return JSON.parse(localStorage.getItem("auth"));
   }
+  /**
+   * Ajoute le token d'authentification du localStorage
+   */
   #addTokenStorage () {
     // ex. 
     // {
@@ -256,6 +264,9 @@ class Service {
     });
     localStorage.setItem("auth", data);
   }
+  /**
+   * Reinitialise le token d'authentification du localStorage
+   */
   #removeTokenStorage () {
     var data = JSON.stringify({
       authenticated : {}
@@ -265,12 +276,3 @@ class Service {
 };
 
 export default Service;
-
-
-
-
-export function isAuthenticated () {
-  // TODO 
-  // test si token présent dans le localStorage
-  return false;
-}
