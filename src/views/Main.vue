@@ -12,6 +12,7 @@ import ModalTheme from '@/components/modals/ModalTheme.vue'
 
 import { useServiceStore } from '@/stores/serviceStore';
 import { useAppStore } from "@/stores/appStore"
+
 useAppStore()
 
 const store = useServiceStore()
@@ -71,21 +72,18 @@ const quickLinks = computed(() => {
       element.label = 'Se deconnecter';
       element.href = service.getAccessLogout();
       element.class = 'fr-icon-logout-box-r-line';
-      element.onClick = (e:any) => {
-        console.debug(e);
-      };
+      element.onClick = (e:any) => {};
     } 
     if (element.label === "Se deconnecter" && !service.authenticated) {
       element.label = 'Se connecter';
       element.href = service.getAccessLogin();
       element.class = 'fr-icon-user-fill';
-      element.onClick = (e:any) => {
-        console.debug(e);
-      };
+      element.onClick = (e:any) => {};
     }
     return element;
   })
 })
+
 // paramètre pour la barre de navigations
 const route = useRoute()
 

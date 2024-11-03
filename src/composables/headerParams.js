@@ -33,9 +33,7 @@ export function useHeaderParams() {
               label: 'Se connecter', 
               href:  store.getService().getAccessLogin(),
               class: 'fr-icon-user-fill',
-              onClick: (e) => {
-                console.debug(e);
-              }
+              onClick: (e) => {}
             }
         ],
         searchQuery: ref('')
