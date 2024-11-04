@@ -27,7 +27,6 @@ declare module 'vue' {
     DsfrRadioButtonSet: typeof import('@gouvminint/vue-dsfr')['DsfrRadioButtonSet']
     DsfrSearchBar: typeof import('@gouvminint/vue-dsfr')['DsfrSearchBar']
     DsfrShare: typeof import('@gouvminint/vue-dsfr')['DsfrShare']
-    DsfrSideMenu: typeof import('@gouvminint/vue-dsfr')['DsfrSideMenu']
     DsfrTabContent: typeof import('@gouvminint/vue-dsfr')['DsfrTabContent']
     DsfrTabs: typeof import('@gouvminint/vue-dsfr')['DsfrTabs']
     ElevationPath: typeof import('./components/carte/control/ElevationPath.vue')['default']
