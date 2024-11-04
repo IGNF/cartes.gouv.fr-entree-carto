@@ -3,6 +3,9 @@ import { URL, fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+
+import basicSsl from '@vitejs/plugin-basic-ssl'
+
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {
@@ -16,6 +19,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    basicSsl(),
     AutoImport({
       include: [
         /\.[tj]sx?$/,
@@ -57,10 +61,12 @@ export default defineConfig({
   // pour tester la collecte des statistiques en local, il faut modifier l'URL (filtre Eulerian) :
   // > BASE_URL=stat.cartes.gouv.fr npm run dev
   base: process.env.BASE_URL || '/cartes.gouv.fr-entree-carto',
-  envDir : "env",
+  envDir: "env",
+  envPrefix: ["VITE_", "IAM_"],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-  }
+  },
+  define: {}
 })

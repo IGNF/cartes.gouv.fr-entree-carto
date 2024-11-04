@@ -37,7 +37,8 @@ export async function useRequest(url, settings) {
           throw new Error('Fetch parsing error : ' + error.message);
         });
     } else {
-      throw new Error('Not handled exception !?');
+      // FIXME 
+      // throw new Error('Not handled exception !?');
     }
   } catch (error) {
     throw error;
