@@ -4,8 +4,8 @@ import { useRequest } from '@/services/request';
 // recuperation des informations sur l'env
 const IAM_URL = import.meta.env.IAM_URL || "https://sso.geopf.fr";
 const IAM_REALM = import.meta.env.IAM_REALM || "geoplateforme";
-const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID || "cartes-gouv-dev"; // FIXME ID de cartes.gouv.fr ?
-const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET || ""; // FIXME SECRET de cartes.gouv.fr s?
+const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
+const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET; 
 
 /**
  * @description 
@@ -45,8 +45,10 @@ class Service {
     this.code = null;
     /** informations utilisateurs */
     this.user = {};
+    /** erreurs IAM */
+    this.error = {};
 
-    this.url = encodeURI(location.href);
+    this.url = encodeURI(location.origin + location.pathname);
 
     return this;
   }
@@ -80,10 +82,11 @@ class Service {
     // et il doit être utiliser pour obtenir le token 
     // cf. getAccessToken()
 
+    // approval_prompt=auto&
+
     return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/auth?
       scope=openid%20profile%20email&
       response_type=code&
-      approval_prompt=auto&
       redirect_uri=${this.url}&
       client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
   }
@@ -122,7 +125,7 @@ class Service {
    * IAM pour obtenir le token
    * 
    * @see isAccessValided
-   * @todo IAM_CLIENT_SECRET !
+   * @fixme le post ne renvoie pas de réponse !?
    */
   getAccessToken () {
     // ex.
@@ -151,16 +154,18 @@ class Service {
     var url = `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/token`;
     var settings = {
       method : "POST",
-      headers : { "Content-Type" : "application/x-www-form-urlencoded" },
+      headers : { 
+        "Content-Type" : "application/x-www-form-urlencoded"
+      },
       mode : 'no-cors',
       credentials : "same-origin",
-      body : {
+      body : new URLSearchParams({
         "grant_type": "authorization_code",
         "code": this.code,
         "redirect_uri": this.url,
         "client_id": IAM_CLIENT_ID,
         "client_secret": IAM_CLIENT_SECRET
-      }
+      })
     };
 
     return useRequest(url, settings);
@@ -194,6 +199,7 @@ class Service {
     // parametres
     var code = urlParams.get('code');
     var session = urlParams.get('session_state');
+    var error = urlParams.get('error');
     // IAM login
     if (code && session) {
       this.session = session;
@@ -219,6 +225,14 @@ class Service {
       this.token = null;
       this.#removeTokenStorage();
       this.user = {};
+      this.error = {};
+    }
+    // Error
+    if (error) {
+      this.error = {
+        name: error,
+        message: urlParams.get('error_description')
+      };
     }
   }
 
