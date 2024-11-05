@@ -1,9 +1,10 @@
 import { useRequest } from '@/services/request';
+import Users from '@/services/serviceUsers';
 
 // INFO
 // recuperation des informations sur l'env
-const IAM_URL = import.meta.env.IAM_URL || "https://sso.geopf.fr";
-const IAM_REALM = import.meta.env.IAM_REALM || "geoplateforme";
+const IAM_URL = import.meta.env.IAM_URL;
+const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
 const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET; 
 
@@ -43,8 +44,6 @@ class Service {
     this.session = null;
     /** code */
     this.code = null;
-    /** informations utilisateurs */
-    this.user = {};
     /** erreurs IAM */
     this.error = {};
 
@@ -82,10 +81,9 @@ class Service {
     // et il doit être utiliser pour obtenir le token 
     // cf. getAccessToken()
 
-    // approval_prompt=auto&
-
     return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/auth?
       scope=openid%20profile%20email&
+      approval_prompt=auto&
       response_type=code&
       redirect_uri=${this.url}&
       client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
@@ -114,11 +112,10 @@ class Service {
 
     return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/logout?
       scope=openid%20profile%20email&
-      response_type=code&
       approval_prompt=auto&
-      post_logout_redirect_uri=${this.url}&
+      response_type=code&
+      post_logout_redirect_uri=${this.url}?session_state=${this.session}&
       client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
-
   }
 
   /** 
@@ -126,8 +123,10 @@ class Service {
    * 
    * @see isAccessValided
    * @fixme le post ne renvoie pas de réponse !?
-   */
+  */
   getAccessToken () {
+    // cf. https://stackoverflow.blog/2022/04/14/the-authorization-code-grant-in-excruciating-detail/
+    
     // ex.
     // > POST https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token
     // > content-type: application/x-www-form-urlencoded
@@ -154,8 +153,11 @@ class Service {
     var url = `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/token`;
     var settings = {
       method : "POST",
-      headers : { 
-        "Content-Type" : "application/x-www-form-urlencoded"
+      headers : {
+        // FIXME !?
+        // "Authorization" : "Basic " + btoa(IAM_CLIENT_ID + ":" + IAM_CLIENT_SECRET),
+        "Content-Type" : "application/x-www-form-urlencoded",
+        "Accept" : "application/json"
       },
       mode : 'no-cors',
       credentials : "same-origin",
@@ -168,21 +170,18 @@ class Service {
       })
     };
 
-    return useRequest(url, settings);
-  }
-
-  /** 
-   * IAM pour obtenir les informations de l'utilisateur 
-   * @todo not yet implemented !
-   */
-  getAccessUser () {
-    // TODO
-    // obtenir les informations utilisateurs afin d'y afficher : prénom - nom
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("[getAccessUser] ...");
-      }, 300);
-    });
+    return import.meta.env.VITE_HTTP_SIMULE_REQUEST === "1" ? new Promise((resolve, reject) => {
+      resolve({
+        "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJuQTM1bFJNeWVEMnU3WGJDTk9UbTRORjE0eTNoYlBMcGw4TXQtVzR3STJnIn0.eyJleHAiOjE3MzAzNjU1OTgsImlhdCI6MTczMDMyMjM5OCwiYXV0aF90aW1lIjoxNzMwMzIyMzk3LCJqdGkiOiI3YjFjM2YyZS1iNjNkLTQ1MjYtOGY4My1jZjhjZmNjYjZjMjQiLCJpc3MiOiJodHRwczovL3Nzby5nZW9wZi5mci9yZWFsbXMvZ2VvcGxhdGVmb3JtZSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIwOWUwOTFkYy01MWQ1LTRjMDQtOTYzNy0zMDQ1ZGY1Y2U0NzciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJicnVuby1yZXN0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI3N2Q5NmFlZi00NGMzLTQyZmItYTU0Mi1jMWQwYTUyMWNlMjkiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3QiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtZ2VvcGxhdGVmb3JtZSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJkZWxldGUtYWNjb3VudCIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6Ijc3ZDk2YWVmLTQ0YzMtNDJmYi1hNTQyLWMxZDBhNTIxY2UyOSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiamVhbi1waGlsaXBwZSBiYXpvbm5haXMiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJqZWFuLXBoaWxpcHBlLmJhem9ubmFpcyIsImdpdmVuX25hbWUiOiJqZWFuLXBoaWxpcHBlIiwiZmFtaWx5X25hbWUiOiJiYXpvbm5haXMiLCJlbWFpbCI6ImplYW4tcGhpbGlwcGUuYmF6b25uYWlzQGlnbi5mciJ9.i4ELlTHnpbCMpwpVH-dl7BYPmKiFPcnps19lW8Zw50gXeBuXNLGBHuG8T8CGI5jxJA1JC_h3xveRRlLZCRVu9bDNGtB2A1JUzfS0NPp2yffO5brr3e6NSOTC490e9_P5AgQNzJPzFKsHOUtCF2zaDsemCzmOSGk7_GmEPY-YyCBgxDTvnhpg0Du2bf8tt2SKJpxZSK83U7K32YA27ioQo6_AVRn4QEJYQmz1QMkhOstDneMSFku1s64pN6vXsL6y1g0Bjvu-H6V5T8Ei4LJqj0mIiL2pQRgRCGJBXd4wpfYqVClCjh-GIx41znEpsE_whKXScq3HHbwHCjV_UGY6Og",
+        "expires_in": 43200,
+        "refresh_expires_in": 43199,
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI4ODI0ODAxYS05NGJiLTQwMjUtYjM2NS1kNDQwMDZiMWFhOGEifQ.eyJleHAiOjE3MzAzNjU1OTcsImlhdCI6MTczMDMyMjM5OCwianRpIjoiMWQ1NTJiM2YtODAyMC00NTU5LWFmNzctMjY3YjgyOTI3Y2QxIiwiaXNzIjoiaHR0cHM6Ly9zc28uZ2VvcGYuZnIvcmVhbG1zL2dlb3BsYXRlZm9ybWUiLCJhdWQiOiJodHRwczovL3Nzby5nZW9wZi5mci9yZWFsbXMvZ2VvcGxhdGVmb3JtZSIsInN1YiI6IjA5ZTA5MWRjLTUxZDUtNGMwNC05NjM3LTMwNDVkZjVjZTQ3NyIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJicnVuby1yZXN0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI3N2Q5NmFlZi00NGMzLTQyZmItYTU0Mi1jMWQwYTUyMWNlMjkiLCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiI3N2Q5NmFlZi00NGMzLTQyZmItYTU0Mi1jMWQwYTUyMWNlMjkifQ.Q6aZUJ5nh6VQ77bqImOyqMqlAJfKCBs-eEYnF5-EbL4",
+        "token_type": "Bearer",
+        "not-before-policy": 0,
+        "session_state": "77d96aef-44c3-42fb-a542-c1d0a521ce29",
+        "scope": "profile email"
+      });
+    }) : useRequest(url, settings);
   }
 
   /////////////////
@@ -190,7 +189,7 @@ class Service {
   /////////////////
 
   /**
-   * Permet de valider la connexion
+   * Permet de valider la connexion en obtenant un token
    */
   isAccessValided () {
     // si login via IAM, on récupère le code dans l'url
@@ -205,30 +204,37 @@ class Service {
       this.session = session;
       this.code = code;
       this.getAccessToken()
-        .then((response) => {
+        .then((data) => {
           this.authenticated = true;
-          this.token = response;
-          this.#addTokenStorage();
+          this.token = data;
+          this.addTokenStorage();
+          return data;
         })
-        .then(() => {
-          this.getAccessUser();
-        })
+        // .then((data) => {
+        //   var token = data.access_token;
+        //   this.getUserMe(token)
+        //     .then((data) => {
+        //       this.user = data;
+        //     });
+        // })
         .catch((e) => {
           console.error(e.message);
         });
     }
     // IAM logout
+    // FIXME logout doit fournir la session !!!
     if (!code && session && session === this.session) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
       this.token = null;
-      this.#removeTokenStorage();
+      this.removeTokenStorage();
       this.user = {};
       this.error = {};
     }
     // Error
     if (error) {
+      // FIXME où afficher l'erreur ?
       this.error = {
         name: error,
         message: urlParams.get('error_description')
@@ -256,13 +262,13 @@ class Service {
    *  }
    * }
    */
-  #getTokenStorage () {
+  getTokenStorage () {
     return JSON.parse(localStorage.getItem("auth"));
   }
   /**
    * Ajoute le token d'authentification du localStorage
    */
-  #addTokenStorage () {
+  addTokenStorage () {
     // ex. 
     // {
     //   "authenticator": "authenticator:oauth2",
@@ -281,12 +287,15 @@ class Service {
   /**
    * Reinitialise le token d'authentification du localStorage
    */
-  #removeTokenStorage () {
+  removeTokenStorage () {
     var data = JSON.stringify({
       authenticated : {}
     });
     localStorage.setItem("auth", data);
   }
 };
+
+// Mixin
+Object.assign(Service.prototype, Users);
 
 export default Service;
