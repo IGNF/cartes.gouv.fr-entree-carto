@@ -25,22 +25,23 @@ export async function useRequest(url, settings) {
     }
   }
 
-  try {
-    const response = await fetch(url, settings);
-    if (response.ok) {
+  return fetch(url, settings)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP status error : ${response.status}`);
+      }
       response.json()
-        .then(function (data) {
-          console.log(data);
+        .then((data) => {
           return data;
         })
-        .catch(function (error) {
-          throw new Error('Fetch parsing error : ' + error.message);
+        .catch((e) => {
+          throw new Error(`Fetch parsing error : ${e.message}`);
+        })
+        .finally(() => {
+          // ...
         });
-    } else {
-      // FIXME 
-      // throw new Error('Not handled exception !?');
-    }
-  } catch (error) {
-    throw error;
-  }
+    })
+    .catch((e) => {
+      throw new Error(`Error : ${e.message}`);
+    });
 };
