@@ -10,7 +10,6 @@
 </script>
 
 <script setup lang="js">
-import { onMounted, ref } from 'vue'
 import { CRS } from 'geopf-extensions-openlayers'
 
 import Map from 'ol/Map'
@@ -18,31 +17,27 @@ import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore()
 
 const props = defineProps({
-  symbolName: Symbol
+  mapId: String
 })
 
 /**
  * Reference (DOM)
  */
 const mapRef = ref(null)
-const id = computed(() => {
-  return props.symbolName.toString().match(/\((.*)\)/)[1]
-})
 
 /**
  * Map
  * default controls are removed (rotate, zoom and attributions)
  */
-const map = new Map({
-  target: id.value,
+const map = reactive(new Map({
+  target: props.mapId,
   controls: [] // on supprime les contrôles par defaut !
-})
-
+  }))
+provide(props.mapId, map)
 
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
-  console.log("set print map")
-  console.log(props.symbolName)
+
   CRS.load();
   map.setTarget(mapRef.value)
 
@@ -51,11 +46,6 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
-})
-
-onUpdated(() => {
-  console.log(map)
-  console.log(props.symbolName)
 })
 
 /**
@@ -73,11 +63,6 @@ const updateSize = () => {
   map.updateSize();
 }
 
-// INFO
-// Option permettant de rendre disponible 'map'
-// aux composants enfants imbriqués
-provide(props.symbolName, map)
-mapStore.setMap(map)
 // on expose en publique la reference au DOM
 defineExpose({
   mapRef,
@@ -87,6 +72,7 @@ defineExpose({
 
 <template>
   <div
+    :id="mapId"
     ref="mapRef"
     tabindex="0"
     @mouseover="onFocusOnMap">

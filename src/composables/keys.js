@@ -1,2 +1,2 @@
-export const mainMap = Symbol("mainMap");
-export const printMap = Symbol("printMap");
+export const mainMap = "mainMap";
+export const printMap = "printMap";
