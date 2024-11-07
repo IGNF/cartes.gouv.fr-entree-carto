@@ -12,7 +12,8 @@ const props = defineProps({
   attributionsOptions: Object
 })
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const attributions = ref(new Attributions(props.attributionsOptions))
 
 onMounted(() => {

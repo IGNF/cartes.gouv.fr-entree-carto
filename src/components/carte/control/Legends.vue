@@ -8,7 +8,8 @@ const props = defineProps({
   legendsOptions: Object
 });
 
-const map = inject('map');
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {

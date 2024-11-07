@@ -10,7 +10,8 @@ const props = defineProps({
   fullscreenOptions: Object
 })
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const fullscreen = ref(new GeoportalFullScreen(props.fullscreenOptions))
 
 onMounted(() => {

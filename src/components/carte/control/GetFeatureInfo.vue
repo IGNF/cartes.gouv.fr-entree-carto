@@ -13,7 +13,8 @@ const props = defineProps({
 
 const log = useLogger();
 
-const map = inject('map');
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap);
 const getFeatureInfo = ref(new GetFeatureInfo(props.getFeatureInfoOptions));
 
 const isSmallScreen = useMatchMedia('SM')

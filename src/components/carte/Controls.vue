@@ -28,6 +28,7 @@ import ElevationPath from './control/ElevationPath.vue'
 import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue'
 import LayerImport from './control/LayerImport.vue'
+import Print from './control/Print.vue'
 
 import Share from './control/Share.vue'
 
@@ -64,6 +65,7 @@ log.debug(props.controlOptions);
 // liste des options pour les contrôles;
 
 const shareOptions = {};
+const printOptions = {};
 
 const territoriesOptions = {
   position: 'bottom-left',
@@ -312,6 +314,11 @@ const mousePositionOptions = {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Share.id)"
     :share-options="shareOptions"
+  />
+  <Print
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Print.id)"
+    :print-options="printOptions"
   />
   <LayerSwitcher
     :visibility="true"

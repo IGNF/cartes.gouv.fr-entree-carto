@@ -13,7 +13,8 @@ const props = defineProps({
 
 const log = useLogger()
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const layerImport = ref(new LayerImport(props.layerImportOptions))
 
 onMounted(() => {

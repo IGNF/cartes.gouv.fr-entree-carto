@@ -15,7 +15,8 @@ const props = defineProps({
 const log = useLogger();
 const store = useDataStore();
 
-const map = inject('map');
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap);
 const route = ref(new Route(props.routeOptions));
 
 onMounted(() => {

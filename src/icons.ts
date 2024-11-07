@@ -25,3 +25,7 @@ export {
   IoSettingsSharp,
   IoClose
 } from 'oh-vue-icons/icons/io/index.js'
+
+export {
+  PxPrint
+} from 'oh-vue-icons/icons/px/index.js'

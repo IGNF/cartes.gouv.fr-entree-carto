@@ -12,7 +12,8 @@ const props = defineProps({
   scaleLineOptions: Object
 })
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
 
 onMounted(() => {
