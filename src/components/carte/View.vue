@@ -19,15 +19,18 @@ import {
 } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
+import { mainMap } from "@/composables/keys"
+
 const store = useMapStore()
 
 const props = defineProps({
   zoom : Number,
   center : Array,
+  mapId: String,
 })
 
 // recuperation de l'objet 'map' du composant parent
-const map = store.getMap()
+const map = inject(props.mapId)
 
 /**
  * creation de la vue
@@ -42,12 +45,14 @@ const view = new View({
  * pour mise à jour du centre de la carte
  */
 view.on("change:center", (e) => {
-  store.x = e.target.getCenter()[0];
-  store.y = e.target.getCenter()[1];
+  if (props.mapId == mainMap) {
+    store.x = e.target.getCenter()[0];
+    store.y = e.target.getCenter()[1];
 
-  var coordinate = toLonLatProj(e.target.getCenter());
-  store.lon = coordinate[0];
-  store.lat = coordinate[1];
+    var coordinate = toLonLatProj(e.target.getCenter());
+    store.lon = coordinate[0];
+    store.lat = coordinate[1];
+  }
 })
 
 /**

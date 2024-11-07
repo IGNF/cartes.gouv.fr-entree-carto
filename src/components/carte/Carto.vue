@@ -49,13 +49,13 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
-
 </script>
 
 <template>
-  <Map class="map" ref="refMap" :symbolName="mainMap">
+  <Map class="map" ref="refMap" :mapId="mainMap">
     <!-- Initialisation de la vue -->
     <View
+      :map-Id="mainMap"
       :center="mapStore.center"
       :zoom="mapStore.zoom"/>
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
@@ -64,6 +64,7 @@ const mapIsReady = computed(() => {
       :control-options="props.selectedControls"/>
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
+      :map-Id="mainMap"
       :selected-layers="props.selectedLayers"/>
   </Map>
 </template>

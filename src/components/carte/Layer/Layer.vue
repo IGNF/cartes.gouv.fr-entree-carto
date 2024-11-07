@@ -10,7 +10,8 @@ import {
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
-  layerOptions: Object
+  layerOptions: Object,
+  mapId : String
 })
 
 // INFO
@@ -21,8 +22,7 @@ log.debug(props.layerOptions);
 
 const store = useDataStore()
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+const map = inject(props.mapId)
 const layer = ref(null)
 
 onMounted(() => {

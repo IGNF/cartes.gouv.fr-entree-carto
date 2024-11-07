@@ -51,6 +51,7 @@ const hasTitle = ref(true)
 const printTitle = ref("Titre de la carte")
 const margin = ref(0)
 const paperFormat = ref("A4")
+const coeff = 96 / 254
 const dimension = computed(() => {
   let dimension = { 
     'A0': { width : 841, height: 1189 },
@@ -62,20 +63,34 @@ const dimension = computed(() => {
     'B4' : { width : 250, height: 353 },
     'B5' : { width : 176, height: 250 }
   }
-  return dimension[paperFormat.value]
+  return {
+    width : dimension[paperFormat.value].width * coeff,
+    height : dimension[paperFormat.value].height * coeff
+  }
 })
+
+const updateMapSize = () => {
+  refMap.value.mapRef.style.width = dimension.value.width + "mm"
+  refMap.value.mapRef.style.height = dimension.value.height + "mm"
+}
+
+watch(dimension, (values) => {
+  updateMapSize()
+})
+
 onUpdated(() => {
-    /* hack pour surcharger le style modal dsfr */
+  /* hack pour surcharger le style modal dsfr */
     let modalDOM = modal.value.getElementsByClassName("fr-container")[0]
     if (modalDOM) {
       modalDOM.classList.add("modal-override");
       modalDOM.classList.remove("fr-container-md", "fr-container");
-      refMap.value.updateSize()
+    }
+
+    if (refMap.value) {
+      updateMapSize()
     }
 });
 
-onBeforeMount(() => {
-});
 </script>
 
 <template>
@@ -127,19 +142,24 @@ onBeforeMount(() => {
                 name="titre"
             />
         </div>
-        <div class="print-map" :width="dimension.width  * 96 / 254" :height="dimension.height  * 96 / 254">
-            <Map 
+        <div class="print-map-container">
+          <div class="print-map">
+            <Map
+              v-if="printModalOpened" 
               class="map" 
               ref="refMap"
-              :symbolName="printMap"
+              :map-Id="printMap"
             >
               <View
+                :map-Id="printMap"
                 :center="mapStore.center"
                 :zoom="mapStore.zoom"/>
               <Layers
+                :map-Id="printMap"
                 :selected-layers="selectedLayers"/>
             </Map>
         </div>
+        </div>    
     </div>
     </DsfrModal>
   </div>
@@ -206,10 +226,15 @@ onBeforeMount(() => {
     height: 36rem;
     margin-top: 30px;
   }
-  .print-map{
+  .print-map-container{
     flex: 3 0 300px;
     height: 36rem;
-
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
+  .print-map {
+    box-shadow: 3px 3px 5px 6px #ccc;
   }
   .print-form {
     flex: 1 2 100px;

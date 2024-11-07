@@ -3,7 +3,8 @@ import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
 
 const props = defineProps({
-  selectedLayers: Object
+  selectedLayers: Object,
+  mapId: String
 })
 
 // INFO
@@ -32,5 +33,6 @@ var layers = computed(() => {
     <Layer
       v-for="layer in layers"
       :key="layer.key"
-      :layer-options="layer" />
+      :layer-options="layer"
+      :map-id="mapId" />
 </template>
