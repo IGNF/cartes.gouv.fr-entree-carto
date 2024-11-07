@@ -6,7 +6,7 @@
  * {
  *  OverviewMap: {
  *    id: 'OverviewMap',
- *    active: true,      // afficher ou non sur la carte
+ *    active: true,      // rendre actif le widget sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
  *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
  * }
@@ -20,7 +20,7 @@ export const useControls = {
   },
   SearchEngine: {
     id: 'SearchEngine',
-    active: false,
+    active: true,
     disable: true,
     analytic: false
   },
@@ -32,13 +32,13 @@ export const useControls = {
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
-    active: false,
+    active: true,
     disable: true,
     analytic: true
   },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
-    active: false,
+    active: true,
     disable: true,
     analytic: true
   },
@@ -161,153 +161,152 @@ export function useDefaultControls() {
  */
 export function useControlsMenuOptions() {
   return [
-  {
-    label: 'Barre de Recherche',
-    id: 'searchEngine',
-    name: useControls.SearchEngine.id,
-    hint: 'Barre de recherche sur la carte',
-    disabled: useControls.SearchEngine.disable
-  },
-  {
-    label: 'Mini carte',
-    id: 'overview',
-    name: useControls.OverviewMap.id,
-    hint: 'Petite carte pour se repérer',
-    disabled: useControls.OverviewMap.disable
-  },
-  {
-    label: 'Scale Line',
-    id: 'scaleLine',
-    name: useControls.ScaleLine.id,
-    hint: 'Echelle',
-    disabled: useControls.ScaleLine.disable
-  },
-  {
-    label: 'Gestionnaire de couches',
-    id: 'layerSwitcher',
-    name: useControls.LayerSwitcher.id,
-    hint: 'Gestionnaire de couches',
-    disabled: useControls.LayerSwitcher.disable
-  },
-  {
-    label: 'GetFeatureInfo',
-    id: 'getFeatureInfo',
-    name: useControls.GetFeatureInfo.id,
-    hint: 'Informations sur les couches',
-    disabled: useControls.GetFeatureInfo.disable
-  },
-  {
-    label: 'Légendes',
-    id: 'legends',
-    name: useControls.Legends.id,
-    hint: 'Légendes',
-    disabled: useControls.Legends.disable
-  },
-  {
-    label: 'Geocodage inverse',
-    id: 'reverseGeocode',
-    name: useControls.ReverseGeocode.id,
-    hint: 'Geocodage inverse',
-    disabled: useControls.ReverseGeocode.disable
-  },
-  {
-    label: 'Calcul d\'isochrone',
-    id: 'isocurve',
-    name: useControls.Isocurve.id,
-    hint: 'Calcul d\'isochrone',
-    disabled: useControls.Isocurve.disable
-  },
-  {
-    label: 'Calcul d\'itinéraire',
-    id: 'route',
-    name: useControls.Route.id,
-    hint: 'Calcul d\'itinéraire',
-    disabled: useControls.Route.disable
-  },
-  {
-    label: 'Zoom',
-    id: 'zoom',
-    name: useControls.Zoom.id,
-    hint: 'Zoom',
-    disabled: useControls.Zoom.disable
-  },
-  {
-    label: 'Attributions',
-    id: 'attributions',
-    name: useControls.Attributions.id,
-    hint: 'Attributions',
-    disabled: useControls.Attributions.disable
-  },
-  {
-    label: 'Rotation de la carte',
-    id: 'rotate',
-    name: useControls.Rotate.id,
-    hint: 'Rotation de la carte',
-    disabled: useControls.Rotate.disable
-  },
-  {
-    label: 'Plein écran',
-    id: 'fullscreen',
-    name: useControls.FullScreen.id,
-    hint: 'Plein écran',
-    disabled: useControls.FullScreen.disable
-  },
-  {
-    label: 'Mesure de distance',
-    id: 'measureLength',
-    name: useControls.MeasureLength.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureLength.disable
-  },
-  {
-    label: 'Mesure d\'aire',
-    id: 'measureArea',
-    name: useControls.MeasureArea.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureArea.disable
-  },
-  {
-    label: 'Mesure d\'azimut',
-    id: 'measureAzimuth',
-    name: useControls.MeasureAzimuth.id,
-    hint: 'Mesures',
-    disabled: useControls.MeasureAzimuth.disable
-  },
-  {
-    label: 'Partager une carte',
-    id: 'share',
-    name: useControls.Share.id,
-    hint: 'Partages',
-    disabled: useControls.Share.disable
-  },
-  {
-    label: 'Afficher les coordonnées',
-    id: 'mousePosition',
-    name: useControls.MousePosition.id,
-    hint: 'Position de la souris',
-    disabled: useControls.MousePosition.disable
-  },
-  {
-    label: 'Selectionner un territoire',
-    id: 'territories',
-    name: useControls.Territories.id,
-    hint: 'Territoires',
-    disabled: useControls.Territories.disable
-  },
-  {
-    label: 'Profil altimétrique',
-    id: 'elevationPath',
-    name: useControls.ElevationPath.id,
-    hint: 'Profil altimétrique',
-    disabled: useControls.ElevationPath.disable
-  },
-  {
-    label: 'Importer des données',
-    id: 'layerImport',
-    name: useControls.LayerImport.id,
-    hint: 'Import de données',
-    disabled: useControls.LayerImport.disable
-  }
-].filter(opt => Object.keys(useControls).includes(opt.name))
-.filter(opt => opt.disabled === false)
+    {
+      label: 'Barre de Recherche',
+      id: 'searchEngine',
+      name: useControls.SearchEngine.id,
+      hint: 'Barre de recherche sur la carte',
+      disabled: useControls.SearchEngine.disable
+    },
+    {
+      label: 'Mini carte',
+      id: 'overview',
+      name: useControls.OverviewMap.id,
+      hint: 'Petite carte pour se repérer',
+      disabled: useControls.OverviewMap.disable
+    },
+    {
+      label: 'Scale Line',
+      id: 'scaleLine',
+      name: useControls.ScaleLine.id,
+      hint: 'Echelle',
+      disabled: useControls.ScaleLine.disable
+    },
+    {
+      label: 'Gestionnaire de couches',
+      id: 'layerSwitcher',
+      name: useControls.LayerSwitcher.id,
+      hint: 'Gestionnaire de couches',
+      disabled: useControls.LayerSwitcher.disable
+    },
+    {
+      label: 'GetFeatureInfo',
+      id: 'getFeatureInfo',
+      name: useControls.GetFeatureInfo.id,
+      hint: 'Informations sur les couches',
+      disabled: useControls.GetFeatureInfo.disable
+    },
+    {
+      label: 'Légendes',
+      id: 'legends',
+      name: useControls.Legends.id,
+      hint: 'Légendes',
+      disabled: useControls.Legends.disable
+    },
+    {
+      label: 'Geocodage inverse',
+      id: 'reverseGeocode',
+      name: useControls.ReverseGeocode.id,
+      hint: 'Geocodage inverse',
+      disabled: useControls.ReverseGeocode.disable
+    },
+    {
+      label: 'Calcul d\'isochrone',
+      id: 'isocurve',
+      name: useControls.Isocurve.id,
+      hint: 'Calcul d\'isochrone',
+      disabled: useControls.Isocurve.disable
+    },
+    {
+      label: 'Calcul d\'itinéraire',
+      id: 'route',
+      name: useControls.Route.id,
+      hint: 'Calcul d\'itinéraire',
+      disabled: useControls.Route.disable
+    },
+    {
+      label: 'Zoom',
+      id: 'zoom',
+      name: useControls.Zoom.id,
+      hint: 'Zoom',
+      disabled: useControls.Zoom.disable
+    },
+    {
+      label: 'Attributions',
+      id: 'attributions',
+      name: useControls.Attributions.id,
+      hint: 'Attributions',
+      disabled: useControls.Attributions.disable
+    },
+    {
+      label: 'Rotation de la carte',
+      id: 'rotate',
+      name: useControls.Rotate.id,
+      hint: 'Rotation de la carte',
+      disabled: useControls.Rotate.disable
+    },
+    {
+      label: 'Plein écran',
+      id: 'fullscreen',
+      name: useControls.FullScreen.id,
+      hint: 'Plein écran',
+      disabled: useControls.FullScreen.disable
+    },
+    {
+      label: 'Mesure de distance',
+      id: 'measureLength',
+      name: useControls.MeasureLength.id,
+      hint: 'Mesures',
+      disabled: useControls.MeasureLength.disable
+    },
+    {
+      label: 'Mesure d\'aire',
+      id: 'measureArea',
+      name: useControls.MeasureArea.id,
+      hint: 'Mesures',
+      disabled: useControls.MeasureArea.disable
+    },
+    {
+      label: 'Mesure d\'azimut',
+      id: 'measureAzimuth',
+      name: useControls.MeasureAzimuth.id,
+      hint: 'Mesures',
+      disabled: useControls.MeasureAzimuth.disable
+    },
+    {
+      label: 'Partager une carte',
+      id: 'share',
+      name: useControls.Share.id,
+      hint: 'Partages',
+      disabled: useControls.Share.disable
+    },
+    {
+      label: 'Afficher les coordonnées',
+      id: 'mousePosition',
+      name: useControls.MousePosition.id,
+      hint: 'Position de la souris',
+      disabled: useControls.MousePosition.disable
+    },
+    {
+      label: 'Selectionner un territoire',
+      id: 'territories',
+      name: useControls.Territories.id,
+      hint: 'Territoires',
+      disabled: useControls.Territories.disable
+    },
+    {
+      label: 'Profil altimétrique',
+      id: 'elevationPath',
+      name: useControls.ElevationPath.id,
+      hint: 'Profil altimétrique',
+      disabled: useControls.ElevationPath.disable
+    },
+    {
+      label: 'Importer des données',
+      id: 'layerImport',
+      name: useControls.LayerImport.id,
+      hint: 'Import de données',
+      disabled: useControls.LayerImport.disable
+    }
+  ].filter(opt => Object.keys(useControls).includes(opt.name))
 } 
