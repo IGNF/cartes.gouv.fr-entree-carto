@@ -22,6 +22,7 @@ import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
 import { useMapStore } from "@/stores/mapStore"
+import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
   selectedControls : Array,
@@ -52,21 +53,25 @@ const mapIsReady = computed(() => {
 </script>
 
 <template>
-    <Map ref="refMap">
-      <!-- Initialisation de la vue -->
-      <View
-        :center="mapStore.center"
-        :zoom="mapStore.zoom"/>
-      <!-- Composant pour selectionner les widgets à afficher sur la carte -->
-      <Controls
-        v-if="mapIsReady"
-        :control-options="props.selectedControls"/>
-      <!-- Composant pour ajouter les couches sur la carte -->
-      <Layers
-        :selected-layers="props.selectedLayers"/>
-    </Map>
+  <Map class="map" ref="refMap" :symbolName="mainMap">
+    <!-- Initialisation de la vue -->
+    <View
+      :center="mapStore.center"
+      :zoom="mapStore.zoom"/>
+    <!-- Composant pour selectionner les widgets à afficher sur la carte -->
+    <Controls
+      v-if="mapIsReady"
+      :control-options="props.selectedControls"/>
+    <!-- Composant pour ajouter les couches sur la carte -->
+    <Layers
+      :selected-layers="props.selectedLayers"/>
+  </Map>
 </template>
 
 <style scoped>
-
+.map {
+    position: absolute;
+    width: 100%;
+    height: inherit;
+}
 </style>

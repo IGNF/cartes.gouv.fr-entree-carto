@@ -114,6 +114,12 @@ export const useControls = {
     disable: false,
     analytic: true
   },
+  Print: {
+    id: 'Print',
+    active: true,
+    disable: false,
+    analytic: true
+  },
   MousePosition: {
     id: 'MousePosition',
     active: true,
@@ -279,6 +285,13 @@ export function useControlsMenuOptions() {
     name: useControls.Share.id,
     hint: 'Partages',
     disabled: useControls.Share.disable
+  },
+  {
+    label: 'Imprimer une carte',
+    id: 'print',
+    name: useControls.Print.id,
+    hint: 'Impression',
+    disabled: useControls.Print.disable
   },
   {
     label: 'Afficher les coordonnées',

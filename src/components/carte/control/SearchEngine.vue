@@ -22,7 +22,8 @@ const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const map = inject('map');
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap);
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
 
 onMounted(() => {

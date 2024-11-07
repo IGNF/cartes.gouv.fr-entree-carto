@@ -21,7 +21,8 @@ const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {

@@ -17,37 +17,45 @@ import Map from 'ol/Map'
 import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore()
 
+const props = defineProps({
+  symbolName: Symbol
+})
+
 /**
  * Reference (DOM)
  */
-const mapRef = ref(0)
-const id = "map"
-
-// on expose en publique la reference au DOM
-defineExpose({
-  mapRef
-});
+const mapRef = ref(null)
+const id = computed(() => {
+  return props.symbolName.toString().match(/\((.*)\)/)[1]
+})
 
 /**
  * Map
  * default controls are removed (rotate, zoom and attributions)
  */
 const map = new Map({
-  target: id,
+  target: id.value,
   controls: [] // on supprime les contrôles par defaut !
 })
 
 
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
+  console.log("set print map")
+  console.log(props.symbolName)
   CRS.load();
   map.setTarget(mapRef.value)
 
   // On ajoute une option d'accessibilité
-  const canvas = document.getElementById(id).getElementsByTagName('canvas')
+  const canvas = mapRef.value.getElementsByTagName('canvas')
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
+})
+
+onUpdated(() => {
+  console.log(map)
+  console.log(props.symbolName)
 })
 
 /**
@@ -61,16 +69,24 @@ const onFocusOnMap = () => {
   }
 }
 
+const updateSize = () => {
+  map.updateSize();
+}
+
 // INFO
 // Option permettant de rendre disponible 'map'
 // aux composants enfants imbriqués
-provide('map', map)
+provide(props.symbolName, map)
 mapStore.setMap(map)
+// on expose en publique la reference au DOM
+defineExpose({
+  mapRef,
+  updateSize
+});
 </script>
 
 <template>
   <div
-    :id="id"
     ref="mapRef"
     tabindex="0"
     @mouseover="onFocusOnMap">
@@ -79,9 +95,4 @@ mapStore.setMap(map)
 </template>
 
 <style>
-  #map {
-    position: absolute;
-    width: 100%;
-    height: inherit;
-  }
 </style>

@@ -21,7 +21,8 @@ log.debug(props.layerOptions);
 
 const store = useDataStore()
 
-const map = inject('map')
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap)
 const layer = ref(null)
 
 onMounted(() => {
