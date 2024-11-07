@@ -134,8 +134,8 @@ export const useControls = {
   },
   LayerImport: {
     id: 'LayerImport',
-    active: true,
-    disable: false,
+    active: false,
+    disable: true,
     analytic: true
   }
 }
