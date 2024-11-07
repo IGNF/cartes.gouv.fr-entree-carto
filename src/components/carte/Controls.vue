@@ -314,7 +314,8 @@ const mousePositionOptions = {
     :share-options="shareOptions"
   />
   <LayerSwitcher
-    :visibility="true"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :analytic="useControls.LayerSwitcher.analytic"
     :layer-switcher-options="layerSwitcherOptions"
   />
@@ -361,12 +362,14 @@ const mousePositionOptions = {
     :attributions-options="attributionsOptions"
   />
   <SearchEngine
-    :visibility="true"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
   />
   <GetFeatureInfo
-    :visibility="true"
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
     :analytic="useControls.GetFeatureInfo.analytic"
     :get-feature-info-options="getFeatureInfoOptions"
   />
