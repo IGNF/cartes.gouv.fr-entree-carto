@@ -65,18 +65,18 @@ const mandatoryLinks = computed(() => {
 // INFO
 // on met à jour les quickLinks pour la connexion
 var service = store.getService();
-service.isAccessValided();
+service.isAccessValided(); // FIXME deporter le code vers Login et Logout !
 const quickLinks = computed(() => {
   return headerParams.quickLinks.map((element: any) => {
     if (element.label === "Se connecter" && service.authenticated) {
       element.label = 'Se deconnecter';
-      element.href = service.getAccessLogout();
+      element.to = '/logout';
       element.class = 'fr-icon-logout-box-r-line';
       element.onClick = (e:any) => {};
     } 
     if (element.label === "Se deconnecter" && !service.authenticated) {
       element.label = 'Se connecter';
-      element.href = service.getAccessLogin();
+      element.to = '/login';
       element.class = 'fr-icon-user-fill';
       element.onClick = (e:any) => {};
     }
