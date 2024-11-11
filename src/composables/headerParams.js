@@ -1,13 +1,11 @@
 import { ref } from 'vue';
 import { useBaseUrl } from '@/composables/baseUrl';
-import { useServiceStore } from '@/stores/serviceStore';
 
 /**
  * Paramètres du composant DSFR Header
  * @returns 
 */
 export function useHeaderParams() {
-    var store = useServiceStore();
 
     // Paramètres pour le Header
     const headerParams = {
@@ -31,7 +29,7 @@ export function useHeaderParams() {
             },
             {
               label: 'Se connecter', 
-              href:  store.getService().getAccessLogin(),
+              to: '/login',
               class: 'fr-icon-user-fill',
               onClick: (e) => {}
             }
