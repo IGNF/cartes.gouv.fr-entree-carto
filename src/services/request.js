@@ -4,6 +4,7 @@
  * 
  * @param {*} url - url
  * @param {*} settings - configuration de la requête
+ * @todo utiliser https://vueuse.org/core/useFetch/
  * @example
  * useRequest(url, { method: "GET"})
  *   .then((res) => {})
