@@ -52,6 +52,22 @@ const printPreview = ref(null)
 const hasTitle = ref(true)
 const printTitle = ref("Titre de la carte")
 const margin = ref(0)
+
+const pageOrientation = ref("1");
+
+const pageOrientationOptions = [
+  {
+    "label": "Portrait",
+    "value": "1",
+    "icon": "md-cropportrait-sharp"
+  },
+  {
+    "label": "Paysage",
+    "value": "2",
+    "icon": "md-croplandscape-sharp"
+  }
+];
+
 const paperFormat = ref("A4")
 const availableSize = reactive(
   useElementSize(
@@ -132,6 +148,16 @@ onUpdated(() => {
       <!-- slot : c'est ici que l'on customise le contenu ! -->
     <div ref="printPreview" class="print-preview">
         <div class="print-form">
+            <DsfrSegmentedSet
+              :inline="false"
+              v-model="pageOrientation"
+              :options="pageOrientationOptions"
+              :small="false"
+              legend="Mise en Page"
+              class="mb-20"
+            >
+              <template #legend>Mise en Page</template>
+            </DsfrSegmentedSet>
             <DsfrSelect
               v-model="paperFormat"
               label="Dimensions"
@@ -146,18 +172,18 @@ onUpdated(() => {
                 { value : 10, text : 'Grosse marge - 10mm' }
               ]"
             />
-            <br>
-            <DsfrCheckbox
-              v-model="hasTitle"
-              name="checkbox-simple"
-              label="Ajouter un titre"
-            />
             <DsfrInput
                 v-model="printTitle"
                 :disabled="!hasTitle"
                 label="Titre de la carte"
                 label-visible
                 name="titre"
+                class="mb-10"
+            />
+            <DsfrCheckbox
+              v-model="hasTitle"
+              name="checkbox-simple"
+              label="Activer le titre"
             />
         </div>
         <div  class="print-map-container">
@@ -239,6 +265,12 @@ onUpdated(() => {
     }
   }
 
+  .mb-20 {
+    margin-bottom: 20px;
+  }
+  .mb-10 {
+    margin-top: 10px;
+  }
   .print-preview{
     display: flex;
     flex-direction: row;
