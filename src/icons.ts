@@ -29,3 +29,8 @@ export {
 export {
   PxPrint
 } from 'oh-vue-icons/icons/px/index.js'
+
+export {
+  MdCroplandscapeSharp,
+  MdCropportraitSharp
+} from 'oh-vue-icons/icons/md/index.js'
