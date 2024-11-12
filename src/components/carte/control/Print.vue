@@ -10,6 +10,7 @@ export default {};
 </script>
 
 <script lang="js" setup>
+import { useElementSize } from '@vueuse/core'
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
@@ -44,14 +45,28 @@ const onModalPrintClose = () => {
 };
 
 const refMap = ref(null);
+const mapTitle = ref(null);
 const modal = ref(null)
-
+const printPreview = ref(null)
 // Paramètres de la carte
 const hasTitle = ref(true)
 const printTitle = ref("Titre de la carte")
 const margin = ref(0)
 const paperFormat = ref("A4")
-const coeff = 96 / 254
+const availableSize = reactive(
+  useElementSize(
+    printPreview,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
+const titleSize = reactive(
+  useElementSize(
+    mapTitle,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
 const dimension = computed(() => {
   let dimension = { 
     'A0': { width : 841, height: 1189 },
@@ -64,18 +79,25 @@ const dimension = computed(() => {
     'B5' : { width : 176, height: 250 }
   }
   return {
-    width : dimension[paperFormat.value].width * coeff,
-    height : dimension[paperFormat.value].height * coeff
+    width : dimension[paperFormat.value].width,
+    height : dimension[paperFormat.value].height
   }
 })
 
-const updateMapSize = () => {
-  refMap.value.mapRef.style.width = dimension.value.width + "mm"
-  refMap.value.mapRef.style.height = dimension.value.height + "mm"
-}
-
-watch(dimension, (values) => {
-  updateMapSize()
+const coeff = computed(() => {
+    return Math.floor((availableSize.height- titleSize.height) * 0.264583333) / dimension.value.height;
+})
+const mapHeight = computed(() => {
+    return dimension.value.height + "mm";
+})
+const mapWidth = computed(() => {
+    return dimension.value.width + "mm";
+}) 
+const previewHeight = computed(() => {
+    return availableSize.height + "px";
+})
+const previewWidth = computed(() => {
+    return (dimension.value.width * coeff.value ) / 0.264583333 + "px";
 })
 
 onUpdated(() => {
@@ -84,10 +106,6 @@ onUpdated(() => {
     if (modalDOM) {
       modalDOM.classList.add("modal-override");
       modalDOM.classList.remove("fr-container-md", "fr-container");
-    }
-
-    if (refMap.value) {
-      updateMapSize()
     }
 });
 
@@ -112,7 +130,7 @@ onUpdated(() => {
       :size="size"
       @close="onModalPrintClose">
       <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <div class="print-preview">
+    <div ref="printPreview" class="print-preview">
         <div class="print-form">
             <DsfrSelect
               v-model="paperFormat"
@@ -142,21 +160,22 @@ onUpdated(() => {
                 name="titre"
             />
         </div>
-        <div class="print-map-container">
+        <div  class="print-map-container">
           <div class="print-map">
+            <div ref="mapTitle" class="map-title">{{ printTitle }}</div>
             <Map
               v-if="printModalOpened" 
               class="map" 
               ref="refMap"
               :map-Id="printMap"
             >
-              <View
-                :map-Id="printMap"
-                :center="mapStore.center"
-                :zoom="mapStore.zoom"/>
-              <Layers
-                :map-Id="printMap"
-                :selected-layers="selectedLayers"/>
+                <View
+                  :map-Id="printMap"
+                  :center="mapStore.center"
+                  :zoom="mapStore.zoom"/>
+                <Layers
+                  :map-Id="printMap"
+                  :selected-layers="selectedLayers"/>
             </Map>
         </div>
         </div>    
@@ -227,23 +246,38 @@ onUpdated(() => {
     margin-top: 30px;
   }
   .print-map-container{
-    flex: 3 0 300px;
-    height: 36rem;
+    /* transform: scale(v-bind(coeff)); */
+    /* height: 36rem; */
     justify-content: center;
     align-items: center;
     display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0 auto;
+    box-shadow: 3px 3px 5px 6px #ccc;
+
   }
   .print-map {
-    box-shadow: 3px 3px 5px 6px #ccc;
+    width: v-bind(previewWidth);
+    height: v-bind(previewHeight);
+    flex: 0 0;
   }
   .print-form {
-    flex: 1 2 100px;
+    flex: 0 0 260px;
     margin-right: 10px;
+    /* max-width: 260px; */
+  }
+
+  .map-title {
+    text-align: center;
   }
 
   .map {
-    width: 100%;
-    height: 100%;
+    width: v-bind(mapWidth);
+    height: v-bind(mapHeight);
+    transform: scale(v-bind(coeff));
+    transform-origin: top left;
   }
 </style>
 
