@@ -11,6 +11,9 @@ import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
 // plugin local
 import { createEulerian } from './plugins/Eulerian'
+import { createServices } from './plugins/Services'
+
+import { storePlugin } from 'pinia-plugin-store'
 
 import App from './App.vue'
 import router from './router/index'
@@ -24,6 +27,8 @@ addIcons(...Object.values(customIcons))
 
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
+
+const services = createServices();
 
 const eulerian = createEulerian({
   verbose : !isProduction, // option du plugin
@@ -40,11 +45,19 @@ const logger = createLogger({
   level: isProduction ? 'error' : 'debug',
   callerInfo: true
 })
+
 const pinia = createPinia()
+
+const store = storePlugin({
+  stores: ['service'],
+  storage: localStorage,
+});
+pinia.use(store);
 
 createApp(App)
   .use(pinia)
   .use(router)
   .use(logger)
   .use(eulerian)
+  .use(services)
   .mount('#app')
