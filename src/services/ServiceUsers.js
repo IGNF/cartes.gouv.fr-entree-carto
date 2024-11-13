@@ -24,7 +24,7 @@ var Users = {
    * @param {String} token - jeton d'authentification
    * @returns {Promise} - ...
    */
-  getUserMe : (token) => {
+  getUserMe : function (token) {
     var url = `https://data.geopf.fr/api/users/me`;
     var settings = {
       method : "GET",

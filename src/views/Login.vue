@@ -7,11 +7,11 @@ export default {};
 </script>
 
 <script setup lang="js">
-import { useServiceStore } from '@/stores/serviceStore';
+import { inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const store = useServiceStore();
+const service = inject('services');
 
 onMounted(() => {
   const queryString = location.search;
@@ -20,14 +20,12 @@ onMounted(() => {
   var code = urlParams.get('code');
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
-  
+
   if (!queryString) {
-    location.href = store.getService().getAccessLogin();
+    location.href = service.getAccessLogin();
   } 
   // L'authentification fournit le 'code' et la 'session'
   if (code && session && state) {
-    // TODO
-    // initialise la connexion
     router.push({ path : '/' });
   }
 });
