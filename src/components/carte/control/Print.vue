@@ -47,31 +47,40 @@ const onModalPrintClose = () => {
 const refMap = ref(null);
 const mapTitle = ref(null);
 const modal = ref(null)
-const printPreview = ref(null)
+const printPage = ref(null)
+const printForm = ref(null)
+const formMarginRight = "10px"
 // Paramètres de la carte
 const hasTitle = ref(true)
 const printTitle = ref("Titre de la carte")
 const margin = ref(0)
 
-const pageOrientation = ref("1");
+const pageOrientation = ref("paysage");
 
 const pageOrientationOptions = [
   {
     "label": "Portrait",
-    "value": "1",
+    "value": "portrait",
     "icon": "md-cropportrait-sharp"
   },
   {
     "label": "Paysage",
-    "value": "2",
+    "value": "paysage",
     "icon": "md-croplandscape-sharp"
   }
 ];
 
 const paperFormat = ref("A4")
-const availableSize = reactive(
+const printPageSize = reactive(
   useElementSize(
-    printPreview,
+    printPage,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
+const printFormSize = reactive(
+  useElementSize(
+    printForm,
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
@@ -100,20 +109,44 @@ const dimension = computed(() => {
   }
 })
 
+// rapport de conversion mm vers pixel selon l'espace disponible
 const coeff = computed(() => {
-    return Math.floor((availableSize.height- titleSize.height) * 0.264583333) / dimension.value.height;
+  if (pageOrientation.value == "portrait")
+    return Math.floor((printPageSize.height - titleSize.height) * 0.264583333) / dimension.value.height;
+  if (pageOrientation.value == "paysage") {
+    let coeff = Math.floor((printPageSize.width - printFormSize.width - parseInt(formMarginRight)) * 0.264583333) / dimension.value.height;
+    // cas ou la hauteur disponible n'est pas suffisante 
+    if (dimension.value.height * coeff + titleSize.height < printPageSize.height) {
+      return Math.floor((printPageSize.height - titleSize.height) * 0.264583333) / dimension.value.width; 
+    }
+    else {
+      return coeff
+    } 
+  }
 })
 const mapHeight = computed(() => {
+  if (pageOrientation.value == "portrait")
     return dimension.value.height + "mm";
+  if (pageOrientation.value == "paysage")
+    return dimension.value.width + "mm";
 })
 const mapWidth = computed(() => {
+  if (pageOrientation.value == "portrait")
     return dimension.value.width + "mm";
+  if (pageOrientation.value == "paysage")
+    return dimension.value.height + "mm";
 }) 
 const previewHeight = computed(() => {
-    return availableSize.height + "px";
+  if (pageOrientation.value == "portrait")
+    return printPageSize.height + "px";
+  if (pageOrientation.value == "paysage")
+    return printPageSize.height + "px";
 })
 const previewWidth = computed(() => {
+  if (pageOrientation.value == "portrait")
     return (dimension.value.width * coeff.value ) / 0.264583333 + "px";
+  if (pageOrientation.value == "paysage")
+    return ((dimension.value.height * coeff.value ) / 0.264583333) + "px";
 })
 
 onUpdated(() => {
@@ -146,8 +179,9 @@ onUpdated(() => {
       :size="size"
       @close="onModalPrintClose">
       <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <div ref="printPreview" class="print-preview">
-        <div class="print-form">
+    <div ref="printPage" class="print-page">
+      <!-- Formulaire d'impression -->
+        <div ref="printForm" class="print-form">
             <DsfrSegmentedSet
               :inline="false"
               v-model="pageOrientation"
@@ -180,15 +214,16 @@ onUpdated(() => {
                 name="titre"
                 class="mb-10"
             />
-            <DsfrCheckbox
+            <div class="mt-10"><DsfrCheckbox
               v-model="hasTitle"
               name="checkbox-simple"
-              label="Activer le titre"
-            />
+              :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
+            /></div>
         </div>
-        <div  class="print-map-container">
-          <div class="print-map">
-            <div ref="mapTitle" class="map-title">{{ printTitle }}</div>
+        <!-- Dom de la prévisualisation de l'impression -->
+        <div  class="print-preview-container">
+          <div class="print-preview">
+            <div ref="mapTitle" class="map-title" v-if="hasTitle">{{ printTitle }}</div>
             <Map
               v-if="printModalOpened" 
               class="map" 
@@ -211,7 +246,6 @@ onUpdated(() => {
 </template>
 
 <style scoped>
-  #print-container {}
   #print-button-position {
     position: absolute;
     right: 16px;
@@ -269,15 +303,18 @@ onUpdated(() => {
     margin-bottom: 20px;
   }
   .mb-10 {
+    margin-bottom: 10px;
+  }
+  .mt-10 {
     margin-top: 10px;
   }
-  .print-preview{
+  .print-page{
     display: flex;
     flex-direction: row;
     height: 36rem;
     margin-top: 30px;
   }
-  .print-map-container{
+  .print-preview-container{
     /* transform: scale(v-bind(coeff)); */
     /* height: 36rem; */
     justify-content: center;
@@ -290,14 +327,14 @@ onUpdated(() => {
     box-shadow: 3px 3px 5px 6px #ccc;
 
   }
-  .print-map {
+  .print-preview {
     width: v-bind(previewWidth);
     height: v-bind(previewHeight);
     flex: 0 0;
   }
   .print-form {
     flex: 0 0 260px;
-    margin-right: 10px;
+    margin-right: v-bind(formMarginRight);
     /* max-width: 260px; */
   }
 
