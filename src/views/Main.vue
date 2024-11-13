@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
+
+import { inject } from 'vue'
+// composables
 import { useRoute } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
 import { useMatchMedia } from '@/composables/matchMedia'
@@ -9,13 +12,12 @@ import { useBaseUrl } from '@/composables/baseUrl'
 // components
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-
-import { useServiceStore } from '@/stores/serviceStore';
+// stores
 import { useAppStore } from "@/stores/appStore"
 
 useAppStore()
 
-const store = useServiceStore()
+// const store = useServiceStore()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
@@ -64,8 +66,8 @@ const mandatoryLinks = computed(() => {
 
 // INFO
 // on met à jour les quickLinks pour la connexion
-var service = store.getService();
-service.isAccessValided(); // FIXME deporter le code vers Login et Logout !
+var service :any = inject('services');
+service.isAccessValided();
 const quickLinks = computed(() => {
   return headerParams.quickLinks.map((element: any) => {
     if (element.label === "Se connecter" && service.authenticated) {

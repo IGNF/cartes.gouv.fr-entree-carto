@@ -66,6 +66,7 @@
     "npm-run-all2": "^6.1.2",
     "oh-vue-icons": "1.0.0-rc3",
     "pinia": "^2.1.7",
+    "pinia-plugin-store": "^2.2.9",
     "rimraf": "^5.0.5",
     "sass": "^1.76.0",
     "typescript": "~5.4.0",

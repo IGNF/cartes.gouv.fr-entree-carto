@@ -1,5 +1,4 @@
 import { useRequest } from '@/services/request';
-import Users from '@/services/serviceUsers';
 
 // INFO
 // recuperation des informations sur l'env
@@ -11,47 +10,21 @@ const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
 /**
  * @description 
  * Classe de service de connexion à la geoplateforme
- * cf. {@link https://developer.okta.com/blog/2018/04/10/oauth-authorization-code-grant-type}
- * ou {@link https://stackoverflow.blog/2022/04/14/the-authorization-code-grant-in-excruciating-detail/#h2-97e8b796eefc0}
  * 
  * @see env
- * @see serviceStore
  * @example
  * import Service from '@/services/serviceConnection';
- * var service = new Service();
  * // requêtes
- * service.getAccessLogin();
- * service.getAccessToken();
- * service.getAccessLogout();
- * service.getAccessUser();
+ * Service.getAccessLogin();
+ * Service.getAccessToken();
+ * Service.getAccessLogout();
  * // propriétés
- * service.authenticated;
- * service.token;
- * service.state;
- * service.user;
+ * Service.authenticated;
+ * Service.token;
+ * Service.state;
+ * ...
  */
-class Service {
-
-  /** Constructeur */
-  constructor (options) {
-
-    this.options = options || {};
-
-    /** authentification */
-    this.authenticated = false;
-    /** token */
-    this.token = null;
-    /** state session */
-    this.session = null;
-    /** code */
-    this.code = null;
-    /** erreurs IAM */
-    this.error = {};
-
-    this.url = encodeURI(location.origin + location.pathname);
-
-    return this;
-  }
+var Connexion = {
 
   /////////////
   // requêtes
@@ -76,13 +49,13 @@ class Service {
    *  code=168e7dd8-ae1f-4f8b-99f7-ae0aac066067.968321a6-385e-4058-a17a-571ab08303bd.3038d336-2dfa-4c2e-954e-090ee781ed7f
    * 
    */
-  getAccessLogin () {
+  getAccessLogin : function () {
     // INFO
     // La réponse fournit le 'code', 
     // et il doit être utiliser pour obtenir le token 
     // cf. getAccessToken()
 
-    const url = location.pathname.includes("login") ? this.url : this.url + "/login";
+    const url = this.url.includes("login") ? this.url : this.url + "/login";
     return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/auth?
       scope=openid%20profile%20email&
       approval_prompt=auto&
@@ -90,7 +63,7 @@ class Service {
       state=xcoiv98y2kd22vusuye3kch&
       redirect_uri=${url}&
       client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
-  }
+  },
 
   /** 
    * IAM pour se deconnecter
@@ -108,19 +81,19 @@ class Service {
    * http://localhost:5173/cartes.gouv.fr-entree-carto/?
    *  session_state=968321a6-385e-4058-a17a-571ab08303bd
    */
-  getAccessLogout () {
+  getAccessLogout : function () {
     // INFO
     // La reponse fournit la 'session',
     // et la session doit être identique à celle issue de login
 
-    const url = location.pathname.includes("logout") ? this.url : this.url + "/logout";
+    const url = this.url.includes("logout") ? this.url : this.url + "/logout";
     return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/logout?
       scope=openid%20profile%20email&
       approval_prompt=auto&
       response_type=code&
       post_logout_redirect_uri=${url}?session_state=${this.session}&
       client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
-  }
+  },
 
   /** 
    * IAM pour obtenir le token
@@ -146,7 +119,7 @@ class Service {
    *    ...
    * }
   */
-  getAccessToken () {
+  getAccessToken : function () {
     
     // curl --request POST  --url "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token"  --header "content-type: application/x-www-form-urlencoded" -d 'client_id='cartes-gouv-dev'&client_secret='heH4uOv2ihsxn2ziE8pyNBOI6dbCy1sp'&grant_type=client_credentials'
     // fetch("https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token", {
@@ -190,65 +163,7 @@ class Service {
         "scope": "profile email"
       });
     }) : useRequest(url, settings);
-  }
-
-  /////////////////
-  // méthod public
-  /////////////////
-
-  /**
-   * Permet de valider la connexion en obtenant un token
-   */
-  isAccessValided () {
-    // si login via IAM, on récupère le code dans l'url
-    const queryString = location.search;
-    const urlParams = new URLSearchParams(queryString);
-    // parametres
-    var code = urlParams.get('code');
-    var session = urlParams.get('session_state');
-    var error = urlParams.get('error');
-    // IAM login
-    if (code && session) {
-      this.session = session;
-      this.code = code;
-      this.getAccessToken()
-        .then((data) => {
-          this.authenticated = true;
-          this.token = data;
-          this.addTokenStorage();
-          return data;
-        })
-        // .then((data) => {
-        //   var token = data.access_token;
-        //   this.getUserMe(token)
-        //     .then((data) => {
-        //       this.user = data;
-        //     });
-        // })
-        .catch((e) => {
-          console.error(e.message);
-        });
-    }
-    // IAM logout
-    // FIXME logout doit fournir la session !!!
-    if (!code && session && session === this.session) {
-      this.session = null;
-      this.code = null;
-      this.authenticated = false;
-      this.token = null;
-      this.removeTokenStorage();
-      this.user = {};
-      this.error = {};
-    }
-    // Error
-    if (error) {
-      // FIXME où afficher l'erreur ?
-      this.error = {
-        name: error,
-        message: urlParams.get('error_description')
-      };
-    }
-  }
+  },
 
   //////////////////
   // méthod private
@@ -270,13 +185,13 @@ class Service {
    *  }
    * }
    */
-  getTokenStorage () {
+  getTokenStorage : function () {
     return JSON.parse(localStorage.getItem("auth"));
-  }
+  },
   /**
    * Ajoute le token d'authentification du localStorage
    */
-  addTokenStorage () {
+  addTokenStorage : function () {
     // ex. 
     // {
     //   "authenticator": "authenticator:oauth2",
@@ -291,11 +206,11 @@ class Service {
       authenticated : this.token
     });
     localStorage.setItem("auth", data);
-  }
+  },
   /**
    * Reinitialise le token d'authentification du localStorage
    */
-  removeTokenStorage () {
+  removeTokenStorage : function () {
     var data = JSON.stringify({
       authenticated : {}
     });
@@ -303,7 +218,4 @@ class Service {
   }
 };
 
-// Mixin
-Object.assign(Service.prototype, Users);
-
-export default Service;
+export default Connexion;
