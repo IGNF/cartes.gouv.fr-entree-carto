@@ -23,7 +23,7 @@ export const useServiceStore = defineStore({
     },
     setService (s) {
       if (s) {
-        this.connexion = s;
+        this.connexion = new Services(s);
       } else {
         this.connexion = new Services();
       }

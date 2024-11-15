@@ -77,7 +77,6 @@ class Services {
         });
     }
     // IAM logout
-    // FIXME logout doit fournir la session !!!
     if (!code && session && session === this.session) {
       this.session = null;
       this.code = null;
