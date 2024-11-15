@@ -4,7 +4,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import basicSsl from '@vitejs/plugin-basic-ssl'
+// INFO 
+// mode https avec certificats unsecure (dev)
+// import basicSsl from '@vitejs/plugin-basic-ssl'
 
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -19,7 +21,8 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    basicSsl(),
+    // INFO mode https
+    // basicSsl(),
     AutoImport({
       include: [
         /\.[tj]sx?$/,

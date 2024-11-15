@@ -65,17 +65,22 @@ const mandatoryLinks = computed(() => {
 })
 
 // INFO
-// on met à jour les quickLinks pour la connexion
+// on teste si une demande de connexion (ou de deconnexion) a été faite,
+// et si elle est valide
 var service :any = inject('services');
 service.isAccessValided();
+// INFO
+// on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
   return headerParams.quickLinks.map((element: any) => {
+    // mode connecté, on change le label
     if (element.label === "Se connecter" && service.authenticated) {
       element.label = 'Se deconnecter';
       element.to = '/logout';
       element.class = 'fr-icon-logout-box-r-line';
       element.onClick = (e:any) => {};
-    } 
+    }
+    // mode non connecté, on change le label
     if (element.label === "Se deconnecter" && !service.authenticated) {
       element.label = 'Se connecter';
       element.to = '/login';
