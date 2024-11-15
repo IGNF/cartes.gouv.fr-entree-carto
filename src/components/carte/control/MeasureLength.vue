@@ -25,7 +25,7 @@ onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(measureLength.value);
     if (props.analytic) {
-      var el = measureLength.value.element.querySelector("button[id^=GPshowMeasureLenghtPicto-]");
+      var el = measureLength.value.element.querySelector("button[id^=GPshowMeasureLengthPicto-]");
       useActionButtonEulerian(el);
     }
   }
