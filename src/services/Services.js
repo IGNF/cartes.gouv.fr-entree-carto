@@ -29,18 +29,18 @@ class Services {
   /** Constructeur */
   constructor (options) {
 
-    this.options = options || {};
+    options = options || {};
 
     /** authentification */
-    this.authenticated = false;
+    this.authenticated = options.authenticated || false;
     /** token */
-    this.token = null;
+    this.token = options.token || "";
     /** state session */
-    this.session = null;
+    this.session = options.session || "";
     /** code */
-    this.code = null;
+    this.code = options.code || "";
     /** erreurs IAM */
-    this.error = {};
+    this.error = options.error || {};
 
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
 
@@ -51,6 +51,7 @@ class Services {
    * Permet de valider la connexion en obtenant un token
    */
   isAccessValided () {
+    var store = useServiceStore();
     // si login via IAM, on récupère le code dans l'url
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -67,15 +68,10 @@ class Services {
         .then((data) => {
           this.token = data;
           this.addTokenStorage();
-          return data;
         })
-        // .then((data) => {
-        //   var token = data.access_token;
-        //   this.getUserMe(token)
-        //     .then((data) => {
-        //       this.user = data;
-        //     });
-        // })
+        .then(() => {
+          store.setService(this);
+        })
         .catch((e) => {
           console.error(e.message);
         });
@@ -99,7 +95,7 @@ class Services {
         message: urlParams.get('error_description')
       };
     }
-    var store = useServiceStore();
+    // enregistrement dans le storage du statut de la connexion
     store.setService(this);
   }
 };

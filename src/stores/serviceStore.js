@@ -11,21 +11,21 @@ import Services from '@/services/Services';
 export const useServiceStore = defineStore({
   id: 'service',
   state: () => ({
-    service: new Services()
+    connexion: {}
   }),
   getters: {
     // ex.
-    // service: (state) => state.service
+    // service: (state) => state.connexion
   },
   actions: {
     getService () {
-      return this.service;
+      return this.connexion;
     },
     setService (s) {
       if (s) {
-        this.service = s;
+        this.connexion = s;
       } else {
-        this.service = new Services();
+        this.connexion = new Services();
       }
     }
   }

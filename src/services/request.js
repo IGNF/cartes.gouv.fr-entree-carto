@@ -31,7 +31,7 @@ export async function useRequest(url, settings) {
       if (!response.ok) {
         throw new Error(`HTTP status error : ${response.status}`);
       }
-      response.json()
+      return response.json()
         .then((data) => {
           return data;
         })

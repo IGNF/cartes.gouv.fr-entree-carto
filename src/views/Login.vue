@@ -1,7 +1,7 @@
 <script lang="js">
 /**
  * @description
- * Login sur l'IAM de la geoplateforme
+ * Redirection sur l'IAM de la geoplateforme
  */
 export default {};
 </script>
@@ -21,11 +21,16 @@ onMounted(() => {
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
 
+  // Si aucun parametre de session dans l'URL de la route '/login',
+  // on redirige vers IAM authentification
   if (!queryString) {
+    // Lien vers IAM pour se connecter
     location.href = service.getAccessLogin();
-  } 
-  // L'authentification fournit le 'code' et la 'session'
+  }
+  // IAM authentification redirige vers la route '/login' aprés validation
+  // Et, elle fournit le 'code' et la 'session'
   if (code && session && state) {
+    // on peut rediriger vers la route '/' pour traitement suivant
     router.push({ path : '/' });
   }
 });
