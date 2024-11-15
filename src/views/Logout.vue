@@ -1,13 +1,13 @@
 <script lang="js">
 /**
  * @description
- * Logout sur l'IAM de la geoplateforme
+ * Redirection sur l'IAM de la geoplateforme
  */
 export default {};
 </script>
 
 <script setup lang="js">
-// PLUGIN: import { inject } from 'vue';
+import { inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -18,10 +18,14 @@ onMounted(() => {
   const urlParams = new URLSearchParams(queryString);
   // parametres
   var session = urlParams.get('session_state');
-  
+
+  // Si aucun parametre de session dans l'URL de la route '/logout',
+  // on redirige vers IAM de deconnexion
   if (!queryString) {
     location.href = service.getAccessLogout();
   }
+  // IAM de deconnexion redirige vers la route '/logout' aprés validation
+  // Et, elle fournit la 'session'
   if (session) {
     router.push({ path : '/' });
   }
