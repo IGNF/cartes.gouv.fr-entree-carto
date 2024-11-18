@@ -41,6 +41,8 @@ class Services {
     this.code = options.code || "";
     /** erreurs IAM */
     this.error = options.error || {};
+    /** user */
+    this.user = options.user || {};
 
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
 
