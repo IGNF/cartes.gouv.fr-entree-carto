@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { useBaseUrl } from '@/composables/baseUrl';
 
+const headerParams = ref({});
 /**
  * Paramètres du composant DSFR Header
  * @returns 
@@ -8,7 +9,7 @@ import { useBaseUrl } from '@/composables/baseUrl';
 export function useHeaderParams() {
 
     // Paramètres pour le Header
-    const headerParams = {
+    headerParams.value = {
         serviceTitle: 'cartes.gouv.fr',
         serviceDescription: 'Le service public des cartes et données du territoire',
         logoText: ['RÉPUBLIQUE', 'FRANÇAISE'],
