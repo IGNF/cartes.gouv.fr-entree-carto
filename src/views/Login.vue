@@ -9,9 +9,15 @@ export default {};
 <script setup lang="js">
 import { inject } from 'vue';
 import { useRouter } from 'vue-router';
+import { useHeaderParams } from '@/composables/headerParams';
 
+const header = useHeaderParams();
 const router = useRouter();
 const service = inject('services');
+
+onBeforeMount(() => {
+
+});
 
 onMounted(() => {
   const queryString = location.search;
@@ -30,8 +36,27 @@ onMounted(() => {
   // IAM authentification redirige vers la route '/login' aprés validation
   // Et, elle fournit le 'code' et la 'session'
   if (code && session && state) {
-    // on peut rediriger vers la route '/' pour traitement suivant
-    router.push({ path : '/' });
+    // on recherche des informations de l'utilisateur
+    service.getUserMe()
+    .then((data) => {
+      service.user = data;
+    })
+    .then(() => {
+      // on modifie le header en ajoutant les informations utilisateurs
+      const last_name = service.user.last_name;
+      const first_name = service.user.first_name;
+      header.value.quickLinks.push({
+        label: `${first_name} ${last_name}`, 
+        to: '/bookmarks',
+        class: 'fr-icon-user-fill',
+        onClick: (e) => {}
+      });
+    })
+    .catch(() => {})
+    .finally(() => {
+      // on peut rediriger vers la route '/' pour traitement suivant
+      router.push({ path : '/' });
+    });
   }
 });
 
