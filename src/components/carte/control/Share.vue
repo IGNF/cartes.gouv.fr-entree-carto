@@ -130,7 +130,7 @@ onBeforeMount(() => {
       id="share-button-position"
       class="fr-btn fr-btn--md fr-btn fr-btn--secondary inline-flex justify-center share-button-size"
       :label="btnLabel"
-      :title="btnTitle"
+      :aria-label="btnTitle"
       :icon="btnIcon"
       icon-only
       no-outline
@@ -219,7 +219,7 @@ onBeforeMount(() => {
     overflow: visible;
   }
 
-  #share-button-position[title]:hover::after {
+  #share-button-position[aria-label]:hover::after {
     -webkit-mask-image: unset;
     mask-image: unset;
     background-color: unset;
@@ -228,7 +228,7 @@ onBeforeMount(() => {
     -webkit-mask-size: unset;
     mask-size: unset;
     vertical-align: unset;
-    content: attr(title);
+    content: attr(aria-label);
     position: absolute;
     top: 0;
     color: var(--text-default-grey);
