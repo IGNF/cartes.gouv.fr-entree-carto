@@ -16,6 +16,7 @@ import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
 import View from '../View.vue';
 import { printMap } from '@/composables/keys';
+import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
@@ -24,17 +25,34 @@ const props = defineProps({
   printOptions: Object
 });
 const selectedLayers = inject('selectedLayers');
-// paramètres du composant bouton
-const btnTitle = "Ouvrir le panneau d'impression carte";
-const btnIcon = "px-print"; // FIXME icone de partage dsfr !?
-const btnLabel = "";
 
-// paramètres du composant de la modale
+/**
+ * Paramètres du composant de la modale
+ */
 const title = "Imprimer une carte";
 const size = "xl";
 
-const printModalOpened = ref(false);
+/**
+ * Conf formulaire orientation du papier
+ * Menu déroulant
+ */
+ const pageOrientationOptions = [
+  {
+    "label": "Portrait",
+    "value": "portrait",
+    "icon": "md-cropportrait-sharp"
+  },
+  {
+    "label": "Paysage",
+    "value": "landscape",
+    "icon": "md-croplandscape-sharp"
+  }
+];
 
+/**
+ * Gestion ouverture et fermeture de la Modal d'impression
+ */
+const printModalOpened = ref(false);
 const onModalPrintOpen = () => {
   printModalOpened.value = true;
   eulerian.pause();
@@ -44,54 +62,34 @@ const onModalPrintClose = () => {
   eulerian.resume();
 };
 
+/**
+ * Ref sur les elements du DOM
+ */
 const refMap = ref(null);
 const mapTitle = ref(null);
 const modal = ref(null)
 const printPage = ref(null)
 const printForm = ref(null)
+const printPreview = ref(null)
+
+
 const formMarginRight = "10px"
-// Paramètres de la carte
-const hasTitle = ref(true)
-const printTitle = ref("Titre de la carte")
+const coeffPX2MM = 0.264583333
+
+/**
+ *  Paramètres de la carte à imprimer
+ *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
+ *  {String} printTitle - Titre de la carte
+ *  {String} pageOrientation - Orientation du papier
+ *  {Number} margin - marge en mm 
+ *  {String} paperFormat - Format standard de papier
+ *  {Object} dimension - Dimension du papier selon format choisi
+ */
+const hasTitle = ref(false)
+const printTitle = ref("Ma carte")
+const pageOrientation = ref("portrait");
 const margin = ref(0)
-
-const pageOrientation = ref("paysage");
-
-const pageOrientationOptions = [
-  {
-    "label": "Portrait",
-    "value": "portrait",
-    "icon": "md-cropportrait-sharp"
-  },
-  {
-    "label": "Paysage",
-    "value": "paysage",
-    "icon": "md-croplandscape-sharp"
-  }
-];
-
 const paperFormat = ref("A4")
-const printPageSize = reactive(
-  useElementSize(
-    printPage,
-    { width: 0, height: 0 },
-    { box: 'border-box' },
-  ),
-)
-const printFormSize = reactive(
-  useElementSize(
-    printForm,
-    { width: 0, height: 0 },
-    { box: 'border-box' },
-  ),
-)
-const titleSize = reactive(
-  useElementSize(
-    mapTitle,
-    { width: 0, height: 0 },
-    { box: 'border-box' },
-  ),
-)
 const dimension = computed(() => {
   let dimension = { 
     'A0': { width : 841, height: 1189 },
@@ -109,45 +107,138 @@ const dimension = computed(() => {
   }
 })
 
-// rapport de conversion mm vers pixel selon l'espace disponible
+/**
+ * Taille de la page print (DOM)
+ * (Formulaire et prévisualisation)
+ */
+const printPageSize = reactive(
+  useElementSize(
+    printPage,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
+/**
+ * Taille du formualaire (DOM)
+ */
+const printFormSize = reactive(
+  useElementSize(
+    printForm,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
+
+/**
+ * Taille du titre de la carte 
+ * sur la prévisualisation (DOM)
+ */
+const titleSize = reactive(
+  useElementSize(
+    mapTitle,
+    { width: 0, height: 0 },
+    { box: 'border-box' },
+  ),
+)
+
+/**
+ * Rapport de conversion mm vers pixel selon l'espace disponible
+ */
 const coeff = computed(() => {
   if (pageOrientation.value == "portrait")
-    return Math.floor((printPageSize.height - titleSize.height) * 0.264583333) / dimension.value.height;
-  if (pageOrientation.value == "paysage") {
-    let coeff = Math.floor((printPageSize.width - printFormSize.width - parseInt(formMarginRight)) * 0.264583333) / dimension.value.height;
+    return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.height;
+  if (pageOrientation.value == "landscape") {
+    let coeff = Math.floor((printPageSize.width - printFormSize.width - parseInt(formMarginRight)) * coeffPX2MM) / dimension.value.height;
     // cas ou la hauteur disponible n'est pas suffisante 
     if (dimension.value.height * coeff + titleSize.height < printPageSize.height) {
-      return Math.floor((printPageSize.height - titleSize.height) * 0.264583333) / dimension.value.width; 
+      return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.width; 
     }
     else {
       return coeff
     } 
   }
 })
+
+/**
+ * Hauteur et largeur en mm
+ * du format papier
+ */
 const mapHeight = computed(() => {
   if (pageOrientation.value == "portrait")
     return dimension.value.height + "mm";
-  if (pageOrientation.value == "paysage")
+    // return dimension.value.height - titleSize.height * coeffPX2MM + "mm";
+  if (pageOrientation.value == "landscape")
     return dimension.value.width + "mm";
+    // return dimension.value.width  - titleSize.height * coeffPX2MM + "mm";
 })
 const mapWidth = computed(() => {
   if (pageOrientation.value == "portrait")
     return dimension.value.width + "mm";
-  if (pageOrientation.value == "paysage")
+  if (pageOrientation.value == "landscape")
     return dimension.value.height + "mm";
-}) 
+})
+
+/**
+ * Hauteur et largeur en pixel
+ * de la prévisualisation de la carte à imprimer
+ */ 
+// TODO PROBLEME AVEC LA HAUTEUR COMPORTEMENT AVEC LE TITRE
 const previewHeight = computed(() => {
-  if (pageOrientation.value == "portrait")
-    return printPageSize.height + "px";
-  if (pageOrientation.value == "paysage")
+  //   return printPageSize.height - titleSize.height + "px";
     return printPageSize.height + "px";
 })
 const previewWidth = computed(() => {
   if (pageOrientation.value == "portrait")
-    return (dimension.value.width * coeff.value ) / 0.264583333 + "px";
-  if (pageOrientation.value == "paysage")
-    return ((dimension.value.height * coeff.value ) / 0.264583333) + "px";
+    return (dimension.value.width * coeff.value ) / coeffPX2MM + "px";
+  if (pageOrientation.value == "landscape")
+    return ((dimension.value.height * coeff.value ) / coeffPX2MM) + "px";
 })
+
+/**
+ * Fonction d'export de la carte
+ */
+const exportPDF = () => {
+  console.log("export pdf")
+  const opts = {
+    orientation : pageOrientation.value,
+    unit : "mm",
+    format : [parseInt(mapHeight.value), parseInt(mapWidth.value)],
+  } 
+  const doc = new jsPDF(opts)
+  const marge = parseInt(margin.value)
+  const canvasWidth = refMap.value.mapRef.getElementsByTagName('canvas')[0].width
+  const canvasHeight = refMap.value.mapRef.getElementsByTagName('canvas')[0].height
+  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
+  const img = canvas.toDataURL('image/png')
+  const imgWidth = (canvasWidth * coeffPX2MM) - (marge * 2)
+  const imgHeight = ((canvasHeight - titleSize.height) * coeffPX2MM) - (marge * 2)
+  const imgPosX = marge
+  const imgPosY = (titleSize.height * coeffPX2MM) + marge
+  const addMapAndSavePDF = () => {
+    doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
+    doc.save('carte.pdf')
+  }
+  if (!hasTitle.value || printTitle.value == "") {
+    addMapAndSavePDF()
+  }
+  else {
+    doc.html(
+      mapTitle.value, 
+      {
+        html2canvas : {
+          scale: coeff.value
+        },
+        callback: function(doc) {
+          addMapAndSavePDF()
+        }
+      }
+    )
+  }
+  /**
+   * On repart d'un canvas neuf donc il faut recalculer les widht height et position en fonction des paramètres
+   * 
+   */
+}
 
 onUpdated(() => {
   /* hack pour surcharger le style modal dsfr */
@@ -157,7 +248,6 @@ onUpdated(() => {
       modalDOM.classList.remove("fr-container-md", "fr-container");
     }
 });
-
 </script>
 
 <template>
@@ -166,9 +256,8 @@ onUpdated(() => {
       v-if="props.visibility"
       id="print-button-position"
       class="fr-btn fr-btn--md fr-btn fr-btn--secondary inline-flex justify-center print-button-size"
-      :label="btnLabel"
-      :title="btnTitle"
-      :icon="btnIcon"
+      title="Ouvrir le panneau d'impression carte"
+      icon="px-print"
       icon-only
       no-outline
       @click="onModalPrintOpen"
@@ -219,11 +308,19 @@ onUpdated(() => {
               name="checkbox-simple"
               :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
             /></div>
-        </div>
+            <DsfrButton
+              id="print-page-export"
+              label="Export PDF"
+              title="Export PDF"
+              icon=""
+              no-outline
+              @click="exportPDF"
+            />
+         </div>
         <!-- Dom de la prévisualisation de l'impression -->
         <div  class="print-preview-container">
-          <div class="print-preview">
-            <div ref="mapTitle" class="map-title" v-if="hasTitle">{{ printTitle }}</div>
+          <div ref="printPreview" class="print-preview">
+            <div id="map-title" ref="mapTitle" class="map-title" v-if="hasTitle">{{ printTitle }}</div>
             <Map
               v-if="printModalOpened" 
               class="map" 
@@ -314,15 +411,16 @@ onUpdated(() => {
     height: 36rem;
     margin-top: 30px;
   }
+  /*
+  TODO gestion des titres trop longs : le rapport de taille de la prévisualisation 
+  n'est plus respecté
+  */
   .print-preview-container{
-    /* transform: scale(v-bind(coeff)); */
-    /* height: 36rem; */
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: hidden;
     margin: 0 auto;
     box-shadow: 3px 3px 5px 6px #ccc;
 
