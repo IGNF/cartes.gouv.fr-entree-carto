@@ -18,7 +18,7 @@ const ns = ((value) => {
 /**
  * Versionning du localStorage
  */
-const VERSION = "1";
+const VERSION = "2";
 
 /**
  * Clef du localStorage de cartes.gouv.fr
