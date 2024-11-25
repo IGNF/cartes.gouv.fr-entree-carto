@@ -309,4 +309,5 @@ export function useControlsMenuOptions() {
       disabled: useControls.LayerImport.disable
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
-} 
+  .filter(opt => !opt.disabled)
+}
