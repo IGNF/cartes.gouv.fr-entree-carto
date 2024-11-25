@@ -100,6 +100,13 @@
     "opened": false,
     "version": 1
   },
+  "featured" : [
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+    "PLAN.IGN",
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+    "ORTHOIMAGERY.ORTHOPHOTOS"
+  ],
   "layers": {
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
       "thematic": "Foncier",
