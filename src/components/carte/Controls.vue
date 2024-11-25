@@ -87,7 +87,7 @@ const layerSwitcherOptions = {
 };
 
 const legendsOptions = {
-  position : "top-right",
+  position: "top-right",
   panel: true,
   auto: true,
   draggable: false
@@ -133,15 +133,18 @@ const zoomOptions = {
 const attributionsOptions = {};
 
 const isocurveOptions = {
-  position: 'bottom-right'
+  position: 'top-right',
+  gutter: false
 };
 
 const routeOptions = {
-  position: 'bottom-right'
+  position: 'top-right',
+  gutter: false
 };
 
 const reverseGeocodeOptions = {
-  position: 'bottom-right'
+  position: 'top-right',
+  gutter: false
 };
 
 const fullscreenOptions = {
@@ -149,24 +152,33 @@ const fullscreenOptions = {
 };
 
 const measureLengthOptions = {
-  position: 'top-left'
+  position: 'top-right',
+  gutter: false
 };
+
 const measureAreaOptions = {
-  position: 'top-left'
+  position: 'top-right',
+  gutter: false
 };
+
 const measureAzimuthOptions = {
-  position: 'top-left'
+  position: 'top-right',
+  gutter: false
 };
+
 const elevationPathOptions = {
-  position: 'bottom-left'
+  position: 'top-right',
+  gutter: false
 };
 
 const layerImportOptions = {
-  position: 'bottom-left'
+  position: 'top-right',
+  gutter: false
 };
 
 const mousePositionOptions = {
-  position: 'bottom-left',
+  position: 'top-right',
+  gutter: false,
   // On ajoute les systemes UTM pour les territoires
   systems : [{
       label : "G\u00e9ographique",
