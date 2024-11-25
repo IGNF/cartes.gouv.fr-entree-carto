@@ -26,8 +26,7 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const techUrl =
-        import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
+      const techUrl = "data/layers.json";
       const editoUrl =
         import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
 
