@@ -11,35 +11,35 @@
 </script>
 
 <script setup lang="js">
-import SearchEngine from './control/SearchEngine.vue'
-import ScaleLine from './control/ScaleLine.vue'
-import OverviewMap from './control/OverviewMap.vue'
-import Zoom from './control/Zoom.vue'
-import Attributions from './control/Attributions.vue'
-import LayerSwitcher from './control/LayerSwitcher.vue'
-import Legends from './control/Legends.vue'
-import Isocurve from './control/Isocurve.vue'
-import Route from './control/Route.vue'
-import MeasureLength from './control/MeasureLength.vue'
-import MeasureArea from './control/MeasureArea.vue'
-import MeasureAzimuth from './control/MeasureAzimuth.vue'
-import MousePosition from './control/MousePosition.vue'
-import ElevationPath from './control/ElevationPath.vue'
+import SearchEngine from './control/SearchEngine.vue';
+import ScaleLine from './control/ScaleLine.vue';
+import OverviewMap from './control/OverviewMap.vue';
+import Zoom from './control/Zoom.vue';
+import LayerSwitcher from './control/LayerSwitcher.vue';
+import Legends from './control/Legends.vue';
+import Isocurve from './control/Isocurve.vue';
+import Route from './control/Route.vue';
+import MeasureLength from './control/MeasureLength.vue';
+import MeasureArea from './control/MeasureArea.vue';
+import MeasureAzimuth from './control/MeasureAzimuth.vue';
+import MousePosition from './control/MousePosition.vue';
+import ElevationPath from './control/ElevationPath.vue';
 import Territories from './control/Territories.vue';
-import GetFeatureInfo from './control/GetFeatureInfo.vue'
-import LayerImport from './control/LayerImport.vue'
+import GetFeatureInfo from './control/GetFeatureInfo.vue';
+import LayerImport from './control/LayerImport.vue';
 
-import Share from './control/Share.vue'
+import Share from './control/Share.vue';
 
 // Icone pour le marker du widget SearcEngine
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
-import { useControls } from '@/composables/controls'
-import { useLogger } from 'vue-logger-plugin'
+import { useDataStore } from '@/stores/dataStore';
+import { useControls } from '@/composables/controls';
+import { useLogger } from 'vue-logger-plugin';
 
 const props = defineProps({
   controlOptions: Array
-})
+});
 
 // INFO
 // liste des contrôles à activer
@@ -58,7 +58,8 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
-const log = useLogger()
+const dataStore = useDataStore();
+const log = useLogger();
 log.debug(props.controlOptions);
 
 // liste des options pour les contrôles;
@@ -73,7 +74,7 @@ const territoriesOptions = {
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
   tiles : 3
-}
+};
 
 const layerSwitcherOptions = {
   options: {
@@ -82,19 +83,19 @@ const layerSwitcherOptions = {
     panel: true,
     counter: true
   }
-}
+};
 
 const legendsOptions = {
-  position : "top-right",
+  position: "top-right",
   panel: true,
   auto: true,
   draggable: false
-}
+};
 
 const scaleLineOptions = {
   units: 'metric',
   bar: false,
-}
+};
 
 const searchEngineOptions = {
   collapsed: false,
@@ -109,60 +110,74 @@ const searchEngineOptions = {
   searchOptions: {
     addToMap: false,
     filterServices : "WMTS,WMS,TMS",
+    filterWMTSPriority : true,
+    filterLayersPriority : dataStore.getFeatured().toString(),
     serviceOptions: {}
   },
   markerUrl : IconGeolocationSVG
-}
+};
 
 const getFeatureInfoOptions = {
   position: 'bottom-left'
-}
+};
 
 const overviewMapOptions = {
   position: 'bottom-left'
-}
+};
 
 const zoomOptions = {
   position: 'bottom-right',
-}
+};
 
-const attributionsOptions = {}
+const attributionsOptions = {};
 
 const isocurveOptions = {
-  position: 'bottom-right'
-}
+  position: 'top-right',
+  gutter: false
+};
 
 const routeOptions = {
-  position: 'bottom-right'
-}
+  position: 'top-right',
+  gutter: false
+};
 
 const reverseGeocodeOptions = {
-  position: 'bottom-right'
-}
+  position: 'top-right',
+  gutter: false
+};
 
 const fullscreenOptions = {
   position: 'bottom-right'
-}
+};
 
 const measureLengthOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false
+};
+
 const measureAreaOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false
+};
+
 const measureAzimuthOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false
+};
+
 const elevationPathOptions = {
-  position: 'bottom-left'
-}
+  position: 'top-right',
+  gutter: false
+};
 
 const layerImportOptions = {
-  position: 'bottom-left'
-}
+  position: 'top-right',
+  gutter: false
+};
 
 const mousePositionOptions = {
-  position: 'bottom-left',
+  position: 'top-right',
+  gutter: false,
   // On ajoute les systemes UTM pour les territoires
   systems : [{
       label : "G\u00e9ographique",
@@ -300,7 +315,7 @@ const mousePositionOptions = {
       geoBBox : { left: 156.25, bottom : -26.45, right : 174.28, top : -14.83 }
     }
   ]
-}
+};
 
 </script>
 <!-- INFO : Affichage du contrôle
@@ -354,12 +369,6 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
-  />
-  <Attributions
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
-    :analytic="useControls.Attributions.analytic"
-    :attributions-options="attributionsOptions"
   />
   <SearchEngine
     v-if="controlOptions"

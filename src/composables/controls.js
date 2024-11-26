@@ -15,7 +15,7 @@ export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   SearchEngine: {
@@ -27,7 +27,7 @@ export const useControls = {
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
-    disable: false,
+    disable: true,
     analytic: false
   },
   LayerSwitcher: {
@@ -45,7 +45,7 @@ export const useControls = {
   Legends: {
     id: 'Legends',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   Isocurve: {
@@ -56,25 +56,13 @@ export const useControls = {
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
-    active: false,
+    active: true,
     disable: false,
     analytic: true
   },
   Zoom: {
     id: 'Zoom',
     active: true,
-    disable: false,
-    analytic: false
-  },
-  Attributions: {
-    id: 'Attributions',
-    active: false,
-    disable: true,
-    analytic: false
-  },
-  Rotate: {
-    id: 'Rotate',
-    active: false,
     disable: true,
     analytic: false
   },
@@ -87,7 +75,7 @@ export const useControls = {
   FullScreen: {
     id: 'FullScreen',
     active: true,
-    disable: false,
+    disable: true,
     analytic: false
   },
   MeasureLength: {
@@ -111,7 +99,7 @@ export const useControls = {
   Share: {
     id: 'Share',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   MousePosition: {
@@ -123,7 +111,7 @@ export const useControls = {
   Territories: {
     id: 'Territories',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   ElevationPath: {
@@ -230,20 +218,6 @@ export function useControlsMenuOptions() {
       name: useControls.Zoom.id,
       hint: 'Zoom',
       disabled: useControls.Zoom.disable
-    },
-    {
-      label: 'Attributions',
-      id: 'attributions',
-      name: useControls.Attributions.id,
-      hint: 'Attributions',
-      disabled: useControls.Attributions.disable
-    },
-    {
-      label: 'Rotation de la carte',
-      id: 'rotate',
-      name: useControls.Rotate.id,
-      hint: 'Rotation de la carte',
-      disabled: useControls.Rotate.disable
     },
     {
       label: 'Plein écran',
