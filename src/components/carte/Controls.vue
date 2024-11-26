@@ -470,6 +470,7 @@ const mousePositionOptions = {
   padding: 0;
 }
 
+/* 10 controls optionnels */
 .position-container-top-right > div:nth-child(n+13) {
   display: none;
 }
@@ -486,13 +487,17 @@ const mousePositionOptions = {
   display: unset;
 }
 
-@media (max-height: 639px) {
+/* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
+/* Que le menu +, pas de controls */
+@media (max-height: 739px) {
   .position-container-top-right > div:nth-child(n+3) {
     display: none;
   }
 }
 
-@media (max-height: 719px) {
+/* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
+/* 4 controls optionnels */
+@media (max-height: 819px) {
   .position-container-top-right > div:nth-child(n+7) {
     display: none;
   }
@@ -510,7 +515,9 @@ const mousePositionOptions = {
   }
 }
 
-@media (max-height: 779px) {
+/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
+/* 6 controls optionnels */
+@media (max-height: 919px) {
   .position-container-top-right > div:nth-child(n+9) {
     display: none;
   }
@@ -528,7 +535,9 @@ const mousePositionOptions = {
   }
 }
 
-@media (max-height: 859px) {
+/* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
+/* 8 controls optionnels */
+@media (max-height: 999px) {
   .position-container-top-right > div:nth-child(n+11) {
     display: none;
   }

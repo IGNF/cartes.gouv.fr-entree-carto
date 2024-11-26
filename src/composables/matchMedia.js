@@ -23,7 +23,7 @@ export function useMatchMedia(size) {
 export function useMatchMediaHeight(size) {
     // breakpoints définis par le DSFR
     var sizes = {
-        XS : "639px",
+        XS : "739px", // TODO 639px
         SM : "719px",
         LG : "779px",
         XL : "859px",
