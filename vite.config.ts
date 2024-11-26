@@ -72,7 +72,13 @@ export default defineConfig({
     },
   },
   server: {
-    headers : {}
+    headers : {
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Expose-Headers": "*"
+    }
   },
   define: {}
 })
