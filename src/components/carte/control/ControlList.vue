@@ -6,6 +6,7 @@ import {
   ControlList
 } from 'geopf-extensions-openlayers'
 
+import { selectedControls } from '@/composables/mapControls'
 const props = defineProps({
   visibility: Boolean,
   analytic: Boolean,
@@ -36,6 +37,26 @@ watch(isSmallHeight, () => {
   else {
     controlList.value.setPosition("bottom-right")
   }
+})
+
+watch(selectedControls, () => {
+  setTimeout(() => {
+    map.removeControl(controlList.value);
+    if (props.visibility) {
+      map.addControl(controlList.value);
+      if (props.analytic) {
+      log.debug(controlList.value.element)
+        var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
+        useActionButtonEulerian(el);
+      }
+      if (!isSmallScreen.value && !isSmallHeight.value) {
+        controlList.value.setPosition("top-right")
+      }
+      else {
+        controlList.value.setPosition("bottom-right")
+      }
+    }
+  }, 10);
 })
 
 onMounted(() => {

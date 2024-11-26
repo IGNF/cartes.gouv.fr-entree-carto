@@ -490,7 +490,7 @@ const mousePositionOptions = {
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
-  .position-container-top-right > div:nth-child(n+3) {
+  .position-container-top-right > .gpf-widget:nth-child(n+3) {
     display: none;
   }
 }
@@ -498,19 +498,19 @@ const mousePositionOptions = {
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 controls optionnels */
 @media (max-height: 819px) {
-  .position-container-top-right > div:nth-child(n+7) {
+  .position-container-top-right > .gpf-widget:nth-child(n+7) {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) {
     display: none;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] {
     display: unset;
   }
 }
@@ -518,19 +518,19 @@ const mousePositionOptions = {
 /* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
 /* 6 controls optionnels */
 @media (max-height: 919px) {
-  .position-container-top-right > div:nth-child(n+9) {
+  .position-container-top-right > .gpf-widget:nth-child(n+9) {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) {
     display: none;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] {
     display: unset;
   }
 }
@@ -538,19 +538,19 @@ const mousePositionOptions = {
 /* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
 /* 8 controls optionnels */
 @media (max-height: 999px) {
-  .position-container-top-right > div:nth-child(n+11) {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) {
     display: none;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] {
     display: none;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] {
     display: unset;
   }
 }
