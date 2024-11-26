@@ -35,7 +35,8 @@
     "format": "eslint ./src --fix",
     "lint": "eslint ./src",
     "preview": "vite preview",
-    "type-check": "vue-tsc --build --force"
+    "type-check": "vue-tsc --build --force",
+    "serve": "serve -s dist/"
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.0",
@@ -45,6 +46,7 @@
     "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.1-296.tgz",
     "jspdf": "^2.5.2",
     "ol": "8.2.0",
+    "serve": "^14.2.4",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },

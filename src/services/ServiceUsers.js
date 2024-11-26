@@ -33,7 +33,7 @@ var Users = {
         "Accept" : "application/json"
       },
       mode : 'cors',
-      credentials : "same-origin"
+      // credentials : "same-origin"
     };
 
     return useRequest(url, settings);

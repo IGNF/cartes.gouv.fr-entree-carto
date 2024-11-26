@@ -37,7 +37,7 @@ onMounted(() => {
   // Et, elle fournit le 'code' et la 'session'
   if (code && session && state) {
     // on recherche des informations de l'utilisateur
-    service.getUserMe()
+    service.getUserMe(service.token.access_token)
     .then((data) => {
       service.user = data;
     })

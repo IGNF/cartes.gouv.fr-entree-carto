@@ -138,15 +138,12 @@ var Connexion = {
       method : "POST",
       headers : {
         "Content-Type" : "application/x-www-form-urlencoded",
-        "Accept" : "application/json",
-        // "Access-Control-Allow-Origin": "*",
-        // "Access-Control-Request-Headers": "",
-        // "Access-Control-Allow-Headers": "Origin, Accept, X-Requested-With, Access-Control-Allow-Origin, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, DPoP, Authorization"
+        "Accept" : "application/json"
       },
       mode : 'cors', 
       // credentials : "same-origin",
       body : new URLSearchParams({
-        "grant_type": "authorization_code", // client_credentials
+        "grant_type": "client_credentials", //  authorization_code
         "code": this.code,
         "redirect_uri": this.url,
         "client_id": IAM_CLIENT_ID,
