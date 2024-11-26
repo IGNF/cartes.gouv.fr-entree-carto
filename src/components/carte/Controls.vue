@@ -15,7 +15,6 @@ import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
 import OverviewMap from './control/OverviewMap.vue';
 import Zoom from './control/Zoom.vue';
-import Attributions from './control/Attributions.vue';
 import LayerSwitcher from './control/LayerSwitcher.vue';
 import Legends from './control/Legends.vue';
 import Isocurve from './control/Isocurve.vue';
@@ -370,12 +369,6 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
-  />
-  <Attributions
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
-    :analytic="useControls.Attributions.analytic"
-    :attributions-options="attributionsOptions"
   />
   <SearchEngine
     v-if="controlOptions"
