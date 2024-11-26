@@ -27,6 +27,7 @@ import ElevationPath from './control/ElevationPath.vue';
 import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
+import ControlList from './control/ControlList.vue';
 
 import Share from './control/Share.vue';
 
@@ -73,7 +74,7 @@ const territoriesOptions = {
   auto : false, // chargement auto des territoires par defaut
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
-  tiles : 3
+  tiles : 3,
 };
 
 const layerSwitcherOptions = {
@@ -131,19 +132,28 @@ const zoomOptions = {
 
 const attributionsOptions = {};
 
+const controlListOptions = {
+  position: 'top-right',
+  gutter: false,
+  controlCatalogElement: document.getElementById('MenuControl'),
+}
+
 const isocurveOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const routeOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const reverseGeocodeOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const fullscreenOptions = {
@@ -152,32 +162,38 @@ const fullscreenOptions = {
 
 const measureLengthOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const measureAreaOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const measureAzimuthOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const elevationPathOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const layerImportOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const mousePositionOptions = {
   position: 'top-right',
   gutter: false,
+  listable: true,
   // On ajoute les systemes UTM pour les territoires
   systems : [{
       label : "G\u00e9ographique",
@@ -436,6 +452,12 @@ const mousePositionOptions = {
     :analytic="useControls.LayerImport.analytic"
     :layer-import-options="layerImportOptions"
   />
+  <ControlList
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ControlList.id)"
+    :analytic="useControls.ControlList.analytic"
+    :control-list-options="controlListOptions"
+  />
 </template>
 
 <style>
@@ -446,6 +468,22 @@ const mousePositionOptions = {
 .position-container-top-right {
   margin: 0;
   padding: 0;
+}
+
+.position-container-top-right > div:nth-child(n+9) {
+  display: none;
+}
+
+.position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+  display: none;
+}
+
+.position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+  display: none;
+}
+
+.position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+  display: unset;
 }
 
 @media (min-width: 576px) {

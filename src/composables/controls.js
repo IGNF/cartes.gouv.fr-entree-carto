@@ -1,7 +1,7 @@
 /**
  * @description
  * Liste des contrôles (widgets)
- * 
+ *
  * @example
  * {
  *  OverviewMap: {
@@ -125,12 +125,18 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: true
-  }
+  },
+  ControlList: {
+    id: 'ControlList',
+    active: true,
+    disable: true,
+    analytic: true
+  },
 }
 
 /**
  * Obtenir les contrôles par défaut
- * @returns 
+ * @returns
  */
 export function useDefaultControls() {
   var defaultControls = [];
@@ -145,7 +151,7 @@ export function useDefaultControls() {
 
 /**
  * Obtenir les options du menu des contrôles
- * @returns 
+ * @returns
  */
 export function useControlsMenuOptions() {
   return [
@@ -281,6 +287,13 @@ export function useControlsMenuOptions() {
       name: useControls.LayerImport.id,
       hint: 'Import de données',
       disabled: useControls.LayerImport.disable
+    },
+    {
+      label: 'Liste des controles',
+      id: 'controlList',
+      name: useControls.ControlList.id,
+      hint: 'Liste des controles supplémentaires non affichés',
+      disabled: useControls.ControlList.disable
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
