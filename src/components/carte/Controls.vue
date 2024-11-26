@@ -470,20 +470,80 @@ const mousePositionOptions = {
   padding: 0;
 }
 
-.position-container-top-right > div:nth-child(n+9) {
+.position-container-top-right > div:nth-child(n+13) {
   display: none;
 }
 
-.position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12) {
   display: none;
 }
 
-.position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+.position-container-top-right:not(:has(div:nth-child(14))) > div[id^="GPcontrolList-"] {
   display: none;
 }
 
-.position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
   display: unset;
+}
+
+@media (max-height: 639px) {
+  .position-container-top-right > div:nth-child(n+3) {
+    display: none;
+  }
+}
+
+@media (max-height: 719px) {
+  .position-container-top-right > div:nth-child(n+7) {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
+    display: unset;
+  }
+}
+
+@media (max-height: 779px) {
+  .position-container-top-right > div:nth-child(n+9) {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+    display: unset;
+  }
+}
+
+@media (max-height: 859px) {
+  .position-container-top-right > div:nth-child(n+11) {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
+    display: unset;
+  }
 }
 
 @media (min-width: 576px) {
@@ -527,6 +587,18 @@ const mousePositionOptions = {
   .position-container-bottom-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog,
   .position-container-top-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
     margin-left: 8px;
+  }
+
+  .position-container-top-right > div:nth-child(n+3) {
+    display: none;
+  }
+
+  .position-container-bottom-left {
+    display: none;
+  }
+
+  .ol-scale-line {
+    transform: translateX(-50px);
   }
 }
 

@@ -1,5 +1,6 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useMatchMedia, useMatchMediaHeight } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin'
 import {
   ControlList
@@ -15,6 +16,27 @@ const log = useLogger()
 
 const map = inject('map')
 const controlList = ref(new ControlList(props.controlListOptions))
+
+const isSmallScreen = useMatchMedia('SM')
+const isSmallHeight = useMatchMediaHeight('XS')
+
+watch(isSmallScreen, () => {
+  if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
+    controlList.value.setPosition("top-right")
+  }
+  else {
+    controlList.value.setPosition("bottom-right")
+  }
+})
+
+watch(isSmallHeight, () => {
+  if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
+    controlList.value.setPosition("top-right")
+  }
+  else {
+    controlList.value.setPosition("bottom-right")
+  }
+})
 
 onMounted(() => {
   if (props.visibility) {
