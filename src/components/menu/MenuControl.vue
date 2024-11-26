@@ -14,6 +14,7 @@
 import { useControlsMenuOptions } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import ControlListElement from './ControlListElement.vue';
 
 const log = useLogger();
 const mapStore = useMapStore();;
@@ -82,7 +83,6 @@ watch(selectedControls, (values) => {
     mapStore.addControl(key);
   }
 })
-
 onMounted(() => {})
 onUpdated(() => {})
 
@@ -96,8 +96,20 @@ onUpdated(() => {})
         :model-value="searchString"
         @update:model-value="updateSearch"/>
     </div>
+
+
+
     <div class="control-content">
-      <DsfrTabs
+      <table>
+        <ControlListElement
+      v-for="(opt, idx) in allOptions"
+      :key="idx"
+      v-model="selectedControls"
+      :model-value="props.selectedControls"
+      :control-list-element-options="opt"
+      />
+    </table>
+      <!-- <DsfrTabs
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
         :initial-selected-index="initialSelectedIndex"
@@ -131,12 +143,16 @@ onUpdated(() => {})
               :options="favOptions"
               :model-value="props.selectedControls"/>
         </DsfrTabContent>
-      </DsfrTabs>
+      </DsfrTabs> -->
     </div>
   </div>
 </template>
 
 <style scoped>
+table {
+  border-spacing: 5px 1rem;
+  border-collapse: separate;
+}
 .control-search-bar {
   margin-bottom: 30px;
   margin-right: 40px;
