@@ -1,4 +1,5 @@
 import { useRequest } from '@/services/request';
+import { useServiceStore } from '@/stores/serviceStore';
 
 // INFO
 // recuperation des informations sur l'env
@@ -41,7 +42,7 @@ var Connexion = {
    *  response_type=code&
    *  approval_prompt=auto&
    *  redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcartes.gouv.fr-entree-carto/login&
-   *  client_id=cartes-gouv-dev
+   *  client_id=IAM_CLIENT_ID
    * // réponse avec redirection :
    * http://localhost:5173/cartes.gouv.fr-entree-carto/login?
    *  session_state=968321a6-385e-4058-a17a-571ab08303bd&
@@ -76,7 +77,7 @@ var Connexion = {
    *  scope=profile%20email&
    *  response_type=code&
    *  approval_prompt=auto&
-   *  client_id=cartes-gouv-dev
+   *  client_id=IAM_CLIENT_ID
    * // réponse avec redirection :
    * http://localhost:5173/cartes.gouv.fr-entree-carto/?
    *  session_state=968321a6-385e-4058-a17a-571ab08303bd
@@ -119,14 +120,14 @@ var Connexion = {
    *    ...
    * }
   */
-  getAccessToken : function () {
-    
-    // curl --request POST  --url "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token"  --header "content-type: application/x-www-form-urlencoded" -d 'client_id='cartes-gouv-dev'&client_secret='heH4uOv2ihsxn2ziE8pyNBOI6dbCy1sp'&grant_type=client_credentials'
+  getAccessToken : async function () {
+    // Ex.
+    // curl --request POST  --url "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token"  --header "content-type: application/x-www-form-urlencoded" -d 'client_id='IAM_CLIENT_ID'&client_secret='IAM_CLIENT_SECRET'&grant_type=client_credentials'
     // fetch("https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token", {
     //   "headers": {
     //     "content-type": "application/x-www-form-urlencoded"
     //   },
-    //   "body": "client_id=cartes-gouv-dev&client_secret=heH4uOv2ihsxn2ziE8pyNBOI6dbCy1sp&grant_type=client_credentials",
+    //   "body": "client_id=IAM_CLIENT_ID&client_secret=IAM_CLIENT_SECRET&grant_type=client_credentials",
     //   "method": "POST"
     // })
     // .then((response) => response.json())
@@ -140,10 +141,9 @@ var Connexion = {
         "Content-Type" : "application/x-www-form-urlencoded",
         "Accept" : "application/json"
       },
-      mode : 'cors', 
-      // credentials : "same-origin",
+      mode : 'cors',
       body : new URLSearchParams({
-        "grant_type": "client_credentials", //  authorization_code
+        "grant_type": "client_credentials", // authorization_code !?
         "code": this.code,
         "redirect_uri": this.url,
         "client_id": IAM_CLIENT_ID,
@@ -151,7 +151,15 @@ var Connexion = {
       }).toString()
     };
 
-    return useRequest(url, settings);
+    var store = useServiceStore();
+    var self = this;
+    try {
+      const data = await useRequest(url, settings);
+      self.token = data;
+      self.addTokenStorage(); store.setService(this);
+    } catch (e) {
+      console.error(e.message);
+    }
   },
 
   //////////////////

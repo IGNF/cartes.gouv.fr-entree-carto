@@ -66,17 +66,6 @@ class Services {
       this.session = session;
       this.code = code;
       this.authenticated = true;
-      this.getAccessToken()
-        .then((data) => {
-          this.token = data;
-          this.addTokenStorage();
-        })
-        .then(() => {
-          store.setService(this);
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
     }
     // IAM logout
     if (!code && session && session === this.session) {

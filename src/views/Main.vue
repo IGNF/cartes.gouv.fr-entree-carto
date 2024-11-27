@@ -17,7 +17,6 @@ import { useAppStore } from "@/stores/appStore"
 
 useAppStore()
 
-// const store = useServiceStore()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER

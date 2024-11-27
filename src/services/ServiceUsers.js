@@ -1,4 +1,5 @@
 import { useRequest } from '@/services/request';
+
 /**
  * @description 
  * Classe de service de gestion des utilisateurs
@@ -10,21 +11,20 @@ import { useRequest } from '@/services/request';
  * Users.getUserMe();
  * ...
  * // propriétés
- * Users.info = {};
+ * ...
  */
 
 var Users = {
-  /** Informations utilisateur */
-  info: null,
-  
+
   /**
    * Obtenir les informations de l'utilisateur
    * Ceci afin d'y afficher dans l'interface : prénom - nom 
    * 
+   * @fixme la réponse n'est pas la bonne !?
    * @param {String} token - jeton d'authentification
    * @returns {Promise} - ...
    */
-  getUserMe : function (token) {
+  getUserMe : async function (token) {
     var url = `https://data.geopf.fr/api/users/me`;
     var settings = {
       method : "GET",
@@ -32,11 +32,12 @@ var Users = {
         "Authorization" : `Bearer ${token}`,
         "Accept" : "application/json"
       },
-      mode : 'cors',
-      // credentials : "same-origin"
+      mode : 'cors'
     };
 
-    return useRequest(url, settings);
+    var self = this;
+    const data = await useRequest(url, settings);
+    self.user = data;
   }
 };
 
