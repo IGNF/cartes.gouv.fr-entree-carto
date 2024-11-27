@@ -471,26 +471,45 @@ const mousePositionOptions = {
 }
 
 /* 10 controls optionnels */
-.position-container-top-right > div:nth-child(n+13) {
+.position-container-top-right > .gpf-widget:nth-child(n+13) > button {
   display: none;
+}
+
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
+  display: none;
+}
+
+.position-container-top-right:not(:has(.gpf-widget:nth-child(14))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  display: none;
+}
+
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
+  display: inline-flex;
+}
+
+.position-container-top-right > div:nth-child(n+13) {
+  padding: 0;
+  margin: 0;
 }
 
 .position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12) {
-  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .position-container-top-right:not(:has(div:nth-child(14))) > div[id^="GPcontrolList-"] {
-  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
-  display: unset;
+  padding: 2px;
 }
 
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+3) {
+  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
     display: none;
   }
 }
@@ -498,60 +517,117 @@ const mousePositionOptions = {
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 controls optionnels */
 @media (max-height: 819px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+7) {
+  .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] {
-    display: unset;
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+7) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 }
 
 /* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
 /* 6 controls optionnels */
 @media (max-height: 919px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+9) {
+  .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) {
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] {
-    display: unset;
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+9) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 }
 
 /* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
 /* 8 controls optionnels */
 @media (max-height: 999px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+11) {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] {
-    display: unset;
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+11) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 }
 
@@ -598,7 +674,7 @@ const mousePositionOptions = {
     margin-left: 8px;
   }
 
-  .position-container-top-right > div:nth-child(n+3) {
+  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
     display: none;
   }
 
