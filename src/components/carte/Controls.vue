@@ -27,6 +27,7 @@ import ElevationPath from './control/ElevationPath.vue';
 import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
+import ControlList from './control/ControlList.vue';
 
 import Share from './control/Share.vue';
 
@@ -73,7 +74,7 @@ const territoriesOptions = {
   auto : false, // chargement auto des territoires par defaut
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
-  tiles : 3
+  tiles : 3,
 };
 
 const layerSwitcherOptions = {
@@ -131,19 +132,28 @@ const zoomOptions = {
 
 const attributionsOptions = {};
 
+const controlListOptions = {
+  position: 'top-right',
+  gutter: false,
+  controlCatalogElement: document.getElementById('MenuControl'),
+}
+
 const isocurveOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const routeOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const reverseGeocodeOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const fullscreenOptions = {
@@ -152,32 +162,38 @@ const fullscreenOptions = {
 
 const measureLengthOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const measureAreaOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const measureAzimuthOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const elevationPathOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const layerImportOptions = {
   position: 'top-right',
-  gutter: false
+  gutter: false,
+  listable: true,
 };
 
 const mousePositionOptions = {
   position: 'top-right',
   gutter: false,
+  listable: true,
   // On ajoute les systemes UTM pour les territoires
   systems : [{
       label : "G\u00e9ographique",
@@ -436,6 +452,12 @@ const mousePositionOptions = {
     :analytic="useControls.LayerImport.analytic"
     :layer-import-options="layerImportOptions"
   />
+  <ControlList
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ControlList.id)"
+    :analytic="useControls.ControlList.analytic"
+    :control-list-options="controlListOptions"
+  />
 </template>
 
 <style>
@@ -446,6 +468,91 @@ const mousePositionOptions = {
 .position-container-top-right {
   margin: 0;
   padding: 0;
+}
+
+/* 10 controls optionnels */
+.position-container-top-right > div:nth-child(n+13) {
+  display: none;
+}
+
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12) {
+  display: none;
+}
+
+.position-container-top-right:not(:has(div:nth-child(14))) > div[id^="GPcontrolList-"] {
+  display: none;
+}
+
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
+  display: unset;
+}
+
+/* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
+/* Que le menu +, pas de controls */
+@media (max-height: 739px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+3) {
+    display: none;
+  }
+}
+
+/* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
+/* 4 controls optionnels */
+@media (max-height: 819px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+7) {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] {
+    display: unset;
+  }
+}
+
+/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
+/* 6 controls optionnels */
+@media (max-height: 919px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+9) {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] {
+    display: unset;
+  }
+}
+
+/* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
+/* 8 controls optionnels */
+@media (max-height: 999px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] {
+    display: unset;
+  }
 }
 
 @media (min-width: 576px) {
@@ -489,6 +596,18 @@ const mousePositionOptions = {
   .position-container-bottom-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog,
   .position-container-top-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
     margin-left: 8px;
+  }
+
+  .position-container-top-right > div:nth-child(n+3) {
+    display: none;
+  }
+
+  .position-container-bottom-left {
+    display: none;
+  }
+
+  .ol-scale-line {
+    transform: translateX(-50px);
   }
 }
 
