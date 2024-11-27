@@ -1,3 +1,4 @@
+
 /**
  * @description
  * Fonction générique pour executer une requête
@@ -9,14 +10,14 @@
  * useRequest(url, { method: "GET"})
  *   .then((res) => {})
  *   .catch((e) => { console.error(e.message); });
- */
+*/
 export async function useRequest(url, settings) {
-
   // On peut ajouter les infos dans le header de la requête
   // si on a une authentification
   if (localStorage) {
     var key = localStorage.getItem("auth");
     if (key) {
+      console.debug("get auth from localStorage", key);
       var auth = JSON.parse(key).authenticated;
       if (auth && Object.keys(auth).length !== 0) {
         var authToken = auth.access_token;
@@ -33,6 +34,7 @@ export async function useRequest(url, settings) {
       }
       return response.json()
         .then((data) => {
+          console.debug("response request from " + url, data);
           return data;
         })
         .catch((e) => {
