@@ -15,22 +15,12 @@ import { createEulerian } from './plugins/Eulerian'
 import App from './App.vue'
 import router from './router/index'
 import * as icons from './icons'
+import { customIcons } from './iconscustom'
 
 import './main.css'
 
 addIcons(...Object.values(icons)) // Autoimporté grâce à ohVueIconAutoimportPreset dans vite.config.ts
-addIcons({
-  name: "catalogIcon",
-  width: 24,
-  height: 24,
-  raw: icons.customIcons.catalogIcon
-})
-addIcons({
-  name: "menuWidgetIcon",
-  width: 24,
-  height: 24,
-  raw: icons.customIcons.menuWidgetIcon
-})
+addIcons(...Object.values(customIcons))
 
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
