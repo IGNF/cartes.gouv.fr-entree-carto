@@ -10,7 +10,7 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuCatalogue",
-            icon : "co-list-low-priority",
+            icon : "catalogIcon",
             title : "Catalogue de données",
         }
     ];

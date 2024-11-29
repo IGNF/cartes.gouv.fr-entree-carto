@@ -647,7 +647,7 @@ const mousePositionOptions = {
 @media (max-width: 576px) {
   .position-container-top-right,
   .position-container-top-left {
-    top: 210px;
+    top: 255px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,
