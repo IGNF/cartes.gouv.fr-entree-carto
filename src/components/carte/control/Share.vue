@@ -256,7 +256,7 @@ onBeforeMount(() => {
   des autres boutons car n'est pas dans la grille */
   @media (max-width: 576px){
     #share-button-position {
-      top: 60px;
+      top: 255px;
     }
   }
 
