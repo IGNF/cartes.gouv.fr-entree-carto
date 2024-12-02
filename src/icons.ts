@@ -13,16 +13,14 @@ export {
 } from 'oh-vue-icons/icons/fa/index.js'
 
 export {
-  BiChevronDoubleRight
+  BiChevronDoubleRight,
 } from 'oh-vue-icons/icons/bi/index.js'
 
 export {
-  CoListLowPriority,
   CoCopy
 } from 'oh-vue-icons/icons/co/index.js'
 
 export {
-  IoSettingsSharp,
   IoClose
 } from 'oh-vue-icons/icons/io/index.js'
 

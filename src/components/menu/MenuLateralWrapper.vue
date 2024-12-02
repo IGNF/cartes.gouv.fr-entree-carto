@@ -80,11 +80,15 @@ defineExpose({
 </template>
 
 <style lang="scss">
-  .left .navButton[title]:hover::before {
+  .left .navButton[aria-label]:hover::before {
+    padding: .5rem .5rem 0.5rem 1.25rem;
+    background-size: .375rem .5rem,.375rem .5rem,1px, 100%,calc(100% - 0.5rem) 100%;
+    background-position: 0.125rem 50%, 0% 50%,0.375rem 100%,0.375rem 100%;
+    background-image: conic-gradient(from 56.31deg at 0% 50%,transparent 0deg,var(--background-overlap-grey) 0deg,var(--background-overlap-grey) 67.38deg,transparent 67.38deg),conic-gradient(from 56.31deg at 0% 50%,transparent 0deg,var(--border-default-grey) 0deg,var(--border-default-grey) 67.38deg,transparent 67.38deg),linear-gradient(90deg,var(--border-default-grey),var(--border-default-grey)),linear-gradient(90deg,var(--background-overlap-grey),var(--background-overlap-grey));
     transform: translateX(32px);
   }
 
-  .right .navButton[title]:hover::before {
+  .right .navButton[aria-label]:hover::before {
     transform: translateX(calc(-100% - 8px));
     padding: .5rem 1.25rem .5rem .5rem;
     background-size: .375rem .5rem, .375rem .5rem, 1px 100%, 100%;
@@ -161,13 +165,13 @@ On gère donc sa position de manière absolue
 En mode petit écran on le positionne tout en haut en attendant mieux */
 @media (max-width: 382px) {
   .menu-logo-list {
-    margin-top: 13px;
+    margin-top: 210px;
   }
 }
 
 @media (max-width: 576px) and (min-width: 382px) {
   .menu-logo-list {
-    margin-top: 13px;
+    margin-top: 210px;
   }
 }
 

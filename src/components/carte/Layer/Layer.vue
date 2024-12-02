@@ -49,6 +49,7 @@ onMounted(() => {
       layer.value = new GeoportalWMS({
         layer : name,
         configuration : value,
+        apiKey : "ign_scan_ws",
         olParams : Object.assign(options, preload)
       });
       break;
@@ -56,6 +57,7 @@ onMounted(() => {
       layer.value = new GeoportalWMTS({
         layer : name,
         configuration : value,
+        apiKey : "ign_scan_ws",
         olParams : Object.assign(options, preload)
       });
       break;
@@ -63,7 +65,8 @@ onMounted(() => {
       // INFO le style par defaut est utilisé !
       layer.value = new GeoportalMapBox({
         layer : name,
-        configuration : value
+        configuration : value,
+        apiKey : "ign_scan_ws",
       }, options);
       break;
     default:
