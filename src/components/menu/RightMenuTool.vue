@@ -1,6 +1,8 @@
 <script setup lang="js">
-
+import MenuControl from '@/components/menu/MenuControl.vue';
+import MenuTierce from '@/components/menu/MenuTierce.vue';
 const props = defineProps({
+  selectedControls : {Object}
 })
 
 const side = "right"
@@ -12,6 +14,11 @@ const tabArray = computed(() => {
             componentName : "MenuControl",
             icon : "menuWidgetIcon",
             title : "Catalogue d'outils",
+        },
+        {
+            componentName : "MenuTierce",
+            icon : "fa-user-circle",
+            title : "Menu Tierce",
         }
     ];
 
@@ -23,12 +30,12 @@ const is_expanded = ref()
 const wrapper = ref(null)
 
 function tabClicked(newTab) {
-    if (tabIsActive(newTab) && is_expanded.value)
-        wrapper.value.closeMenu()
-    else{
-        activeTab.value = newTab + "Content";
-        wrapper.value.openMenu()
-    }
+  if (tabIsActive(newTab) && is_expanded.value)
+      wrapper.value.closeMenu()
+  else{
+      activeTab.value = newTab + "Content";
+      wrapper.value.openMenu()
+  }
 }
 
 function tabIsActive(componentName) {
@@ -40,13 +47,18 @@ function tabIsActive(componentName) {
   <MenuLateralWrapper
     :side="side"
     :visibility="true"
-    id="MenuControlContentClose"
+    :id="activeTab"
     v-model="is_expanded"
     ref="wrapper">
     <template #content>
       <div id="MenuControlContent"
         :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
-        <slot></slot>
+        <MenuControl 
+          :selected-controls="selectedControls"/>
+      </div>
+      <div id="MenuTierceContent"
+        :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
+        <MenuTierce/>
       </div>
     </template>
     <template #navButtons>

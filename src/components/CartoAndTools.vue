@@ -3,7 +3,6 @@ import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
 import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
-import MenuControl from '@/components/menu/MenuControl.vue';
 
 import { useControls } from '@/composables/controls'
 import { useDataStore } from "@/stores/dataStore"
@@ -70,16 +69,9 @@ const selectedControls = computed(() => {
       :selected-controls="selectedControls"/>
 
     <!-- Le menu des contrôles est dans le menu droite -->
-    <RightMenuTool>
-      <!-- On transmet la liste des contrôles selectionnés : 
-        >>> les controles du mapStore sont reactifs, donc dès que le 
-        >>> composant MenuControl modifie une valeur, il modifie le 
-        >>> mapStore des controles, ce qui repercute la selection sur 
-        >>> la méthode computed()
-      -->
-      <MenuControl 
-        :selected-controls="selectedControls"/>
-    </RightMenuTool>
+    <RightMenuTool
+      :selected-controls="selectedControls"
+    />
 
   </div>
 </template>

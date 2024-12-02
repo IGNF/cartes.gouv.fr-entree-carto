@@ -28,17 +28,25 @@ const iconProps = computed(() => typeof icon === 'string'
 );
 
 const is_expanded = defineModel(false)
-const width = ref()
-width.value = 30
-const cssWidth = computed(() => {
-  return width.value + "vw";
+const widthMenu = ref(550)
+const padding = ref(30)
+const cssWidthMenu = computed(() => {
+  return widthMenu.value + "px";
 })
+const cssPadding = computed(() => {
+  return padding.value + "px";
+})
+const cssWidthMenuContent = computed(() => {
+  return widthMenu.value - padding.value + "px";
+})
+
 const menuTabs = ref()
 
 function closeMenu() {
   is_expanded.value = false
 }
 function openMenu() {
+  console.log(props.id)
   is_expanded.value = true
 }
 
@@ -133,8 +141,7 @@ defineExpose({
     z-index: 1;
     &.is_expanded {
       .menu-content-list {
-        width: 550px;
-        // width: v-bind(cssWidth);
+        width: v-bind(cssWidthMenu);
       }
 
     }
@@ -143,18 +150,18 @@ defineExpose({
 .menu-content-list {
   height: inherit;
   background-color: var(--background-default-grey);
-  padding-left: 30px;
+  padding-left: v-bind(cssPadding);
   position: absolute;
   display: flex;
   flex-direction: column;
 }
 .menu-content {
-  width : inherit
+  width : v-bind(cssWidthMenuContent);
 }
 .menu-logo-list {
   flex-direction: column;
   display: flex;
-  row-gap: 20px;
+  row-gap: 4px;
   margin-top: 12px;
   width: 40px;
   position: absolute;
