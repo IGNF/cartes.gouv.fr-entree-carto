@@ -132,7 +132,9 @@ const zoomOptions = {
 };
 
 const drawingOptions = {
-  position: 'top-left',
+  position: 'top-right',
+  gutter: false,
+  listable: true,
 }
 
 const attributionsOptions = {}
@@ -361,12 +363,6 @@ const mousePositionOptions = {
     :analytic="useControls.Legends.analytic"
     :legends-options="legendsOptions"
   />
-  <Drawing
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
-    :analytic="useControls.Drawing.analytic"
-    :drawing-options="drawingOptions"
-  />
   <Route
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Route.id)"
@@ -450,6 +446,12 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
+  />
+  <Drawing
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
+    :analytic="useControls.Drawing.analytic"
+    :drawing-options="drawingOptions"
   />
   <ElevationPath
     v-if="controlOptions"
