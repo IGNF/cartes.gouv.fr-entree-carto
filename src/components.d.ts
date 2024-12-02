@@ -14,6 +14,7 @@ declare module 'vue' {
     ControlListElement: typeof import('./components/menu/ControlListElement.vue')['default']
     Controls: typeof import('./components/carte/Controls.vue')['default']
     DataLayerCatalogue: typeof import('./components/menu/catalogue/DataLayerCatalogue.vue')['default']
+    Drawing: typeof import('./components/carte/control/Drawing.vue')['default']
     DsfrAccordion: typeof import('@gouvminint/vue-dsfr')['DsfrAccordion']
     DsfrAccordionsGroup: typeof import('@gouvminint/vue-dsfr')['DsfrAccordionsGroup']
     DsfrAlert: typeof import('@gouvminint/vue-dsfr')['DsfrAlert']
