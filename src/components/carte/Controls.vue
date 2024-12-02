@@ -17,6 +17,7 @@ import OverviewMap from './control/OverviewMap.vue';
 import Zoom from './control/Zoom.vue';
 import LayerSwitcher from './control/LayerSwitcher.vue';
 import Legends from './control/Legends.vue';
+import Drawing from './control/Drawing.vue';
 import Isocurve from './control/Isocurve.vue';
 import Route from './control/Route.vue';
 import MeasureLength from './control/MeasureLength.vue';
@@ -130,7 +131,13 @@ const zoomOptions = {
   position: 'bottom-right',
 };
 
-const attributionsOptions = {};
+const drawingOptions = {
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+}
+
+const attributionsOptions = {}
 
 const controlListOptions = {
   position: 'top-right',
@@ -439,6 +446,12 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
+  />
+  <Drawing
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
+    :analytic="useControls.Drawing.analytic"
+    :drawing-options="drawingOptions"
   />
   <ElevationPath
     v-if="controlOptions"
