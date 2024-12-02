@@ -48,6 +48,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  Drawing: {
+    id: 'Drawing',
+    active: true,
+    disable: false,
+    analytic: true
+  },
   Isocurve: {
     id: 'Isocurve',
     active: true,
@@ -202,6 +208,13 @@ export function useControlsMenuOptions() {
       name: useControls.Legends.id,
       hint: 'Légendes',
       disabled: useControls.Legends.disable
+    },
+    {
+      label: 'Croquis',
+      id: 'drawing',
+      name: useControls.Drawing.id,
+      hint: 'Annoter la carte',
+      disabled: useControls.Drawing.disable
     },
     {
       label: 'Geocodage inverse',
