@@ -16,6 +16,7 @@ export const useDataStore = defineStore('data', () => {
   const m_tileMatrixSets = ref({});
   const m_contacts = ref({});
   const m_territories = ref([]);
+  const m_featured = ref([]);
   const isLoaded = ref(false);
   const error = ref("");
 
@@ -25,8 +26,7 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const techUrl =
-        import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
+      const techUrl = "data/layers.json";
       const editoUrl =
         import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
 
@@ -59,6 +59,7 @@ export const useDataStore = defineStore('data', () => {
       m_contacts.value = edito.contacts;
       m_informations.value = edito.informations;
       m_thematics.value = edito.thematics;
+      m_featured.value = edito.featured || [];
       m_layers.value = res;
       m_generalOptions.value = tech.generalOptions;
       m_tileMatrixSets.value = tech.tileMatrixSets;
@@ -87,6 +88,10 @@ export const useDataStore = defineStore('data', () => {
 
   function getThematics() {
     return m_thematics.value;
+  }
+
+  function getFeatured() {
+    return m_featured.value;
   }
 
   function getLayers() {
@@ -249,6 +254,7 @@ export const useDataStore = defineStore('data', () => {
     getContacts,
     getInformations,
     getThematics,
+    getFeatured,
     getLayers,
     getLayerKeysByID,
     getLayerIdByName,

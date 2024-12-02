@@ -80,7 +80,7 @@ provide("selectedLayers", selectedLayers);
         >>> la méthode computed()
       -->
       <MenuControl 
-      :selected-controls="selectedControls"/>
+        :selected-controls="selectedControls"/>
     </RightMenuTool>
 
   </div>

@@ -11,44 +11,47 @@
 </script>
 
 <script setup lang="js">
-import { useControlsMenuOptions } from '@/composables/controls'
-import { useLogger } from 'vue-logger-plugin'
-import { useMapStore } from "@/stores/mapStore"
+import { useControlsMenuOptions } from '@/composables/controls';
+import { useLogger } from 'vue-logger-plugin';
+import { useMapStore } from "@/stores/mapStore";
+import ControlListElement from './ControlListElement.vue';
 
-const log = useLogger()
-const mapStore = useMapStore();
+const log = useLogger();
+const mapStore = useMapStore();;
 
 const props = defineProps({
   selectedControls : Array
-})
+});
 
-const selectedControls = defineModel()
+const selectedControls = defineModel();
 
-const disabled = false
-const inline = false
-const required = false
-const small = false
-const opts = useControlsMenuOptions()
+const disabled = false;
+const inline = false;
+const required = false;
+const small = false;
+const opts = useControlsMenuOptions();
 
 const allOptions = computed(() => {
   return opts.filter((opt) => {
-    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase())
-    || opt.hint.toLowerCase().includes(searchString.value.toLowerCase())
-    || opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
-      return opt
+    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) || 
+        opt.hint.toLowerCase().includes(searchString.value.toLowerCase())  ||
+        opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
+      return opt;
   })
-})
+});
 
 const favOptions = computed(() => {
-  if (props.selectedControls)
+  if (props.selectedControls) {
     return allOptions.value.filter((opt) => {
       if (props.selectedControls.includes(opt.name))
-        return opt
+        return opt;
       })
-  else return []
+  } else {
+    return [];
+  }
 })
 
-const tabListName = "Gestion d'outils"
+const tabListName = "Gestion d'outils";
 const tabTitles = [
   {
     title : "Ajouter des outils",
@@ -60,19 +63,18 @@ const tabTitles = [
     tabId : "tab-1",
     panelId : "tab-content-1"
   }
-]
-const selectedTabIndex = ref(0)
-const asc = ref(true)
-const initialSelectedIndex = 0
+];
+const selectedTabIndex = ref(0);
+const asc = ref(true);
+const initialSelectedIndex = 0;
 function selectTab (idx) {
-  asc.value = selectedTabIndex.value < idx
-  selectedTabIndex.value = idx
+  asc.value = selectedTabIndex.value < idx;
+  selectedTabIndex.value = idx;
 }
-const searchString = ref("")
+const searchString = ref("");
 function updateSearch(e) {
-  searchString.value = e
+  searchString.value = e;
 }
-
 
 watch(selectedControls, (values) => {
   mapStore.cleanControls();
@@ -81,7 +83,6 @@ watch(selectedControls, (values) => {
     mapStore.addControl(key);
   }
 })
-
 onMounted(() => {})
 onUpdated(() => {})
 
@@ -92,57 +93,66 @@ onUpdated(() => {})
     <h4>Gestion d'outils</h4>
     <div class="control-search-bar">
       <DsfrSearchBar
-      :model-value="searchString"
-      @update:model-value="updateSearch"
-      />
+        :model-value="searchString"
+        @update:model-value="updateSearch"/>
     </div>
+
+
+
     <div class="control-content">
-      <DsfrTabs
-    :tab-list-name="tabListName"
-    :tab-titles="tabTitles"
-    :initial-selected-index="initialSelectedIndex"
-    @select-tab="selectTab"
-  >
-    <DsfrTabContent
-      panel-id="tab-content-0"
-      tab-id="tab-0"
-      :selected="selectedTabIndex === 0"
-      :asc="asc"
-    >
-        <DsfrCheckboxSet
-        v-model="selectedControls"
-        :disabled="disabled"
-        :inline="inline"
-        :small="small"
-        :required="required"
-        :options="allOptions"
-        :model-value="props.selectedControls"
+      <table>
+        <ControlListElement
+      v-for="(opt, idx) in allOptions"
+      :key="idx"
+      v-model="selectedControls"
+      :model-value="props.selectedControls"
+      :control-list-element-options="opt"
       />
-    </DsfrTabContent>
-    <DsfrTabContent
-      panel-id="tab-content-1"
-      tab-id="tab-1"
-      :selected="selectedTabIndex === 1"
-      :asc="asc"
-    >
-        <DsfrCheckboxSet
-        v-model="selectedControls"
-        :disabled="disabled"
-        :inline="inline"
-        :small="small"
-        :required="required"
-        :options="favOptions"
-        :model-value="props.selectedControls"
-      />
-    </DsfrTabContent>
-  </DsfrTabs>
+    </table>
+      <!-- <DsfrTabs
+        :tab-list-name="tabListName"
+        :tab-titles="tabTitles"
+        :initial-selected-index="initialSelectedIndex"
+        @select-tab="selectTab">
+
+        <DsfrTabContent
+          panel-id="tab-content-0"
+          tab-id="tab-0"
+          :selected="selectedTabIndex === 0"
+          :asc="asc">
+            <DsfrCheckboxSet
+              v-model="selectedControls"
+              :disabled="disabled"
+              :inline="inline"
+              :small="small"
+              :required="required"
+              :options="allOptions"
+              :model-value="props.selectedControls"/>
+        </DsfrTabContent>
+        <DsfrTabContent
+          panel-id="tab-content-1"
+          tab-id="tab-1"
+          :selected="selectedTabIndex === 1"
+          :asc="asc">
+            <DsfrCheckboxSet
+              v-model="selectedControls"
+              :disabled="disabled"
+              :inline="inline"
+              :small="small"
+              :required="required"
+              :options="favOptions"
+              :model-value="props.selectedControls"/>
+        </DsfrTabContent>
+      </DsfrTabs> -->
     </div>
-
-</div>
-
+  </div>
 </template>
 
 <style scoped>
+table {
+  border-spacing: 5px 1rem;
+  border-collapse: separate;
+}
 .control-search-bar {
   margin-bottom: 30px;
   margin-right: 40px;

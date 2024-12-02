@@ -10,7 +10,7 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuControl",
-            icon : "io-settings-sharp",
+            icon : "menuWidgetIcon",
             title : "Catalogue d'outils",
         }
     ];
