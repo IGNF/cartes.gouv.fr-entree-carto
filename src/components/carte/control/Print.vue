@@ -286,7 +286,7 @@ onUpdated(() => {
               label="Dimensions"
               :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
             />
-            <DsfrSelect
+ <!--           <DsfrSelect
               v-model="margin"
               label="Marge"
               :options="[
@@ -307,7 +307,7 @@ onUpdated(() => {
               v-model="hasTitle"
               name="checkbox-simple"
               :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
-            /></div>
+            /></div>-->
             <DsfrButton
               id="print-page-export"
               label="Export PDF"
