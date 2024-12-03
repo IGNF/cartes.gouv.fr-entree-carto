@@ -17,7 +17,7 @@ const tabArray = computed(() => {
         },
         {
             componentName : "MenuTierce",
-            icon : "fa-user-circle",
+            icon : "ri-menu-fill",
             title : "Menu Tierce",
         }
     ];

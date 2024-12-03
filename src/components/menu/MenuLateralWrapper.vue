@@ -46,7 +46,6 @@ function closeMenu() {
   is_expanded.value = false
 }
 function openMenu() {
-  console.log(props.id)
   is_expanded.value = true
 }
 

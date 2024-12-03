@@ -6,6 +6,7 @@ export {
   RiHome4Line,
   RiRefreshLine,
   RiQuestionMark,
+  RiMenuFill
 } from 'oh-vue-icons/icons/ri/index.js'
 
 export {

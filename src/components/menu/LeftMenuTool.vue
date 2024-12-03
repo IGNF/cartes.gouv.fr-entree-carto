@@ -1,9 +1,15 @@
 <script setup lang="js">
+import { useDataStore } from "@/stores/dataStore"
 
-const props = defineProps({})
+const props = defineProps({
+  selectedLayers : {Object}
+})
+
+const dataStore = useDataStore();
 
 const side = "left"
 const is_expanded = ref()
+
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
@@ -45,7 +51,9 @@ function tabIsActive(componentName) {
     <template #content>
       <div id="MenuCatalogueContent"
         :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
-        <slot></slot>
+        <MenuCatalogue
+        :selected-layers="selectedLayers"
+        :layers="dataStore.getLayers()"/>
       </div>
     </template>
     <template #navButtons>
