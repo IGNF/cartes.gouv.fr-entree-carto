@@ -44,21 +44,16 @@ const selectedControls = computed(() => {
   return controls;
 });
 
+
 </script>
 
 <template>
   <div id="map-and-tools-container">
 
     <!-- Le catalogue est dans le menu gauche -->
-    <LeftMenuTool>
-      <!-- 
-        On transmet la liste complète des couches du catalogue
-        ainsi que la liste des couches sélectionnées
-      -->
-      <MenuCatalogue
-        :selected-layers="selectedLayers"
-        :layers="dataStore.getLayers()"/>
-    </LeftMenuTool>
+    <LeftMenuTool
+      :selected-layers="selectedLayers"
+    />
 
     <!-- Module cartographique : 
      - liste des couches selectionnées

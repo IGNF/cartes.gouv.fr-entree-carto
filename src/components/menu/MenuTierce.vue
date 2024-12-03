@@ -14,11 +14,14 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
-
+import ModalTheme from '@/components/modals/ModalTheme.vue'
+import ShareModal from '@/components/carte/control/ShareModal.vue'
 
 const mapStore = useMapStore();
 const map = mapStore.getMap();
-
+ 
+const refModalTheme = ref(null)
+const modalShareRef = ref(null)
 const openImport = () => {
 map.getControls().getArray().forEach(control => {
   if (control.CLASSNAME == "ElevationPath") {
@@ -37,35 +40,143 @@ const iconProps = computed(() => typeof icon === 'string'
   ? { scale: defaultScale.value, name: icon }
   : { scale: defaultScale.value, ...icon },
 );
+
+const onModalShareOpen = () => {
+  modalShareRef.value.onModalShareOpen()
+}
+const onModalThemeOpen = () => {
+  refModalTheme.value.openModalTheme()
+}
 </script>
 
 <template>
-          
-  <div @click="openImport">
-    <VIcon v-bind="iconProps"/> Importer des données
-  </div>
+<div class="container">
+  <DsfrButton
+    tertiary
+    no-outline
+    :icon="iconProps"
+    @click="openImport"
+    >
+    Importer des données
+  </DsfrButton>
   <hr>
-  <div>Cartes enregistrées</div>
-  <div>Vos contributions</div>
-  <div>Favoris</div>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Cartes enregistrées
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Vos contributions
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Favoris
+  </DsfrButton>
   <hr>
-  <div>Partager, intégrer la carte</div>
-  <div>Exporter le fichier</div>
-  <div>Imprimer</div>
+  <DsfrButton
+    tertiary
+    no-outline
+    icon="fr-icon-link"
+    @click="onModalShareOpen"
+    >
+    Partager, intégrer la carte
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Exporter le fichier
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Imprimer
+  </DsfrButton>
   <hr>
-  <div>Paramètres</div>
-  <div>Paramètres d'affichage</div>
-  <div>Aide</div>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Paramètres
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    @click="onModalThemeOpen"
+    icon="fr-icon-theme-fill"
+    >
+    Paramètres d'affichage
+  </DsfrButton>  
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Aide
+  </DsfrButton>
   <hr>
-  <div>Les nouvelles fonctionnalités</div>
-  <a href="/a-propos">A propos</a>
-  <div>Accessiblité partiellement conforme</div>
-  <div>Données personnelles</div>
-  <div>Gestion des cookies</div>
-  <div>Mention légales</div>
-  <a href="/plan-du-site">Plan du site</a>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Les nouvelles fonctionnalités
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    A propos
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Accessiblité partiellement conforme
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Données personnelles
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Mention légales
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    >
+    Plan du site
+  </DsfrButton>
+</div>
+
+<ModalTheme ref="refModalTheme" />
+<ShareModal ref="modalShareRef"/>
 </template>
 
 <style scoped>
-
+a {
+  text-decoration: none;
+}
+.container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 60px);
+  max-height: calc(70vh - 70px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.modal {
+  z-index: 1;
+}
 </style>
