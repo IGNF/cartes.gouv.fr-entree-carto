@@ -1,4 +1,4 @@
-import { useRequest } from '@/services/request';
+import { useServiceStore } from '@/stores/serviceStore';
 
 /**
  * @description 
@@ -20,24 +20,20 @@ var Users = {
    * Obtenir les informations de l'utilisateur
    * Ceci afin d'y afficher dans l'interface : prénom - nom 
    * 
-   * @fixme la réponse n'est pas la bonne !?
-   * @param {String} token - jeton d'authentification
+   * @type {Object}
    * @returns {Promise} - ...
    */
-  getUserMe : async function (token) {
-    var url = `https://data.geopf.fr/api/users/me`;
-    var settings = {
-      method : "GET",
-      headers : {
-        "Authorization" : `Bearer ${token}`,
-        "Accept" : "application/json"
-      },
-      mode : 'cors'
-    };
+  getUserMe : async function () {
+    var response = await this.fetchWrapper.fetch('https://data.geopf.fr/api/users/me', {
+      method: 'GET'
+    });
+    var data = await response.json();
+    this.user = data;
 
-    var self = this;
-    const data = await useRequest(url, settings);
-    self.user = data;
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return data;
   }
 };
 
