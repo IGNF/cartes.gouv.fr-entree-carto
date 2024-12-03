@@ -4,7 +4,7 @@ import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
 import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
 
-import { useControls } from '@/composables/controls'
+import { useControlsPosition } from '@/composables/controls'
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
 
@@ -44,7 +44,32 @@ const selectedControls = computed(() => {
   return controls;
 });
 
+const cartoRef = ref(null)
 
+const controlsPosition = useControlsPosition()
+
+function closePanel(control) {
+  let button = [...control.element.children].filter(e => {
+  if (e.className.includes("GPshowOpen"))
+      return e
+  })
+  if (button[0].getAttribute("aria-pressed") === "true")
+    button[0].click()
+}
+function closeRightPanels() {
+  mapStore.getMap().getControls().getArray().forEach(control => {
+    if (controlsPosition.right.includes(control.CLASSNAME)) {
+      closePanel(control)
+    }
+  })
+}
+function closeLeftPanels() {
+  mapStore.getMap().getControls().getArray().forEach(control => {
+    if (controlsPosition.left.includes(control.CLASSNAME)) {
+      closePanel(control)
+    }
+  })
+}
 </script>
 
 <template>
@@ -53,6 +78,7 @@ const selectedControls = computed(() => {
     <!-- Le catalogue est dans le menu gauche -->
     <LeftMenuTool
       :selected-layers="selectedLayers"
+      @click="closeLeftPanels"
     />
 
     <!-- Module cartographique : 
@@ -60,12 +86,14 @@ const selectedControls = computed(() => {
      - liste des controles selectionnés
     -->
     <Carto
+      ref="cartoRef"
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"/>
 
     <!-- Le menu des contrôles est dans le menu droite -->
     <RightMenuTool
       :selected-controls="selectedControls"
+      @click="closeRightPanels"
     />
 
   </div>
