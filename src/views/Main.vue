@@ -67,7 +67,45 @@ const mandatoryLinks = computed(() => {
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
 // et si elle est valide
 var service :any = inject('services');
-service.isAccessValided();
+service.isAccessValided()
+.then((status:any) => {
+  if (status === "login") {
+    // on recupère le token
+    service.getAccessToken()
+    .then((token:any) => {
+      if (token) {
+        // on recherche des informations de l'utilisateur
+        service.getUserMe()
+        .then((data:any) => {
+          console.log(data);
+          // on modifie le header en ajoutant les informations utilisateurs
+          var last_name = data.last_name;
+          var first_name = data.first_name;
+          if (!last_name && !first_name) {
+            first_name = "Utilisateur";
+            last_name = "inconnu";
+          }
+          headerParams.value.quickLinks.push({
+            label: `${first_name} ${last_name}`, 
+            to: '/bookmarks',
+            href: useBaseUrl() + '/tableau-de-bord',
+            class: 'fr-icon-user-fill',
+            onClick: (e:any) => {}
+          });
+        })
+        .catch((e:any) => {
+          throw new Error("[getUserMe]" + e.message);
+        })
+      }
+    })
+    .catch((e:any) => {
+      throw new Error("[getAccessToken]" + e.message);
+    })
+  }
+})
+.catch((e:any) => {
+  console.error(e);
+});
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
@@ -89,6 +127,18 @@ const quickLinks = computed(() => {
     return element;
   })
 })
+
+if (service.authenticated && Object.keys(service.user).length) {
+  var last_name = service.user.last_name;
+  var first_name = service.user.first_name;
+  headerParams.value.quickLinks.push({
+    label: `${first_name} ${last_name}`, 
+    to: '/bookmarks',
+    href: useBaseUrl() + '/tableau-de-bord',
+    class: 'fr-icon-user-fill',
+    onClick: (e:any) => {}
+  });
+}
 
 // paramètre pour la barre de navigations
 const route = useRoute()

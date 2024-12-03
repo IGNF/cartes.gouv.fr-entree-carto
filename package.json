@@ -36,7 +36,7 @@
     "lint": "eslint ./src",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
-    "serve": "serve -s dist/"
+    "serve": "BASE_URL=/ vite build --mode stage && serve -s dist/"
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.0",
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "2.21.3",
+    "@badgateway/oauth2-client": "^2.4.2",
     "@rushstack/eslint-patch": "^1.6.0",
     "@tsconfig/node20": "^20.1.2",
     "@types/jsdom": "^21.1.6",

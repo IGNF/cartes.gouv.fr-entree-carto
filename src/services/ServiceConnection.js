@@ -1,12 +1,6 @@
-import { useRequest } from '@/services/request';
-import { useServiceStore } from '@/stores/serviceStore';
+import { generateCodeVerifier } from '@badgateway/oauth2-client';
 
-// INFO
-// recuperation des informations sur l'env
-const IAM_URL = import.meta.env.IAM_URL;
-const IAM_REALM = import.meta.env.IAM_REALM;
-const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
-const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET; 
+import { useServiceStore } from '@/stores/serviceStore';
 
 /**
  * @description 
@@ -34,6 +28,7 @@ var Connexion = {
   /** 
    * IAM pour se connecter
    * 
+   * @type {Promise}
    * @see isAccessValided
    * @example
    * // requête :
@@ -50,25 +45,33 @@ var Connexion = {
    *  code=168e7dd8-ae1f-4f8b-99f7-ae0aac066067.968321a6-385e-4058-a17a-571ab08303bd.3038d336-2dfa-4c2e-954e-090ee781ed7f
    * 
    */
-  getAccessLogin : function () {
+  getAccessLogin : async function () {
     // INFO
     // La réponse fournit le 'code', 
     // et il doit être utiliser pour obtenir le token 
     // cf. getAccessToken()
 
     const url = this.url.includes("login") ? this.url : this.url + "/login";
-    return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/auth?
-      scope=openid%20profile%20email&
-      approval_prompt=auto&
-      response_type=code&
-      state=xcoiv98y2kd22vusuye3kch&
-      redirect_uri=${url}&
-      client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
+    const codeVerifier = await generateCodeVerifier();
+    this.codeVerifier = codeVerifier;
+    localStorage.setItem("codeVerifier", codeVerifier);
+    var response = await this.client.authorizationCode.getAuthorizeUri({
+      redirectUri: url,
+      state: 'some-string',
+      codeVerifier,
+      scope: ['openid','profile','email'],
+      extraParams: {
+        approval_prompt: "auto"
+      },
+      responseMode: "query"
+    });
+    return response;
   },
 
   /** 
    * IAM pour se deconnecter
    * 
+   * @type {String}
    * @see isAccessValided
    * @example
    * // requête :
@@ -88,17 +91,19 @@ var Connexion = {
     // et la session doit être identique à celle issue de login
 
     const url = this.url.includes("logout") ? this.url : this.url + "/logout";
-    return `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/logout?
+
+    return `${this.client.settings.server}/realms/${this.client.settings.index}/protocol/openid-connect/logout?
       scope=openid%20profile%20email&
       approval_prompt=auto&
       response_type=code&
       post_logout_redirect_uri=${url}?session_state=${this.session}&
-      client_id=${IAM_CLIENT_ID}`.replace(/ /g, '');
+      client_id=${this.client.settings.clientId}`.replace(/ /g, '');
   },
 
   /** 
    * IAM pour obtenir le token
    * 
+   * @type {Promise}
    * @see isAccessValided
    * @fixme le post ne renvoie pas de réponse !? credentials no-cors ?
    * @example
@@ -121,45 +126,25 @@ var Connexion = {
    * }
   */
   getAccessToken : async function () {
-    // Ex.
-    // curl --request POST  --url "https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token"  --header "content-type: application/x-www-form-urlencoded" -d 'client_id='IAM_CLIENT_ID'&client_secret='IAM_CLIENT_SECRET'&grant_type=client_credentials'
-    // fetch("https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token", {
-    //   "headers": {
-    //     "content-type": "application/x-www-form-urlencoded"
-    //   },
-    //   "body": "client_id=IAM_CLIENT_ID&client_secret=IAM_CLIENT_SECRET&grant_type=client_credentials",
-    //   "method": "POST"
-    // })
-    // .then((response) => response.json())
-    // .then((data) => {
-    //     console.log(data);
-    // });
-    var url = `${IAM_URL}/realms/${IAM_REALM}/protocol/openid-connect/token`;
-    var settings = {
-      method : "POST",
-      headers : {
-        "Content-Type" : "application/x-www-form-urlencoded",
-        "Accept" : "application/json"
-      },
-      mode : 'cors',
-      body : new URLSearchParams({
-        "grant_type": "client_credentials", // authorization_code !?
-        "code": this.code,
-        "redirect_uri": this.url,
-        "client_id": IAM_CLIENT_ID,
-        "client_secret": IAM_CLIENT_SECRET
-      }).toString()
-    };
+    const url = this.url.includes("login") ? this.url : this.url + "/login";
+    var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
+    var token = await this.client.authorizationCode.getTokenFromCodeRedirect(
+      location,
+      {
+          redirectUri: url,
+          state: 'some-string',
+          codeVerifier,
+      }
+    );
+
+    this.token = token;
+    this.fetchWrapper.token = token; // HACK !?
+    this.addTokenStorage(); 
 
     var store = useServiceStore();
-    var self = this;
-    try {
-      const data = await useRequest(url, settings);
-      self.token = data;
-      self.addTokenStorage(); store.setService(this);
-    } catch (e) {
-      console.error(e.message);
-    }
+    store.setService(this);
+
+    return token;
   },
 
   //////////////////
@@ -183,7 +168,11 @@ var Connexion = {
    * }
    */
   getTokenStorage : function () {
-    return JSON.parse(localStorage.getItem("auth"));
+    var data = JSON.parse(localStorage.getItem("auth"));
+    if (data) {
+      return data.authenticated;
+    }
+    return null;
   },
   /**
    * Ajoute le token d'authentification du localStorage
