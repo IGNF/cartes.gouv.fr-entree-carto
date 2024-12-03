@@ -80,7 +80,7 @@ const pinia = createPinia()
 // on enregistre les informations de connexion dans la session
 const store = storePlugin({
   stores: ['service'],
-  storage: sessionStorage, // FIXME localStorage ?
+  storage: sessionStorage,
 })
 pinia.use(store)
 
