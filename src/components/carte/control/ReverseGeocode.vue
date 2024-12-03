@@ -21,7 +21,7 @@ const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 onMounted(() => {
   if (props.visibility) {
     map.addControl(reverseGeocode.value)
-    /* abonnement au widget 
+    /* abonnement au widget
     * @fires reversegeocode:compute
     * @fires reversegeocode:onclickresult
     */
@@ -50,7 +50,7 @@ onUpdated(() => {
   }
 })
 
-/** 
+/**
  * gestionnaire d'evenement sur les abonnements
  */
 const onClickResult = (e) => {
