@@ -24,7 +24,7 @@ var Users = {
    * @returns {Promise} - ...
    */
   getUserMe : async function () {
-    var response = await this.fetchWrapper.fetch('https://data.geopf.fr/api/users/me', {
+    var response = await this.getFetch().fetch('https://data.geopf.fr/api/users/me', {
       method: 'GET'
     });
     var data = await response.json();

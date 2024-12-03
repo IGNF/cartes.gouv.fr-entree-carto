@@ -29,7 +29,7 @@ var Connexion = {
    * IAM pour se connecter
    * 
    * @type {Promise}
-   * @see isAccessValided
+   * @see Login
    * @example
    * // requête :
    * https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/auth?
@@ -52,10 +52,12 @@ var Connexion = {
     // cf. getAccessToken()
 
     const url = this.url.includes("login") ? this.url : this.url + "/login";
+    
     const codeVerifier = await generateCodeVerifier();
-    this.codeVerifier = codeVerifier;
+    this.codeVerifier = codeVerifier; // au cas où...
     localStorage.setItem("codeVerifier", codeVerifier);
-    var response = await this.client.authorizationCode.getAuthorizeUri({
+    
+    var responseIAM = await this.getClient().authorizationCode.getAuthorizeUri({
       redirectUri: url,
       state: 'some-string',
       codeVerifier,
@@ -65,14 +67,15 @@ var Connexion = {
       },
       responseMode: "query"
     });
-    return response;
+
+    return responseIAM;
   },
 
   /** 
    * IAM pour se deconnecter
    * 
-   * @type {String}
-   * @see isAccessValided
+   * @type {Promise}
+   * @see Logout
    * @example
    * // requête :
    * https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/logout?
@@ -92,12 +95,14 @@ var Connexion = {
 
     const url = this.url.includes("logout") ? this.url : this.url + "/logout";
 
-    return `${this.client.settings.server}/realms/${this.client.settings.index}/protocol/openid-connect/logout?
+    var responseIAM = `${this.getClient().settings.server}/realms/${this.getClient().settings.index}/protocol/openid-connect/logout?
       scope=openid%20profile%20email&
       approval_prompt=auto&
       response_type=code&
       post_logout_redirect_uri=${url}?session_state=${this.session}&
-      client_id=${this.client.settings.clientId}`.replace(/ /g, '');
+      client_id=${this.getClient().settings.clientId}`.replace(/ /g, '');
+
+      return Promise.resolve(responseIAM);
   },
 
   /** 
@@ -128,7 +133,7 @@ var Connexion = {
   getAccessToken : async function () {
     const url = this.url.includes("login") ? this.url : this.url + "/login";
     var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
-    var token = await this.client.authorizationCode.getTokenFromCodeRedirect(
+    var token = await this.getClient().authorizationCode.getTokenFromCodeRedirect(
       location,
       {
           redirectUri: url,
@@ -138,7 +143,7 @@ var Connexion = {
     );
 
     this.token = token;
-    this.fetchWrapper.token = token; // HACK !?
+    this.getFetch().token = token; // HACK !?
     this.addTokenStorage(); 
 
     var store = useServiceStore();

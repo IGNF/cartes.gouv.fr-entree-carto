@@ -18,37 +18,6 @@ export const handlers = [
    * obtenir les informations de l'utilisateur
    */
   http.get('https://data.geopf.fr/api/users/me', async ({ request }) => {
-    // FIXME pourquoi cette réponse !?
-    // {
-    //   "email": "service-account-cartes-gouv-dev@no-reply.fr",
-    //   "creation": "2023-06-26T14:23:22.129728Z",
-    //   "last_call": "2024-11-27T22:35:02.538240Z",
-    //   "communities_member": [
-    //       {
-    //           "rights": [
-    //               "BROADCAST",
-    //               "UPLOAD",
-    //               "PROCESSING",
-    //               "ANNEX"
-    //           ],
-    //           "community": {
-    //               "name": "cartes.gouv - dev",
-    //               "technical_name": "cartes-gouv-dev",
-    //               "datastore": "3f2efe28-bb0e-4a51-99c8-73fcdead4092",
-    //               "supervisor": "e175d6c4-a03d-4ade-a769-86e8dd2bed58",
-    //               "public": false,
-    //               "_id": "7d583746-e3ed-4d56-b8fd-2f136014281e"
-    //           }
-    //       }
-    //   ],
-    //   "documents_quota": 500000000,
-    //   "documents_use": 0,
-    //   "keys_quota": 10,
-    //   "keys_use": 0,
-    //   "administrator": false,
-    //   "technical": false,
-    //   "_id": "3170eb8f-1b35-4efa-a0f9-ca42949334f4"
-    // }
     return HttpResponse.json({
           "email": "jean-philippe.bazonnais@ign.fr",
           "creation": "2024-01-10T11:21:28.618783Z",
