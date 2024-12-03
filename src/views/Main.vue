@@ -103,7 +103,7 @@ service.isAccessValided()
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
-  return headerParams.quickLinks.filter((element: any) => {
+  return headerParams.value.quickLinks.filter((element: any) => {
     // INFO
     // en cas de refresh de la page...
     if (service.authenticated && element.label === "[Utilisateur]") {
