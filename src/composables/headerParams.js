@@ -33,7 +33,14 @@ export function useHeaderParams() {
               to: '/login',
               class: 'fr-icon-user-fill',
               onClick: (e) => {}
-            }
+            },
+            // {
+            //   label: null, 
+            //   to: '/bookmarks',
+            //   href: useBaseUrl() + '/tableau-de-bord',
+            //   class: null,
+            //   onClick: (e) => {}
+            // }
         ],
         searchQuery: ref('')
     };
