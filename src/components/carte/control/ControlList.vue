@@ -5,6 +5,7 @@ import { useLogger } from 'vue-logger-plugin'
 import {
   ControlList
 } from 'geopf-extensions-openlayers'
+import { mainMap } from "@/composables/keys"
 
 import { selectedControls } from '@/composables/mapControls'
 const props = defineProps({
@@ -15,7 +16,7 @@ const props = defineProps({
 
 const log = useLogger()
 
-const map = inject('map')
+const map = inject(mainMap)
 const controlList = ref(new ControlList(props.controlListOptions))
 
 const isSmallScreen = useMatchMedia('SM')
