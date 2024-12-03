@@ -22,7 +22,9 @@ onMounted(() => {
   // Si aucun parametre de session dans l'URL de la route '/logout',
   // on redirige vers IAM de deconnexion
   if (!queryString) {
-    location.href = service.getAccessLogout();
+    service.getAccessLogout().then((url) => {
+      location.href = url;
+    });
   }
   // IAM de deconnexion redirige vers la route '/logout' aprés validation
   // Et, elle fournit la 'session'

@@ -65,7 +65,8 @@ const mandatoryLinks = computed(() => {
 
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
-// et si elle est valide
+// et si elle est valide, on demande le jeton de connexion, puis, 
+// on récupère les informations utilisateurs
 var service :any = inject('services');
 service.isAccessValided()
 .then((status:any) => {
@@ -77,20 +78,13 @@ service.isAccessValided()
         // on recherche des informations de l'utilisateur
         service.getUserMe()
         .then((data:any) => {
-          console.log(data);
           // on modifie le header en ajoutant les informations utilisateurs
           var last_name = data.last_name;
           var first_name = data.first_name;
-          if (!last_name && !first_name) {
-            first_name = "Utilisateur";
-            last_name = "inconnu";
-          }
-          headerParams.value.quickLinks.push({
-            label: `${first_name} ${last_name}`, 
-            to: '/bookmarks',
-            href: useBaseUrl() + '/tableau-de-bord',
-            class: 'fr-icon-user-fill',
-            onClick: (e:any) => {}
+          quickLinks.value.forEach((element:any) => {
+            if (element.label === "[Utilisateur]") {
+              element.label = `${first_name} ${last_name}`;
+            }
           });
         })
         .catch((e:any) => {
@@ -109,36 +103,21 @@ service.isAccessValided()
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
-  return headerParams.value.quickLinks.map((element: any) => {
-    // mode connecté, on change le label
-    if (element.label === "Se connecter" && service.authenticated) {
-      element.label = 'Se déconnecter';
-      element.to = '/logout';
-      element.class = 'fr-icon-logout-box-r-line';
-      element.onClick = (e:any) => {};
+  return headerParams.quickLinks.filter((element: any) => {
+    // INFO
+    // en cas de refresh de la page...
+    if (service.authenticated && element.label === "[Utilisateur]") {
+      if (Object.keys(service.user).length) {
+        var last_name = service.user.last_name;
+        var first_name = service.user.first_name;
+        element.label = `${first_name} ${last_name}`;
+      }
     }
-    // mode non connecté, on change le label
-    if (element.label === "Se déconnecter" && !service.authenticated) {
-      element.label = 'Se connecter';
-      element.to = '/login';
-      element.class = 'fr-icon-user-fill';
-      element.onClick = (e:any) => {};
+    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
+      return true;
     }
-    return element;
-  })
-})
-
-if (service.authenticated && Object.keys(service.user).length) {
-  var last_name = service.user.last_name;
-  var first_name = service.user.first_name;
-  headerParams.value.quickLinks.push({
-    label: `${first_name} ${last_name}`, 
-    to: '/bookmarks',
-    href: useBaseUrl() + '/tableau-de-bord',
-    class: 'fr-icon-user-fill',
-    onClick: (e:any) => {}
   });
-}
+})
 
 // paramètre pour la barre de navigations
 const route = useRoute()

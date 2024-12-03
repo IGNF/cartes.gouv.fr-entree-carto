@@ -37,32 +37,36 @@ const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
  */
 class Services {
 
+  #client
+  #fetchWrapper
+
   /** Constructeur */
   constructor (options) {
 
-    this.options = options || {};
+    options = options || {};
 
     /** authentification */
-    this.authenticated = this.options.authenticated || false;
+    this.authenticated = options.authenticated || false;
     /** state session */
-    this.session = this.options.session || "";
+    this.session = options.session || "";
     /** code verificated */
-    this.codeVerifier = this.options.codeVerifier || "";
+    this.codeVerifier = options.codeVerifier || "";
     /** code */
-    this.code = this.options.code || "";
+    this.code = options.code || "";
     /** token */
-    this.token = this.options.token || "";
+    this.token = options.token || "";
     /** user */
-    this.user = this.options.user || {};
+    this.user = options.user || {};
     /** erreurs IAM */
-    this.error = this.options.error || {};
+    this.error = options.error || {};
     
-    // à instancier !
-    this.client = null;
-    this.fetchWrapper = null;
+    // variables à instancier !
+    this.#client = null;
+    this.#fetchWrapper = null;
+
     this.url = null;
 
-    this.#initialize();
+    this.#initialize(options);
 
     return this;
   }
@@ -70,9 +74,9 @@ class Services {
   /**
    * Initialisation du client oauth
    */
-  #initialize () {
+  #initialize (options) {
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
-    var settings = this.options.client ? this.options.client.settings : {
+    var settings = options.client ? options.client.settings : {
       server: `${IAM_URL}`,
 
       clientId: `${IAM_CLIENT_ID}`,
@@ -85,11 +89,11 @@ class Services {
       revocationEndpoint: `/realms/${IAM_REALM}/protocol/openid-connect/revoke`
     };
 
-    this.client = new OAuth2Client(settings);
-    this.fetchWrapper = new OAuth2Fetch({
-      client: this.client,
+    this.#client = new OAuth2Client(settings);
+    this.#fetchWrapper = new OAuth2Fetch({
+      client: this.#client,
       getNewToken: async () => {
-        var token = await this.client.authorizationCode.getToken({
+        var token = await this.#client.authorizationCode.getToken({
             code: this.code,
             redirectUri: this.url,
             code_verifier: this.codeVerifier
@@ -114,7 +118,24 @@ class Services {
   }
 
   /**
+   * Client OAuth
+   * @returns {Object} - client oauth
+   */
+  getClient () {
+    return this.#client;
+  }
+
+  /**
+   * Fetch
+   * @returns {Object} - fetch wrapper
+   */
+  getFetch () {
+    return this.#fetchWrapper;
+  }
+
+  /**
    * Permet de valider la connexion en obtenant un token
+   * @returns {Promise} - statut : login / logout / null
    */
   isAccessValided () {
     var store = useServiceStore();

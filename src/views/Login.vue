@@ -9,10 +9,7 @@ export default {};
 <script setup lang="js">
 import { inject } from 'vue';
 import { useRouter } from 'vue-router';
-import { useHeaderParams } from '@/composables/headerParams';
-import { useBaseUrl } from '@/composables/baseUrl';
 
-const header = useHeaderParams();
 const router = useRouter();
 const service = inject('services');
 
@@ -34,38 +31,9 @@ onMounted(() => {
     });
   }
   // IAM authentification redirige vers la route '/login' aprés validation
-  // Et, elle fournit le 'code' et la 'session'
+  // Et, elle fournit le 'code' et la 'session' dans l'url
   // On revient dans l'application !
   if (code && session && state) {
-    // FIXME 
-    // comment attendre la fin de getAccessToken ?
-    // setTimeout(() => {
-    //   // on recherche des informations de l'utilisateur
-    //   service.getUserMe()
-    //   .then((data) => {
-    //     console.log(data);
-    //     // on modifie le header en ajoutant les informations utilisateurs
-    //     var last_name = data.last_name;
-    //     var first_name = data.first_name;
-    //     if (!last_name && !first_name) {
-    //       first_name = "Utilisateur";
-    //       last_name = "inconnu";
-    //     }
-    //     header.value.quickLinks.push({
-    //       label: `${first_name} ${last_name}`, 
-    //       to: '/bookmarks',
-    //       href: useBaseUrl() + '/tableau-de-bord',
-    //       class: 'fr-icon-user-fill',
-    //       onClick: (e) => {}
-    //     });
-    //   })
-    //   .catch((e) => {
-    //     throw e;
-    //   })
-    //   .finally(() => {
-    //     router.push({ path : '/' });
-    //   });
-    // }, 300);
     router.push({ path : '/' });
   }
 });
