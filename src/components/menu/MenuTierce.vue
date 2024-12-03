@@ -22,15 +22,16 @@ const map = mapStore.getMap();
  
 const refModalTheme = ref(null)
 const modalShareRef = ref(null)
-const openImport = () => {
-map.getControls().getArray().forEach(control => {
-  if (control.CLASSNAME == "ElevationPath") {
-    let button = [...control.element.children].filter(e => {
-      if (e.className.includes("GPshowOpen"))
-          return e
-      })
-      button[0].click()
-    }
+
+function openControl(controlName) {
+  map.getControls().getArray().forEach(control => {
+    if (control.CLASSNAME == controlName) {
+      let button = [...control.element.children].filter(e => {
+        if (e.className.includes("GPshowOpen"))
+            return e
+        })
+        button[0].click()
+      }
   })
 }
 
@@ -55,7 +56,7 @@ const onModalThemeOpen = () => {
     tertiary
     no-outline
     :icon="iconProps"
-    @click="openImport"
+    @click="openControl('LayerImport')"
     >
     Importer des données
   </DsfrButton>
@@ -90,6 +91,7 @@ const onModalThemeOpen = () => {
   <DsfrButton
     tertiary
     no-outline
+    @click="openControl('Export')"
     >
     Exporter le fichier
   </DsfrButton>
