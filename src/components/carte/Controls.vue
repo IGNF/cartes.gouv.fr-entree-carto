@@ -11,35 +11,37 @@
 </script>
 
 <script setup lang="js">
-import SearchEngine from './control/SearchEngine.vue'
-import ScaleLine from './control/ScaleLine.vue'
-import OverviewMap from './control/OverviewMap.vue'
-import Zoom from './control/Zoom.vue'
-import Attributions from './control/Attributions.vue'
-import LayerSwitcher from './control/LayerSwitcher.vue'
-import Legends from './control/Legends.vue'
-import Isocurve from './control/Isocurve.vue'
-import Route from './control/Route.vue'
-import MeasureLength from './control/MeasureLength.vue'
-import MeasureArea from './control/MeasureArea.vue'
-import MeasureAzimuth from './control/MeasureAzimuth.vue'
-import MousePosition from './control/MousePosition.vue'
-import ElevationPath from './control/ElevationPath.vue'
+import SearchEngine from './control/SearchEngine.vue';
+import ScaleLine from './control/ScaleLine.vue';
+import OverviewMap from './control/OverviewMap.vue';
+import Zoom from './control/Zoom.vue';
+import LayerSwitcher from './control/LayerSwitcher.vue';
+import Legends from './control/Legends.vue';
+import Drawing from './control/Drawing.vue';
+import Isocurve from './control/Isocurve.vue';
+import Route from './control/Route.vue';
+import MeasureLength from './control/MeasureLength.vue';
+import MeasureArea from './control/MeasureArea.vue';
+import MeasureAzimuth from './control/MeasureAzimuth.vue';
+import MousePosition from './control/MousePosition.vue';
+import ElevationPath from './control/ElevationPath.vue';
 import Territories from './control/Territories.vue';
-import GetFeatureInfo from './control/GetFeatureInfo.vue'
-import LayerImport from './control/LayerImport.vue'
+import GetFeatureInfo from './control/GetFeatureInfo.vue';
+import LayerImport from './control/LayerImport.vue';
+import ControlList from './control/ControlList.vue';
 
-import Share from './control/Share.vue'
+import Share from './control/Share.vue';
 
 // Icone pour le marker du widget SearcEngine
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
-import { useControls } from '@/composables/controls'
-import { useLogger } from 'vue-logger-plugin'
+import { useDataStore } from '@/stores/dataStore';
+import { useControls } from '@/composables/controls';
+import { useLogger } from 'vue-logger-plugin';
 
 const props = defineProps({
   controlOptions: Array
-})
+});
 
 // INFO
 // liste des contrôles à activer
@@ -58,7 +60,8 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
-const log = useLogger()
+const dataStore = useDataStore();
+const log = useLogger();
 log.debug(props.controlOptions);
 
 // liste des options pour les contrôles;
@@ -72,8 +75,8 @@ const territoriesOptions = {
   auto : false, // chargement auto des territoires par defaut
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
-  tiles : 3
-}
+  tiles : 3,
+};
 
 const layerSwitcherOptions = {
   options: {
@@ -82,19 +85,19 @@ const layerSwitcherOptions = {
     panel: true,
     counter: true
   }
-}
+};
 
 const legendsOptions = {
-  position : "top-right",
+  position: "top-right",
   panel: true,
   auto: true,
   draggable: false
-}
+};
 
 const scaleLineOptions = {
   units: 'metric',
   bar: false,
-}
+};
 
 const searchEngineOptions = {
   collapsed: false,
@@ -109,60 +112,95 @@ const searchEngineOptions = {
   searchOptions: {
     addToMap: false,
     filterServices : "WMTS,WMS,TMS",
+    filterWMTSPriority : true,
+    filterLayersPriority : dataStore.getFeatured().toString(),
     serviceOptions: {}
   },
   markerUrl : IconGeolocationSVG
-}
+};
 
 const getFeatureInfoOptions = {
   position: 'bottom-left'
-}
+};
 
 const overviewMapOptions = {
   position: 'bottom-left'
-}
+};
 
 const zoomOptions = {
   position: 'bottom-right',
+};
+
+const drawingOptions = {
+  position: 'top-right',
+  gutter: false,
+  listable: true,
 }
 
 const attributionsOptions = {}
 
-const isocurveOptions = {
-  position: 'bottom-right'
+const controlListOptions = {
+  position: 'top-right',
+  gutter: false,
+  controlCatalogElement: document.getElementById('MenuControl'),
 }
+
+const isocurveOptions = {
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
 
 const routeOptions = {
-  position: 'bottom-right'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
 
 const reverseGeocodeOptions = {
-  position: 'bottom-right'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
 
 const fullscreenOptions = {
   position: 'bottom-right'
-}
+};
 
 const measureLengthOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
+
 const measureAreaOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
+
 const measureAzimuthOptions = {
-  position: 'top-left'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
+
 const elevationPathOptions = {
-  position: 'bottom-left'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
 
 const layerImportOptions = {
-  position: 'bottom-left'
-}
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
 
 const mousePositionOptions = {
-  position: 'bottom-left',
+  position: 'top-right',
+  gutter: false,
+  listable: true,
   // On ajoute les systemes UTM pour les territoires
   systems : [{
       label : "G\u00e9ographique",
@@ -300,7 +338,7 @@ const mousePositionOptions = {
       geoBBox : { left: 156.25, bottom : -26.45, right : 174.28, top : -14.83 }
     }
   ]
-}
+};
 
 </script>
 <!-- INFO : Affichage du contrôle
@@ -354,12 +392,6 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
-  />
-  <Attributions
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Attributions.id)"
-    :analytic="useControls.Attributions.analytic"
-    :attributions-options="attributionsOptions"
   />
   <SearchEngine
     v-if="controlOptions"
@@ -415,6 +447,12 @@ const mousePositionOptions = {
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
   />
+  <Drawing
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
+    :analytic="useControls.Drawing.analytic"
+    :drawing-options="drawingOptions"
+  />
   <ElevationPath
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
@@ -427,6 +465,12 @@ const mousePositionOptions = {
     :analytic="useControls.LayerImport.analytic"
     :layer-import-options="layerImportOptions"
   />
+  <ControlList
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ControlList.id)"
+    :analytic="useControls.ControlList.analytic"
+    :control-list-options="controlListOptions"
+  />
 </template>
 
 <style>
@@ -437,6 +481,167 @@ const mousePositionOptions = {
 .position-container-top-right {
   margin: 0;
   padding: 0;
+}
+
+/* 10 controls optionnels */
+.position-container-top-right > .gpf-widget:nth-child(n+13) > button {
+  display: none;
+}
+
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
+  display: none;
+}
+
+.position-container-top-right:not(:has(.gpf-widget:nth-child(14))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  display: none;
+}
+
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
+  display: inline-flex;
+}
+
+.position-container-top-right > div:nth-child(n+13) {
+  padding: 0;
+  margin: 0;
+}
+
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12) {
+  margin: 0;
+  padding: 0;
+}
+
+.position-container-top-right:not(:has(div:nth-child(14))) > div[id^="GPcontrolList-"] {
+  margin: 0;
+  padding: 0;
+}
+
+.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
+  padding: 2px;
+}
+
+/* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
+/* Que le menu +, pas de controls */
+@media (max-height: 739px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+    display: none;
+  }
+}
+
+/* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
+/* 4 controls optionnels */
+@media (max-height: 819px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+7) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
+    padding: 2px;
+  }
+}
+
+/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
+/* 6 controls optionnels */
+@media (max-height: 919px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) > button {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+9) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+    padding: 2px;
+  }
+}
+
+/* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
+/* 8 controls optionnels */
+@media (max-height: 999px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+11) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
+    padding: 2px;
+  }
 }
 
 @media (min-width: 576px) {
@@ -455,7 +660,7 @@ const mousePositionOptions = {
 @media (max-width: 576px) {
   .position-container-top-right,
   .position-container-top-left {
-    top: 210px;
+    top: 255px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,
@@ -480,6 +685,18 @@ const mousePositionOptions = {
   .position-container-bottom-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog,
   .position-container-top-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
     margin-left: 8px;
+  }
+
+  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+    display: none;
+  }
+
+  .position-container-bottom-left {
+    display: none;
+  }
+
+  .ol-scale-line {
+    transform: translateX(-50px);
   }
 }
 

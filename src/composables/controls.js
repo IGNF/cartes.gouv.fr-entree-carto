@@ -1,7 +1,7 @@
 /**
  * @description
  * Liste des contrôles (widgets)
- * 
+ *
  * @example
  * {
  *  OverviewMap: {
@@ -15,7 +15,7 @@ export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   SearchEngine: {
@@ -27,7 +27,7 @@ export const useControls = {
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
-    disable: false,
+    disable: true,
     analytic: false
   },
   LayerSwitcher: {
@@ -45,6 +45,12 @@ export const useControls = {
   Legends: {
     id: 'Legends',
     active: true,
+    disable: true,
+    analytic: true
+  },
+  Drawing: {
+    id: 'Drawing',
+    active: true,
     disable: false,
     analytic: true
   },
@@ -56,25 +62,13 @@ export const useControls = {
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
-    active: false,
+    active: true,
     disable: false,
     analytic: true
   },
   Zoom: {
     id: 'Zoom',
     active: true,
-    disable: false,
-    analytic: false
-  },
-  Attributions: {
-    id: 'Attributions',
-    active: false,
-    disable: true,
-    analytic: false
-  },
-  Rotate: {
-    id: 'Rotate',
-    active: false,
     disable: true,
     analytic: false
   },
@@ -87,7 +81,7 @@ export const useControls = {
   FullScreen: {
     id: 'FullScreen',
     active: true,
-    disable: false,
+    disable: true,
     analytic: false
   },
   MeasureLength: {
@@ -111,7 +105,7 @@ export const useControls = {
   Share: {
     id: 'Share',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   MousePosition: {
@@ -123,7 +117,7 @@ export const useControls = {
   Territories: {
     id: 'Territories',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   ElevationPath: {
@@ -137,12 +131,18 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: true
-  }
+  },
+  ControlList: {
+    id: 'ControlList',
+    active: true,
+    disable: true,
+    analytic: true
+  },
 }
 
 /**
  * Obtenir les contrôles par défaut
- * @returns 
+ * @returns
  */
 export function useDefaultControls() {
   var defaultControls = [];
@@ -157,7 +157,7 @@ export function useDefaultControls() {
 
 /**
  * Obtenir les options du menu des contrôles
- * @returns 
+ * @returns
  */
 export function useControlsMenuOptions() {
   return [
@@ -204,6 +204,13 @@ export function useControlsMenuOptions() {
       disabled: useControls.Legends.disable
     },
     {
+      label: 'Croquis',
+      id: 'drawing',
+      name: useControls.Drawing.id,
+      hint: 'Annoter la carte',
+      disabled: useControls.Drawing.disable
+    },
+    {
       label: 'Geocodage inverse',
       id: 'reverseGeocode',
       name: useControls.ReverseGeocode.id,
@@ -230,20 +237,6 @@ export function useControlsMenuOptions() {
       name: useControls.Zoom.id,
       hint: 'Zoom',
       disabled: useControls.Zoom.disable
-    },
-    {
-      label: 'Attributions',
-      id: 'attributions',
-      name: useControls.Attributions.id,
-      hint: 'Attributions',
-      disabled: useControls.Attributions.disable
-    },
-    {
-      label: 'Rotation de la carte',
-      id: 'rotate',
-      name: useControls.Rotate.id,
-      hint: 'Rotation de la carte',
-      disabled: useControls.Rotate.disable
     },
     {
       label: 'Plein écran',
@@ -307,6 +300,14 @@ export function useControlsMenuOptions() {
       name: useControls.LayerImport.id,
       hint: 'Import de données',
       disabled: useControls.LayerImport.disable
+    },
+    {
+      label: 'Liste des controles',
+      id: 'controlList',
+      name: useControls.ControlList.id,
+      hint: 'Liste des controles supplémentaires non affichés',
+      disabled: useControls.ControlList.disable
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
-} 
+  .filter(opt => !opt.disabled)
+}

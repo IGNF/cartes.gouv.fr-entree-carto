@@ -165,13 +165,13 @@ On gère donc sa position de manière absolue
 En mode petit écran on le positionne tout en haut en attendant mieux */
 @media (max-width: 382px) {
   .menu-logo-list {
-    margin-top: 13px;
+    margin-top: 210px;
   }
 }
 
 @media (max-width: 576px) and (min-width: 382px) {
   .menu-logo-list {
-    margin-top: 13px;
+    margin-top: 210px;
   }
 }
 
