@@ -705,6 +705,16 @@ const mousePositionOptions = {
   .ol-scale-line {
     transform: translateX(-50px);
   }
+
+  #print-button-position {
+    display: none;
+  }
+}
+
+@media (max-height: 576px) {
+  #print-button-position {
+    display: none;
+  }
 }
 
 @media (max-width: 627px) and (min-width: 576px){
