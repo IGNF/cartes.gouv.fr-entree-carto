@@ -10,41 +10,39 @@
 </script>
 
 <script setup lang="js">
-import { onMounted, ref } from 'vue'
 import { CRS } from 'geopf-extensions-openlayers'
 
 import Map from 'ol/Map'
 import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore()
 
+const props = defineProps({
+  mapId: String
+})
+
 /**
  * Reference (DOM)
  */
-const mapRef = ref(0)
-const id = "map"
-
-// on expose en publique la reference au DOM
-defineExpose({
-  mapRef
-});
+const mapRef = ref(null)
 
 /**
  * Map
  * default controls are removed (rotate, zoom and attributions)
  */
-const map = new Map({
-  target: id,
+const map = reactive(new Map({
+  target: props.mapId,
   controls: [] // on supprime les contrôles par defaut !
-})
-
+  }))
+provide(props.mapId, map)
 
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
+
   CRS.load();
   map.setTarget(mapRef.value)
 
   // On ajoute une option d'accessibilité
-  const canvas = document.getElementById(id).getElementsByTagName('canvas')
+  const canvas = mapRef.value.getElementsByTagName('canvas')
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
@@ -61,16 +59,20 @@ const onFocusOnMap = () => {
   }
 }
 
-// INFO
-// Option permettant de rendre disponible 'map'
-// aux composants enfants imbriqués
-provide('map', map)
-mapStore.setMap(map)
+const updateSize = () => {
+  map.updateSize();
+}
+
+// on expose en publique la reference au DOM
+defineExpose({
+  mapRef,
+  updateSize
+});
 </script>
 
 <template>
   <div
-    :id="id"
+    :id="mapId"
     ref="mapRef"
     tabindex="0"
     @mouseover="onFocusOnMap">
@@ -79,9 +81,4 @@ mapStore.setMap(map)
 </template>
 
 <style>
-  #map {
-    position: absolute;
-    width: 100%;
-    height: inherit;
-  }
 </style>

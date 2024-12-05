@@ -1,6 +1,7 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { Drawing } from 'geopf-extensions-openlayers';
+import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
   visibility: Boolean,
@@ -8,7 +9,7 @@ const props = defineProps({
   drawingOptions: Object
 });
 
-const map = inject('map');
+const map = inject(mainMap)
 const drawing = ref(new Drawing(props.drawingOptions));
 
 onMounted(() => {
