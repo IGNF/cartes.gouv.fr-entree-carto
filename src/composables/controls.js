@@ -108,6 +108,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  Print: {
+    id: 'Print',
+    active: true,
+    disable: false,
+    analytic: true
+  },
   MousePosition: {
     id: 'MousePosition',
     active: true,
@@ -300,6 +306,13 @@ export function useControlsMenuOptions() {
       name: useControls.LayerImport.id,
       hint: 'Import de données',
       disabled: useControls.LayerImport.disable
+    },
+    {
+      label: 'Imprimer une carte',
+      id: 'print',
+      name: useControls.Print.id,
+      hint: 'Impression',
+      disabled: useControls.Print.disable
     },
     {
       label: 'Liste des controles',

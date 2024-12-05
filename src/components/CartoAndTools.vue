@@ -45,6 +45,8 @@ const selectedControls = computed(() => {
   return controls;
 });
 
+provide("selectedLayers", selectedLayers);
+
 </script>
 
 <template>

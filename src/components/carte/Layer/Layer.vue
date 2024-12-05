@@ -10,7 +10,8 @@ import {
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
-  layerOptions: Object
+  layerOptions: Object,
+  mapId : String
 })
 
 // INFO
@@ -21,7 +22,7 @@ log.debug(props.layerOptions);
 
 const store = useDataStore()
 
-const map = inject('map')
+const map = inject(props.mapId)
 const layer = ref(null)
 
 onMounted(() => {
@@ -35,7 +36,8 @@ onMounted(() => {
   var options = {
     visible : props.layerOptions.visible,
     opacity : props.layerOptions.opacity,
-    gray : props.layerOptions.gray
+    gray : props.layerOptions.gray,
+    sourceParams : {crossOrigin : 'anonymous'}
   };
   // ajout des options de preload par defaut
   var preload = {
