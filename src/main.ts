@@ -28,7 +28,7 @@ const isProduction = (import.meta.env.MODE === "production")
 const eulerian = createEulerian({
   verbose : !isProduction, // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
-  isActionEnabled: false, // on desactive le tracking global
+  isActionEnabled: "reduce", // on limite le tracking uniquement sur les elements "data-fr-analytics-action"
   site: {
     environment: isProduction ? "production" : "development",
     entity: "IGN"

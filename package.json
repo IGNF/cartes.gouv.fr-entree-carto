@@ -38,7 +38,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "@gouvfr/dsfr": "^1.11.2",
+    "@gouvfr/dsfr": "^1.13.0",
     "@gouvminint/vue-dsfr": "^5.14.2",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",

@@ -19,6 +19,7 @@ import OverviewMap from './control/OverviewMap.vue';
 import Zoom from './control/Zoom.vue';
 import LayerSwitcher from './control/LayerSwitcher.vue';
 import Legends from './control/Legends.vue';
+import Drawing from './control/Drawing.vue';
 import Isocurve from './control/Isocurve.vue';
 import Route from './control/Route.vue';
 import MeasureLength from './control/MeasureLength.vue';
@@ -30,6 +31,7 @@ import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
+import Print from './control/Print.vue'
 
 import Share from './control/Share.vue';
 
@@ -68,6 +70,9 @@ log.debug(props.controlOptions);
 
 const shareOptions = {
   position: useControlsExtensionPosition.shareOptions
+};
+const printOptions = {
+  position: useControlsExtensionPosition.printOptions
 };
 
 const territoriesOptions = {
@@ -133,7 +138,13 @@ const zoomOptions = {
   position: useControlsExtensionPosition.zoomOptions,
 };
 
-const attributionsOptions = {};
+const drawingOptions = {
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+}
+
+const attributionsOptions = {}
 
 const controlListOptions = {
   position: useControlsExtensionPosition.controlListOptions,
@@ -346,6 +357,11 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.Share.id)"
     :share-options="useControlsExtensionPosition().shareOptions"
   />
+  <Print
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Print.id)"
+    :print-options="printOptions"
+  />
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
@@ -441,6 +457,12 @@ const mousePositionOptions = {
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="useControlsExtensionPosition().mousePositionOptions"
+  />
+  <Drawing
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
+    :analytic="useControls.Drawing.analytic"
+    :drawing-options="drawingOptions"
   />
   <ElevationPath
     v-if="controlOptions"
@@ -686,6 +708,16 @@ const mousePositionOptions = {
 
   .ol-scale-line {
     transform: translateX(-50px);
+  }
+
+  #print-button-position {
+    display: none;
+  }
+}
+
+@media (max-height: 576px) {
+  #print-button-position {
+    display: none;
   }
 }
 

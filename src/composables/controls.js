@@ -49,6 +49,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  Drawing: {
+    id: 'Drawing',
+    active: true,
+    disable: false,
+    analytic: true
+  },
   Isocurve: {
     id: 'Isocurve',
     active: true,
@@ -101,6 +107,12 @@ export const useControls = {
     id: 'Share',
     active: true,
     disable: true,
+    analytic: true
+  },
+  Print: {
+    id: 'Print',
+    active: true,
+    disable: false,
     analytic: true
   },
   MousePosition: {
@@ -199,6 +211,13 @@ export function useControlsMenuOptions() {
       disabled: useControls.Legends.disable
     },
     {
+      label: 'Croquis',
+      id: 'drawing',
+      name: useControls.Drawing.id,
+      hint: 'Annoter la carte',
+      disabled: useControls.Drawing.disable
+    },
+    {
       label: 'Geocodage inverse',
       id: 'reverseGeocode',
       name: useControls.ReverseGeocode.id,
@@ -290,6 +309,13 @@ export function useControlsMenuOptions() {
       disabled: useControls.LayerImport.disable
     },
     {
+      label: 'Imprimer une carte',
+      id: 'print',
+      name: useControls.Print.id,
+      hint: 'Impression',
+      disabled: useControls.Print.disable
+    },
+    {
       label: 'Liste des controles',
       id: 'controlList',
       name: useControls.ControlList.id,
@@ -304,6 +330,9 @@ export function useControlsExtensionPosition() {
   return {
     shareOptions : {
       position: 'top-left'
+    },
+    printOptions : {
+      position: 'top-right'
     },
     territoriesOptions : {
       position: 'bottom-left',
@@ -367,6 +396,11 @@ export function useControlsPosition() {
     leftC.push(useControls.Share.id)
   if (useControlsExtensionPosition().shareOptions.position.includes("right"))
     rightC.push(useControls.Share.id)
+  // Print
+  if (useControlsExtensionPosition().printOptions.position.includes("left"))
+    leftC.push(useControls.Print.id)
+  if (useControlsExtensionPosition().printOptions.position.includes("right"))
+    rightC.push(useControls.Print.id)
   // LayerSwitcher
   if (useControlsExtensionPosition().layerSwitcherOptions.position.includes("left"))
     leftC.push(useControls.LayerSwitcher.id)

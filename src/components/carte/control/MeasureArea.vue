@@ -8,7 +8,8 @@ const props = defineProps({
   measureAreaOptions: Object
 })
 
-const map = inject('map');
+import { mainMap } from "@/composables/keys"
+const map = inject(mainMap);
 const measureArea = ref(new MeasureArea(props.measureAreaOptions));
 
 onMounted(() => {
