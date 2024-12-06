@@ -46,6 +46,7 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
+  mapStore.setMap(map)
 })
 
 /**
