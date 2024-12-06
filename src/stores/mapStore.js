@@ -5,18 +5,22 @@ import {
 import { useStorage } from '@vueuse/core';
 
 import { useUrlParams } from "@/composables/urlParams.js";
-import { useDefaultControls } from '@/composables/controls';
+import { getActiveControls } from '@/composables/controls';
+import { getOptsActiveControls } from '@/composables/controls';
+import { getDefaultControls } from '@/composables/controls';
 
 /**
  * Valeurs par defaut
  * pour la liste des contrôles par defaut, on utilise toujours 
  * le composable 'src/composables/controls.js'
  */
-var defaultControls = useDefaultControls();
+var activeControls = getActiveControls();
+var optsActControls = getOptsActiveControls().toString();
+var defaultActControls = getDefaultControls().toString();
 
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0)",
-  CONTROLS: defaultControls.toString(),
+  CONTROLS: activeControls.toString(),
   X: 283734.248995,
   Y:  5655117.100650,
   LON: 2.5479878714752027, // informatif
@@ -120,7 +124,7 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${sharedControls.value}&permalink=yes`;
   });
 
   var permalinkShare = computed(() => {
@@ -154,6 +158,9 @@ export const useMapStore = defineStore('map', () => {
     }
   }
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
+  var sharedControls = useStorage(ns('sharedControls'), optsActControls);
+  var defaultControls = useStorage(ns('defaultControls'), defaultActControls);
+
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
       return !!c;
@@ -206,6 +213,12 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
+  })
+  watch(sharedControls, () => {
+    localStorage.setItem(ns('sharedControls'), sharedControls.value.toString()); // string
+  })
+  watch(defaultControls, () => {
+    localStorage.setItem(ns('defaultControls'), defaultControls.value.toString()); // string
   })
   watch(title, () => {
     localStorage.setItem(ns('print.title'), title.value.toString()); // string

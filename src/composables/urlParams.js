@@ -1,4 +1,5 @@
 import { useUrlSearchParams } from '@vueuse/core';
+import { getDefaultControls, getOptsActiveControls } from '@/composables/controls';
 import {
   fromLonLat as fromLonLatProj
 } from "ol/proj";
@@ -48,7 +49,11 @@ export function useUrlParams() {
           break;
         case "w":
           // FIXME utile ? la liste devrait être fixe...
-          params.controls = urlParams[key];
+          // var defaultControls = getActiveControls();
+          params.sharedControls = getOptsActiveControls();
+          params.defaultControls = getDefaultControls();
+          params.controls = params.sharedControls + "," + params.defaultControls; 
+          // + defaultControls;
           break;
         case "m":
           console.debug("not yet implemented !");

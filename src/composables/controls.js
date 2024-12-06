@@ -147,18 +147,48 @@ export const useControls = {
 }
 
 /**
- * Obtenir les contrôles par défaut
+ * Obtenir tous les contrôles actifs (optionnels ou pas)
  * @returns
  */
-export function useDefaultControls() {
+export function getActiveControls() {
+  var activeControls = [];
+  // récupération des controls actifs
+  for (var control in useControls) {
+    if (useControls[control].active === true) {
+      activeControls.push(useControls[control].id);
+    }
+  }
+  return activeControls;
+}
+
+/**
+ * Obtenir les contrôles présents par défaut (non retirables) sur la carte
+ * @returns
+ */
+export function getDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
-    if (useControls[control].active === true) {
+    if (useControls[control].disable === true && useControls[control].active === true) {
       defaultControls.push(useControls[control].id);
     }
   }
   return defaultControls;
+}
+
+/**
+ * Obtenir les contrôles optionnels et actifs
+ * @returns
+ */
+export function getOptsActiveControls() {
+  var optsActiveControls = [];
+  // récupération des controls par défaut
+  for (var control in useControls) {
+    if (useControls[control].disable === false && useControls[control].active === true) {
+      optsActiveControls.push(useControls[control].id);
+    }
+  }
+  return optsActiveControls;
 }
 
 /**
