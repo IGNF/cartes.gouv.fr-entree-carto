@@ -1,22 +1,22 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { MeasureAzimuth } from 'geopf-extensions-openlayers';
+import { Drawing } from 'geopf-extensions-openlayers';
+import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
   visibility: Boolean,
   analytic: Boolean,
-  measureAzimuthOptions: Object
-})
+  drawingOptions: Object
+});
 
-import { mainMap } from "@/composables/keys"
 const map = inject(mainMap)
-const measureAzimuth = ref(new MeasureAzimuth(props.measureAzimuthOptions))
+const drawing = ref(new Drawing(props.drawingOptions));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(measureAzimuth.value);
+    map.addControl(drawing.value);
     if (props.analytic) {
-      var el = measureAzimuth.value.element.querySelector("button[id^=GPshowMeasureAzimuthPicto-]");
+      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
   }
@@ -24,14 +24,14 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (props.visibility) {
-    map.addControl(measureAzimuth.value);
+    map.addControl(drawing.value);
     if (props.analytic) {
-      var el = measureAzimuth.value.element.querySelector("button[id^=GPshowMeasureAzimuthPicto-]");
+      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
   }
   else {
-    map.removeControl(measureAzimuth.value);
+    map.removeControl(drawing.value);
   }
 })
 </script>

@@ -24,3 +24,12 @@ export {
 export {
   IoClose
 } from 'oh-vue-icons/icons/io/index.js'
+
+export {
+  PxPrint
+} from 'oh-vue-icons/icons/px/index.js'
+
+export {
+  MdCroplandscapeSharp,
+  MdCropportraitSharp
+} from 'oh-vue-icons/icons/md/index.js'

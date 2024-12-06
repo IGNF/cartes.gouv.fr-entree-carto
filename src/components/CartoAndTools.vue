@@ -70,6 +70,8 @@ function closeLeftPanels() {
     }
   })
 }
+provide("selectedLayers", selectedLayers);
+
 </script>
 
 <template>
