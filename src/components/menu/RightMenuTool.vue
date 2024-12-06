@@ -38,6 +38,10 @@ function tabClicked(newTab) {
   }
 }
 
+function closeMenu() {
+  wrapper.value.closeMenu()
+}
+
 function tabIsActive(componentName) {
     return activeTab.value.replace("Content" , '') === componentName ? true : false
 }
@@ -58,17 +62,21 @@ function tabIsActive(componentName) {
       </div>
       <div id="MenuTierceContent"
         :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
-        <MenuTierce/>
+        <MenuTierce
+          @open-control="closeMenu"
+        />
       </div>
     </template>
     <template #navButtons>
       <MenuLateralNavButton
         v-for="tab in tabArray"
+        :side="side"
         :icon="tab.icon"
         :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
-        @tab-clicked="tabClicked"/>
+        @tab-clicked="tabClicked"
+        />
     </template>
   </MenuLateralWrapper>
 </template>
