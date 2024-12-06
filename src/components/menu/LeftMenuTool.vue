@@ -59,6 +59,7 @@ function tabIsActive(componentName) {
     <template #navButtons>
       <MenuLateralNavButton
         v-for="tab in tabArray"
+        :side="side"
         :icon="tab.icon"
         :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
