@@ -673,25 +673,15 @@ const mousePositionOptions = {
   .position-container-bottom-right,
   .position-container-top-left,
   .position-container-top-right {
-    height: calc(100% - 214px);
+    height: calc(100% - 259px);
   }
 
   /* Mode mobile : on positionne les dialog par dessus la barre de recherche
   en position fix, sous le header DSFR, et on annule le positionnement introduit
   par la classe gpf-mobile-fullscree (right ou left) à l'aide de marges */
   .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    position: fixed;
-    margin-top: 96.5px;
-  }
-
-  .position-container-bottom-right .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog,
-  .position-container-top-right .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    margin-right: 4px;
-  }
-
-  .position-container-bottom-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog,
-  .position-container-top-left .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    margin-left: 8px;
+    margin-top: -250px;
+    max-height: calc(100% + 258px);
   }
 
   .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
