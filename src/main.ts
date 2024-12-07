@@ -55,7 +55,7 @@ async function waitingPrepareApp() {
 
 // INFO
 // on recupere les info de connexion de la session, et les transmettre !
-var storage = sessionStorage.getItem('service')
+var storage = localStorage.getItem('service')
 const services = createServices(storage ? JSON.parse(storage).connexion : {})
 
 const eulerian = createEulerian({
@@ -80,7 +80,7 @@ const pinia = createPinia()
 // on enregistre les informations de connexion dans la session
 const store = storePlugin({
   stores: ['service'],
-  storage: sessionStorage,
+  storage: localStorage,
 })
 pinia.use(store)
 
