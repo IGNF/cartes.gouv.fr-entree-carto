@@ -68,6 +68,11 @@ const mandatoryLinks = computed(() => {
 // et si elle est valide, on demande le jeton de connexion, puis, 
 // on récupère les informations utilisateurs
 var service :any = inject('services');
+var serviceMessageError = ref("");
+var serviceMessageClosed = ref(true);
+var onServiceMessageClose = () => {
+  serviceMessageClosed.value = true;
+};
 service.isAccessValided()
 .then((status:any) => {
   if (status === "login") {
@@ -99,7 +104,10 @@ service.isAccessValided()
 })
 .catch((e:any) => {
   console.error(e);
+  serviceMessageError.value = e.message;
+  serviceMessageClosed.value = false;
 });
+
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
@@ -205,6 +213,14 @@ const navItems: DsfrNavigationProps['navItems'] = [
       />
     </template>
   </DsfrHeader>
+
+  <DsfrAlert
+    :description="serviceMessageError"
+    type="warning"
+    :closed="serviceMessageClosed"
+    :closeable=true
+    @close="onServiceMessageClose()"
+  />
 
   <div>
     <router-view />
