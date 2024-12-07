@@ -9,7 +9,7 @@ export class PluginServices extends Services {
    * @param {*} options
    */
   constructor(options) {
-    console.debug(options);
+    console.debug("connexion", options);
     super(options);
   }
 

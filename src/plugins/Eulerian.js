@@ -17,7 +17,7 @@ export class Eulerian {
    * @see https://github.com/GouvernementFR/dsfr/blob/main/src/analytics/example/spa/vue/config.ejs
    */
   constructor(options) {
-    console.debug(options);
+    console.debug("eulerian", options);
     // INFO
     // pour tester la collecte des statistiques en local, 
     // il faut modifier l'URL (filtre Eulerian) :
