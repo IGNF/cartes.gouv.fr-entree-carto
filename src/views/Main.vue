@@ -78,10 +78,10 @@ service.isAccessValided()
         // on recherche des informations de l'utilisateur
         service.getUserMe()
         .then((data:any) => {
-          // on modifie le header en ajoutant les informations utilisateurs
+          // on met à jour le header en renseignant les informations utilisateurs
           var last_name = data.last_name;
           var first_name = data.first_name;
-          quickLinks.value.forEach((element:any) => {
+          headerParams.value.quickLinks.forEach((element:any) => {
             if (element.label === "...") {
               element.label = `${first_name} ${last_name}`;
             }
@@ -111,6 +111,10 @@ const quickLinks = computed(() => {
         var last_name = service.user.last_name;
         var first_name = service.user.first_name;
         element.label = `${first_name} ${last_name}`;
+      } else {
+        // si il y'a un souci pour récuperer des informations,
+        // on n'affiche pas l'utilisateur...
+        return false;
       }
     }
     if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
