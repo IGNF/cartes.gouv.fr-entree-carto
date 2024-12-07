@@ -82,7 +82,7 @@ service.isAccessValided()
           var last_name = data.last_name;
           var first_name = data.first_name;
           quickLinks.value.forEach((element:any) => {
-            if (element.label === "[Utilisateur]") {
+            if (element.label === "...") {
               element.label = `${first_name} ${last_name}`;
             }
           });
@@ -106,7 +106,7 @@ const quickLinks = computed(() => {
   return headerParams.value.quickLinks.filter((element: any) => {
     // INFO
     // en cas de refresh de la page...
-    if (service.authenticated && element.label === "[Utilisateur]") {
+    if (service.authenticated && element.label === "...") {
       if (Object.keys(service.user).length) {
         var last_name = service.user.last_name;
         var first_name = service.user.first_name;

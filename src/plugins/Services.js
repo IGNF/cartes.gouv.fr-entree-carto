@@ -5,6 +5,15 @@ const servicesSymbol = Symbol('vue-services-plugin');
 
 export class PluginServices extends Services {
   /**
+   * constructeur
+   * @param {*} options
+   */
+  constructor(options) {
+    console.debug(options);
+    super(options);
+  }
+
+  /**
    * Installation du plugin
    * @param {*} app 
    */
