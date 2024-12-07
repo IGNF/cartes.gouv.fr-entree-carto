@@ -43,7 +43,7 @@ export function useHeaderParams() {
               onClick: (e) => {}
             },
             {
-              label: "[Utilisateur]", 
+              label: "...", 
               to: '/bookmarks',
               href: useBaseUrl() + '/tableau-de-bord',
               class: 'fr-icon-user-fill',
