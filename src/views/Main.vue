@@ -216,7 +216,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
 
   <DsfrAlert
     :description="serviceMessageError"
-    type="warning"
+    type="error"
     :closed="serviceMessageClosed"
     :closeable=true
     @close="onServiceMessageClose()"
