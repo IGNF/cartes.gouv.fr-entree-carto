@@ -77,7 +77,7 @@ const logger = createLogger({
 const pinia = createPinia()
 
 // INFO
-// on enregistre les informations de connexion dans la session
+// on enregistre les informations de connexion dans le localStorage
 const store = storePlugin({
   stores: ['service'],
   storage: localStorage,
