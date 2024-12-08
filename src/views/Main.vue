@@ -93,18 +93,22 @@ service.isAccessValided()
           });
         })
         .catch((e:any) => {
-          throw new Error("[getUserMe]" + e.message);
+          console.error(e);
+          serviceMessageError.value = 'Error to get user info : ' + e.message;
+          serviceMessageClosed.value = false;
         })
       }
     })
     .catch((e:any) => {
-      throw new Error("[getAccessToken]" + e.message);
+      console.error(e);
+      serviceMessageError.value = 'Error to get token : ' + e.message;
+      serviceMessageClosed.value = false;
     })
   }
 })
 .catch((e:any) => {
   console.error(e);
-  serviceMessageError.value = e.message;
+  serviceMessageError.value = 'Error during authentication : ' + e.message;
   serviceMessageClosed.value = false;
 });
 
