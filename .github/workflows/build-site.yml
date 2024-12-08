@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build-only -- --mode=demo
+        run: IAM_CLIENT_ID=${{ secrets.IAM_CLIENT_ID }} IAM_CLIENT_SECRET=${{ secrets.IAM_CLIENT_SECRET }} npm run build-only -- --mode=demo
   
       - name: Upload Binary artifacts
         uses: actions/upload-artifact@v4
