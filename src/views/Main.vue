@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
+
+import { inject } from 'vue'
+// composables
 import { useRoute } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
 import { useMatchMedia } from '@/composables/matchMedia'
@@ -9,8 +12,9 @@ import { useBaseUrl } from '@/composables/baseUrl'
 // components
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-
+// stores
 import { useAppStore } from "@/stores/appStore"
+
 useAppStore()
 
 const log = useLogger()
@@ -57,6 +61,78 @@ const mandatoryLinks = computed(() => {
     }
     return element
   })
+})
+
+// INFO
+// on teste si une demande de connexion (ou de deconnexion) a été faite,
+// et si elle est valide, on demande le jeton de connexion, puis, 
+// on récupère les informations utilisateurs
+var service :any = inject('services');
+var serviceMessageError = ref("");
+var serviceMessageClosed = ref(true);
+var onServiceMessageClose = () => {
+  serviceMessageClosed.value = true;
+};
+service.isAccessValided()
+.then((status:any) => {
+  if (status === "login") {
+    // on recupère le token
+    service.getAccessToken()
+    .then((token:any) => {
+      if (token) {
+        // on recherche des informations de l'utilisateur
+        service.getUserMe()
+        .then((data:any) => {
+          // on met à jour le header en renseignant les informations utilisateurs
+          var last_name = data.last_name;
+          var first_name = data.first_name;
+          headerParams.value.quickLinks.forEach((element:any) => {
+            if (element.label === "...") {
+              element.label = `${first_name} ${last_name}`;
+            }
+          });
+        })
+        .catch((e:any) => {
+          console.error(e);
+          serviceMessageError.value = 'Error to get user info : ' + e.message;
+          serviceMessageClosed.value = false;
+        })
+      }
+    })
+    .catch((e:any) => {
+      console.error(e);
+      serviceMessageError.value = 'Error to get token : ' + e.message;
+      serviceMessageClosed.value = false;
+    })
+  }
+})
+.catch((e:any) => {
+  console.error(e);
+  serviceMessageError.value = 'Error during authentication : ' + e.message;
+  serviceMessageClosed.value = false;
+});
+
+// INFO
+// on met à jour les quickLinks pour la connexion
+const quickLinks = computed(() => {
+  return headerParams.value.quickLinks.filter((element: any) => {
+    // INFO
+    // en cas de refresh de la page...
+    if (service.authenticated && element.label === "...") {
+      if (Object.keys(service.user).length) {
+        var last_name = service.user.last_name;
+        var first_name = service.user.first_name;
+        element.label = `${first_name} ${last_name}`;
+      } else {
+        // si il y'a un souci pour récuperer des informations,
+        // on n'affiche pas l'utilisateur...
+        return false;
+      }
+    }
+    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
+      return true;
+    }
+  });
 })
 
 // paramètre pour la barre de navigations
@@ -133,7 +209,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     :show-beta="true"
     :service-description="headerParams.serviceDescription"
     :logo-text="headerParams.logoText"
-    :quick-links="headerParams.quickLinks"
+    :quick-links="quickLinks"
   >
     <template #mainnav>
       <DsfrNavigation
@@ -141,6 +217,14 @@ const navItems: DsfrNavigationProps['navItems'] = [
       />
     </template>
   </DsfrHeader>
+
+  <DsfrAlert
+    :description="serviceMessageError"
+    type="error"
+    :closed="serviceMessageClosed"
+    :closeable=true
+    @close="onServiceMessageClose()"
+  />
 
   <div>
     <router-view />

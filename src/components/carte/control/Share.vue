@@ -7,7 +7,9 @@
  * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
  * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrShare}
  */
-export default {};
+export default {
+  name: 'Share'
+};
 </script>
 
 <script lang="js" setup>
