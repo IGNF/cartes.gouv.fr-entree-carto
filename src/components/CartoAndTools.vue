@@ -2,7 +2,9 @@
 import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
-import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
+import ModalTheme from '@/components/modals/ModalTheme.vue'
+import ShareModal from '@/components/carte/control/ShareModal.vue'
+import PrintModal from "@/components/carte/control/PrintModal.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
@@ -10,6 +12,19 @@ import { useMapStore } from "@/stores/mapStore"
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+ 
+const refModalTheme = ref(null)
+const modalShareRef = ref(null)
+const refPrintModal = ref(null)
+const onModalShareOpen = () => {
+  modalShareRef.value.onModalShareOpen()
+}
+const onModalThemeOpen = () => {
+  refModalTheme.value.openModalTheme()
+}
+const onModalPrintOpen = () => {
+  refPrintModal.value.onModalPrintOpen()
+}
 
 // INFO
 // Les listes sont initialisées via le mapStore, et 
@@ -53,7 +68,9 @@ provide("selectedLayers", selectedLayers);
 
     <!-- Le catalogue est dans le menu gauche -->
     <LeftMenuTool
-      :selected-layers="selectedLayers"
+      @on-modal-share-open="onModalShareOpen"
+      @on-modal-print-open="onModalPrintOpen"
+      @on-modal-theme-open="onModalThemeOpen"
     />
 
     <!-- Module cartographique : 
@@ -67,9 +84,14 @@ provide("selectedLayers", selectedLayers);
 
     <!-- Le menu des contrôles est dans le menu droite -->
     <RightMenuTool
+      :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
     />
-
+    <div class="modal-container">
+  <ModalTheme ref="refModalTheme" />
+  <PrintModal ref="refPrintModal" />
+  <ShareModal ref="modalShareRef"/>
+</div>
   </div>
 </template>
 
