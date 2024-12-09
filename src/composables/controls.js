@@ -136,7 +136,7 @@ export const useControls = {
   LayerImport: {
     id: 'LayerImport',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   ControlList: {

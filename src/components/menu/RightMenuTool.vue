@@ -1,9 +1,13 @@
 <script setup lang="js">
+import { useDataStore } from "@/stores/dataStore"
 import MenuControl from '@/components/menu/MenuControl.vue';
-import MenuTierce from '@/components/menu/MenuTierce.vue';
+
 const props = defineProps({
-  selectedControls : {Object}
+  selectedControls : {Object},
+  selectedLayers : {Object}
 })
+
+const dataStore = useDataStore();
 
 const side = "right"
 
@@ -11,14 +15,14 @@ const side = "right"
 const tabArray = computed(() => {
     const arr = [
         {
+            componentName : "MenuCatalogue",
+            icon : "catalogIcon",
+            title : "Catalogue de données",
+        },
+        {
             componentName : "MenuControl",
             icon : "menuWidgetIcon",
             title : "Catalogue d'outils",
-        },
-        {
-            componentName : "MenuTierce",
-            icon : "ri-menu-fill",
-            title : "Menu Tierce",
         }
     ];
 
@@ -38,10 +42,6 @@ function tabClicked(newTab) {
   }
 }
 
-function closeMenu() {
-  wrapper.value.closeMenu()
-}
-
 function tabIsActive(componentName) {
     return activeTab.value.replace("Content" , '') === componentName ? true : false
 }
@@ -55,16 +55,16 @@ function tabIsActive(componentName) {
     v-model="is_expanded"
     ref="wrapper">
     <template #content>
+      <div id="MenuCatalogueContent"
+        :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
+        <MenuCatalogue
+        :selected-layers="selectedLayers"
+        :layers="dataStore.getLayers()"/>
+      </div>
       <div id="MenuControlContent"
         :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
         <MenuControl 
           :selected-controls="selectedControls"/>
-      </div>
-      <div id="MenuTierceContent"
-        :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
-        <MenuTierce
-          @open-control="closeMenu"
-        />
       </div>
     </template>
     <template #navButtons>

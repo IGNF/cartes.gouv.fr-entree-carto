@@ -352,16 +352,16 @@ const mousePositionOptions = {
 >>> sinon, visibility:false
 -->
 <template>
-  <Share
+  <!-- <Share
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Share.id)"
     :share-options="useControlsExtensionPosition().shareOptions"
-  />
-  <Print
+  /> -->
+  <!-- <Print
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Print.id)"
     :print-options="printOptions"
-  />
+  /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"

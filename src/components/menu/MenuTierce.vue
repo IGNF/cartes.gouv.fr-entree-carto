@@ -14,15 +14,9 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
-import ModalTheme from '@/components/modals/ModalTheme.vue'
-import ShareModal from '@/components/carte/control/ShareModal.vue'
-import PrintModal from "../carte/control/PrintModal.vue";
 const mapStore = useMapStore();
  
-const refModalTheme = ref(null)
-const modalShareRef = ref(null)
-const refPrintModal = ref(null)
-const emit = defineEmits(['openControl'])
+const emit = defineEmits(['openControl', 'onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen'])
 
 function openControl(controlName) {
   mapStore.getMap().getControls().getArray().forEach(control => {
@@ -44,15 +38,6 @@ const iconProps = computed(() => typeof icon === 'string'
   : { scale: defaultScale.value, ...icon },
 );
 
-const onModalShareOpen = () => {
-  modalShareRef.value.onModalShareOpen()
-}
-const onModalThemeOpen = () => {
-  refModalTheme.value.openModalTheme()
-}
-const onModalPrintOpen = () => {
-  refPrintModal.value.onModalPrintOpen()
-}
 </script>
 
 <template>
@@ -69,7 +54,7 @@ const onModalPrintOpen = () => {
     tertiary
     no-outline
     icon="fr-icon-link"
-    @click="onModalShareOpen"
+    @click="$emit('onModalShareOpen')"
     >
     Partager, intégrer la carte
   </DsfrButton>
@@ -77,23 +62,19 @@ const onModalPrintOpen = () => {
     tertiary
     no-outline
     icon="px-print"
-    @click="onModalPrintOpen"
+    @click="$emit('onModalPrintOpen')"
     >
     Imprimer
   </DsfrButton>
   <DsfrButton
     tertiary
     no-outline
-    @click="onModalThemeOpen"
+    @click="$emit('onModalThemeOpen')"
     icon="fr-icon-theme-fill"
     >
     Paramètres d'affichage
   </DsfrButton>
 </div>
-
-<ModalTheme ref="refModalTheme" />
-<PrintModal ref="refPrintModal" />
-<ShareModal ref="modalShareRef"/>
 </template>
 
 <style scoped>
@@ -108,8 +89,5 @@ a {
   max-height: calc(70vh - 70px);
   overflow-y: auto;
   scrollbar-width: thin;
-}
-.modal {
-  z-index: 1;
 }
 </style>
