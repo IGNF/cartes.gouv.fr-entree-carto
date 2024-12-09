@@ -14,12 +14,17 @@
 </script>
 
 <script setup lang="js">
+import { useControlsPosition } from '@/composables/controls'
+import { useMapStore } from "@/stores/mapStore"
+
+const mapStore = useMapStore();
 
 const props = defineProps({
     icon: String,
     id: String,
     active: Boolean,
     title: String,
+    side: String
 })
 
 
@@ -28,7 +33,38 @@ const icon = props.icon
 const emit = defineEmits(['tabClicked'])
 
 const tabClicked = () => {
-    emit("tabClicked", props.id);
+  if(props.side == "left") {
+      closeLeftPanels()
+  }
+  if(props.side == "right") {
+    closeRightPanels()
+  }
+  emit("tabClicked", props.id);
+}
+
+const controlsPosition = useControlsPosition()
+
+function closePanel(control) {
+  let button = [...control.element.children].filter(e => {
+  if (e.className.includes("GPshowOpen"))
+      return e
+  })
+  if (button[0].getAttribute("aria-pressed") === "true")
+    button[0].click()
+}
+function closeRightPanels(event) {
+  mapStore.getMap().getControls().getArray().forEach(control => {
+    if (controlsPosition.right.includes(control.CLASSNAME)) {
+      closePanel(control)
+    }
+  })
+}
+function closeLeftPanels() {
+  mapStore.getMap().getControls().getArray().forEach(control => {
+    if (controlsPosition.left.includes(control.CLASSNAME)) {
+      closePanel(control)
+    }
+  })
 }
 </script>
 

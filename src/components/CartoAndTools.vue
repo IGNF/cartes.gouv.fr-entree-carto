@@ -2,16 +2,29 @@
 import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
-import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue'
-import MenuControl from '@/components/menu/MenuControl.vue';
+import ModalTheme from '@/components/modals/ModalTheme.vue'
+import ShareModal from '@/components/carte/control/ShareModal.vue'
+import PrintModal from "@/components/carte/control/PrintModal.vue";
 
-import { useControls } from '@/composables/controls'
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
 
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+ 
+const refModalTheme = ref(null)
+const modalShareRef = ref(null)
+const refPrintModal = ref(null)
+const onModalShareOpen = () => {
+  modalShareRef.value.onModalShareOpen()
+}
+const onModalThemeOpen = () => {
+  refModalTheme.value.openModalTheme()
+}
+const onModalPrintOpen = () => {
+  refPrintModal.value.onModalPrintOpen()
+}
 
 // INFO
 // Les listes sont initialisées via le mapStore, et 
@@ -45,44 +58,40 @@ const selectedControls = computed(() => {
   return controls;
 });
 
-provide("selectedLayers", selectedLayers);
+const cartoRef = ref(null)
 
+provide("selectedLayers", selectedLayers);
 </script>
 
 <template>
   <div id="map-and-tools-container">
 
     <!-- Le catalogue est dans le menu gauche -->
-    <LeftMenuTool>
-      <!-- 
-        On transmet la liste complète des couches du catalogue
-        ainsi que la liste des couches sélectionnées
-      -->
-      <MenuCatalogue
-        :selected-layers="selectedLayers"
-        :layers="dataStore.getLayers()"/>
-    </LeftMenuTool>
+    <LeftMenuTool
+      @on-modal-share-open="onModalShareOpen"
+      @on-modal-print-open="onModalPrintOpen"
+      @on-modal-theme-open="onModalThemeOpen"
+    />
 
     <!-- Module cartographique : 
      - liste des couches selectionnées
      - liste des controles selectionnés
     -->
     <Carto
+      ref="cartoRef"
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"/>
 
     <!-- Le menu des contrôles est dans le menu droite -->
-    <RightMenuTool>
-      <!-- On transmet la liste des contrôles selectionnés : 
-        >>> les controles du mapStore sont reactifs, donc dès que le 
-        >>> composant MenuControl modifie une valeur, il modifie le 
-        >>> mapStore des controles, ce qui repercute la selection sur 
-        >>> la méthode computed()
-      -->
-      <MenuControl 
-        :selected-controls="selectedControls"/>
-    </RightMenuTool>
-
+    <RightMenuTool
+      :selected-layers="selectedLayers"
+      :selected-controls="selectedControls"
+    />
+    <div class="modal-container">
+  <ModalTheme ref="refModalTheme" />
+  <PrintModal ref="refPrintModal" />
+  <ShareModal ref="modalShareRef"/>
+</div>
   </div>
 </template>
 

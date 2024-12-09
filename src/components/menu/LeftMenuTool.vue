@@ -1,17 +1,20 @@
 <script setup lang="js">
+import MenuTierce from '@/components/menu/MenuTierce.vue';
 
-const props = defineProps({})
+const props = defineProps({
+})
 
 const side = "left"
 const is_expanded = ref()
+
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
         {
-            componentName : "MenuCatalogue",
-            icon : "catalogIcon",
-            title : "Catalogue de données",
+            componentName : "MenuTierce",
+            icon : "ri-menu-fill",
+            title : "Menu Tierce",
         }
     ];
 
@@ -33,6 +36,13 @@ function tabClicked(newTab) {
 function tabIsActive(componentName) {
   return activeTab.value.replace("Content" , '') === componentName ? true : false
 }
+
+function closeMenu() {
+  wrapper.value.closeMenu()
+}
+
+const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen'])
+
 </script>
 
 <template>
@@ -43,14 +53,20 @@ function tabIsActive(componentName) {
     v-model="is_expanded"
     ref="wrapper">
     <template #content>
-      <div id="MenuCatalogueContent"
-        :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
-        <slot></slot>
+      <div id="MenuTierceContent"
+        :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
+        <MenuTierce
+          @open-control="closeMenu"
+          @on-modal-share-open="$emit('onModalShareOpen')"
+          @on-modal-print-open="$emit('onModalPrintOpen')"
+          @on-modal-theme-open="$emit('onModalThemeOpen')"
+        />
       </div>
     </template>
     <template #navButtons>
       <MenuLateralNavButton
         v-for="tab in tabArray"
+        :side="side"
         :icon="tab.icon"
         :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
