@@ -60,6 +60,9 @@ jobs:
                   context: .
                   file: .docker/Dockerfile
                   build-args: MODE_ENV=production
+                  secrets: |
+                    "IAM_CLIENT_ID=${{ secrets.IAM_CLIENT_ID }}"
+                    "IAM_CLIENT_SECRET=${{ secrets.IAM_CLIENT_SECRET }}"
                   pull: true
                   push: true
                   tags: ${{ steps.meta.outputs.tags }}
