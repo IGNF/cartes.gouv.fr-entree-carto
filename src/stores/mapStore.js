@@ -287,6 +287,21 @@ export const useMapStore = defineStore('map', () => {
       layers.value = layers.value.replace(l[index], id + "(" + values.join(";") + ")"); // string
     }
   }
+  function updateLayerPosition (ids) {
+    if (!ids) {
+      return;
+    }
+    var l = [];
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      const index = getLayers().indexOf(id);
+      if (index !== -1) {
+        var strLayer = layers.value.split(",")[index];
+        l.push(strLayer);
+      }
+    }
+    layers.value = l.join(",");
+  }
   function getLayerProperty (id) {
     const index = getLayers().indexOf(id);
     if (index !== -1) {
@@ -353,6 +368,7 @@ export const useMapStore = defineStore('map', () => {
     addLayer,
     removeLayer,
     updateLayerProperty,
+    updateLayerPosition,
     getLayerProperty,
     getControls,
     cleanControls,
