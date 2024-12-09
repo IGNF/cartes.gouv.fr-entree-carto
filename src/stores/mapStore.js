@@ -87,8 +87,17 @@ export const useMapStore = defineStore('map', () => {
 
   // gestion des KVP dans l'URL (permalink)
   var params = useUrlParams();
+  var defaultControls = DEFAULT.CONTROLS.split(",");
   for (const key in params) {
     if (Object.prototype.hasOwnProperty.call(params, key)) {
+      if (key === "controls") {
+        var myControls = params[key].split(",");
+        defaultControls.forEach(function(defaultControl) {
+          if (!myControls.includes(defaultControl)) {
+            params[key] = params[key] + "," + defaultControl;
+          }
+        })
+      }
       const value = params[key];
       localStorage.setItem(ns(key), value);
     }
