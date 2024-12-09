@@ -23,13 +23,7 @@ const DEFAULT = {
   LAT: 50.800781249995744, // informatif
   ZOOM: 12,
   FIRSTVISIT: false,
-  NOINFORMATION: null,
-  PRINT: {
-    ICON: false,
-    INFO: false,
-    TITLE: "",
-    COMMENT: ""
-  }
+  NOINFORMATION: null
 }
 
 /**
@@ -76,7 +70,6 @@ const ns = ((value) => {
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
  * 
- * @todo ordre des couches
  *
  */
 export const useMapStore = defineStore('map', () => {
@@ -114,10 +107,6 @@ export const useMapStore = defineStore('map', () => {
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
-  var title = useStorage(ns('print.title'), DEFAULT.PRINT.TITLE);
-  var comment = useStorage(ns('print.comment'), DEFAULT.PRINT.COMMENT);
-  var info = useStorage(ns('print.info'), DEFAULT.PRINT.INFO);
-  var geolocation = useStorage(ns('print.geolocation'), DEFAULT.PRINT.ICON);
 
   //////////////////
   // objets calculés
@@ -138,7 +127,7 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&m=${comment.value}&i=${info.value}&t=${title.value}&g=${geolocation.value}&permalink=yes`;
+    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
   });
 
   var center = computed(() => {
@@ -215,18 +204,6 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
-  })
-  watch(title, () => {
-    localStorage.setItem(ns('print.title'), title.value.toString()); // string
-  })
-  watch(comment, () => {
-    localStorage.setItem(ns('print.comment'), comment.value.toString()); // string
-  })
-  watch(info, () => {
-    localStorage.setItem(ns('print.info'), info.value); // boolean
-  })
-  watch(geolocation, () => {
-    localStorage.setItem(ns('print.geolocation'), icon.value); // boolean
   })
 
   //////////////////
@@ -349,10 +326,6 @@ export const useMapStore = defineStore('map', () => {
     lat,
     firstVisit,
     noInformation,
-    title,
-    comment,
-    info,
-    geolocation,
     permalink,
     permalinkShare,
     getMap,
