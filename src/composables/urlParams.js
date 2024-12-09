@@ -11,11 +11,8 @@ import {
  * - x / y : ...
  * - lon / lat : ...
  * - layers : ... 
+ * - controls : ...
  * - zoom : ...
- * - commentaire : "m" string avec contenu encodé
- * - titre : "t" string avec contenu encodé
- * - localisation : "g" boolean, ajout d'un icone
- * - informations : "i" boolean, ajout d'informations prédéfinies
  * 
  * @example
  * http://localhost:5173/cartes.gouv.fr-entree-carto/embed?
@@ -47,18 +44,8 @@ export function useUrlParams() {
           params.layers = urlParams[key];
           break;
         case "w":
-          // FIXME utile ? la liste devrait être fixe...
           params.controls = urlParams[key];
           break;
-        case "m":
-          console.debug("not yet implemented !");
-          break;
-        case "t":
-          console.debug("not yet implemented !");
-          break;
-        case "i":
-          console.debug("not yet implemented !");
-          break;  
         case "z":
           params.zoom = parseInt(urlParams[key], 10);
           break;
