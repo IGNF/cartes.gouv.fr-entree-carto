@@ -70,38 +70,8 @@ log.debug(props.controlOptions);
 const shareOptions = {};
 const printOptions = {};
 
-const territoriesOptions = {
-  position: 'bottom-left',
-  panel : true,
-  title : "Sélectionner un territoire",
-  auto : false, // chargement auto des territoires par defaut
-  thumbnail : false, // imagette des territoires
-  reduce : false, // tuiles reduites par defaut
-  tiles : 3,
-};
-
-const layerSwitcherOptions = {
-  options: {
-    position : "top-right",
-    collapsed: true,
-    panel: true,
-    counter: true
-  }
-};
-
-const legendsOptions = {
-  position: "top-right",
-  panel: true,
-  auto: true,
-  draggable: false
-};
-
-const scaleLineOptions = {
-  units: 'metric',
-  bar: false,
-};
-
 const searchEngineOptions = {
+  id: "1",
   collapsed: false,
   collapsible: false,
   displayButtonAdvancedSearch: true,
@@ -121,85 +91,119 @@ const searchEngineOptions = {
   markerUrl : IconGeolocationSVG
 };
 
+const layerSwitcherOptions = {
+  id: "2",
+  options: {
+    position : "top-right",
+    collapsed: true,
+    panel: true,
+    counter: true
+  }
+};
+
+const legendsOptions = {
+  id: "3",
+  position: "top-right",
+  panel: true,
+  auto: true,
+  draggable: false
+};
+
+const scaleLineOptions = {
+  id: "4",
+  units: 'metric',
+  bar: false,
+};
+
+const territoriesOptions = {
+  id: "5",
+  position: 'bottom-left',
+  panel : true,
+  title : "Sélectionner un territoire",
+  auto : false, // chargement auto des territoires par defaut
+  thumbnail : false, // imagette des territoires
+  reduce : false, // tuiles reduites par defaut
+  tiles : 3,
+};
+
 const getFeatureInfoOptions = {
+  id: "6",
   position: 'bottom-left'
 };
 
 const overviewMapOptions = {
+  id: "7",
   position: 'bottom-left'
 };
 
+const fullscreenOptions = {
+  id: "8",
+  position: 'bottom-right'
+};
+
 const zoomOptions = {
+  id: "9",
   position: 'bottom-right',
 };
 
-const drawingOptions = {
-  position: 'top-right',
-  gutter: false,
-  listable: true,
-}
-
-const attributionsOptions = {}
-
 const controlListOptions = {
+  id: "10",
   position: 'top-right',
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
 }
 
+const drawingOptions = {
+  id: "11",
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+}
+
+const reverseGeocodeOptions = {
+  id: "12",
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
+
 const isocurveOptions = {
+  id: "13",
   position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const routeOptions = {
+  id: "14",
   position: 'top-right',
   gutter: false,
   listable: true,
-};
-
-const reverseGeocodeOptions = {
-  position: 'top-right',
-  gutter: false,
-  listable: true,
-};
-
-const fullscreenOptions = {
-  position: 'bottom-right'
 };
 
 const measureLengthOptions = {
+  id: "15",
   position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const measureAreaOptions = {
+  id: "16",
   position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const measureAzimuthOptions = {
-  position: 'top-right',
-  gutter: false,
-  listable: true,
-};
-
-const elevationPathOptions = {
-  position: 'top-right',
-  gutter: false,
-  listable: true,
-};
-
-const layerImportOptions = {
+  id: "17",
   position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const mousePositionOptions = {
+  id: "18",
   position: 'top-right',
   gutter: false,
   listable: true,
@@ -340,6 +344,20 @@ const mousePositionOptions = {
       geoBBox : { left: 156.25, bottom : -26.45, right : 174.28, top : -14.83 }
     }
   ]
+};
+
+const elevationPathOptions = {
+  id: "19",
+  position: 'top-right',
+  gutter: false,
+  listable: true,
+};
+
+const layerImportOptions = {
+  id: "20",
+  position: 'top-right',
+  gutter: false,
+  listable: true,
 };
 
 </script>
