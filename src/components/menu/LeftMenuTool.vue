@@ -68,7 +68,6 @@ const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeO
       <div id="MenuTierceContent"
         :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
         <MenuTierce
-          @open-control="closeMenu"
           @on-modal-share-open="$emit('onModalShareOpen')"
           @on-modal-print-open="$emit('onModalPrintOpen')"
           @on-modal-theme-open="$emit('onModalThemeOpen')"
