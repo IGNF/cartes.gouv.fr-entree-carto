@@ -18,11 +18,13 @@ const tabArray = computed(() => {
             componentName : "MenuCatalogue",
             icon : "catalogIcon",
             title : "Catalogue de données",
+            visibility : true
         },
         {
             componentName : "MenuControl",
             icon : "menuWidgetIcon",
             title : "Catalogue d'outils",
+            visibility : true
         }
     ];
 
@@ -70,6 +72,7 @@ function tabIsActive(componentName) {
     <template #navButtons>
       <MenuLateralNavButton
         v-for="tab in tabArray"
+        :visibility="tab.visibility"
         :side="side"
         :icon="tab.icon"
         :id="tab.componentName"

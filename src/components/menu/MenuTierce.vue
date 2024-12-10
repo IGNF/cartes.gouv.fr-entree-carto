@@ -16,7 +16,7 @@
 import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore();
  
-const emit = defineEmits(['openControl', 'onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen'])
+const emit = defineEmits(['openControl', 'onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen', 'onEnregistrementOpen'])
 
 function openControl(controlName) {
   mapStore.getMap().getControls().getArray().forEach(control => {
@@ -73,6 +73,14 @@ const iconProps = computed(() => typeof icon === 'string'
     icon="fr-icon-theme-fill"
     >
     Paramètres d'affichage
+  </DsfrButton>
+  <DsfrButton
+    tertiary
+    no-outline
+    @click="$emit('onEnregistrementOpen')"
+    icon="ri-bookmark-line"
+    >
+    Enregistrement
   </DsfrButton>
 </div>
 </template>

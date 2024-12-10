@@ -24,7 +24,8 @@ const props = defineProps({
     id: String,
     active: Boolean,
     title: String,
-    side: String
+    side: String,
+    visibility: Boolean
 })
 
 
@@ -66,20 +67,37 @@ function closeLeftPanels() {
     }
   })
 }
+
+function clickButton() {
+  console.log("click on button" + props.id)
+  button.click()
+}
+const button = ref(null)
+const id = ref(props.id)
+defineExpose({
+  clickButton,
+  button,
+  id
+})
 </script>
 
 
 
 <template>
+  <div
+  ref="button"
+  >
     <DsfrButton
       :id="id"
       secondary
       :aria-label="title"
-      :class="`${active ? 'active': ''}  'navBarIcon'` && 'navButton'"
+      :class="`${active ? 'active': ''}  navBarIcon ${visibility ? '' : 'invisibleNavButton'} navButton` "
       :icon="icon"
       :iconOnly="true"
       @click="tabClicked">
     </DsfrButton>
+  </div>
+
 </template>
 
 
@@ -95,9 +113,13 @@ function closeLeftPanels() {
   background-color: var(--background-default-grey);
 }
 
+.invisibleNavButton {
+  display: none;
+}
+
 .navButton[aria-label]:hover::before {
   content: attr(aria-label);
-  position: absolute;
+  position: relative;
   top: 0;
   color: var(--text-default-grey);
   font-size: .75rem;
