@@ -14,6 +14,8 @@ Version 1.0.1 de l'entrée cartographique de la Géoplateforme.
 
 #### ✨ [Ajout]
 
+* Ajout d'un module de connexion à la GeoPlateforme [#361](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/361)
+
 * Ajout du widget d'import de données [#324](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/324)
 
 * Ajout du widget de getFeatureInfo pour récupérer les informations attributaires des couches au clic [#354](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/354)
@@ -53,4 +55,5 @@ Version 1.0.1 de l'entrée cartographique de la Géoplateforme.
 * Ouverture responsive des panels des widgets sur petits écrans [#360](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/360)
 
 #### 🔒 [Sécurité]
+
 ---
