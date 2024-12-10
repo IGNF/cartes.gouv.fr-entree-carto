@@ -11,6 +11,8 @@
 </script>
 
 <script setup lang="js">
+import IconGeolocationSVG from "../../assets/geolocation.svg";
+
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
 import OverviewMap from './control/OverviewMap.vue';
@@ -34,10 +36,9 @@ import Print from './control/Print.vue'
 import Share from './control/Share.vue';
 
 // Icone pour le marker du widget SearcEngine
-import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { useDataStore } from '@/stores/dataStore';
-import { useControls } from '@/composables/controls';
+import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 
 const props = defineProps({
@@ -67,11 +68,15 @@ log.debug(props.controlOptions);
 
 // liste des options pour les contrôles;
 
-const shareOptions = {};
-const printOptions = {};
+const shareOptions = {
+  position: useControlsExtensionPosition().shareOptions
+};
+const printOptions = {
+  position: useControlsExtensionPosition().printOptions
+};
 
 const territoriesOptions = {
-  position: 'bottom-left',
+  position: useControlsExtensionPosition().territoriesOptions,
   panel : true,
   title : "Sélectionner un territoire",
   auto : false, // chargement auto des territoires par defaut
@@ -82,7 +87,7 @@ const territoriesOptions = {
 
 const layerSwitcherOptions = {
   options: {
-    position : "top-right",
+    position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
     panel: true,
     counter: true
@@ -90,7 +95,7 @@ const layerSwitcherOptions = {
 };
 
 const legendsOptions = {
-  position: "top-right",
+  position: useControlsExtensionPosition().legendsOptions,
   panel: true,
   auto: true,
   draggable: false
@@ -122,15 +127,15 @@ const searchEngineOptions = {
 };
 
 const getFeatureInfoOptions = {
-  position: 'bottom-left'
+  position: useControlsExtensionPosition().getFeatureInfoOptions
 };
 
 const overviewMapOptions = {
-  position: 'bottom-left'
+  position: useControlsExtensionPosition().overviewMapOptions
 };
 
 const zoomOptions = {
-  position: 'bottom-right',
+  position: useControlsExtensionPosition().zoomOptions,
 };
 
 const drawingOptions = {
@@ -142,65 +147,65 @@ const drawingOptions = {
 const attributionsOptions = {}
 
 const controlListOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().controlListOptions,
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
 }
 
 const isocurveOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().isocurveOptions,
   gutter: false,
   listable: true,
 };
 
 const routeOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().routeOptions,
   gutter: false,
   listable: true,
 };
 
 const reverseGeocodeOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
 };
 
 const fullscreenOptions = {
-  position: 'bottom-right'
+  position: useControlsExtensionPosition().fullscreenOptions
 };
 
 const measureLengthOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().measureLengthOptions,
   gutter: false,
   listable: true,
 };
 
 const measureAreaOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().measureAreaOptions,
   gutter: false,
   listable: true,
 };
 
 const measureAzimuthOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().measureAzimuthOptions,
   gutter: false,
   listable: true,
 };
 
 const elevationPathOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
 };
 
 const layerImportOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().layerImportOptions,
   gutter: false,
   listable: true,
 };
 
 const mousePositionOptions = {
-  position: 'top-right',
+  position: useControlsExtensionPosition().mousePositionOptions,
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
@@ -341,23 +346,22 @@ const mousePositionOptions = {
     }
   ]
 };
-
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
 >>> sinon, visibility:false
 -->
 <template>
-  <Share
+  <!-- <Share
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Share.id)"
-    :share-options="shareOptions"
-  />
-  <Print
+    :share-options="useControlsExtensionPosition()().shareOptions"
+  /> -->
+  <!-- <Print
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Print.id)"
     :print-options="printOptions"
-  />
+  /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
@@ -661,7 +665,7 @@ const mousePositionOptions = {
 
   .position-container-top-right,
   .position-container-top-left {
-    top: 98px;
+    top: 99px;
   }
 }
 @media (max-width: 576px) {
