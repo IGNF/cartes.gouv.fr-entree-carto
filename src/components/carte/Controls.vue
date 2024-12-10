@@ -69,14 +69,14 @@ log.debug(props.controlOptions);
 // liste des options pour les contrôles;
 
 const shareOptions = {
-  position: useControlsExtensionPosition.shareOptions
+  position: useControlsExtensionPosition().shareOptions
 };
 const printOptions = {
-  position: useControlsExtensionPosition.printOptions
+  position: useControlsExtensionPosition().printOptions
 };
 
 const territoriesOptions = {
-  position: useControlsExtensionPosition.territoriesOptions,
+  position: useControlsExtensionPosition().territoriesOptions,
   panel : true,
   title : "Sélectionner un territoire",
   auto : false, // chargement auto des territoires par defaut
@@ -87,7 +87,7 @@ const territoriesOptions = {
 
 const layerSwitcherOptions = {
   options: {
-    position : useControlsExtensionPosition.layerSwitcherOptions,
+    position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
     panel: true,
     counter: true
@@ -95,7 +95,7 @@ const layerSwitcherOptions = {
 };
 
 const legendsOptions = {
-  position: useControlsExtensionPosition.legendsOptions,
+  position: useControlsExtensionPosition().legendsOptions,
   panel: true,
   auto: true,
   draggable: false
@@ -127,15 +127,15 @@ const searchEngineOptions = {
 };
 
 const getFeatureInfoOptions = {
-  position: useControlsExtensionPosition.getFeatureInfoOptions
+  position: useControlsExtensionPosition().getFeatureInfoOptions
 };
 
 const overviewMapOptions = {
-  position: useControlsExtensionPosition.overviewMapOptions
+  position: useControlsExtensionPosition().overviewMapOptions
 };
 
 const zoomOptions = {
-  position: useControlsExtensionPosition.zoomOptions,
+  position: useControlsExtensionPosition().zoomOptions,
 };
 
 const drawingOptions = {
@@ -147,65 +147,65 @@ const drawingOptions = {
 const attributionsOptions = {}
 
 const controlListOptions = {
-  position: useControlsExtensionPosition.controlListOptions,
+  position: useControlsExtensionPosition().controlListOptions,
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
 }
 
 const isocurveOptions = {
-  position: useControlsExtensionPosition.isocurveOptions,
+  position: useControlsExtensionPosition().isocurveOptions,
   gutter: false,
   listable: true,
 };
 
 const routeOptions = {
-  position: useControlsExtensionPosition.routeOptions,
+  position: useControlsExtensionPosition().routeOptions,
   gutter: false,
   listable: true,
 };
 
 const reverseGeocodeOptions = {
-  position: useControlsExtensionPosition.reverseGeocodeOptions,
+  position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
 };
 
 const fullscreenOptions = {
-  position: useControlsExtensionPosition.fullscreenOptions
+  position: useControlsExtensionPosition().fullscreenOptions
 };
 
 const measureLengthOptions = {
-  position: useControlsExtensionPosition.measureLengthOptions,
+  position: useControlsExtensionPosition().measureLengthOptions,
   gutter: false,
   listable: true,
 };
 
 const measureAreaOptions = {
-  position: useControlsExtensionPosition.measureAreaOptions,
+  position: useControlsExtensionPosition().measureAreaOptions,
   gutter: false,
   listable: true,
 };
 
 const measureAzimuthOptions = {
-  position: useControlsExtensionPosition.measureAzimuthOptions,
+  position: useControlsExtensionPosition().measureAzimuthOptions,
   gutter: false,
   listable: true,
 };
 
 const elevationPathOptions = {
-  position: useControlsExtensionPosition.elevationPathOptions,
+  position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
 };
 
 const layerImportOptions = {
-  position: useControlsExtensionPosition.layerImportOptions,
+  position: useControlsExtensionPosition().layerImportOptions,
   gutter: false,
   listable: true,
 };
 
 const mousePositionOptions = {
-  position: useControlsExtensionPosition.mousePositionOptions,
+  position: useControlsExtensionPosition().mousePositionOptions,
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
@@ -355,7 +355,7 @@ const mousePositionOptions = {
   <!-- <Share
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Share.id)"
-    :share-options="useControlsExtensionPosition().shareOptions"
+    :share-options="useControlsExtensionPosition()().shareOptions"
   /> -->
   <!-- <Print
     v-if="controlOptions"
@@ -366,97 +366,97 @@ const mousePositionOptions = {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :analytic="useControls.LayerSwitcher.analytic"
-    :layer-switcher-options="useControlsExtensionPosition().layerSwitcherOptions"
+    :layer-switcher-options="layerSwitcherOptions"
   />
   <Legends
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
     :analytic="useControls.Legends.analytic"
-    :legends-options="useControlsExtensionPosition().legendsOptions"
+    :legends-options="legendsOptions"
   />
   <Route
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Route.id)"
     :analytic="useControls.Route.analytic"
-    :route-options="useControlsExtensionPosition().routeOptions"
+    :route-options="routeOptions"
   />
   <Isocurve
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
     :analytic="useControls.Isocurve.analytic"
-    :isocurve-options="useControlsExtensionPosition().isocurveOptions"
+    :isocurve-options="isocurveOptions"
   />
   <ReverseGeocode
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
     :analytic="useControls.ReverseGeocode.analytic"
-    :reverse-geocode-options="useControlsExtensionPosition().reverseGeocodeOptions"
+    :reverse-geocode-options="reverseGeocodeOptions"
   />
   <FullScreen
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
     :analytic="useControls.FullScreen.analytic"
-    :fullscreen-options="useControlsExtensionPosition().fullscreenOptions"
+    :fullscreen-options="fullscreenOptions"
   />
   <Zoom
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :analytic="useControls.Zoom.analytic"
-    :zoom-options="useControlsExtensionPosition().zoomOptions"
+    :zoom-options="zoomOptions"
   />
   <SearchEngine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :analytic="useControls.SearchEngine.analytic"
-    :search-engine-options="useControlsExtensionPosition().searchEngineOptions"
+    :search-engine-options="searchEngineOptions"
   />
   <GetFeatureInfo
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
     :analytic="useControls.GetFeatureInfo.analytic"
-    :get-feature-info-options="useControlsExtensionPosition().getFeatureInfoOptions"
+    :get-feature-info-options="getFeatureInfoOptions"
   />
   <ScaleLine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
     :analytic="useControls.ScaleLine.analytic"
-    :scale-line-options="useControlsExtensionPosition().scaleLineOptions"
+    :scale-line-options="scaleLineOptions"
   />
   <OverviewMap
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :analytic="useControls.OverviewMap.analytic"
-    :overview-map-options="useControlsExtensionPosition().overviewMapOptions"
+    :overview-map-options="overviewMapOptions"
   />
   <Territories
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Territories.id)"
     :analytic="useControls.Territories.analytic"
-    :territories-options="useControlsExtensionPosition().territoriesOptions"
+    :territories-options="territoriesOptions"
   />
   <MeasureLength
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
     :analytic="useControls.MeasureLength.analytic"
-    :measure-length-options="useControlsExtensionPosition().measureLengthOptions"
+    :measure-length-options="measureLengthOptions"
   />
   <MeasureArea
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
     :analytic="useControls.MeasureArea.analytic"
-    :measure-area-options="useControlsExtensionPosition().measureAreaOptions"
+    :measure-area-options="measureAreaOptions"
   />
   <MeasureAzimuth
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
     :analytic="useControls.MeasureAzimuth.analytic"
-    :measure-azimuth-options="useControlsExtensionPosition().measureAzimuthOptions"
+    :measure-azimuth-options="measureAzimuthOptions"
   />
   <MousePosition
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
-    :mouse-position-options="useControlsExtensionPosition().mousePositionOptions"
+    :mouse-position-options="mousePositionOptions"
   />
   <Drawing
     v-if="controlOptions"
@@ -468,19 +468,19 @@ const mousePositionOptions = {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
     :analytic="useControls.ElevationPath.analytic"
-    :elevation-path-options="useControlsExtensionPosition().elevationPathOptions"
+    :elevation-path-options="elevationPathOptions"
   />
   <LayerImport
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
     :analytic="useControls.LayerImport.analytic"
-    :layer-import-options="useControlsExtensionPosition().layerImportOptions"
+    :layer-import-options="layerImportOptions"
   />
   <ControlList
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
     :analytic="useControls.ControlList.analytic"
-    :control-list-options="useControlsExtensionPosition().controlListOptions"
+    :control-list-options="controlListOptions"
   />
 </template>
 
