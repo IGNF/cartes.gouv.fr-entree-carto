@@ -167,9 +167,6 @@ const reverseGeocodeOptions = {
   listable: true,
 };
 
-const attributionsOptions = {}
-
-
 const isocurveOptions = {
   id: "13",
   position: 'top-right',
