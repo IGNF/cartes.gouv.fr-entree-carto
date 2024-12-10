@@ -328,63 +328,25 @@ export function useControlsMenuOptions() {
 
 export function useControlsExtensionPosition() {
   return {
-    shareOptions : {
-      position: 'top-left'
-    },
-    printOptions : {
-      position: 'top-right'
-    },
-    territoriesOptions : {
-      position: 'bottom-left',
-    },
-    layerSwitcherOptions : {
-        position : "top-right",
-    },
-    legendsOptions : {
-      position: "top-right",
-    },
-    getFeatureInfoOptions : {
-      position: 'bottom-left'
-    },
-    overviewMapOptions : {
-      position: 'bottom-left'
-    },
-    zoomOptions : {
-      position: 'bottom-right',
-    },
-    controlListOptions : {
-      position: 'top-right',
-    },
-    isocurveOptions : {
-      position: 'top-right',
-    },
-    routeOptions : {
-      position: 'top-right',
-    },
-    reverseGeocodeOptions : {
-      position: 'top-right',
-    },
-    fullscreenOptions : {
-      position: 'bottom-right'
-    },
-    measureLengthOptions : {
-      position: 'top-right',
-    },
-    measureAreaOptions : {
-      position: 'top-right',
-    },
-    measureAzimuthOptions : {
-      position: 'top-right',
-    },
-    elevationPathOptions : {
-      position: 'top-right',
-    },
-    layerImportOptions : {
-      position: 'top-right',
-    },
-    mousePositionOptions : {
-      position: 'top-right',
-    }
+    shareOptions : 'top-left',
+    printOptions : 'top-right',
+    territoriesOptions : 'bottom-left',
+    layerSwitcherOptions : "top-right",
+    legendsOptions : "top-right",
+    getFeatureInfoOptions : 'bottom-left',
+    overviewMapOptions : 'bottom-left',
+    zoomOptions : 'bottom-right',
+    controlListOptions : 'top-right',
+    isocurveOptions : 'top-right',
+    routeOptions : 'top-right',
+    reverseGeocodeOptions : 'top-right',
+    fullscreenOptions : 'bottom-right',
+    measureLengthOptions : 'top-right',
+    measureAreaOptions : 'top-right',
+    measureAzimuthOptions : 'top-right',
+    elevationPathOptions : 'top-right',
+    layerImportOptions : 'top-right',
+    mousePositionOptions : 'top-right'
   }
 }
 
@@ -392,84 +354,84 @@ export function useControlsPosition() {
   let leftC = []
   let rightC = []
   // Share
-  if (useControlsExtensionPosition().shareOptions.position.includes("left"))
+  if (useControlsExtensionPosition().shareOptions.includes("left"))
     leftC.push(useControls.Share.id)
-  if (useControlsExtensionPosition().shareOptions.position.includes("right"))
+  if (useControlsExtensionPosition().shareOptions.includes("right"))
     rightC.push(useControls.Share.id)
   // Print
-  if (useControlsExtensionPosition().printOptions.position.includes("left"))
+  if (useControlsExtensionPosition().printOptions.includes("left"))
     leftC.push(useControls.Print.id)
-  if (useControlsExtensionPosition().printOptions.position.includes("right"))
+  if (useControlsExtensionPosition().printOptions.includes("right"))
     rightC.push(useControls.Print.id)
   // LayerSwitcher
-  if (useControlsExtensionPosition().layerSwitcherOptions.position.includes("left"))
+  if (useControlsExtensionPosition().layerSwitcherOptions.includes("left"))
     leftC.push(useControls.LayerSwitcher.id)
-  if (useControlsExtensionPosition().layerSwitcherOptions.position.includes("right"))
+  if (useControlsExtensionPosition().layerSwitcherOptions.includes("right"))
     rightC.push(useControls.LayerSwitcher.id)
   // Legends
-  if (useControlsExtensionPosition().legendsOptions.position.includes("left"))
+  if (useControlsExtensionPosition().legendsOptions.includes("left"))
     leftC.push(useControls.Legends.id)
-  if (useControlsExtensionPosition().legendsOptions.position.includes("right"))
+  if (useControlsExtensionPosition().legendsOptions.includes("right"))
     rightC.push(useControls.Legends.id)  
   // Route
-  if (useControlsExtensionPosition().routeOptions.position.includes("left"))
+  if (useControlsExtensionPosition().routeOptions.includes("left"))
     leftC.push(useControls.Route.id)
-  if (useControlsExtensionPosition().routeOptions.position.includes("right"))
+  if (useControlsExtensionPosition().routeOptions.includes("right"))
     rightC.push(useControls.Route.id)    
   // Isocurve
-  if (useControlsExtensionPosition().isocurveOptions.position.includes("left"))
+  if (useControlsExtensionPosition().isocurveOptions.includes("left"))
     leftC.push(useControls.Isocurve.id)
-  if (useControlsExtensionPosition().isocurveOptions.position.includes("right"))
+  if (useControlsExtensionPosition().isocurveOptions.includes("right"))
     rightC.push(useControls.Isocurve.id) 
   // ReverseGeocode
-  if (useControlsExtensionPosition().reverseGeocodeOptions.position.includes("left"))
+  if (useControlsExtensionPosition().reverseGeocodeOptions.includes("left"))
     leftC.push(useControls.ReverseGeocode.id)
-  if (useControlsExtensionPosition().reverseGeocodeOptions.position.includes("right"))
+  if (useControlsExtensionPosition().reverseGeocodeOptions.includes("right"))
     rightC.push(useControls.ReverseGeocode.id) 
   // GetFeatureInfo
-  if (useControlsExtensionPosition().getFeatureInfoOptions.position.includes("left"))
+  if (useControlsExtensionPosition().getFeatureInfoOptions.includes("left"))
     leftC.push(useControls.GetFeatureInfo.id)
-  if (useControlsExtensionPosition().getFeatureInfoOptions.position.includes("right"))
+  if (useControlsExtensionPosition().getFeatureInfoOptions.includes("right"))
     rightC.push(useControls.GetFeatureInfo.id)  
   // Territories
-  if (useControlsExtensionPosition().territoriesOptions.position.includes("left"))
+  if (useControlsExtensionPosition().territoriesOptions.includes("left"))
     leftC.push(useControls.Territories.id)
-  if (useControlsExtensionPosition().territoriesOptions.position.includes("right"))
+  if (useControlsExtensionPosition().territoriesOptions.includes("right"))
     rightC.push(useControls.Territories.id) 
   // MeasureLength
-  if (useControlsExtensionPosition().measureLengthOptions.position.includes("left"))
+  if (useControlsExtensionPosition().measureLengthOptions.includes("left"))
     leftC.push(useControls.MeasureLength.id)
-  if (useControlsExtensionPosition().measureLengthOptions.position.includes("right"))
+  if (useControlsExtensionPosition().measureLengthOptions.includes("right"))
     rightC.push(useControls.MeasureLength.id) 
   // MeasureArea
-  if (useControlsExtensionPosition().measureAreaOptions.position.includes("left"))
+  if (useControlsExtensionPosition().measureAreaOptions.includes("left"))
     leftC.push(useControls.MeasureArea.id)
-  if (useControlsExtensionPosition().measureAreaOptions.position.includes("right"))
+  if (useControlsExtensionPosition().measureAreaOptions.includes("right"))
     rightC.push(useControls.MeasureArea.id) 
   // MeasureAzimuth
-  if (useControlsExtensionPosition().measureAzimuthOptions.position.includes("left"))
+  if (useControlsExtensionPosition().measureAzimuthOptions.includes("left"))
     leftC.push(useControls.MeasureAzimuth.id)
-  if (useControlsExtensionPosition().measureAzimuthOptions.position.includes("right"))
+  if (useControlsExtensionPosition().measureAzimuthOptions.includes("right"))
     rightC.push(useControls.MeasureAzimuth.id) 
   // MousePosition
-  if (useControlsExtensionPosition().mousePositionOptions.position.includes("left"))
+  if (useControlsExtensionPosition().mousePositionOptions.includes("left"))
     leftC.push(useControls.MousePosition.id)
-  if (useControlsExtensionPosition().mousePositionOptions.position.includes("right"))
+  if (useControlsExtensionPosition().mousePositionOptions.includes("right"))
     rightC.push(useControls.MousePosition.id) 
   // ElevationPath
-  if (useControlsExtensionPosition().elevationPathOptions.position.includes("left"))
+  if (useControlsExtensionPosition().elevationPathOptions.includes("left"))
     leftC.push(useControls.ElevationPath.id)
-  if (useControlsExtensionPosition().elevationPathOptions.position.includes("right"))
+  if (useControlsExtensionPosition().elevationPathOptions.includes("right"))
     rightC.push(useControls.ElevationPath.id) 
   // LayerImport
-  if (useControlsExtensionPosition().layerImportOptions.position.includes("left"))
+  if (useControlsExtensionPosition().layerImportOptions.includes("left"))
     leftC.push(useControls.LayerImport.id)
-  if (useControlsExtensionPosition().layerImportOptions.position.includes("right"))
+  if (useControlsExtensionPosition().layerImportOptions.includes("right"))
     rightC.push(useControls.LayerImport.id) 
   // ControlList
-  if (useControlsExtensionPosition().controlListOptions.position.includes("left"))
+  if (useControlsExtensionPosition().controlListOptions.includes("left"))
     leftC.push(useControls.ControlList.id)
-  if (useControlsExtensionPosition().controlListOptions.position.includes("right"))
+  if (useControlsExtensionPosition().controlListOptions.includes("right"))
     rightC.push(useControls.ControlList.id) 
 
   return {
