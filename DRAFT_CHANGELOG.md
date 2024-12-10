@@ -1,38 +1,46 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.1...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.2...HEAD>
 
-## 🔖 version 1.0.1 - __DATE__
+## 🔖 version 1.0.2 - __DATE__
 
 ### 🎉 Résumé
 
-Version 1.0.1 de l'entrée cartographique de la Géoplateforme.
+Version 1.0.2 de l'entrée cartographique de la Géoplateforme.
 
 ### 💥 Breaking changes
 
+LocalStorage incrémenté : perte des informations enregistrées dans les données de session.
+
 ### 📖 Changelog
+
+Version 1.0.2 de l'entrée cartographique de la Géoplateforme.
+
+Principaux changements :
+- amélioration des performances lorsque l'utilisateur donne son consentement à la collecte des cookies
+- ajout de nouvelles fonctionnalités : dessin, impression
+- modification du positionnement des widgets sur l'interface
+- corrections multiples sur le partage et l'affichage de certains éléments
 
 #### ✨ [Ajout]
 
-* Ajout du widget d'import de données [#324](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/324)
+* Ajout du widget ControlList qui permet de limiter les nombre de boutons de widgets affichés à l'écran selon sa hauteur [#394](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/394) et [#396](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/396)
 
-* Ajout du widget de getFeatureInfo pour récupérer les informations attributaires des couches au clic [#354](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/354)
+* Ajout d'une première version du widget de dessin [#373](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/373)
 
-* Ajout du widget de profil altimétrique [#325](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/325)
-
-* Ajout des tooltips DSFR au survol des boutons des widgets [extensions:#210](https://github.com/IGNF/geopf-extensions-openlayers/pull/210)
+* Ajout d'une première version de la fonctionnalité d'impression [#379](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/379)
 
 #### 🔨 [Evolution]
 
-* LayerSwitcher et Barre de recherche en widgets fixes [#348](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/348)
+* Ajout temporaire dans la barre de recherche des couches privées accessibles via la clé ign_scan_ws [276e7b4](https://github.com/IGNF/cartes.gouv.fr-entree-carto/commit/276e7b433d2c5b0a7c9f28f70cebc3d589b6608a)
 
-* Positionnement fixe des panel "dialog" des widgets [#350](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/350)
+* Repositionnement des widgets sur l'interface cartographique [#391](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/391)
 
-* Ajout d'un marker sur la carte lors d'un centrage via la barre de recherche (simple ou avancée) [#345](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/345)
+* Mise en avant de certaines couches dans es résultats de la barre de recherche [7dc9abb](https://github.com/IGNF/cartes.gouv.fr-entree-carto/commit/7dc9abbe502c5fe87dbb82ee89232f4fcb105dfa)
 
-* Ajout d'une version au localStorage pour que celui-ci se vide si besoin en cas de relivraison du composant [#353](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/353)
+* Changement sur l'interface du menu de gestion des widgets  [#392](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/392)
 
-* Plus haute priorité donnée aux couches WMTS dans la recherche pour privilégier les couches WMTS aux WMS si les deux sont disponibles [extensions:#214](https://github.com/IGNF/geopf-extensions-openlayers/pull/214)
+* ID unique pour les éléments trackés par Eulerian [#411](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/411)
 
 #### 🔥 [Obsolète]
 
@@ -40,17 +48,17 @@ Version 1.0.1 de l'entrée cartographique de la Géoplateforme.
 
 #### 🐛 [Correction]
 
-* Partage par mail [#347](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/347)
+* Retrait des doubles tooltips pour les boutons catalogue, widgets et partage [#383](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/383)
 
-* Passage des boutons des widgets en type "secondaires" [#352](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/352)
+* Positionnement des boutons sur petit écran en mode mobile [#397](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/397)
 
-* Mise en conformité des liens de footer au DSFR [#357](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/357)
+* Mise à jour de la dépendance au DSFR en version 1.13.0 pour amélioration des performances du tracking Eulerian [#404](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/404)
 
-* Prise en compte des choix utilisateurs (thème + consentement) partagés entre les briques de cartes.gouv [issue:1d5eb02321ebdc3427f4ac7d4a14ceb7c58fed3c](https://github.com/IGNF/cartes.gouv.fr-entree-carto/commit/1d5eb02321ebdc3427f4ac7d4a14ceb7c58fed3c)
+* Affichage des panels en mode mobile lorsque le footer est déplié [#406](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/406)
 
-* Placement correct de la barre latéral de widget actif sous Firefox et Chrome [extensions:#219](https://github.com/IGNF/geopf-extensions-openlayers/pull/219)
+* Synchronisation de l'ordre d'empilement des couches dans le permalien de partage [#409](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/409)
 
-* Ouverture responsive des panels des widgets sur petits écrans [#360](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/360)
+* Widgets par défaut toujours ajoutés par le permalien [#410](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/410)
 
 #### 🔒 [Sécurité]
 ---
