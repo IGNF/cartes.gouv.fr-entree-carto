@@ -82,8 +82,8 @@ class Services {
    */
   #initialize (options) {
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
-    var clientId = this.mode === "local" ? IAM_CLIENT_ID : null;
-    var clientSecret = this.mode === "local" ? IAM_CLIENT_SECRET : null;
+    var clientId = this.mode === "local" ? IAM_CLIENT_ID : "";
+    var clientSecret = this.mode === "local" ? IAM_CLIENT_SECRET : "";
     var settings = options.client ? options.client.settings : {
       server: `${IAM_URL}`,
 
@@ -101,9 +101,6 @@ class Services {
     this.#fetchWrapper = new OAuth2Fetch({
       client: this.#client,
       getNewToken: async () => {
-        // FIXME
-        // comment faire un refresh token dans le mode distant ?
-        // il faudrait le code ?
         var token = await this.#client.authorizationCode.getToken({
           code: this.code,
           redirectUri: this.url,
@@ -179,8 +176,10 @@ class Services {
       status = "logout";
     }
     // IAM login distant
-    if (token) {
+    if (token && code) {
       this.authenticated = true;
+      var c = JSON.parse(code);
+      this.code = c.code;
       // INFO
       // conversion de format de token
       var t = JSON.parse(token);
