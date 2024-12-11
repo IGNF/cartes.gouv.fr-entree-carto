@@ -92,8 +92,8 @@ const searchEngineOptions = {
 };
 
 const layerSwitcherOptions = {
-  id: "2",
   options: {
+    id: "2",
     position : "top-right",
     collapsed: true,
     panel: true,
