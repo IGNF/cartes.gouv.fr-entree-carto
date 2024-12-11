@@ -44,7 +44,7 @@
     "@vueuse/core": "^10.9.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
-    "geopf-extensions-openlayers": "1.0.0-beta.1",
+    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.1-296.tgz",
     "ol": "8.2.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
