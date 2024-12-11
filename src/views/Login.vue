@@ -16,10 +16,12 @@ const service = inject('services');
 onMounted(() => {
   const queryString = location.search;
   const urlParams = new URLSearchParams(queryString);
+
   // parametres
   var code = urlParams.get('code');
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
+  var token = urlParams.get('token');
 
   // Si aucun parametre de session dans l'URL de la route '/login',
   // on redirige vers IAM authentification
@@ -33,7 +35,8 @@ onMounted(() => {
   // IAM authentification redirige vers la route '/login' aprés validation
   // Et, elle fournit le 'code' et la 'session' dans l'url
   // On revient dans l'application !
-  if (code && session && state) {
+  if ((service.mode === "local" && code && session && state) ||
+      (service.mode === "remote" && token)) {
     router.push({ path : '/' });
   }
 });
