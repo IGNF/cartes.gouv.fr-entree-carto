@@ -45,6 +45,15 @@ const iconProps = computed(() => typeof icon === 'string'
   <DsfrButton
     tertiary
     no-outline
+    @click="$emit('onEnregistrementOpen')"
+    icon="ri-bookmark-line"
+    >
+    Mes enregistrements
+  </DsfrButton>
+  <hr/>
+  <DsfrButton
+    tertiary
+    no-outline
     :icon="iconProps"
     @click="openControl('LayerImport')"
     >
@@ -73,14 +82,6 @@ const iconProps = computed(() => typeof icon === 'string'
     icon="fr-icon-theme-fill"
     >
     Paramètres d'affichage
-  </DsfrButton>
-  <DsfrButton
-    tertiary
-    no-outline
-    @click="$emit('onEnregistrementOpen')"
-    icon="ri-bookmark-line"
-    >
-    Enregistrement
   </DsfrButton>
 </div>
 </template>
