@@ -19,7 +19,7 @@ const tabArray = computed(() => {
         {
             componentName : "Enregistrement",
             icon : "ri-bookmark-line",
-            title : "Mes Enregistrement",
+            title : "Mes Enregistrements",
             visibility: false
         }
     ];
@@ -76,7 +76,7 @@ const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeO
       </div>
       <div id="EnregistrementContent"
         :class="[activeTab === 'EnregistrementContent' ? 'activeTab' : 'inactiveTab']" >
-        Mes enregistrements
+        Mes enregistrements !
       </div>
     </template>
     <template #navButtons>
