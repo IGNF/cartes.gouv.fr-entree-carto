@@ -155,7 +155,7 @@ export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
-    if (useControls[control].active === true) {
+    if (useControls[control].active === true && useControls[control].disable === true) {
       defaultControls.push(useControls[control].id);
     }
   }

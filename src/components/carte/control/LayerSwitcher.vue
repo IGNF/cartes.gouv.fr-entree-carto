@@ -121,10 +121,15 @@ const onChangeVisibilityLayer = (e) => {
   });
 }
 const onChangePositionLayer = (e) => {
-  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onChangePositionLayer", e);
-  // TODO
-  // mise à jour de la position de la couche dans le permalien !
+  // INFO
+  // on met à jour uniquement les couches du catalogues ou enregistrées 
+  // dans l'espace personnel (les properties name&service sont renseignées)
+  mapStore.updateLayerPosition(e.layers.reverse().map((layer) => {
+    if (layer.name && layer.service) {
+      return dataStore.getLayerIdByName(layer.name, layer.service);
+    } 
+  }));
 }
 
 </script>
