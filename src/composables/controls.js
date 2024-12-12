@@ -112,7 +112,7 @@ export const useControls = {
   Print: {
     id: 'Print',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   },
   MousePosition: {

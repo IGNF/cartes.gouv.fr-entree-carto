@@ -54,4 +54,7 @@ onUpdated(() => {
 button[id^=GPshowImportPicto-] {
   display: none;
 }
+dialog[id^=GPcontrolListPanel-] button[id^=GPshowImportPicto-]{
+  display: block;
+}
 </style>
