@@ -1,11 +1,13 @@
 <script lang="js">
   /**
    * @description
-   * ...
-   * @property {Object} layers - Liste des couches du catalogue
-   * @property {Object} selectedLayers - Liste des couches sélectionnées
-   * @see LayerList
-   * @see DataLayerCatalogue
+   * Menu de liens vers différents contenu
+   * 1- ouverture d'un widget extension (ex : layerImport)
+   * 2- ouverture d'une modal (ex: Print, parmaètres d'affichage)
+   * 3- panel menuWrapper (ex: mes enregistrements)
+   * 
+   * Les interactions pour ouvrir et fermer les fenêtres sont spécifiques à chacun de ces cas.
+   * 
    */
   export default {
     name: 'MenuTierce'
