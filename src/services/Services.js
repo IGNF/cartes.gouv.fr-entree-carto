@@ -56,7 +56,7 @@ class Services {
     /** code */
     this.code = options.code || "";
     /** token */
-    this.token = options.token || "";
+    this.token = options.token || {};
     /** user */
     this.user = options.user || {};
     /** erreurs IAM */
@@ -169,7 +169,7 @@ class Services {
       this.session = null;
       this.code = null;
       this.authenticated = false;
-      this.token = null;
+      this.token = {};
       this.removeTokenStorage();
       this.user = {};
       this.error = {};
@@ -183,9 +183,11 @@ class Services {
       // INFO
       // conversion de format de token
       var t = JSON.parse(token);
+      const today = new Date(t.expires);
+      console.error("expires token", today);
       this.token = {
         accessToken : t.access_token,
-        expiresAt : t.expires, // FIXME refresh_expires_in ?
+        expiresAt : t.expires, // FIXME t.expires_in !?
         refreshToken : t.refresh_token
       };
       status = "login";

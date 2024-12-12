@@ -155,6 +155,8 @@ var Connexion = {
       );
       this.token = token;
     }
+    const today = new Date(token.expiresAt);
+    console.debug("expires token", today);
 
     this.getFetch().token = token; // HACK !?
     this.addTokenStorage(); 
