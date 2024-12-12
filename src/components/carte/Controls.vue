@@ -75,38 +75,8 @@ const printOptions = {
   position: useControlsExtensionPosition().printOptions
 };
 
-const territoriesOptions = {
-  position: useControlsExtensionPosition().territoriesOptions,
-  panel : true,
-  title : "Sélectionner un territoire",
-  auto : false, // chargement auto des territoires par defaut
-  thumbnail : false, // imagette des territoires
-  reduce : false, // tuiles reduites par defaut
-  tiles : 3,
-};
-
-const layerSwitcherOptions = {
-  options: {
-    position : useControlsExtensionPosition().layerSwitcherOptions,
-    collapsed: true,
-    panel: true,
-    counter: true
-  }
-};
-
-const legendsOptions = {
-  position: useControlsExtensionPosition().legendsOptions,
-  panel: true,
-  auto: true,
-  draggable: false
-};
-
-const scaleLineOptions = {
-  units: 'metric',
-  bar: false,
-};
-
 const searchEngineOptions = {
+  id: "1",
   collapsed: false,
   collapsible: false,
   displayButtonAdvancedSearch: true,
@@ -126,55 +96,98 @@ const searchEngineOptions = {
   markerUrl : IconGeolocationSVG
 };
 
+const layerSwitcherOptions = {
+  options: {
+    id: "2",
+    position : useControlsExtensionPosition().layerSwitcherOptions,
+    collapsed: true,
+    panel: true,
+    counter: true
+  }
+};
+
+const legendsOptions = {
+  id: "3",
+  position: useControlsExtensionPosition().legendsOptions,
+  panel: true,
+  auto: true,
+  draggable: false
+};
+
+const scaleLineOptions = {
+  id: "4",
+  units: 'metric',
+  bar: false,
+};
+
+const territoriesOptions = {
+  id: "5",
+  position: useControlsExtensionPosition().territoriesOptions,
+  panel : true,
+  title : "Sélectionner un territoire",
+  auto : false, // chargement auto des territoires par defaut
+  thumbnail : false, // imagette des territoires
+  reduce : false, // tuiles reduites par defaut
+  tiles : 3,
+};
+
 const getFeatureInfoOptions = {
+  id: "6",
   position: useControlsExtensionPosition().getFeatureInfoOptions
 };
 
 const overviewMapOptions = {
+  id: "7",
   position: useControlsExtensionPosition().overviewMapOptions
+};
+
+const fullscreenOptions = {
+  id: "8",
+  position: useControlsExtensionPosition().fullscreenOptions
 };
 
 const zoomOptions = {
   position: useControlsExtensionPosition().zoomOptions,
+  id: "9",
 };
 
+const controlListOptions = {
+  position: useControlsExtensionPosition().controlListOptions,
+  id: "10",
+  gutter: false,
+  controlCatalogElement: document.getElementById('MenuControl'),
+}
+
 const drawingOptions = {
+  id: "11",
   position: 'top-right',
   gutter: false,
   listable: true,
 }
 
-const attributionsOptions = {}
-
-const controlListOptions = {
-  position: useControlsExtensionPosition().controlListOptions,
+const reverseGeocodeOptions = {
+  id: "12",
+  position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
-  controlCatalogElement: document.getElementById('MenuControl'),
-}
+  listable: true,
+};
 
 const isocurveOptions = {
   position: useControlsExtensionPosition().isocurveOptions,
+  id: "13",
   gutter: false,
   listable: true,
 };
 
 const routeOptions = {
   position: useControlsExtensionPosition().routeOptions,
+  id: "14",
   gutter: false,
   listable: true,
-};
-
-const reverseGeocodeOptions = {
-  position: useControlsExtensionPosition().reverseGeocodeOptions,
-  gutter: false,
-  listable: true,
-};
-
-const fullscreenOptions = {
-  position: useControlsExtensionPosition().fullscreenOptions
 };
 
 const measureLengthOptions = {
+  id: "15",
   position: useControlsExtensionPosition().measureLengthOptions,
   gutter: false,
   listable: true,
@@ -182,6 +195,7 @@ const measureLengthOptions = {
 
 const measureAreaOptions = {
   position: useControlsExtensionPosition().measureAreaOptions,
+  id: "16",
   gutter: false,
   listable: true,
 };
@@ -190,22 +204,12 @@ const measureAzimuthOptions = {
   position: useControlsExtensionPosition().measureAzimuthOptions,
   gutter: false,
   listable: true,
-};
-
-const elevationPathOptions = {
-  position: useControlsExtensionPosition().elevationPathOptions,
-  gutter: false,
-  listable: true,
-};
-
-const layerImportOptions = {
-  position: useControlsExtensionPosition().layerImportOptions,
-  gutter: false,
-  listable: true,
+  id: "17",
 };
 
 const mousePositionOptions = {
   position: useControlsExtensionPosition().mousePositionOptions,
+  id: "18",
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
@@ -346,6 +350,21 @@ const mousePositionOptions = {
     }
   ]
 };
+
+const elevationPathOptions = {
+  id: "19",
+  position: useControlsExtensionPosition().elevationPathOptions,
+  gutter: false,
+  listable: true,
+};
+
+const layerImportOptions = {
+  id: "20",
+  position: useControlsExtensionPosition().layerImportOptions,
+  gutter: false,
+  listable: true,
+};
+
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
