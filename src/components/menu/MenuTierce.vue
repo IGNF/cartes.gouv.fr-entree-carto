@@ -5,9 +5,9 @@
    * 1- ouverture d'un widget extension (ex : layerImport)
    * 2- ouverture d'une modal (ex: Print, parmaètres d'affichage)
    * 3- panel menuWrapper (ex: mes enregistrements)
-   * 
+   *
    * Les interactions pour ouvrir et fermer les fenêtres sont spécifiques à chacun de ces cas.
-   * 
+   *
    */
   export default {
     name: 'MenuTierce'
@@ -17,7 +17,7 @@
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore();
- 
+
 const emit = defineEmits(['openControl', 'onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen', 'onEnregistrementOpen'])
 
 function openControl(controlName) {
@@ -96,9 +96,14 @@ a {
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 60px);
+  width: calc(100% - 32px);
   max-height: calc(70vh - 70px);
   overflow-y: auto;
   scrollbar-width: thin;
+}
+
+:deep(button) {
+  font-size: 0.875rem;
+  color: var(--text-action-high-grey);
 }
 </style>

@@ -61,6 +61,8 @@ const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeO
   <MenuLateralWrapper
     :side="side"
     :visibility="true"
+    :width=300
+    :padding=16
     id="MenuCatalogueContentClose"
     v-model="is_expanded"
     ref="wrapper">
