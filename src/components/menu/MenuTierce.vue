@@ -44,7 +44,7 @@ const iconProps = computed(() => typeof icon === 'string'
 
 <template>
 <div class="container">
-  <DsfrButton
+  <!-- <DsfrButton
     tertiary
     no-outline
     @click="$emit('onEnregistrementOpen')"
@@ -52,7 +52,7 @@ const iconProps = computed(() => typeof icon === 'string'
     >
     Mes enregistrements
   </DsfrButton>
-  <hr/>
+  <hr/> -->
   <DsfrButton
     tertiary
     no-outline
