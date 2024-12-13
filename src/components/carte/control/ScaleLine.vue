@@ -7,13 +7,14 @@ import ScaleLine from 'ol/control/ScaleLine'
 // - tracker Eulerian ?
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   scaleLineOptions: Object
 })
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
 
 onMounted(() => {

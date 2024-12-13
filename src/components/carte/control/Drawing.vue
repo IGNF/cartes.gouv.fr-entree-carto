@@ -1,15 +1,16 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { Drawing } from 'geopf-extensions-openlayers';
-import { mainMap } from "@/composables/keys"
+
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   drawingOptions: Object
 });
 
-const map = inject(mainMap)
+const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
 onMounted(() => {

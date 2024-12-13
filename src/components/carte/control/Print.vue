@@ -21,6 +21,7 @@ import { jsPDF } from "jspdf";
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   printOptions: Object
 });
@@ -78,6 +79,7 @@ const coeffPX2MM = 0.264583333
 
 /**
  *  Paramètres de la carte à imprimer
+ *  {Boolean} hasScale - ajoute une échelle ou pas à la carte
  *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
  *  {String} printTitle - Titre de la carte
  *  {String} pageOrientation - Orientation du papier
@@ -85,6 +87,7 @@ const coeffPX2MM = 0.264583333
  *  {String} paperFormat - Format standard de papier
  *  {Object} dimension - Dimension du papier selon format choisi
  */
+const hasScale = ref(false)
 const hasTitle = ref(false)
 const printTitle = ref("Ma carte")
 const pageOrientation = ref("portrait");
@@ -248,6 +251,13 @@ onUpdated(() => {
       modalDOM.classList.remove("fr-container-md", "fr-container");
     }
 });
+
+
+const scaleLineOptions = {
+  id: "4",
+  units: 'metric',
+  bar: false,
+};
 </script>
 
 <template>
@@ -308,6 +318,12 @@ onUpdated(() => {
               name="checkbox-simple"
               :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
             /></div>-->
+            <div class="mt-10">
+              <DsfrCheckbox
+              v-model="hasScale"
+              name="checkbox-simple"
+              :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
+            /></div>
             <DsfrButton
               id="print-page-export"
               label="Export PDF"
@@ -334,6 +350,11 @@ onUpdated(() => {
                 <Layers
                   :map-Id="printMap"
                   :selected-layers="selectedLayers"/>
+                  <ScaleLine
+                  :visibility="hasScale"
+                  :scale-line-options="scaleLineOptions"
+                  :map-id="printMap"
+                />
             </Map>
         </div>
         </div>    
@@ -451,7 +472,7 @@ onUpdated(() => {
 <style>
 /* hack pour surcharger le style modal dsfr */
   .modal-override {
-    max-width: 98vw;
+    max-width: 80vw;
     margin-left: auto;
     margin-right: auto;
     width: 100%;

@@ -7,6 +7,7 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { ReverseGeocode } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   reverseGeocodeOptions: Object
@@ -15,8 +16,8 @@ const props = defineProps({
 const log = useLogger();
 const store = useDataStore();
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap);
+
+const map = inject(props.mapId);
 const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 
 onMounted(() => {
