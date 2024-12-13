@@ -103,6 +103,10 @@ class Services {
     this.#fetchWrapper = new OAuth2Fetch({
       client: this.#client,
       getNewToken: async () => {
+        // en mode distant, on ne redemande pas de jeton
+        if (this.token && Object.keys(this.token).length && this.mode === "remote") {
+          return this.token;
+        }
         var token = await this.#client.authorizationCode.getToken({
           code: this.code,
           redirectUri: this.url,
