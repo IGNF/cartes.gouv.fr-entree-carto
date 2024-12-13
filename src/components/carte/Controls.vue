@@ -131,6 +131,7 @@ const territoriesOptions = {
   tiles : 3,
 };
 
+// actif par défaut
 const getFeatureInfoOptions = {
   id: "6",
   position: useControlsExtensionPosition().getFeatureInfoOptions
