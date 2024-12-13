@@ -11,9 +11,11 @@ import { useServiceStore } from '@/stores/serviceStore';
 const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
+const IAM_CLIENT_ID_REMOTE = import.meta.env.IAM_CLIENT_ID_REMOTE;
 const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
 const IAM_REDIRECT_REMOTE = import.meta.env.IAM_REDIRECT_REMOTE;
+const IAM_CLIENT_SECRET_REMOTE = import.meta.env.IAM_CLIENT_SECRET_REMOTE;
 
 /**
  * @description 
@@ -82,8 +84,8 @@ class Services {
    */
   #initialize (options) {
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
-    var clientId = this.mode === "local" ? IAM_CLIENT_ID : "";
-    var clientSecret = this.mode === "local" ? IAM_CLIENT_SECRET : "";
+    var clientId = this.mode === "local" ? IAM_CLIENT_ID : IAM_CLIENT_ID_REMOTE;
+    var clientSecret = this.mode === "local" ? IAM_CLIENT_SECRET : IAM_CLIENT_SECRET_REMOTE;
     var settings = options.client ? options.client.settings : {
       server: `${IAM_URL}`,
 
@@ -114,7 +116,7 @@ class Services {
       },
       getStoredToken: () => {
         const token = this.getTokenStorage();
-        if (token) {
+        if (token && Object.keys(token).length) {
           return token;
         }
         return null;
@@ -178,8 +180,11 @@ class Services {
     // IAM login distant
     if (token && code) {
       this.authenticated = true;
+      // INFO
+      // on extrait les infos
       var c = JSON.parse(code);
       this.code = c.code;
+      this.session = c.session_state;
       // INFO
       // conversion de format de token
       var t = JSON.parse(token);
@@ -187,9 +192,10 @@ class Services {
       console.error("expires token", today);
       this.token = {
         accessToken : t.access_token,
-        expiresAt : t.expires, // FIXME t.expires_in !?
+        expiresAt : t.expires, // FIXME on utilise t.expires_in !?
         refreshToken : t.refresh_token
       };
+
       status = "login";
     }
     // Error
