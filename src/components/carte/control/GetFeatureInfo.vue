@@ -6,6 +6,7 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { GetFeatureInfo } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   getFeatureInfoOptions: Object
@@ -13,8 +14,8 @@ const props = defineProps({
 
 const log = useLogger();
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap);
+
+const map = inject(props.mapId);
 const getFeatureInfo = ref(new GetFeatureInfo(props.getFeatureInfoOptions));
 
 const isSmallScreen = useMatchMedia('SM')

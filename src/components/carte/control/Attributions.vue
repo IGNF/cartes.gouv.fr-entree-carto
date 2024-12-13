@@ -7,13 +7,14 @@ import Attributions from 'ol/control/Attribution'
 // - tracker Eulerian !?
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   attributionsOptions: Object
 })
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const attributions = ref(new Attributions(props.attributionsOptions))
 
 onMounted(() => {

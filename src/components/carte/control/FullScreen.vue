@@ -5,13 +5,14 @@ import { GeoportalFullScreen } from 'geopf-extensions-openlayers'
 // ajouter un ID sur le bouton pour y ajouter un tracker Eulerian
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   fullscreenOptions: Object
 })
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const fullscreen = ref(new GeoportalFullScreen(props.fullscreenOptions))
 
 onMounted(() => {

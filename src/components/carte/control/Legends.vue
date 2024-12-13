@@ -3,13 +3,13 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { Legends } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   legendsOptions: Object
 });
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap);
+const map = inject(props.mapId);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {
