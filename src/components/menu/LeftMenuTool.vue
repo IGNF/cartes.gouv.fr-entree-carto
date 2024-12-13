@@ -76,10 +76,10 @@ const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeO
           @on-enregistrement-open="onEnregistrementOpen"
         />
       </div>
-      <div id="EnregistrementContent"
+      <!-- <div id="EnregistrementContent"
         :class="[activeTab === 'EnregistrementContent' ? 'activeTab' : 'inactiveTab']" >
         Mes enregistrements !
-      </div>
+      </div> -->
     </template>
     <template #navButtons>
       <MenuLateralNavButton
