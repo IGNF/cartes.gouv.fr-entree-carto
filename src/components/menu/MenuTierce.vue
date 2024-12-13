@@ -74,6 +74,7 @@ const iconProps = computed(() => typeof icon === 'string'
     no-outline
     icon="px-print"
     @click="$emit('onModalPrintOpen')"
+    class="tierce-print"
     >
     Imprimer
   </DsfrButton>
@@ -105,5 +106,17 @@ a {
 :deep(button) {
   font-size: 0.875rem;
   color: var(--text-action-high-grey);
+}
+
+@media (max-width: 576px) {
+  .tierce-print {
+    display: none;
+  }
+}
+
+@media (max-height: 576px) {
+  .tierce-print {
+    display: none;
+  }
 }
 </style>
