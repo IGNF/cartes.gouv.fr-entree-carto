@@ -8,6 +8,7 @@ import {
 // tracker Eulerian !?
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   zoomOptions: Object
@@ -15,8 +16,7 @@ const props = defineProps({
 
 const log = useLogger()
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+const map = inject(props.mapId)
 const zoom = ref(new GeoportalZoom(props.zoomOptions))
 
 onMounted(() => {

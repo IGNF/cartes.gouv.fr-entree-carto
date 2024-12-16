@@ -12,6 +12,7 @@ import {
 import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   layerSwitcherOptions: Object
@@ -21,8 +22,7 @@ const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+const map = inject(props.mapId)
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {

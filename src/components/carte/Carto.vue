@@ -61,7 +61,8 @@ const mapIsReady = computed(() => {
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
       v-if="mapIsReady"
-      :control-options="props.selectedControls"/>
+      :control-options="props.selectedControls"
+      :map-id="mainMap"/>
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
       :map-Id="mainMap"
