@@ -3,13 +3,14 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { MeasureAzimuth } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   measureAzimuthOptions: Object
 })
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const measureAzimuth = ref(new MeasureAzimuth(props.measureAzimuthOptions))
 
 onMounted(() => {
