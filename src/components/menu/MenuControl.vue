@@ -170,6 +170,6 @@ table {
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
-  max-height: calc(70vh - 70px);
+  max-height: calc(70vh - 96px);
 }
 </style>
