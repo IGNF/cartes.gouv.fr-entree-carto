@@ -4,6 +4,8 @@
    *
    * @property { String } side position sur la carte du menu : valeur possible 'left' ou 'right'
    * @property { Boolean } visibility  boolean assurant l'activation du menu
+   * @property { Number } width  largeur du menu déplié, défaut 550
+   * @property { Number } padding  padding à gauche et à droite, défaut 30
    *
    */
   export default {
@@ -17,9 +19,10 @@ import { OhVueIcon as VIcon } from 'oh-vue-icons'
 const props = defineProps({
   side: String,
   visibility: Boolean,
-  id: String
+  id: String,
+  width: Number,
+  padding: Number
 })
-
 const icon = "io-close"
 const defaultScale = 0.8325;
 const iconProps = computed(() => typeof icon === 'string'
@@ -27,12 +30,21 @@ const iconProps = computed(() => typeof icon === 'string'
   : { scale: defaultScale.value, ...icon },
 );
 
+const widthValue = props.width || 550
+const paddingValue = props.padding || 30
 const is_expanded = defineModel(false)
-const width = ref()
-width.value = 30
-const cssWidth = computed(() => {
-  return width.value + "vw";
+const widthMenu = ref(widthValue)
+const padding = ref(paddingValue)
+const cssWidthMenu = computed(() => {
+  return widthMenu.value + "px";
 })
+const cssPadding = computed(() => {
+  return padding.value + "px";
+})
+const cssWidthMenuContent = computed(() => {
+  return widthMenu.value - padding.value + "px";
+})
+
 const menuTabs = ref()
 
 function closeMenu() {
@@ -95,6 +107,10 @@ defineExpose({
     background-position: calc(100% - 0.125rem) 50%, 100% 50%, calc(100% - 0.375rem) 0, calc(100% - 0.375rem) 0;
     background-image: conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--background-overlap-grey) 0deg, var(--background-overlap-grey) 67.38deg, transparent 67.38deg), conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--border-default-grey) 0deg, var(--border-default-grey) 67.38deg, transparent 67.38deg), linear-gradient(90deg, var(--border-default-grey), var(--border-default-grey)), linear-gradient(90deg, var(--background-overlap-grey), var(--background-overlap-grey));
   }
+
+  .navButton[aria-label]:hover .ov-icon {
+    position: absolute;
+  }
 </style>
 
 <style scoped lang="scss">
@@ -118,7 +134,7 @@ defineExpose({
 .menu-collapse-icon {
     margin-bottom: 20px;
     &:hover{
-      color : #8585f6;
+      color : var(--text-action-high-blue-france);
     }
 }
 
@@ -129,12 +145,12 @@ defineExpose({
 }
 
 .menu-toggle-wrap {
-    height: inherit;
+    height: calc(70vh - 24px);
     z-index: 1;
     &.is_expanded {
       .menu-content-list {
-        width: 550px;
-        // width: v-bind(cssWidth);
+        width: v-bind(cssWidthMenu);
+        margin-top: 12px;
       }
 
     }
@@ -143,18 +159,18 @@ defineExpose({
 .menu-content-list {
   height: inherit;
   background-color: var(--background-default-grey);
-  padding-left: 30px;
+  padding-left: v-bind(cssPadding);
   position: absolute;
   display: flex;
   flex-direction: column;
 }
 .menu-content {
-  width : inherit
+  width : v-bind(cssWidthMenuContent);
 }
 .menu-logo-list {
   flex-direction: column;
   display: flex;
-  row-gap: 20px;
+  row-gap: 4px;
   margin-top: 12px;
   width: 40px;
   position: absolute;

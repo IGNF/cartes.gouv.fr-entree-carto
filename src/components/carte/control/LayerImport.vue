@@ -51,4 +51,11 @@ onUpdated(() => {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style scoped></style>
+<style>
+button[id^=GPshowImportPicto-] {
+  display: none;
+}
+dialog[id^=GPcontrolListPanel-] button[id^=GPshowImportPicto-]{
+  display: block;
+}
+</style>

@@ -14,6 +14,8 @@ import { CRS } from 'geopf-extensions-openlayers'
 
 import Map from 'ol/Map'
 import { useMapStore } from "@/stores/mapStore"
+import { mainMap } from "@/composables/keys"
+
 const mapStore = useMapStore()
 
 const props = defineProps({
@@ -46,6 +48,8 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
+  if (props.mapId == mainMap)
+    mapStore.setMap(map)
 })
 
 /**

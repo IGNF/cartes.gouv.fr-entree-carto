@@ -11,6 +11,8 @@
 </script>
 
 <script setup lang="js">
+import IconGeolocationSVG from "../../assets/geolocation.svg";
+
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
 import OverviewMap from './control/OverviewMap.vue';
@@ -34,10 +36,9 @@ import Print from './control/Print.vue'
 import Share from './control/Share.vue';
 
 // Icone pour le marker du widget SearcEngine
-import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { useDataStore } from '@/stores/dataStore';
-import { useControls } from '@/composables/controls';
+import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 
 const props = defineProps({
@@ -68,8 +69,12 @@ log.debug(props.controlOptions);
 
 // liste des options pour les contrôles;
 
-const shareOptions = {};
-const printOptions = {};
+const shareOptions = {
+  position: useControlsExtensionPosition().shareOptions
+};
+const printOptions = {
+  position: useControlsExtensionPosition().printOptions
+};
 
 const searchEngineOptions = {
   id: "1",
@@ -95,7 +100,7 @@ const searchEngineOptions = {
 const layerSwitcherOptions = {
   options: {
     id: "2",
-    position : "top-right",
+    position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
     panel: true,
     counter: true
@@ -104,7 +109,7 @@ const layerSwitcherOptions = {
 
 const legendsOptions = {
   id: "3",
-  position: "top-right",
+  position: useControlsExtensionPosition().legendsOptions,
   panel: true,
   auto: true,
   draggable: false
@@ -118,7 +123,7 @@ const scaleLineOptions = {
 
 const territoriesOptions = {
   id: "5",
-  position: 'bottom-left',
+  position: useControlsExtensionPosition().territoriesOptions,
   panel : true,
   title : "Sélectionner un territoire",
   auto : false, // chargement auto des territoires par defaut
@@ -130,28 +135,27 @@ const territoriesOptions = {
 // actif par défaut
 const getFeatureInfoOptions = {
   id: "6",
-  position: 'bottom-left',
-  collapsed: false
+  position: useControlsExtensionPosition().getFeatureInfoOptions
 };
 
 const overviewMapOptions = {
   id: "7",
-  position: 'bottom-left'
+  position: useControlsExtensionPosition().overviewMapOptions
 };
 
 const fullscreenOptions = {
   id: "8",
-  position: 'bottom-right'
+  position: useControlsExtensionPosition().fullscreenOptions
 };
 
 const zoomOptions = {
+  position: useControlsExtensionPosition().zoomOptions,
   id: "9",
-  position: 'bottom-right',
 };
 
 const controlListOptions = {
+  position: useControlsExtensionPosition().controlListOptions,
   id: "10",
-  position: 'top-right',
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
 }
@@ -165,49 +169,49 @@ const drawingOptions = {
 
 const reverseGeocodeOptions = {
   id: "12",
-  position: 'top-right',
+  position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
 };
 
 const isocurveOptions = {
+  position: useControlsExtensionPosition().isocurveOptions,
   id: "13",
-  position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const routeOptions = {
+  position: useControlsExtensionPosition().routeOptions,
   id: "14",
-  position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const measureLengthOptions = {
   id: "15",
-  position: 'top-right',
+  position: useControlsExtensionPosition().measureLengthOptions,
   gutter: false,
   listable: true,
 };
 
 const measureAreaOptions = {
+  position: useControlsExtensionPosition().measureAreaOptions,
   id: "16",
-  position: 'top-right',
   gutter: false,
   listable: true,
 };
 
 const measureAzimuthOptions = {
-  id: "17",
-  position: 'top-right',
+  position: useControlsExtensionPosition().measureAzimuthOptions,
   gutter: false,
   listable: true,
+  id: "17",
 };
 
 const mousePositionOptions = {
+  position: useControlsExtensionPosition().mousePositionOptions,
   id: "18",
-  position: 'top-right',
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
@@ -351,14 +355,14 @@ const mousePositionOptions = {
 
 const elevationPathOptions = {
   id: "19",
-  position: 'top-right',
+  position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
 };
 
 const layerImportOptions = {
   id: "20",
-  position: 'top-right',
+  position: useControlsExtensionPosition().layerImportOptions,
   gutter: false,
   listable: true,
 };
@@ -369,17 +373,17 @@ const layerImportOptions = {
 >>> sinon, visibility:false
 -->
 <template>
-  <Share
+  <!-- <Share
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Share.id)"
-    :share-options="shareOptions"
-  />
-  <Print
+    :share-options="useControlsExtensionPosition()().shareOptions"
+  /> -->
+  <!-- <Print
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Print.id)"
     :print-options="printOptions"
     :map-id="mapId"
-  />
+  /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
@@ -703,7 +707,7 @@ const layerImportOptions = {
 
   .position-container-top-right,
   .position-container-top-left {
-    top: 98px;
+    top: 99px;
   }
 }
 @media (max-width: 576px) {
@@ -736,16 +740,6 @@ const layerImportOptions = {
 
   .ol-scale-line {
     transform: translateX(-50px);
-  }
-
-  #print-button-position {
-    display: none;
-  }
-}
-
-@media (max-height: 576px) {
-  #print-button-position {
-    display: none;
   }
 }
 
