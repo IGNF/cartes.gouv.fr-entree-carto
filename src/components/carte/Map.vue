@@ -31,10 +31,10 @@ const mapRef = ref(null)
  * Map
  * default controls are removed (rotate, zoom and attributions)
  */
-const map = reactive(new Map({
+const map = new Map({
   target: props.mapId,
   controls: [] // on supprime les contrôles par defaut !
-  }))
+  })
 provide(props.mapId, map)
 
 onMounted(() => {

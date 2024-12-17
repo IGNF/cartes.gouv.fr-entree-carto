@@ -22,6 +22,7 @@ const dataStore = useDataStore();
 const mapStore = useMapStore();
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   shareOptions: Object
 });
