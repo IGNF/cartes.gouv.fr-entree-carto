@@ -81,6 +81,7 @@ const coeffPX2MM = 0.264583333
 
 /**
  *  Paramètres de la carte à imprimer
+ *  {Boolean} hasScale - ajoute une échelle ou pas à la carte
  *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
  *  {String} printTitle - Titre de la carte
  *  {String} pageOrientation - Orientation du papier
@@ -88,6 +89,7 @@ const coeffPX2MM = 0.264583333
  *  {String} paperFormat - Format standard de papier
  *  {Object} dimension - Dimension du papier selon format choisi
  */
+const hasScale = ref(true)
 const hasTitle = ref(false)
 const printTitle = ref("Ma carte")
 const pageOrientation = ref("portrait");
@@ -211,36 +213,73 @@ const exportPDF = () => {
   const canvasWidth = refMap.value.mapRef.getElementsByTagName('canvas')[0].width
   const canvasHeight = refMap.value.mapRef.getElementsByTagName('canvas')[0].height
   const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
+
+
+  // Fake canvas
+  if (refMap.value.mapRef.getElementsByTagName('canvas').length < 2) {
+  var fakeCanvas = document.createElement('canvas')
+  fakeCanvas.classList = ['fixedoverlay']
+  fakeCanvas.width = canvasWidth
+  fakeCanvas.height = canvasHeight
+  refMap.value.mapRef.getElementsByClassName("ol-overlaycontainer")[0].insertAdjacentElement('beforebegin', fakeCanvas)
+  }
+  else {
+    var fakeCanvas = refMap.value.mapRef.getElementsByTagName('canvas')[1]
+  }
+  fakeCanvas.style.display = "none"
+  const ctx = fakeCanvas.getContext("2d");
+  ctx.reset()
   const img = canvas.toDataURL('image/png')
   const imgWidth = (canvasWidth * coeffPX2MM) - (marge * 2)
   const imgHeight = ((canvasHeight - titleSize.height) * coeffPX2MM) - (marge * 2)
   const imgPosX = marge
   const imgPosY = (titleSize.height * coeffPX2MM) + marge
-  const addMapAndSavePDF = () => {
-    doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
-    doc.save('carte.pdf')
+  doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
+  if (hasScale.value) {
+    const scaleLine = refMap.value.mapRef.getElementsByClassName("ol-scale-line")[0]  
+    const scaleLineInner = scaleLine.children[0]  
+    const style = getComputedStyle(scaleLine)
+    const styleInner = getComputedStyle(scaleLineInner)
+    const scaleLeft = parseInt(style.left)
+    const scaleBottom = parseInt(style.bottom)
+    const scaleContent = scaleLineInner.innerHTML;
+    const scaleWidth = parseInt(styleInner.width) 
+    const scaleHeight = parseInt(styleInner.lineHeight)
+    const y1 =canvasHeight - scaleBottom - scaleHeight
+    const ctx = fakeCanvas.getContext("2d");
+    
+    // rect
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(255, 255, 255, 0.75)"
+    ctx.rect(scaleLeft, y1, scaleWidth, scaleHeight)
+    ctx.fillRect(scaleLeft,y1,scaleWidth,scaleHeight)
+    // Text
+    ctx.font = styleInner.font
+    ctx.textAlign="center"; 
+    ctx.fillStyle = "#000000";
+    ctx.fillText(scaleContent, scaleLeft+(scaleWidth/2),y1+(scaleHeight/2));
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(scaleLeft, y1)
+    ctx.lineTo(scaleLeft, y1 + scaleHeight);
+    ctx.lineTo(scaleLeft, y1 + scaleHeight);
+    ctx.lineTo(scaleLeft + scaleWidth, y1 + scaleHeight);
+    ctx.lineTo(scaleLeft + scaleWidth, y1);
+    ctx.lineWidth = 1;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#666666"
+    ctx.stroke();
+    const imgOverlay = fakeCanvas.toDataURL('image/png')
+    doc.addImage(imgOverlay, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
   }
-  if (!hasTitle.value || printTitle.value == "") {
-    addMapAndSavePDF()
-  }
-  else {
-    doc.html(
-      mapTitle.value, 
-      {
-        html2canvas : {
-          scale: coeff.value
-        },
-        callback: function(doc) {
-          addMapAndSavePDF()
-        }
-      }
-    )
-  }
-  /**
-   * On repart d'un canvas neuf donc il faut recalculer les widht height et position en fonction des paramètres
-   * 
-   */
+  doc.save('carte.pdf')
 }
+
+const scaleLineOptions = {
+  id: "4",
+  units: 'metric',
+  bar: false,
+};
 </script>
 
 <template>
@@ -290,6 +329,12 @@ const exportPDF = () => {
               name="checkbox-simple"
               :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
             /></div>-->
+            <div class="mt-10">
+              <DsfrCheckbox
+              v-model="hasScale"
+              name="checkbox-simple"
+              :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
+            /></div>
             <DsfrButton
               id="print-page-export"
               label="Export PDF"
@@ -316,6 +361,11 @@ const exportPDF = () => {
                 <Layers
                   :map-Id="printMap"
                   :selected-layers="selectedLayers"/>
+                  <ScaleLine
+                  :visibility="hasScale"
+                  :scale-line-options="scaleLineOptions"
+                  :map-id="printMap"
+                />
             </Map>
         </div>
         </div>    
@@ -432,7 +482,7 @@ const exportPDF = () => {
 <style>
 /* hack pour surcharger le style modal dsfr */
   .modal-override {
-    max-width: 98vw;
+    max-width: 80vw;
     margin-left: auto;
     margin-right: auto;
     width: 100%;

@@ -12,6 +12,7 @@ import {
 // choisir où placer le tracker Eulerian sur ce widget !
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   searchEngineOptions: Object
@@ -22,8 +23,8 @@ const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap);
+
+const map = inject(props.mapId);
 const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
 
 onMounted(() => {

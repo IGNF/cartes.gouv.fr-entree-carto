@@ -42,7 +42,8 @@ import { useControls, useControlsExtensionPosition } from '@/composables/control
 import { useLogger } from 'vue-logger-plugin';
 
 const props = defineProps({
-  controlOptions: Array
+  controlOptions: Array,
+  mapId: String
 });
 
 // INFO
@@ -381,126 +382,147 @@ const layerImportOptions = {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Print.id)"
     :print-options="printOptions"
+    :map-id="mapId"
   /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
     :analytic="useControls.LayerSwitcher.analytic"
     :layer-switcher-options="layerSwitcherOptions"
+    :map-id="mapId"
   />
   <Legends
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
     :analytic="useControls.Legends.analytic"
     :legends-options="legendsOptions"
+    :map-id="mapId"
   />
   <Route
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Route.id)"
     :analytic="useControls.Route.analytic"
     :route-options="routeOptions"
+    :map-id="mapId"
   />
   <Isocurve
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
     :analytic="useControls.Isocurve.analytic"
     :isocurve-options="isocurveOptions"
+    :map-id="mapId"
   />
   <ReverseGeocode
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
     :analytic="useControls.ReverseGeocode.analytic"
     :reverse-geocode-options="reverseGeocodeOptions"
+    :map-id="mapId"
   />
   <FullScreen
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
     :analytic="useControls.FullScreen.analytic"
     :fullscreen-options="fullscreenOptions"
+    :map-id="mapId"
   />
   <Zoom
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
     :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
+    :map-id="mapId"
   />
   <SearchEngine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
     :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
+    :map-id="mapId"
   />
   <GetFeatureInfo
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
     :analytic="useControls.GetFeatureInfo.analytic"
     :get-feature-info-options="getFeatureInfoOptions"
+    :map-id="mapId"
   />
   <ScaleLine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
     :analytic="useControls.ScaleLine.analytic"
     :scale-line-options="scaleLineOptions"
+    :map-id="mapId"
   />
   <OverviewMap
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :analytic="useControls.OverviewMap.analytic"
     :overview-map-options="overviewMapOptions"
+    :map-id="mapId"
   />
   <Territories
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Territories.id)"
     :analytic="useControls.Territories.analytic"
     :territories-options="territoriesOptions"
+    :map-id="mapId"
   />
   <MeasureLength
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
     :analytic="useControls.MeasureLength.analytic"
     :measure-length-options="measureLengthOptions"
+    :map-id="mapId"
   />
   <MeasureArea
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
     :analytic="useControls.MeasureArea.analytic"
     :measure-area-options="measureAreaOptions"
+    :map-id="mapId"
   />
   <MeasureAzimuth
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
     :analytic="useControls.MeasureAzimuth.analytic"
     :measure-azimuth-options="measureAzimuthOptions"
+    :map-id="mapId"
   />
   <MousePosition
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
     :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
+    :map-id="mapId"
   />
   <Drawing
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Drawing.id)"
     :analytic="useControls.Drawing.analytic"
     :drawing-options="drawingOptions"
+    :map-id="mapId"
   />
   <ElevationPath
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
     :analytic="useControls.ElevationPath.analytic"
     :elevation-path-options="elevationPathOptions"
+    :map-id="mapId"
   />
   <LayerImport
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
     :analytic="useControls.LayerImport.analytic"
     :layer-import-options="layerImportOptions"
+    :map-id="mapId"
   />
   <ControlList
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
     :analytic="useControls.ControlList.analytic"
     :control-list-options="controlListOptions"
+    :map-id="mapId"
   />
 </template>
 

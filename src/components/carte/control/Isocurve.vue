@@ -7,6 +7,7 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { Isocurve } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   isocurveOptions: Object
@@ -15,8 +16,8 @@ const props = defineProps({
 const log = useLogger()
 const store = useDataStore();
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const isocurve = ref(new Isocurve(props.isocurveOptions))
 
 onMounted(() => {

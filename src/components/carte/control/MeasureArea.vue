@@ -3,13 +3,14 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { MeasureArea } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   measureAreaOptions: Object
 })
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap);
+
+const map = inject(props.mapId);
 const measureArea = ref(new MeasureArea(props.measureAreaOptions));
 
 onMounted(() => {

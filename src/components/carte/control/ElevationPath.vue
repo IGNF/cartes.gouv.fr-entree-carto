@@ -6,6 +6,7 @@ import {
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   elevationPathOptions: Object
@@ -13,8 +14,8 @@ const props = defineProps({
 
 const log = useLogger()
 
-import { mainMap } from "@/composables/keys"
-const map = inject(mainMap)
+
+const map = inject(props.mapId)
 const elevationPath = ref(new ElevationPath(props.elevationPathOptions))
 
 onMounted(() => {

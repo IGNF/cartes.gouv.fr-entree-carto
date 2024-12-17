@@ -12,6 +12,7 @@ export default {};
 <script lang="js" setup>
 import PrintModal from './PrintModal.vue';
 const props = defineProps({
+  mapId: String,
   visibility: Boolean,
   printOptions: Object
 });
@@ -49,7 +50,16 @@ onUpdated(() => {
       :print-options="printOptions"/>
   </div>
 </template>
-
+<style>
+canvas.fixedoverlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+</style>
 <style scoped>
   #print-button-position {
     position: absolute;
