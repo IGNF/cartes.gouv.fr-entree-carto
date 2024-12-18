@@ -16,7 +16,7 @@
 #----------------------------------------------------------------------
 # cartes.gouv.fr-entree-carto : Génération d'un build statique
 #----------------------------------------------------------------------
-FROM node:20-alpine as builder
+FROM node:22-alpine as builder
 
 ARG BASE_URL="/cartes"
 ARG MODE_ENV="production"
