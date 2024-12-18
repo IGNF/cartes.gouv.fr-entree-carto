@@ -11,7 +11,11 @@ import { useServiceStore } from '@/stores/serviceStore';
 const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
-const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET; 
+const IAM_CLIENT_ID_REMOTE = import.meta.env.IAM_CLIENT_ID_REMOTE;
+const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
+const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
+const IAM_REDIRECT_REMOTE = import.meta.env.IAM_REDIRECT_REMOTE;
+const IAM_CLIENT_SECRET_REMOTE = import.meta.env.IAM_CLIENT_SECRET_REMOTE;
 
 /**
  * @description 
@@ -54,12 +58,16 @@ class Services {
     /** code */
     this.code = options.code || "";
     /** token */
-    this.token = options.token || "";
+    this.token = options.token || {};
     /** user */
     this.user = options.user || {};
     /** erreurs IAM */
     this.error = options.error || {};
-    
+
+    /** mode local ou distant */
+    this.mode = options.mode || IAM_AUTH_MODE;
+    this.redirect = options.redirect || IAM_REDIRECT_REMOTE;
+
     // variables à instancier !
     this.#client = null;
     this.#fetchWrapper = null;
@@ -76,11 +84,13 @@ class Services {
    */
   #initialize (options) {
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
+    var clientId = this.mode === "local" ? IAM_CLIENT_ID : IAM_CLIENT_ID_REMOTE;
+    var clientSecret = this.mode === "local" ? IAM_CLIENT_SECRET : IAM_CLIENT_SECRET_REMOTE;
     var settings = options.client ? options.client.settings : {
       server: `${IAM_URL}`,
 
-      clientId: `${IAM_CLIENT_ID}`,
-      clientSecret: `${IAM_CLIENT_SECRET}`,
+      clientId: `${clientId}`,
+      clientSecret: `${clientSecret}`,
       index: `${IAM_REALM}`,
 
       tokenEndpoint: `/realms/${IAM_REALM}/protocol/openid-connect/token`,
@@ -93,10 +103,14 @@ class Services {
     this.#fetchWrapper = new OAuth2Fetch({
       client: this.#client,
       getNewToken: async () => {
+        // en mode distant, on ne redemande pas de jeton
+        if (this.token && Object.keys(this.token).length && this.mode === "remote") {
+          return this.token;
+        }
         var token = await this.#client.authorizationCode.getToken({
-            code: this.code,
-            redirectUri: this.url,
-            code_verifier: this.codeVerifier
+          code: this.code,
+          redirectUri: this.url,
+          code_verifier: this.codeVerifier
         });
         return token;
       },
@@ -106,7 +120,7 @@ class Services {
       },
       getStoredToken: () => {
         const token = this.getTokenStorage();
-        if (token) {
+        if (token && Object.keys(token).length) {
           return token;
         }
         return null;
@@ -134,8 +148,8 @@ class Services {
   }
 
   /**
-   * Permet de valider la connexion en obtenant un token
-   * @returns {Promise} - statut : login / logout / null
+   * Permet de valider la connexion pour obtenir un token
+   * @returns {Promise} - statut : login / logout / error
    */
   isAccessValided () {
     var store = useServiceStore();
@@ -146,25 +160,47 @@ class Services {
     var code = urlParams.get('code');
     var session = urlParams.get('session_state');
     var error = urlParams.get('error');
+    var token = urlParams.get('token');
 
     var status = null;
-    // IAM login
+    // IAM login local
     if (code && session) {
       this.session = session;
       this.code = code;
       this.authenticated = true;
       status = "login";
     }
-    // IAM logout
+    // IAM logout local
     if (!code && session && session === this.session) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
-      this.token = null;
+      this.token = {};
       this.removeTokenStorage();
       this.user = {};
       this.error = {};
       status = "logout";
+    }
+    // IAM login distant
+    if (token && code) {
+      this.authenticated = true;
+      // INFO
+      // on extrait les infos
+      var c = JSON.parse(code);
+      this.code = c.code;
+      this.session = c.session_state;
+      // INFO
+      // conversion de format de token
+      var t = JSON.parse(token);
+      const today = new Date(t.expires);
+      console.error("expires token", today);
+      this.token = {
+        accessToken : t.access_token,
+        expiresAt : t.expires, // FIXME on utilise t.expires_in !?
+        refreshToken : t.refresh_token
+      };
+
+      status = "login";
     }
     // Error
     if (error) {
