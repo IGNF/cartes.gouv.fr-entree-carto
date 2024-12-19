@@ -92,7 +92,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     text: 'Catalogue',
   },
   {
-    to: `${useBaseUrl()}`,
+    to: `/`,
     text: 'Cartes',
   },
   {
