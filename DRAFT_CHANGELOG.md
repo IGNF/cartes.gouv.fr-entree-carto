@@ -25,6 +25,9 @@ Principaux changements :
 #### ✨ [Ajout]
 
 * Ajout du widget ControlList qui permet de limiter les nombre de boutons de widgets affichés à l'écran selon sa hauteur [#394](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/394) et [#396](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/396)
+* Ajout d'un module de connexion à la GeoPlateforme [#361](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/361)
+
+* Ajout du widget d'import de données [#324](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/324)
 
 * Ajout d'une première version du widget de dessin [#373](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/373)
 
@@ -61,4 +64,5 @@ Principaux changements :
 * Widgets par défaut toujours ajoutés par le permalien [#410](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/410)
 
 #### 🔒 [Sécurité]
+
 ---
