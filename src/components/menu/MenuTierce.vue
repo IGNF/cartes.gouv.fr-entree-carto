@@ -18,41 +18,59 @@
 import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore();
 
-const emit = defineEmits(['openControl', 'onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen', 'onEnregistrementOpen'])
+const emit = defineEmits([
+  'openControl', 
+  'onModalShareOpen', 
+  'onModalPrintOpen', 
+  'onModalThemeOpen', 
+  'onEnregistrementOpen'
+]);
 
 function openControl(controlName) {
   mapStore.getMap().getControls().getArray().forEach(control => {
-    if (control.CLASSNAME == controlName) {
-      let button = [...control.element.children].filter(e => {
+    if (control.CLASSNAME === controlName) {
+      let button = [...control.element.children].filter((e) => {
         if (e.className.includes("GPshowOpen"))
-            return e
+            return e;
         })
-        button[0].click()
-        emit("openControl")
+        button[0].click();
+        emit("openControl");
       }
   })
 }
 
-const icon = "LayerImport"
+const icon = "LayerImport";
 const defaultScale = 0.8325;
 const iconProps = computed(() => typeof icon === 'string'
   ? { scale: defaultScale.value, name: icon }
   : { scale: defaultScale.value, ...icon },
 );
 
+// INFO
+// on active / desactive le bouton "Mes enregistrements" selon 
+// si on est authentifié ou pas
+var service = inject('services');
+var authenticatedValue = computed(() => service.authenticated);
+// INFO
+// on est sur un faux "disabled" du bouton
+// car on souhaite que les evenements soient toujours actifs
+const authenticatedClass = ref({
+  authenticatedProperty: !authenticatedValue.value
+});
 </script>
 
 <template>
 <div class="container">
-  <!-- <DsfrButton
+  <DsfrButton
     tertiary
     no-outline
+    :class="authenticatedClass"
     @click="$emit('onEnregistrementOpen')"
     icon="ri-bookmark-line"
     >
     Mes enregistrements
   </DsfrButton>
-  <hr/> -->
+  <hr/>
   <DsfrButton
     tertiary
     no-outline
@@ -78,6 +96,7 @@ const iconProps = computed(() => typeof icon === 'string'
     >
     Imprimer
   </DsfrButton>
+  <hr/>
   <DsfrButton
     tertiary
     no-outline
@@ -90,6 +109,13 @@ const iconProps = computed(() => typeof icon === 'string'
 </template>
 
 <style scoped>
+.authenticatedProperty {
+  --hover: inherit;
+  --active: inherit;
+  background-color: transparent;
+  color: var(--text-disabled-grey);
+}
+
 a {
   text-decoration: none;
 }

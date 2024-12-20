@@ -1,5 +1,9 @@
 <script setup lang="js">
+import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
+import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuTierce from '@/components/menu/MenuTierce.vue';
+import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
+
 import { useTemplateRef } from 'vue';
 const props = defineProps({
 })
@@ -20,7 +24,7 @@ const tabArray = computed(() => {
             componentName : "Enregistrement",
             icon : "ri-bookmark-line",
             title : "Mes Enregistrements",
-            visibility: false
+            visibility: false // bouton invisible
         }
     ];
 
@@ -53,8 +57,11 @@ function onEnregistrementOpen() {
 
 const tabRefs = useTemplateRef('tabs')
 
-
-const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeOpen'])
+const emit = defineEmits([
+  'onModalShareOpen', 
+  'onModalPrintOpen', 
+  'onModalThemeOpen'
+])
 </script>
 
 <template>
@@ -76,10 +83,10 @@ const emit = defineEmits(['onModalShareOpen', 'onModalPrintOpen', 'onModalThemeO
           @on-enregistrement-open="onEnregistrementOpen"
         />
       </div>
-      <!-- <div id="EnregistrementContent"
+      <div id="EnregistrementContent"
         :class="[activeTab === 'EnregistrementContent' ? 'activeTab' : 'inactiveTab']" >
-        Mes enregistrements !
-      </div> -->
+        <MenuBookMarks></MenuBookMarks>
+      </div>
     </template>
     <template #navButtons>
       <MenuLateralNavButton
