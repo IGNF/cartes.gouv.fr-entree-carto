@@ -70,7 +70,7 @@ function closeLeftPanels() {
 
 function clickButton() {
   console.log("click on button" + props.id)
-  button.click()
+  button.value.children[0].click()
 }
 const button = ref(null)
 const id = ref(props.id)
@@ -84,9 +84,7 @@ defineExpose({
 
 
 <template>
-  <div
-  ref="button"
-  >
+  <div ref="button">
     <DsfrButton
       :id="id"
       secondary
