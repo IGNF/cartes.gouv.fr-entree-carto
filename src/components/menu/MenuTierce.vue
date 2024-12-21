@@ -23,7 +23,7 @@ const emit = defineEmits([
   'onModalShareOpen', 
   'onModalPrintOpen', 
   'onModalThemeOpen', 
-  'onEnregistrementOpen'
+  'onBookMarksOpen'
 ]);
 
 function openControl(controlName) {
@@ -65,7 +65,7 @@ const authenticatedClass = ref({
     tertiary
     no-outline
     :class="authenticatedClass"
-    @click="$emit('onEnregistrementOpen')"
+    @click="$emit('onBookMarksOpen')"
     icon="ri-bookmark-line"
     >
     Mes enregistrements

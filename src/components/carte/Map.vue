@@ -34,7 +34,8 @@ const mapRef = ref(null)
 const map = new Map({
   target: props.mapId,
   controls: [] // on supprime les contrôles par defaut !
-  })
+})
+
 provide(props.mapId, map)
 
 onMounted(() => {

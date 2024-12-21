@@ -21,7 +21,7 @@ const tabArray = computed(() => {
             visibility: true
         },
         {
-            componentName : "Enregistrement",
+            componentName : "MenuBookMarks",
             icon : "ri-bookmark-line",
             title : "Mes Enregistrements",
             visibility: false // bouton invisible
@@ -34,25 +34,46 @@ const tabArray = computed(() => {
 const activeTab = ref("MenuCatalogueContent")
 const wrapper = ref(null)
 
+// Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
-    if (tabIsActive(newTab) && is_expanded.value)
-        wrapper.value.closeMenu()
-    else{
+    if (tabIsActive(newTab) && is_expanded.value) {
+        wrapper.value.closeMenu();
+    } else {
         activeTab.value = newTab + "Content";
-        wrapper.value.openMenu()
+        wrapper.value.openMenu();
     }
 }
 
 function tabIsActive(componentName) {
-  return activeTab.value.replace("Content" , '') === componentName ? true : false
+  return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
 
-function closeMenu() {
-  wrapper.value.closeMenu()
-}
-
-function onEnregistrementOpen() {
-  tabRefs.value.filter(r => r.id == "Enregistrement")[0].button.children[0].click()
+var service = inject('services');
+var authenticated = computed(() => service.authenticated);
+/**
+ * Ouverture du menu des favoris si on est connecté,
+ * sinon, on ouvre la modale de connexion
+ */
+function onBookMarksOpen() {
+  // INFO
+  // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin 
+  // d'afficher le menu (cf. tabClicked()).
+  // cette classe expose 
+  // - l'id
+  // - une méthode clickButton()
+  tabRefs.value.forEach((e) => {
+    if (e.id === "MenuBookMarks") {
+      if (authenticated.value) {
+        // on ouvre le menu des favoris
+        e.clickButton();
+      } else {
+        // on ouvre la modale de connexion 
+        // sans déclencher l'ouverture des favoris
+        // on emet un evenement qui déclenche l'ouverture !
+        emit('onModalLoginOpen');
+      }
+    }
+  })
 }
 
 const tabRefs = useTemplateRef('tabs')
@@ -60,7 +81,8 @@ const tabRefs = useTemplateRef('tabs')
 const emit = defineEmits([
   'onModalShareOpen', 
   'onModalPrintOpen', 
-  'onModalThemeOpen'
+  'onModalThemeOpen',
+  'onModalLoginOpen'
 ])
 </script>
 
@@ -80,11 +102,11 @@ const emit = defineEmits([
           @on-modal-share-open="$emit('onModalShareOpen')"
           @on-modal-print-open="$emit('onModalPrintOpen')"
           @on-modal-theme-open="$emit('onModalThemeOpen')"
-          @on-enregistrement-open="onEnregistrementOpen"
+          @on-book-marks-open="onBookMarksOpen"
         />
       </div>
-      <div id="EnregistrementContent"
-        :class="[activeTab === 'EnregistrementContent' ? 'activeTab' : 'inactiveTab']" >
+      <div id="MenuBookMarksContent"
+        :class="[activeTab === 'MenuBookMarksContent' ? 'activeTab' : 'inactiveTab']" >
         <MenuBookMarks></MenuBookMarks>
       </div>
     </template>

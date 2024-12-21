@@ -13,7 +13,7 @@ export default {};
 <script lang="js" setup>
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian.js';
+import { useEulerian } from '@/plugins/Eulerian';
 import { useClipboard } from '@vueuse/core'
 
 const eulerian = useEulerian();
