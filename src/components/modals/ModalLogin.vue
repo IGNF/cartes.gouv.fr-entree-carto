@@ -9,12 +9,31 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useEulerian } from '@/plugins/Eulerian.js';
-const eulerian = useEulerian();
+import { useRouter } from 'vue-router';
+import { useEulerian } from '@/plugins/Eulerian';
 
-const title = "Module de connexion";
-const description = "...";
-const type = "warning";
+const eulerian = useEulerian();
+const router = useRouter();
+
+const title = "Se connecter à cartes.gouv.fr";
+const icon = 'fr-icon-user-fill';
+const actions = [
+  {
+    label: 'Se connecter',
+    onClick () {
+      // on renvoie vers la route de login
+      opened.value = false;
+      router.push({ path : '/login' });
+    }
+  },
+  {
+    label: 'Annuler',
+    tertiary: true,
+    onClick () {
+      opened.value = false;
+    }
+  },
+];
 
 const opened = ref(false);
 
@@ -43,14 +62,17 @@ defineExpose({
     :opened="opened" 
     :title="title"
     size="md" 
+    :icon="icon"
+    :is-alert="true"
+    :actions="actions"
     @close="onModalLoginClose">
 
     <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <DsfrAlert
-      :description="description"
-      :type="type"
-    />
-  
+    <template #default>
+      <p>Pour enregistrer vos données, vous devez vous identifier 
+        ou créer un compte sur cartes.gouv.fr
+      </p>
+    </template>
   </DsfrModal>
 </template>
 
