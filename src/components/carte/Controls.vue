@@ -94,6 +94,13 @@ const searchEngineOptions = {
     filterLayersPriority : dataStore.getFeatured().toString(),
     serviceOptions: {}
   },
+  autocompleteOptions : {
+    serviceOptions : {
+        maximumResponses : 10
+    },
+    prettifyResults : true,
+    maximumEntries : 5
+  },
   markerUrl : IconGeolocationSVG
 };
 
