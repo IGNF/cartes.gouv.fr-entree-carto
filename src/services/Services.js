@@ -21,6 +21,8 @@ const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
  * ou {@link https://www.ory.sh/docs/oauth2-oidc/authorization-code-flow}
  * 
  * @see env
+ * @fires service::user
+ * @fires service::documents
  * @example
  * import Services from '@/services/Services';
  * var service = new Services(options);
@@ -68,6 +70,7 @@ class Services {
     
     this.api = null;
     this.url = null;
+    this.target = null;
 
     this.#initialize(options);
 
@@ -78,6 +81,7 @@ class Services {
    * Initialisation du client oauth
    */
   #initialize (options) {
+    this.target = new EventTarget();
     this.api = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
     var settings = options.client ? options.client.settings : {
@@ -141,6 +145,8 @@ class Services {
    * Permet de valider la connexion en obtenant un token
    * @see getUserMe
    * @see getDocuments
+   * @fires service::user
+   * @fires service::documents
    * @returns {Promise} - statut : login / logout / unknow
    */
   isAccessValided () {
@@ -177,13 +183,26 @@ class Services {
             // on execute une autre promise chainée
             // ex. les informations de l'utilisateur !
             return this.getUserMe()
-            .then((data) => {
-              console.debug(data);
+            .then((user) => {
+              console.debug(user);
+              this.target.dispatchEvent(
+                new CustomEvent("service::user", {
+                    bubbles : true,
+                    detail : user
+                })
+              );
               // on execute une autre promise chainée
               // ex. les favoris !
               return this.getDocuments()
               .then((documents) => {
                 console.debug(documents);
+                this.target.dispatchEvent(
+                  new CustomEvent("service::documents", {
+                      bubbles : true,
+                      detail : documents
+                  })
+                );
+          
               })
               .catch((e) => {
                 throw new Error('Error to get documents (' + e.message + ')');

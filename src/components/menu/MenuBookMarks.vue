@@ -1,7 +1,6 @@
 <script setup lang="js">
 
-import MenuBookMarkLogguedIn from '@/components/menu/bookmarks/MenuBookMarkLogguedIn.vue';
-import MenuBookMarkLogguedOut from '@/components/menu/bookmarks/MenuBookMarkLogguedOut.vue';
+import MenuBookMarkLoggued from '@/components/menu/bookmarks/MenuBookMarkLoggued.vue';
 
 var service = inject('services');
 var authenticated = computed(() => service.authenticated);
@@ -10,8 +9,12 @@ var authenticated = computed(() => service.authenticated);
 
 <template>
   <div class="container">
-    <MenuBookMarkLogguedIn v-if="authenticated"/>
-    <MenuBookMarkLogguedOut v-else />
+    <!-- INFO
+      On affiche le menu des favoris si on est authentifié.
+      Sinon, une modale de connexion est proposée 
+      (cf. src/components/menu/LeftMenuTool.vue ~ onBookMarksOpen())
+    -->
+    <MenuBookMarkLoggued v-if="authenticated"/>
   </div>
 </template>
 

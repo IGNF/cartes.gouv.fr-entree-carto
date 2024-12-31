@@ -128,7 +128,7 @@ var Documents = {
       }
       const label = this.labels[i];
       for (let j = 0; j < this.documents[label].length; j++) {
-        const element = this.documents[label][j];
+        var element = this.documents[label][j];
         if (element._id === data._id) {
           element = data;
           founded = true;

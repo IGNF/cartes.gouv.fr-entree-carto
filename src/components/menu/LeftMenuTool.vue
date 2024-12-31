@@ -69,7 +69,8 @@ function onBookMarksOpen() {
       } else {
         // on ouvre la modale de connexion 
         // sans déclencher l'ouverture des favoris
-        // on emet un evenement qui déclenche l'ouverture !
+        // on emet un evenement qui déclenche l'ouverture de la modale !
+        // (cf. src/components/CartoAndTools.vue ~ onModalLoginOpen())
         emit('onModalLoginOpen');
       }
     }
