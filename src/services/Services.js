@@ -21,6 +21,8 @@ const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
  * ou {@link https://www.ory.sh/docs/oauth2-oidc/authorization-code-flow}
  * 
  * @see env
+ * @fires service::user
+ * @fires service::documents
  * @example
  * import Services from '@/services/Services';
  * var service = new Services(options);
@@ -57,14 +59,18 @@ class Services {
     this.token = options.token || "";
     /** user */
     this.user = options.user || {};
+    /** documents */
+    this.documents = options.documents || {};
     /** erreurs IAM */
     this.error = options.error || {};
     
     // variables à instancier !
     this.#client = null;
     this.#fetchWrapper = null;
-
+    
+    this.api = null;
     this.url = null;
+    this.target = null;
 
     this.#initialize(options);
 
@@ -75,6 +81,8 @@ class Services {
    * Initialisation du client oauth
    */
   #initialize (options) {
+    this.target = new EventTarget();
+    this.api = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
     var settings = options.client ? options.client.settings : {
       server: `${IAM_URL}`,
@@ -135,11 +143,15 @@ class Services {
 
   /**
    * Permet de valider la connexion en obtenant un token
-   * @returns {Promise} - statut : login / logout / null
+   * @see getUserMe
+   * @see getDocuments
+   * @fires service::user
+   * @fires service::documents
+   * @returns {Promise} - statut : login / logout / unknow
    */
   isAccessValided () {
     var store = useServiceStore();
-    // si login via IAM, on récupère le code dans l'url
+    // si IAM, on récupère les informations dans l'url
     const queryString = location.search;
     const urlParams = new URLSearchParams(queryString);
     // parametres
@@ -147,13 +159,67 @@ class Services {
     var session = urlParams.get('session_state');
     var error = urlParams.get('error');
 
-    var status = null;
+    // INFO
+    // on retourne une promise avec le statut 
+    // - login
+    // - logout
+    // - unknow
+    var promise = null;
+
+    var status = "unknow";
     // IAM login
     if (code && session) {
       this.session = session;
       this.code = code;
       this.authenticated = true;
       status = "login";
+      // on demande un token...
+      // et, ensuite, on met en place une serie de promise chainées :
+      // - getUserMe
+      // - getDocuments
+      promise = this.getAccessToken()
+        .then((token) => {
+          if (token) {
+            // on execute une autre promise chainée
+            // ex. les informations de l'utilisateur !
+            return this.getUserMe()
+            .then((user) => {
+              console.debug(user);
+              this.target.dispatchEvent(
+                new CustomEvent("service::user", {
+                    bubbles : true,
+                    detail : user
+                })
+              );
+              // on execute une autre promise chainée
+              // ex. les favoris !
+              return this.getDocuments()
+              .then((documents) => {
+                console.debug(documents);
+                this.target.dispatchEvent(
+                  new CustomEvent("service::documents", {
+                      bubbles : true,
+                      detail : documents
+                  })
+                );
+          
+              })
+              .catch((e) => {
+                throw new Error('Error to get documents (' + e.message + ')');
+              }) 
+            })
+            .catch((e) => {
+              throw new Error('Error to get user info (' + e.message + ')');
+            })
+          }
+        })
+        .then(() => {
+          // on retourne le statut
+          return status;
+        })
+        .catch((e) => {
+          throw new Error('Error to get token (' + e.message + ')');
+        })
     }
     // IAM logout
     if (!code && session && session === this.session) {
@@ -163,8 +229,12 @@ class Services {
       this.token = null;
       this.removeTokenStorage();
       this.user = {};
+      this.documents = {};
       this.error = {};
       status = "logout";
+      promise = new Promise((resolve, reject) => {
+        resolve(status);
+      });
     }
     // Error
     if (error) {
@@ -172,12 +242,15 @@ class Services {
         name: error,
         message: urlParams.get('error_description')
       };
-      return Promise.reject(this.error);
+      promise = new Promise((resolve, reject) => {
+        reject(this.error);
+      });
     }
+
     // enregistrement dans le storage du statut de la connexion
     store.setService(this);
 
-    return Promise.resolve(status);
+    return promise || Promise.resolve(status);
   }
 };
 

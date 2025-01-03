@@ -63,52 +63,36 @@ const mandatoryLinks = computed(() => {
   })
 })
 
-// INFO
-// on teste si une demande de connexion (ou de deconnexion) a été faite,
-// et si elle est valide, on demande le jeton de connexion, puis, 
-// on récupère les informations utilisateurs
 var service :any = inject('services');
+// INFO
+// Gestion des exceptions d'authentification
 var serviceMessageError = ref("");
 var serviceMessageClosed = ref(true);
 var onServiceMessageClose = () => {
   serviceMessageClosed.value = true;
 };
+
+// INFO
+// on teste si une demande de connexion (ou de deconnexion) a été faite,
+// et si elle est valide, on demande le jeton de connexion, puis, 
+// on récupère les informations utilisateurs. 
+// Pour les favoris, on récupère aussi les documents.
 service.isAccessValided()
 .then((status:any) => {
   if (status === "login") {
-    // on recupère le token
-    service.getAccessToken()
-    .then((token:any) => {
-      if (token) {
-        // on recherche des informations de l'utilisateur
-        service.getUserMe()
-        .then((data:any) => {
-          // on met à jour le header en renseignant les informations utilisateurs
-          var last_name = data.last_name;
-          var first_name = data.first_name;
-          headerParams.value.quickLinks.forEach((element:any) => {
-            if (element.label === "...") {
-              element.label = `${first_name} ${last_name}`;
-            }
-          });
-        })
-        .catch((e:any) => {
-          console.error(e);
-          serviceMessageError.value = 'Error to get user info : ' + e.message;
-          serviceMessageClosed.value = false;
-        })
+    // on met à jour le header en renseignant les informations utilisateurs
+    var last_name = service.user.last_name;
+    var first_name = service.user.first_name;
+    headerParams.value.quickLinks.forEach((element:any) => {
+      if (element.label === "...") {
+        element.label = `${first_name} ${last_name}`;
       }
-    })
-    .catch((e:any) => {
-      console.error(e);
-      serviceMessageError.value = 'Error to get token : ' + e.message;
-      serviceMessageClosed.value = false;
-    })
+    });
   }
 })
 .catch((e:any) => {
   console.error(e);
-  serviceMessageError.value = 'Error during authentication : ' + e.message;
+  serviceMessageError.value = 'Exception during authentication : ' + e.message;
   serviceMessageClosed.value = false;
 });
 
@@ -222,6 +206,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     </template>
   </DsfrHeader>
 
+  <!-- Message d'erreur sur l'authentification -->
   <DsfrAlert
     :description="serviceMessageError"
     type="error"

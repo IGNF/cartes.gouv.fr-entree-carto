@@ -2,7 +2,9 @@
 import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
-import ModalTheme from '@/components/modals/ModalTheme.vue'
+
+import ThemeModal from '@/components/modals/ModalTheme.vue'
+import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from '@/components/carte/control/ShareModal.vue'
 import PrintModal from "@/components/carte/control/PrintModal.vue";
 
@@ -13,17 +15,23 @@ import { useMapStore } from "@/stores/mapStore"
 const mapStore = useMapStore();
 const dataStore = useDataStore();
  
-const refModalTheme = ref(null)
-const modalShareRef = ref(null)
-const refPrintModal = ref(null)
+const refModalTheme: ThemeModal = ref({})
+const refModalLogin: LoginModal = ref({})
+const refModalShare: ShareModal = ref({})
+const refModalPrint: PrintModal = ref({})
+
+// Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
-  modalShareRef.value.onModalShareOpen()
+  refModalShare.value.onModalShareOpen()
 }
 const onModalThemeOpen = () => {
   refModalTheme.value.openModalTheme()
 }
 const onModalPrintOpen = () => {
-  refPrintModal.value.onModalPrintOpen()
+  refModalPrint.value.onModalPrintOpen()
+}
+const onModalLoginOpen = () => {
+  refModalLogin.value.openModalLogin()
 }
 
 // INFO
@@ -66,11 +74,15 @@ provide("selectedLayers", selectedLayers);
 <template>
   <div id="map-and-tools-container">
 
-    <!-- Le catalogue est dans le menu gauche -->
+    <!-- Le menu de gauche : le menu tierce (et les favoris)
+     il y figure la liste des abonnements aux evenements sur le clic
+     d'un élement du menu tierce
+    -->
     <LeftMenuTool
       @on-modal-share-open="onModalShareOpen"
       @on-modal-print-open="onModalPrintOpen"
       @on-modal-theme-open="onModalThemeOpen"
+      @on-modal-login-open="onModalLoginOpen"
     />
 
     <!-- Module cartographique : 
@@ -82,16 +94,18 @@ provide("selectedLayers", selectedLayers);
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"/>
 
-    <!-- Le menu des contrôles est dans le menu droite -->
+    <!-- Le menu des contrôles et le catalogue -->
     <RightMenuTool
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
     />
+    <!-- Liste des modales -->
     <div class="modal-container">
-  <ModalTheme ref="refModalTheme" />
-  <PrintModal ref="refPrintModal" />
-  <ShareModal ref="modalShareRef"/>
-</div>
+      <ThemeModal ref="refModalTheme" />
+      <PrintModal ref="refModalPrint" />
+      <ShareModal ref="refModalShare" />
+      <LoginModal ref="refModalLogin" />
+    </div>
   </div>
 </template>
 
