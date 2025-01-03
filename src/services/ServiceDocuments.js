@@ -3,8 +3,9 @@ import { useServiceStore } from '@/stores/serviceStore';
  * @description 
  * Classe de service de gestion des documents utilisateurs
  * 
- * @todo completer "documents" à chaque enregistrement d'une donnée
+ * @todo completer "this.documents" à chaque enregistrement d'une donnée
  * @fixme gestion de la pagination
+ * @fixme la migration ne differencie pas un import d'un compute, à faire coté client !
  * 
  * @see env
  * @example
@@ -19,6 +20,8 @@ import { useServiceStore } from '@/stores/serviceStore';
  * Documents.setImport(data);
  * Documents.getCompute(id);
  * Documents.setCompute(data);
+ * Documents.getService(id);
+ * Documents.setService(data);
  * Documents.getCartes();
  * Documents.setCartes();
  * ...
@@ -40,6 +43,7 @@ var Documents = {
     "drawing",
     "import",
     "compute",
+    "service",
     "carte"
   ],
   
@@ -54,8 +58,32 @@ var Documents = {
     "wms", 
     "wmts",
     "internal",
-    "external"
+    "external",
+    "isochron", // TODO ...
+    "route" // TODO ...
   ],
+
+  i18n : function (label) {
+    var mapping = label;
+    if (this.labels.includes(label)) {
+      if (label === "drawing") {
+        mapping = "croquis";
+      }
+      if (label === "compute") {
+        mapping = "calcul";
+      }
+    } else if(this.otherLabels.includes(label)) {
+      if (label === "internal") {
+        mapping = "interne";
+      }
+      if (label === "external") {
+        mapping = "externe";
+      }
+    } else {
+      mapping = label;
+    }
+    return mapping;
+  },
 
   /**
    * Obtenir la liste des documents
@@ -66,6 +94,7 @@ var Documents = {
    * @property {Object} documents.compute
    * @property {Object} documents.carte
    * @property {Object} documents.import
+   * @property {Object} documents.service
    * 
    * @returns {Promise} - Liste des documents
    */
@@ -148,13 +177,57 @@ var Documents = {
     return data;
   },
 
+  /**
+   * Obtenir un croquis (téléchargement)
+   * 
+   * @param {*} id 
+   * @returns {Promise} - Le contenu du fichier
+   */
   getDrawing : async function (id) {},
   setDrawing : async function (data) {},
+
+  /**
+   * Obtenir un import (téléchargement)
+   * 
+   * @todo analyse du contenu pour savoir si cet import est du type 'compute'
+   * @param {*} id 
+   * @returns {Promise} - Le contenu du fichier
+   */
   getImport : async function (id) {},
   setImport : async function (data) {},
+
+  /**
+   * Obtenir un calcul (téléchargement)
+   * 
+   * @todo analyse du contenu pour connaitre le type de calcul : isochrone ou itineraire
+   * @param {*} id 
+   * @returns {Promise} - Le contenu du fichier
+   */
   getCompute : async function (id) {},
   setCompute : async function (data) {},
 
+  /**
+   * Obtenir un service (téléchargement)
+   * 
+   * Le contenu est un parametrage technique du service.
+   * 
+   * @todo analyse du contenu pour connaitre le type de service : wms, wmts ou mapbox
+   * @param {*} id 
+   * @returns {Promise} - Le contenu du fichier
+   */
+  getService : async function (id) {},
+  setService : async function (data) {},
+
+  /**
+   * Obtenir la liste des cartes (téléchargement)
+   * 
+   * Le contenu est une liste de permaliens sous forme
+   * de clef/valeur.
+   * 
+   * @todo analyse du contenu pour savoir si cet import est du type 'compute'
+   * @param {*} id 
+   * @returns {Promise} - Le contenu du fichier
+   */
   getCartes : async () => {},
   setCartes : async () => {}
 

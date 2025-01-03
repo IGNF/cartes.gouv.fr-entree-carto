@@ -1,3 +1,14 @@
+<script lang="js">
+/**
+ * @description
+ * Menu des Favoris
+ * 
+ */
+export default {
+  name: 'MenuBookMarks'
+};
+</script>
+
 <script setup lang="js">
 
 import MenuBookMarkLoggued from '@/components/menu/bookmarks/MenuBookMarkLoggued.vue';

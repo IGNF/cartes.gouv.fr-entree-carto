@@ -1,3 +1,14 @@
+<script lang="js">
+/**
+ * @description
+ * Menu des Favoris
+ * 
+ */
+export default {
+  name: 'MenuBookMarkNoData'
+};
+</script>
+
 <script setup lang="js">
 
 const buttons = [

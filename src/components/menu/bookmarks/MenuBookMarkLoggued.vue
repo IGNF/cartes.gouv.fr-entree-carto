@@ -1,5 +1,17 @@
+<script lang="js">
+/**
+ * @description
+ * Menu des Favoris
+ * 
+ */
+export default {
+  name: 'MenuBookMarkLoggued'
+};
+</script>
+
 <script setup lang="js">
 import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.vue';
+import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
 
 var service = inject('services');
 
@@ -21,9 +33,11 @@ var documentsIsEmpty = computed(() => {
   // les promises sur les documents ne sont pas encore completement remontées !
   // on met donc une ref 'documentsIsReady' qui est complété par l'evenement émis 
   // par le service
+  var value = IsEmpty();
   if (documentsIsReady.value) {
     return IsEmpty();
   }
+  return value;
 });
 
 onMounted(() => {
@@ -42,7 +56,8 @@ onMounted(() => {
     <MenuBookMarkNoData />
   </div>
   <div v-else>
-    Mes enregistrements : Connecté (TODO)
+    <MenuBookMarkDataList
+      title="Mes enregistrements" />
   </div>
 </template>
 
