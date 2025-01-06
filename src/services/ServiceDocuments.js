@@ -63,28 +63,6 @@ var Documents = {
     "route" // TODO ...
   ],
 
-  i18n : function (label) {
-    var mapping = label;
-    if (this.labels.includes(label)) {
-      if (label === "drawing") {
-        mapping = "croquis";
-      }
-      if (label === "compute") {
-        mapping = "calcul";
-      }
-    } else if(this.otherLabels.includes(label)) {
-      if (label === "internal") {
-        mapping = "interne";
-      }
-      if (label === "external") {
-        mapping = "externe";
-      }
-    } else {
-      mapping = label;
-    }
-    return mapping;
-  },
-
   /**
    * Obtenir la liste des documents
    * 
@@ -159,21 +137,31 @@ var Documents = {
       for (let j = 0; j < this.documents[label].length; j++) {
         var element = this.documents[label][j];
         if (element._id === data._id) {
-          element = data;
+          element.labels = data.labels;
+          element.description = data.description;
+          element.mime_type = data.mime_type;
+          element.extra = data.extra; // ?
           founded = true;
           break;
         }
       }
-      
     }
 
     if (! founded) {
-      return Promise.reject(`Document (${id}) not founded !`);
+      return Promise.reject(`Le document (${id}) n'a pas été trouvé !`);
     }
 
     var store = useServiceStore();
     store.setService(this);
     
+    return data;
+  },
+
+  getFileById : async function (id) {
+    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${id}/file`, {
+      method: 'GET'
+    });
+    var data = await response.text();
     return data;
   },
 
@@ -183,7 +171,9 @@ var Documents = {
    * @param {*} id 
    * @returns {Promise} - Le contenu du fichier
    */
-  getDrawing : async function (id) {},
+  getDrawing : async function (id) {
+    return await this.getFileById(id);
+  },
   setDrawing : async function (data) {},
 
   /**
@@ -193,7 +183,9 @@ var Documents = {
    * @param {*} id 
    * @returns {Promise} - Le contenu du fichier
    */
-  getImport : async function (id) {},
+  getImport : async function (id) {
+    return await this.getFileById(id);
+  },
   setImport : async function (data) {},
 
   /**
@@ -203,7 +195,9 @@ var Documents = {
    * @param {*} id 
    * @returns {Promise} - Le contenu du fichier
    */
-  getCompute : async function (id) {},
+  getCompute : async function (id) {
+    return await this.getFileById(id);
+  },
   setCompute : async function (data) {},
 
   /**

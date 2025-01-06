@@ -54,6 +54,7 @@ declare module 'vue' {
     MeasureAzimuth: typeof import('./components/carte/control/MeasureAzimuth.vue')['default']
     MeasureLength: typeof import('./components/carte/control/MeasureLength.vue')['default']
     MenuBookMarkDataList: typeof import('./components/menu/bookmarks/MenuBookMarkDataList.vue')['default']
+    MenuBookMarkEntry: typeof import('./components/menu/bookmarks/MenuBookMarkEntry.vue')['default']
     MenuBookMarkLoggued: typeof import('./components/menu/bookmarks/MenuBookMarkLoggued.vue')['default']
     MenuBookMarkNoData: typeof import('./components/menu/bookmarks/MenuBookMarkNoData.vue')['default']
     MenuBookMarks: typeof import('./components/menu/MenuBookMarks.vue')['default']

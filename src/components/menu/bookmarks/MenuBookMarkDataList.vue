@@ -1,8 +1,11 @@
 <script lang="js">
 /**
  * @description
- * Menu des Favoris
+ * Liste des Favoris : 
+ * - cartes ou permaliens
+ * - données : croquis, imports, calculs et services
  * 
+ * @todo accessibilité des onglets
  */
 export default {
   name: 'MenuBookMarkDataList'
@@ -10,6 +13,8 @@ export default {
 </script>
 
 <script setup lang="js">
+
+import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
 
 // options
 const props = defineProps({
@@ -52,7 +57,7 @@ const i18n = (label) => {
   }
   return mapping;
 };
-// mapping label icon
+// mapping label icon (dsfr)
 const icon = (label) => {
   var icon = "";
   if (service.labels.includes(label)) {
@@ -93,7 +98,8 @@ const lstData = computed(() => {
           full_name : element.name,
           name : element.name.substring(0, element.name.lastIndexOf('.')),
           ext : element.name.substring(element.name.lastIndexOf('.') + 1),
-          type : i18n(key),
+          type : key,
+          type_fr : i18n(key),
           icon : icon(key),
           date : "" // FIXME information non dispo
         });
@@ -113,9 +119,10 @@ const lstMap = computed(() => {
         id : element._id,
         full_name : element.name,
         name : element.name,
-        ext : "",
+        ext : null,
         type : "carte",
-        icon : "fr-icon-link", // permalien
+        type_fr : "permalien",
+        icon : "fr-icon-link", // icon de permalien
         date : "" // FIXME information non dispo
       });
     }
@@ -176,15 +183,7 @@ onMounted(() => {});
           :selected="selectedTabBookmarkIndex === 0">
           <!-- Affichage des cartes ou permaliens -->
           <div class="container-bookmark-map-item fr-p-1w" v-for="map in lstMap">
-            <DsfrButton 
-              :data-id="map.id"
-              tertiary
-              no-outline
-              :icon="map.icon">
-              {{ map.name }}
-            </DsfrButton>
-            <div class="container-bookmark-advanced-infos fr-hint-text"></div>
-            <div class="container-bookmark-advanced-options"></div>
+            <MenuBookMarkEntry :data="map" type="map"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 
@@ -200,20 +199,7 @@ onMounted(() => {});
             - menu options : renommer, partager, supprimer
           -->
           <div class="container-bookmark-data-item fr-p-1w" v-for="data in lstData">
-            <DsfrButton 
-              :data-id="data.id" 
-              :title="data.full_name"
-              tertiary
-              no-outline
-              :icon="data.icon">
-              {{ data.name }}
-            </DsfrButton>
-            <div class="container-bookmark-advanced-infos fr-hint-text">
-              <span>{{ data.type }}</span>
-              <span v-if="data.ext"> - {{ data.ext }}</span>
-              <span v-if="data.date"> - {{ data.date }}</span>
-            </div>
-            <div class="container-bookmark-advanced-options"></div>
+            <MenuBookMarkEntry :data="data" type="data"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 

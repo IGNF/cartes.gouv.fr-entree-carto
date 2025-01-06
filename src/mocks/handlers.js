@@ -79,57 +79,242 @@ export const handlers = {
   ),
   success_data : success.concat(
     /**
-     * obtenir les documents de l'utilisateur (vide)
+     * obtenir les documents de l'utilisateur
      */
     http.get('https://data.geopf.fr/api/users/me/documents', async ({ request }) => {
       const url = new URL(request.url);
       const labels = url.searchParams.getAll('labels');
       
       var response = null;
-      if (labels.includes("carte") && labels.includes("service")) {
+      if (labels.includes("carte")) {
         response = [];
       }
       if (labels.includes("compute")) {
-        response = [{
-          "name": "compute1.geojson",
-          "size": 1000,
+        response = {
+          "name": "Profil altimétrique.geojson",
+          "size": 20935,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa0"
+        },[{
+          "name": "isocurve (pieton).geojson",
+          "size": 58050,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa1"
         },{
-          "name": "compute2.geojson",
-          "size": 1000,
+          "name": "itineraire (voiture).geojson",
+          "size": 8916,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa2"
         }];
       }
       if (labels.includes("drawing")) {
         response = [{
           "name": "croquis1.kml",
-          "size": 1000,
+          "size": 2621,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa3"
         },{
           "name": "croquis2.kml",
-          "size": 1000,
+          "size": 3652,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa4"
         }];
       }
       if (labels.includes("import")) {
         response = [{
-          "name": "import.geojson",
-          "size": 1000,
+          "name": "regions.geojson",
+          "size": 529739,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
         },
         {
-          "name": "import.gpx",
-          "size": 1000,
+          "name": "rando_corse.gpx",
+          "size": 70165,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         },
         {
-          "name": "import.kml",
-          "size": 1000,
+          "name": "decoupage_top100.kml",
+          "size": 142017,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+        }];
+      }
+      if (labels.includes("service")) {
+        response = [{
+          "name": "wms.json",
+          "size": 0,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb0"
+        },
+        {
+          "name": "wmts.json",
+          "size": 0,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb1"
+        },
+        {
+          "name": "mapbox.json",
+          "size": 0,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb2"
         }];
       }
 
       return HttpResponse.json(response);
+    }),
+    /**
+     * obtenir les informations d'un document
+     */
+    http.get('https://data.geopf.fr/api/users/me/documents/:id', async ({ params }) => {
+      const { id } = params;
+      var response = null;
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa1') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa2') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa3') {
+        response = HttpResponse.json({
+          "name": "croquis1.kml",
+          "description": "croquis avec un icone, une ligne et une surface",
+          "size": 3485,
+          "mime_type": "application/octet-stream",
+          "labels": [
+            "cartes.gouv.fr",
+            "drawing",
+            "kml"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa4') {
+        response = HttpResponse.json({
+          "name": "croquis2.kml",
+          "description": "croquis avec un icone et un label",
+          "size": 3485,
+          "mime_type": "application/octet-stream",
+          "labels": [
+            "cartes.gouv.fr",
+            "drawing",
+            "kml"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa5') {
+        response = HttpResponse.json({
+          "name": "regions.geojson",
+          "description": "carte des regions",
+          "size": 529739,
+          "mime_type": "application/geo+json",
+          "labels": [
+            "cartes.gouv.fr",
+            "import",
+            "geojson",
+            "internal"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa6') {
+        response = HttpResponse.json({
+          "name": "rando_corse.gpx",
+          "description": "ma rando",
+          "size": 70165,
+          "mime_type": "application/gpx+xml",
+          "labels": [
+            "cartes.gouv.fr",
+            "import",
+            "gpx",
+            "internal"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa7') {
+        response = HttpResponse.json({
+          "name": "decoupage_top100.kml",
+          "description": "decoupage TOP100",
+          "size": 142017,
+          "mime_type": "application/octet-stream",
+          "labels": [
+            "cartes.gouv.fr",
+            "import",
+            "kml",
+            "internal"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb0') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb1') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb2') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      return response;
+    }),
+    /**
+     * telecharger le document
+     */
+    http.get('https://data.geopf.fr/api/users/me/documents/:id/file', async ({ params }) => {
+      const { id } = params;
+      var response = null;
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
+        const buffer = await fetch('./mocks/Profil altimétrique.geojson').then(
+          (response) => response.json()
+        );
+        response = buffer;
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa1') {
+        const buffer = await fetch('./mocks/isocurve (pieton).geojson').then(
+          (response) => response.json()
+        );
+        response = buffer;
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa2') {
+        const buffer = await fetch('./mocks/itineraire (voiture).geojson').then(
+          (response) => response.json()
+        );
+        response = buffer;
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa3') {
+        const buffer = await fetch('./mocks/croquis1.kml').then(
+          (response) => response.text()
+        );
+        response = HttpResponse.xml(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa4') {
+        const buffer = await fetch('./mocks/croquis2.kml').then(
+          (response) => response.text()
+        );
+        response = HttpResponse.xml(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa5') {
+        const buffer = await fetch('./mocks/regions.geojson').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa6') {
+        const buffer = await fetch('./mocks/rando_corse.gpx').then(
+          (response) => response.text()
+        );
+        response = HttpResponse.xml(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa7') {
+        const buffer = await fetch('./mocks/decoupage_top100.kml').then(
+          (response) => response.text()
+        );
+        response = HttpResponse.xml(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb0') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb1') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb2') {
+        response = new HttpResponse("Not yet implemented !", { status: 501 })
+      }
+      return response;
     })
   ),
   error : [
