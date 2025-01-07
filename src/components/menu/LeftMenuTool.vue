@@ -33,6 +33,7 @@ const tabArray = computed(() => {
 
 const activeTab = ref("MenuCatalogueContent")
 const wrapper = ref(null)
+const width = 300;
 
 // Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
@@ -40,6 +41,12 @@ function tabClicked(newTab) {
         wrapper.value.closeMenu();
     } else {
         activeTab.value = newTab + "Content";
+        // on change la largeur du menu pour les favoris
+        if (newTab === "MenuBookMarks") {
+          wrapper.value.widthMenu = 400;
+        } else {
+          wrapper.value.widthMenu = width;
+        }
         wrapper.value.openMenu();
     }
 }
@@ -89,13 +96,13 @@ const emit = defineEmits([
 
 <template>
   <MenuLateralWrapper
+    ref="wrapper"
     :side="side"
     :visibility="true"
-    :width=300
+    :width="width"
     :padding=16
     id="MenuCatalogueContentClose"
-    v-model="is_expanded"
-    ref="wrapper">
+    v-model="is_expanded">
     <template #content>
       <div id="MenuTierceContent"
         :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
