@@ -6,6 +6,7 @@
  * - données : croquis, imports, calculs et services
  * 
  * @todo accessibilité des onglets
+ * @todo handler sur les boutons d'enregistrement de cartes ou de fichiers
  */
 export default {
   name: 'MenuBookMarkDataList'
@@ -79,7 +80,7 @@ const icon = (label) => {
   return icon;
 };
 
-// liste des données
+// liste des données avec filtre sur la recherche (sur le nom complet)
 const lstData = computed(() => {
   var data = [];
   for (const key in service.documents) {
@@ -106,10 +107,10 @@ const lstData = computed(() => {
       }
     }
   }
-  return data;
+  return data.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
 });
 
-// liste des cartes
+// liste des cartes avec filtre sur la recherche (sur le nom complet)
 const lstMap = computed(() => {
   var map = [];
   if (service.documents.carte) {
@@ -127,8 +128,13 @@ const lstMap = computed(() => {
       });
     }
   }
-  return map;
+  return map.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
 });
+
+// TODO gestionnaire d'evenements :
+// Action d'enregistrement du document sur l'espace personnel
+const addMap = () => {};
+const addData = () => {};
 
 onBeforeMount(() => {});
 
@@ -181,6 +187,13 @@ onMounted(() => {});
           panel-id="tab-content-bookmark-maps"
           tab-id="tab-bookmark-maps"
           :selected="selectedTabBookmarkIndex === 0">
+          <!-- Bouton pour enregistrer la carte -->
+          <DsfrButton
+            label="Enregistrer la carte"
+            tertiary
+            size="sm"
+            icon="fr-icon-save-line"
+            @click="addMap()"/>
           <!-- Affichage des cartes ou permaliens -->
           <div class="container-bookmark-map-item fr-p-1w" v-for="map in lstMap">
             <MenuBookMarkEntry :data="map" type="map"></MenuBookMarkEntry>
@@ -191,6 +204,13 @@ onMounted(() => {});
           panel-id="tab-content-bookmark-data"
           tab-id="tab-bookmark-data"
           :selected="selectedTabBookmarkIndex === 1">
+          <!-- Bouton pour importer un fichier -->
+          <DsfrButton
+            label="Ajouter un fichier"
+            tertiary
+            size="sm"
+            icon="fr-icon-upload-line"
+            @click="addData()"/>
           <!-- Affichage des données :
             - nom
             - icone en fonction du type de données

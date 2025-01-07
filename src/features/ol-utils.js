@@ -89,7 +89,7 @@ const createVectorLayer = (options) => {
     throw new Error("La couche n'est pas instanciée !");
   }
 
-  vectorLayer.gpResultLayerId = options.id;
+  vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
 
   return vectorLayer;
 };
