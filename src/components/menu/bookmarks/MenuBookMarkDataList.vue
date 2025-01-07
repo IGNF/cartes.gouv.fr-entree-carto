@@ -1,12 +1,13 @@
 <script lang="js">
 /**
  * @description
- * Liste des Favoris : 
+ * Liste des Favoris avec les documents suivants : 
  * - cartes ou permaliens
  * - données : croquis, imports, calculs et services
  * 
- * @todo accessibilité des onglets
+ * @todo gestion de l'accessibilité des onglets
  * @todo handler sur les boutons d'enregistrement de cartes ou de fichiers
+ * @todo mécanisme de date (tag extra de l'API Entrepôt): creation et modification
  */
 export default {
   name: 'MenuBookMarkDataList'
@@ -43,7 +44,7 @@ function selectTabBookmark (idx) {
 
 const service = inject('services');
 
-// mapping label i18n
+// mapping label i18n FR
 const i18n = (label) => {
   var mapping = label;
   if (service.labels.includes(label)) {

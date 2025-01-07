@@ -11,13 +11,23 @@ import {
 } from 'geopf-extensions-openlayers';
 
 /**
- * Options
+ * Creation d'une couche de type vecteur pour les formats suivants :
+ * - GeoJSON
+ * - GPX
+ * - KML
+ * 
+ * Toutes les couches vecteurs ajoutées sur la carte ont un ID interne
+ * sous la forme : bookmark:[type]:UUID
+ * Ceci permet de savoir que la couche est issue de l'espace personnel
+ * avec un UUID, et donc qu'elle est enregistrée.
+ * 
+ * Les options
  * @param {*} options 
- * @property {*} options.id
+ * @property {*} options.id - uuid de l'API Entrepôt
  * @property {*} options.title
  * @property {*} options.description
  * @property {*} options.format
- * @property {*} options.extended
+ * @property {*} options.extended - mode étendu des formats
  * @property {*} options.data | @property {*} options.url
  * ...
  */

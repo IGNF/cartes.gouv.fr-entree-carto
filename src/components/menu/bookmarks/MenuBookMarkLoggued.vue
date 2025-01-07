@@ -1,7 +1,8 @@
 <script lang="js">
 /**
  * @description
- * Menu des Favoris
+ * Menu des Favoris en mode connecté 
+ * avec un menu avec ou sans documents disponible
  * 
  */
 export default {
@@ -53,9 +54,11 @@ onMounted(() => {
 
 <template>
   <div v-if="documentsIsEmpty">
+    <!-- Mode connecté sans documents dans l'espace personnel -->
     <MenuBookMarkNoData />
   </div>
   <div v-else>
+    <!-- Mode connecté avec des documents disponible -->
     <MenuBookMarkDataList
       title="Mes enregistrements" />
   </div>

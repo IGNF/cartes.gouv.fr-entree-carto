@@ -1,8 +1,10 @@
 <script lang="js">
 /**
  * @description
- * Menu des Favoris
+ * Menu des Favoris sans documents disponible
+ * dans l'espace de l'utilisateur
  * 
+ * @todo impl. les handlers sur les boutons
  */
 export default {
   name: 'MenuBookMarkNoData'

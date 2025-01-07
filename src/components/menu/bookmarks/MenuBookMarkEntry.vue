@@ -11,11 +11,10 @@
  * Au clic sur l'entrée, la donnée est ajoutée à la carte.
  * On récupère des informations complementaire avant de télécharger le fichier.
  * Et, on enregistre l'ID dans la couche native : 
- *   ex. gpResultLayerId = '3fa85f64-5717-4562-b3fc-2c963f66afa5'
+ *   ex. gpResultLayerId = 'bookmark:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
  * @todo gestion des exceptions à transmettre dans la balise alerte de "Main.vue"
- * @todo "zoomToExtent" pour le "LayerSwitcher"
- * @fixme le format GPX !?
+ * @fixme le format GPX ne s'affiche pas !?
  */
 export default {
   name: 'MenuBookMarkEntry'
@@ -57,8 +56,17 @@ const displayDataOnMap = (data) => {
         fct = service.getImport;
         break;
       case "compute":
+        // TODO ce type de données doit initialisé un contrôle : 
+        // - isochrone
+        // - profil altimétrique
+        // - itineraire
+        fct = service.getCompute;
+        throw new Error(`Le type ${data.type} n'est pas implementé !`);
+        break;
       case "service":
-        fct = null;
+        fct = service.getService;
+        throw new Error(`Le type ${data.type} n'est pas implementé !`);
+        break;
       default:
         break;
     }
