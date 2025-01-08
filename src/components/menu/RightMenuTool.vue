@@ -1,5 +1,5 @@
 <script setup lang="js">
-import { useDataStore } from "@/stores/dataStore"
+import { useDataStore } from "@/stores/dataStore";
 import MenuControl from '@/components/menu/MenuControl.vue';
 
 const props = defineProps({
@@ -9,7 +9,7 @@ const props = defineProps({
 
 const dataStore = useDataStore();
 
-const side = "right"
+const side = "right";
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
@@ -28,24 +28,24 @@ const tabArray = computed(() => {
         }
     ];
 
-    return arr
+    return arr;
 })
 
-const activeTab = ref("MenuControlContent")
-const is_expanded = ref()
-const wrapper = ref(null)
+const activeTab = ref("MenuControlContent");
+const is_expanded = ref();
+const wrapper = ref(null);
 
 function tabClicked(newTab) {
-  if (tabIsActive(newTab) && is_expanded.value)
-      wrapper.value.closeMenu()
-  else{
+  if (tabIsActive(newTab) && is_expanded.value) {
+      wrapper.value.closeMenu();
+  } else {
       activeTab.value = newTab + "Content";
-      wrapper.value.openMenu()
+      wrapper.value.openMenu();
   }
 }
 
 function tabIsActive(componentName) {
-    return activeTab.value.replace("Content" , '') === componentName ? true : false
+    return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
 </script>
 

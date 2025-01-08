@@ -191,8 +191,10 @@ onMounted(() => {});
           <!-- Bouton pour enregistrer la carte -->
           <DsfrButton
             label="Enregistrer la carte"
+            disabled
             tertiary
             size="sm"
+            class="button-action"
             icon="fr-icon-save-line"
             @click="addMap()"/>
           <!-- Affichage des cartes ou permaliens -->
@@ -208,8 +210,10 @@ onMounted(() => {});
           <!-- Bouton pour importer un fichier -->
           <DsfrButton
             label="Ajouter un fichier"
+            disabled
             tertiary
             size="sm"
+            class="button-action"
             icon="fr-icon-upload-line"
             @click="addData()"/>
           <!-- Affichage des données :
@@ -236,5 +240,10 @@ onMounted(() => {});
   scrollbar-width: thin;
   overflow-x: hidden;
   max-height: calc(70vh - 270px);
+}
+.button-action {
+    display: flex;
+    width: 100%;
+    justify-content: center;
 }
 </style>

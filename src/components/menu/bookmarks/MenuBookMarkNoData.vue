@@ -4,7 +4,8 @@
  * Menu des Favoris sans documents disponible
  * dans l'espace de l'utilisateur
  * 
- * @todo impl. les handlers sur les boutons
+ * @todo impl. handler sur l'enregistrement de la carte
+ * @fixme impl. handler sur l'ouverture du catalogue
  */
 export default {
   name: 'MenuBookMarkNoData'
@@ -13,14 +14,38 @@ export default {
 
 <script setup lang="js">
 
+import { useMapStore } from "@/stores/mapStore"
+const mapStore = useMapStore();
+
+const emit = defineEmits([
+  'onOpenCatalog'
+]);
+
+const openControl = (controlName) => {
+  mapStore.getMap().getControls().getArray().forEach(control => {
+    if (control.CLASSNAME === controlName) {
+      let button = [...control.element.children].filter((e) => {
+        if (e.className.includes("GPshowOpen"))
+            return e;
+        })
+        button[0].click();
+      }
+  })
+};
+
 const buttons = [
   {
     label: 'Enregistrer une carte',
-    icon: "fr-icon-save-fill",
+    icon: "fr-icon-save-line",
+    disabled: true,
     iconOnly: false,
     iconRight: false,
     secondary: true,
-    onclick: () => {} // TODO
+    class: 'bookmark-button-container',
+    onclick: () => {
+      // TODO realiser un enregistrement du permalien
+      // dans l'espace personnel
+    }
   },
   {
     label: 'Consulter le catalogue',
@@ -28,22 +53,30 @@ const buttons = [
     iconOnly: false,
     iconRight: false,
     secondary: true,
-    onclick: () => {} // TODO
+    class: 'bookmark-button-container',
+    onclick: () => {
+      // FIXME comment emettre un event vers un autre composant hors parent ?
+      emit('onOpenCatalog');
+    }
   },
   {
     label: 'Importer un fichier',
-    icon: "fr-icon-upload-fill",
+    icon: "fr-icon-upload-line",
     iconOnly: false,
     iconRight: false,
     secondary: true,
-    onclick: () => {} // TODO
+    class: 'bookmark-button-container',
+    onclick: () => {
+      // ouvrir le contrôle d'import de données
+      openControl('LayerImport');
+    }
   }
 ];
 </script>
 
 <template>
   <div class="fr-container">
-    <div class="content-container">
+    <div class="bookmark-content-container">
       <h4>
         Aucun enregistrement pour le moment
       </h4>
@@ -53,7 +86,7 @@ const buttons = [
       </div>
       <div id="location-france"></div>
     </div>
-    <div class="buttons-container">
+    <div class="bookmark-buttons-container">
       <DsfrButtonGroup
         :buttons="buttons" />
     </div>
@@ -61,7 +94,7 @@ const buttons = [
 </template>
 
 <style scoped>
-.content-container {
+.bookmark-content-container {
   width: 100%;
   text-align: center;
 }
@@ -72,9 +105,16 @@ const buttons = [
   height: 80px;
   width: 80px;
 }
+.bookmark-buttons-container {}
 </style>
 
 <style>
+/* HACK : centrage des boutons */
+.bookmark-button-container {
+  display: flex;
+  width: 100%;
+  justify-content: center !important;
+}
 /* HACK : sinon imposible d'avoir l'icone et le label */
 .fr-btns-group:not(.fr-btns-group--sm):not(.fr-btns-group--lg):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-icon-"] {
   max-width: unset;
