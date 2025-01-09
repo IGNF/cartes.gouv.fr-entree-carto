@@ -130,6 +130,11 @@ export const handlers = {
           "name": "decoupage_top100.kml",
           "size": 142017,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+        },
+        {
+          "name": "regions.json",
+          "size": 142017,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa8"
         }];
       }
       if (labels.includes("service")) {
@@ -144,9 +149,14 @@ export const handlers = {
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb1"
         },
         {
-          "name": "mapbox.json",
+          "name": "mapbox1.json",
           "size": 0,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb2"
+        },
+        {
+          "name": "mapbox2.json",
+          "size": 0,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb3"
         }];
       }
 
@@ -158,6 +168,7 @@ export const handlers = {
     http.get('https://data.geopf.fr/api/users/me/documents/:id', async ({ params }) => {
       const { id } = params;
       var response = null;
+      // compute
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
         response = new HttpResponse("Not yet implemented !", { status: 501 });
       }
@@ -167,6 +178,7 @@ export const handlers = {
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa2') {
         response = new HttpResponse("Not yet implemented !", { status: 501 });
       }
+      // drawing
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa3') {
         response = HttpResponse.json({
           "name": "croquis1.kml",
@@ -195,6 +207,7 @@ export const handlers = {
           "_id": id
         });
       }
+      // import
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa5') {
         response = HttpResponse.json({
           "name": "regions.geojson",
@@ -240,14 +253,81 @@ export const handlers = {
           "_id": id
         });
       }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa8') {
+        response = HttpResponse.json({
+          "name": "regions.json",
+          "description": "carte des regions",
+          "size": 529739,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "import",
+            "geojson",
+            "external"
+          ],
+          "_id": id
+        });
+      }
+      // service
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb0') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        response = HttpResponse.json({
+          "name": "wms.json",
+          "description": "wms",
+          "size": 142017,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "service",
+            "wms",
+            "external"
+          ],
+          "_id": id
+        });
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb1') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        response = HttpResponse.json({
+          "name": "wmts.json",
+          "description": "wmts",
+          "size": 142017,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "service",
+            "wmts",
+            "external"
+          ],
+          "_id": id
+        });
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb2') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        response = HttpResponse.json({
+          "name": "mapbox1.json",
+          "description": "mapbox",
+          "size": 142017,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "service",
+            "mapbox",
+            "internal"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb3') {
+        response = HttpResponse.json({
+          "name": "mapbox2.json",
+          "description": "mapbox",
+          "size": 142017,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "service",
+            "mapbox",
+            "external"
+          ],
+          "_id": id
+        });
       }
       return response;
     }),
@@ -257,24 +337,26 @@ export const handlers = {
     http.get('https://data.geopf.fr/api/users/me/documents/:id/file', async ({ params }) => {
       const { id } = params;
       var response = null;
+      // compute
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
         const buffer = await fetch('./mocks/Profil altimétrique.geojson').then(
           (response) => response.json()
         );
-        response = buffer;
+        response = HttpResponse.json(buffer);
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa1') {
         const buffer = await fetch('./mocks/isocurve (pieton).geojson').then(
           (response) => response.json()
         );
-        response = buffer;
+        response = HttpResponse.json(buffer);
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa2') {
         const buffer = await fetch('./mocks/itineraire (voiture).geojson').then(
           (response) => response.json()
         );
-        response = buffer;
+        response = HttpResponse.json(buffer);
       }
+      // drawing
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa3') {
         const buffer = await fetch('./mocks/croquis1.kml').then(
           (response) => response.text()
@@ -287,6 +369,7 @@ export const handlers = {
         );
         response = HttpResponse.xml(buffer);
       }
+      // import
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa5') {
         const buffer = await fetch('./mocks/regions.geojson').then(
           (response) => response.json()
@@ -305,14 +388,36 @@ export const handlers = {
         );
         response = HttpResponse.xml(buffer);
       }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa8') {
+        const buffer = await fetch('./mocks/regions.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
+      }
+      // service
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb0') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        const buffer = await fetch('./mocks/wms.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb1') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        const buffer = await fetch('./mocks/wmts.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb2') {
-        response = new HttpResponse("Not yet implemented !", { status: 501 })
+        const buffer = await fetch('./mocks/mapbox1.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66afb3') {
+        const buffer = await fetch('./mocks/mapbox2.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
       }
       return response;
     })

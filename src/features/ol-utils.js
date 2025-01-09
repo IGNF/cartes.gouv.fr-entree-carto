@@ -93,7 +93,7 @@ const createVectorLayer = (options) => {
   vectorLayer = new VectorLayer({
     source : vectorSource,
     visible : true
-  });false
+  });
 
   if (!vectorLayer) {
     throw new Error("La couche n'est pas instanciée !");
@@ -104,6 +104,20 @@ const createVectorLayer = (options) => {
   return vectorLayer;
 };
 
+/**
+ * Creation d'un couche de service :
+ * - wmts
+ * - wms
+ * - mapbox
+ * 
+ * Les options
+ * @param {*} options 
+ */
+const createServiceLayer = (options) => {
+  throw new Error("Not yet implemented !");
+};
+
 export {
-  createVectorLayer
+  createVectorLayer,
+  createServiceLayer
 }

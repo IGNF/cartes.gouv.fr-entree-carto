@@ -16,7 +16,7 @@ const eulerian = useEulerian();
 const router = useRouter();
 
 const title = "Se connecter à cartes.gouv.fr";
-const icon = 'fr-icon-user-fill';
+const icon = 'fr-icon-account-fill';
 const actions = [
   {
     label: 'Se connecter',

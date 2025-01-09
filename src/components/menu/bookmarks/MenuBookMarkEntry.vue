@@ -8,13 +8,17 @@
  * - date (creer et modifier)
  * - menu options : renommer, partager, supprimer
  * 
- * Au clic sur l'entrée, la donnée est ajoutée à la carte.
- * On récupère des informations complementaire avant de télécharger le fichier.
- * Et, on enregistre l'ID dans la couche native : 
+ * En cliquant sur une entrée, la donnée est ajoutée à la carte.
+ * On procede :
+ * - récupèration des informations complementaires
+ * - téléchargement du fichier
+ * - enregistrement de l'ID dans la couche native : 
  *   ex. gpResultLayerId = 'bookmark:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
- * @todo gestion des exceptions à transmettre dans la balise alerte de "Main.vue"
- * @fixme le format GPX ne s'affiche pas !?
+ * @todo gestion des exceptions à transmettre
+ * @todo le type service (wms & wmts & mapbox) est à mettre en place
+ * @todo le type  compute est à mettre en place
+ * @fixme le format GPX en internal ne s'affiche pas : style !?
  */
 export default {
   name: 'MenuBookMarkEntry'
@@ -22,7 +26,10 @@ export default {
 </script>
 
 <script setup lang="js">
-import { createVectorLayer } from '@/features/ol-utils.js';
+import { 
+  createVectorLayer, 
+  createServiceLayer 
+} from '@/features/ol-utils.js';
 
 import { useMapStore } from "@/stores/mapStore";
 const mapStore = useMapStore();
@@ -56,7 +63,8 @@ const displayDataOnMap = (data) => {
         fct = service.getImport;
         break;
       case "compute":
-        // TODO ce type de données doit initialisé un contrôle : 
+        // TODO
+        // Ce type de données doit initialisé un contrôle : 
         // - isochrone
         // - profil altimétrique
         // - itineraire
@@ -65,7 +73,6 @@ const displayDataOnMap = (data) => {
         break;
       case "service":
         fct = service.getService;
-        throw new Error(`Le type ${data.type} n'est pas implementé !`);
         break;
       default:
         break;
@@ -73,16 +80,43 @@ const displayDataOnMap = (data) => {
     if (!fct) {
       throw new Error("Impossible de determiner le type de données !?");
     }
+    // appel de la requête de télechargement du fichier
     fct.call(service, data.id)
     .then((response) => {
-      var layer = createVectorLayer({
-        id : data.id,
-        extended : true, // on utilise le format étendu de GeoJSON, KML et GPX
-        title : data.name,
-        description : infos.description, // infos complementaires
-        format : data.ext,
-        data : response
-      });
+      var opts = {};
+      var target = {};
+      var layer = null;
+
+      // creation de l'objet layer de type Vecteur ou Service
+      if (data.type !== "service") {
+        opts = {
+          id : data.id,
+          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX
+          title : data.name,
+          description : infos.description,
+          format : infos.extra.format
+        };
+        target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
+        layer = createVectorLayer({
+          ...opts,
+          ...target
+        });
+      } else {
+        // les reponses possibles :
+        // - style (json) ou url pour mapbox, 
+        // - liste de parametres (json) pour wms et wmts
+        opts = {
+          id : data.id,
+          title : data.name,
+          description : infos.description,
+          format : infos.extra.format // wms, wmts ou mapbox
+        };
+        target = (infos.extra.target && infos.extra.target === "external" && infos.extra.format === "mapbox") ? { url : response } : { data : response };
+        layer = createServiceLayer({
+          ...opts,
+          ...target
+        });
+      }
       mapStore.getMap().addLayer(layer);
     })
     .catch((e) => {
@@ -95,13 +129,9 @@ const displayDataOnMap = (data) => {
   })
 };
 
-onBeforeMount(() => {
+onBeforeMount(() => {});
 
-});
-
-onMounted(() => {
-
-});
+onMounted(() => {});
 
 </script>
 
