@@ -23,7 +23,7 @@ log.debug(props.layerOptions);
 const store = useDataStore()
 
 const map = inject(props.mapId)
-const layer = ref(null)
+var layer = null
 
 onMounted(() => {
   var value  = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
@@ -46,7 +46,7 @@ onMounted(() => {
   };
   switch (service) {
     case "WMS":
-      layer.value = new GeoportalWMS({
+      layer = new GeoportalWMS({
         layer : name,
         configuration : value,
         apiKey : "ign_scan_ws",
@@ -54,7 +54,7 @@ onMounted(() => {
       });
       break;
     case "WMTS":
-      layer.value = new GeoportalWMTS({
+      layer = new GeoportalWMTS({
         layer : name,
         configuration : value,
         apiKey : "ign_scan_ws",
@@ -63,7 +63,7 @@ onMounted(() => {
       break;
     case "TMS":
       // INFO le style par defaut est utilisé !
-      layer.value = new GeoportalMapBox({
+      layer = new GeoportalMapBox({
         layer : name,
         configuration : value,
         apiKey : "ign_scan_ws",
@@ -71,13 +71,13 @@ onMounted(() => {
       break;
     default:
   }
-  if (layer.value) {
-    map.addLayer(layer.value);
+  if (layer) {
+    map.addLayer(layer);
   }
 })
 
 onUnmounted(() => {
-  map.removeLayer(layer.value)
+  map.removeLayer(layer)
 })
 
 </script>
