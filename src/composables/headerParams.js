@@ -31,7 +31,7 @@ export function useHeaderParams() {
             {
               label: 'Se connecter',
               to: '/login',
-              class: 'fr-icon-user-fill',
+              class: 'fr-icon-account-fill',
               authenticated: false, // information pour l'authentification
               onClick: (e) => {}
             },
@@ -46,7 +46,7 @@ export function useHeaderParams() {
               label: "...", 
               to: '/bookmarks',
               href: useBaseUrl() + '/tableau-de-bord',
-              class: 'fr-icon-user-fill',
+              class: 'fr-icon-account-fill',
               authenticated: true, // information pour l'authentification
               onClick: (e) => {}
             }
