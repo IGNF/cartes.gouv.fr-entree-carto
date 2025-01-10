@@ -26,6 +26,7 @@ Principaux changements :
 #### 🔨 [Evolution]
 
   - amélioration des entrées affichées en autocomplétion de la barre de recherche (#445)
+  - mise à jour de la bibliothèque cartographique Openlayers utilisée pour afficher les images cartographiques en version 10 (#447)
 
 #### 🔥 [Obsolète]
 
