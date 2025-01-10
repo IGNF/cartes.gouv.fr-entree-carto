@@ -46,29 +46,39 @@ var Connexion = {
    * 
    */
   getAccessLogin : async function () {
-    // INFO
-    // La réponse fournit le 'code', 
-    // et il doit être utiliser pour obtenir le token 
-    // cf. getAccessToken()
 
-    const url = this.url.includes("login") ? this.url : this.url + "/login";
-    
-    const codeVerifier = await generateCodeVerifier();
-    this.codeVerifier = codeVerifier; // au cas où...
-    localStorage.setItem("codeVerifier", codeVerifier);
-    
-    var responseIAM = await this.getClient().authorizationCode.getAuthorizeUri({
-      redirectUri: url,
-      state: 'some-string',
-      codeVerifier,
-      scope: ['openid','profile','email'],
-      extraParams: {
-        approval_prompt: "auto"
-      },
-      responseMode: "query"
-    });
+    if (this.mode === "local") {
+      // INFO
+      // Dans le mode auth local
+      // La réponse fournit le 'code', 
+      // et il doit être utiliser pour obtenir le token 
+      // cf. getAccessToken()
 
-    return responseIAM;
+      const url = this.url.includes("login") ? this.url : this.url + "/login";
+      
+      const codeVerifier = await generateCodeVerifier();
+      this.codeVerifier = codeVerifier; // au cas où...
+      localStorage.setItem("codeVerifier", codeVerifier);
+      
+      var responseIAM = await this.getClient().authorizationCode.getAuthorizeUri({
+        redirectUri: url,
+        state: 'some-string',
+        codeVerifier,
+        scope: ['openid','profile','email'],
+        extraParams: {
+          approval_prompt: "auto"
+        },
+        responseMode: "query"
+      });
+
+      return responseIAM;
+    } else {
+      // INFO
+      // Dans le mode auth distant, 
+      // on redirige vers le syteme d'auth, 
+      // et le token nous sera fournit dans la reponse
+      return this.redirect;
+    }
   },
 
   /** 
@@ -110,7 +120,6 @@ var Connexion = {
    * 
    * @type {Promise}
    * @see isAccessValided
-   * @fixme le post ne renvoie pas de réponse !? credentials no-cors ?
    * @example
    * POST https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token
    * content-type: application/x-www-form-urlencoded
@@ -131,25 +140,32 @@ var Connexion = {
    * }
   */
   getAccessToken : async function () {
-    const url = this.url.includes("login") ? this.url : this.url + "/login";
-    var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
-    var token = await this.getClient().authorizationCode.getTokenFromCodeRedirect(
-      location,
-      {
-          redirectUri: url,
-          state: 'some-string',
-          codeVerifier,
-      }
-    );
+    // INFO
+    // en mode distant (remote), le token est déjà fourni
+    var token = this.token; 
+    if (this.mode === "local") {
+      const url = this.url.includes("login") ? this.url : this.url + "/login";
+      var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
+      token = await this.getClient().authorizationCode.getTokenFromCodeRedirect(
+        location,
+        {
+            redirectUri: url,
+            state: 'some-string',
+            codeVerifier,
+        }
+      );
+      this.token = token;
+    }
+    const today = new Date(token.expiresAt);
+    console.debug("expires token", today);
 
-    this.token = token;
     this.getFetch().token = token; // HACK !?
     this.addTokenStorage(); 
 
     var store = useServiceStore();
     store.setService(this);
 
-    return token;
+    return this.token;
   },
 
   //////////////////
