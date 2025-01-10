@@ -720,13 +720,13 @@ const layerImportOptions = {
 @media (max-width: 576px) {
   .position-container-top-right,
   .position-container-top-left {
-    top: 255px;
+    top: 299px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
   .position-container-top-right {
-    height: calc(100% - 259px);
+    height: calc(100% - 303px);
   }
 
   /* Mode mobile : on positionne les dialog par dessus la barre de recherche
