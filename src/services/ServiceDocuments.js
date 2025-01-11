@@ -336,12 +336,17 @@ var Documents = {
    * Le contenu est une liste de permaliens sous forme
    * de clef/valeur.
    * 
-   * @todo analyse du contenu pour savoir si cet import est du type 'compute'
    * @param {*} id 
    * @returns {Promise} - Le contenu du fichier
    */
-  getCartes : async () => {},
-  setCartes : async () => {}
+  getCartes : async function (id) {
+    var data = await this.getFileById(id);
+    var promise = new Promise((resolve, reject) => {
+      resolve(data.permalink); // retourne une string !
+    });
+    return promise;
+  },
+  setCartes : async function () {}
 
 };
 

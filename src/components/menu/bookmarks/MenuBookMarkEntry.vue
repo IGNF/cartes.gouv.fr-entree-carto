@@ -29,7 +29,9 @@ export default {
 import { 
   createVectorLayer, 
   createServiceLayer 
-} from '@/features/ol-utils.js';
+} from '@/features/ol.js';
+
+import { getInfoFromPermalink } from '@/features/permalink.js';
 
 import { useMapStore } from "@/stores/mapStore";
 const mapStore = useMapStore();
@@ -74,6 +76,9 @@ const displayDataOnMap = (data) => {
       case "service":
         fct = service.getService;
         break;
+      case "carte":
+        fct = service.getCartes;
+        break;
       default:
         break;
     }
@@ -83,25 +88,17 @@ const displayDataOnMap = (data) => {
     // appel de la requête de télechargement du fichier
     fct.call(service, data.id)
     .then((response) => {
+      
       var opts = {};
       var target = {};
-      var layer = null;
-
-      // creation de l'objet layer de type Vecteur ou Service
-      if (data.type !== "service") {
-        opts = {
-          id : data.id,
-          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX
-          title : data.name,
-          description : infos.description,
-          format : infos.extra.format
-        };
-        target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
-        layer = createVectorLayer({
-          ...opts,
-          ...target
-        });
-      } else {
+      var layers = [];
+      
+      // creation de l'objet layer pour afficher un Vecteur ou un Service
+      // 
+      if (data.type === "carte") {
+        var layersOpts = getInfoFromPermalink(response);
+        // TODO...
+      } else if (data.type === "service") {
         // les reponses possibles :
         // - style (json) ou url pour mapbox, 
         // - liste de parametres (json) pour wms et wmts
@@ -112,12 +109,29 @@ const displayDataOnMap = (data) => {
           format : infos.extra.format // wms, wmts ou mapbox
         };
         target = (infos.extra.target && infos.extra.target === "external" && infos.extra.format === "mapbox") ? { url : response } : { data : response };
-        layer = createServiceLayer({
+        layers.push(createServiceLayer({
           ...opts,
           ...target
-        });
+        }));
+      } else {
+        opts = {
+          id : data.id,
+          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX
+          title : data.name,
+          description : infos.description,
+          format : infos.extra.format
+        };
+        target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
+        layers.push(createVectorLayer({
+          ...opts,
+          ...target
+        }));
       }
-      mapStore.getMap().addLayer(layer);
+      
+      for (let index = 0; index < layers.length; index++) {
+        const layer = layers[index];
+        mapStore.getMap().addLayer(layer); 
+      }
     })
     .catch((e) => {
       throw e;

@@ -87,14 +87,22 @@ export const handlers = {
       
       var response = null;
       if (labels.includes("carte")) {
-        response = [];
+        response = [{
+          "name": "academie",
+          "size": 495,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66aba0"
+        },{
+          "name": "insee",
+          "size": 497,
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66aba1"
+        }];
       }
       if (labels.includes("compute")) {
-        response = {
+        response = [{
           "name": "Profil altimétrique.geojson",
           "size": 20935,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa0"
-        },[{
+        },{
           "name": "isocurve (pieton).geojson",
           "size": 58050,
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa1"
@@ -168,6 +176,35 @@ export const handlers = {
     http.get('https://data.geopf.fr/api/users/me/documents/:id', async ({ params }) => {
       const { id } = params;
       var response = null;
+      // cartes
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66aba0') {
+        response = HttpResponse.json({
+          "name": "academie",
+          "description": "Thematique des academies",
+          "size": 495,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "carte",
+            "external"
+          ],
+          "_id": id
+        });
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66aba1') {
+        response = HttpResponse.json({
+          "name": "insee",
+          "description": "Thematique insee sur les logements sociaux",
+          "size": 497,
+          "mime_type": "application/json",
+          "labels": [
+            "cartes.gouv.fr",
+            "carte",
+            "external"
+          ],
+          "_id": id
+        });
+      }
       // compute
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
         response = new HttpResponse("Not yet implemented !", { status: 501 });
@@ -337,6 +374,19 @@ export const handlers = {
     http.get('https://data.geopf.fr/api/users/me/documents/:id/file', async ({ params }) => {
       const { id } = params;
       var response = null;
+      // cartes
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66aba0') {
+        const buffer = await fetch('./mocks/academie.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
+      }
+      if (id === '3fa85f64-5717-4562-b3fc-2c963f66aba1') {
+        const buffer = await fetch('./mocks/insee.json').then(
+          (response) => response.json()
+        );
+        response = HttpResponse.json(buffer);
+      }
       // compute
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa0') {
         const buffer = await fetch('./mocks/Profil altimétrique.geojson').then(
