@@ -16,8 +16,8 @@
  *   ex. gpResultLayerId = 'bookmark:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
  * @todo gestion des exceptions à transmettre
- * @todo le type service (wms & wmts & mapbox) est à mettre en place
- * @todo le type  compute est à mettre en place
+ * @todo le type service mapbox est à mettre en place
+ * @todo le type compute est à mettre en place
  * @fixme le format GPX en internal ne s'affiche pas : style !?
  */
 export default {
@@ -28,10 +28,11 @@ export default {
 <script setup lang="js">
 import { 
   createVectorLayer, 
-  createServiceLayer 
+  createServiceLayer,
+  createMapBoxLayer 
 } from '@/features/ol.js';
 
-import { getInfoFromPermalink } from '@/features/permalink.js';
+import { getLayersFromPermalink } from '@/features/permalink.js';
 
 import { useMapStore } from "@/stores/mapStore";
 const mapStore = useMapStore();
@@ -91,13 +92,12 @@ const displayDataOnMap = (data) => {
       
       var opts = {};
       var target = {};
-      var layers = [];
+      var layer = null;
       
       // creation de l'objet layer pour afficher un Vecteur ou un Service
-      // 
       if (data.type === "carte") {
-        var layersOpts = getInfoFromPermalink(response);
-        // TODO...
+        getLayersFromPermalink(response);
+        return;
       } else if (data.type === "service") {
         // les reponses possibles :
         // - style (json) ou url pour mapbox, 
@@ -106,13 +106,21 @@ const displayDataOnMap = (data) => {
           id : data.id,
           title : data.name,
           description : infos.description,
-          format : infos.extra.format // wms, wmts ou mapbox
+          format : infos.extra.format // wms, wmts
         };
-        target = (infos.extra.target && infos.extra.target === "external" && infos.extra.format === "mapbox") ? { url : response } : { data : response };
-        layers.push(createServiceLayer({
-          ...opts,
-          ...target
-        }));
+        if (infos.extra.format === "mapbox") {
+          target = (infos.extra.target && infos.extra.target === "internal") ? { data : response } : { url : response };
+          layer = createMapBoxLayer({
+            ...opts,
+            ...target
+          });
+        } else {
+          target = { data : response };
+          layer = createServiceLayer({
+            ...opts,
+            ...target
+          });
+        }
       } else {
         opts = {
           id : data.id,
@@ -122,16 +130,13 @@ const displayDataOnMap = (data) => {
           format : infos.extra.format
         };
         target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
-        layers.push(createVectorLayer({
+        layer = createVectorLayer({
           ...opts,
           ...target
-        }));
+        });
       }
       
-      for (let index = 0; index < layers.length; index++) {
-        const layer = layers[index];
-        mapStore.getMap().addLayer(layer); 
-      }
+      mapStore.getMap().addLayer(layer); 
     })
     .catch((e) => {
       throw e;

@@ -4,7 +4,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
-import { useUrlParams } from "@/composables/urlParams.js";
+import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
 /**
@@ -333,6 +333,8 @@ export const useMapStore = defineStore('map', () => {
 
   return {
     map,
+    layers,
+    controls,
     zoom,
     center,
     x,
