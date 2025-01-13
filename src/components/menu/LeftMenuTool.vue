@@ -62,6 +62,10 @@ var authenticated = computed(() => service.authenticated);
  * sinon, on ouvre la modale de connexion
  */
 function onBookMarksOpen() {
+  // desactivation de la connexion aux favoris
+  if (import.meta.env.IAM_DISABLE === '1') {
+    return;
+  }
   // INFO
   // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin 
   // d'afficher le menu (cf. tabClicked()).
