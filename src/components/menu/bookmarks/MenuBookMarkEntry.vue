@@ -109,10 +109,17 @@ const displayDataOnMap = (data) => {
         };
         if (infos.extra.format === "mapbox") {
           target = (infos.extra.target && infos.extra.target === "internal") ? { data : response } : { url : response };
-          layer = createMapBoxLayer({
+          createMapBoxLayer({
             ...opts,
             ...target
+          })
+          .then((layer) => {
+            mapStore.getMap().addLayer(layer);
+          })
+          .catch((e) => {
+            throw e;
           });
+          return;
         } else {
           target = { data : response };
           layer = createServiceLayer({

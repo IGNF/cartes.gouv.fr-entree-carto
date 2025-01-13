@@ -244,20 +244,10 @@ const createServiceLayer = (options) => {
  * @fixme extent à récuperer
  */
 const createMapBoxLayer = (options) => {
-  if (options.url) {
-    // fetch()
-    // .then((response) => {
-    //   if (response.ok) {
-    //     return response.json()
-    //       .then((data) => {})
-    //       .catch((e) => {});
-    //   }
-    // });
-    throw new Error();
-  }
 
-  var vectorLayer = null;
-  if (options.data) {
+  const createLayer = (options) => {
+    var vectorLayer = null;
+
     var _glStyle = options.data;
     var _glSources = _glStyle.sources;
     var _glSourceId = Object.keys(_glSources)[0]; // first source only !
@@ -309,8 +299,40 @@ const createMapBoxLayer = (options) => {
     } else {
       throw new Error();
     }
+    return vectorLayer;
+  };
+
+  if (options.url) {
+    return fetch(options.url)
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+          .then((data) => {
+            return createLayer({
+              ...options,
+              ...{
+                data : data
+              }
+            });
+          })
+          .catch((e) => {
+            throw e;
+          });
+      }
+    })
+    .catch((e) => {
+      throw e;
+    });
   }
-  return vectorLayer;
+
+  if (options.data) {
+    try {
+      var layer = createLayer(options);
+      return Promise.resolve(layer);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
 };
 
 export {
