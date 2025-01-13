@@ -18,7 +18,6 @@
  * @todo gestion des exceptions à transmettre
  * @todo le type service mapbox est à mettre en place
  * @todo le type compute est à mettre en place
- * @fixme le format GPX en internal ne s'affiche pas : style !?
  */
 export default {
   name: 'MenuBookMarkEntry'
@@ -106,7 +105,7 @@ const displayDataOnMap = (data) => {
           id : data.id,
           title : data.name,
           description : infos.description,
-          format : infos.extra.format // wms, wmts
+          format : infos.extra.format // wms, wmts ou mapbox
         };
         if (infos.extra.format === "mapbox") {
           target = (infos.extra.target && infos.extra.target === "internal") ? { data : response } : { url : response };

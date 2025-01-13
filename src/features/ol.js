@@ -11,6 +11,13 @@ import WMTSTileGrid from 'ol/tilegrid/WMTS';
 
 import { get as getProjection } from 'ol/proj';
 
+// ol-mapbox-style
+import { applyStyle } from 'ol-mapbox-style';
+import VectorTileLayer from "ol/layer/VectorTile";
+import VectorTileSource from "ol/source/VectorTile";
+import MVT from "ol/format/MVT";
+import Feature from "ol/Feature";
+
 import { 
   KML as KMLExtended,
   GeoJSON as GeoJSONExtended,
@@ -43,7 +50,7 @@ import {
  * @property {*} options.format
  * @property {*} options.extended - mode étendu des formats
  * @property {*} options.data | @property {*} options.url
- * ...
+ * @fixme hack sur le format GPX à reporter sur les extensions !
  */
 const createVectorLayer = (options) => {
   var vectorFormat = null;
@@ -69,7 +76,14 @@ const createVectorLayer = (options) => {
       vectorFormat = new GPX();
       // Extended
       if (options.extended) {
-        vectorFormat = new GPXExtended(); 
+        // HACK
+        // modifier la classe GPXExtended dans les extensions !
+        // > gestion de la callback interne readExtensions()
+        vectorFormat = new GPXExtended({
+          readExtensions : function (feature, node) {
+            this.readExtensions(feature, node);
+          }
+        }); 
       }
       break;
     default:
@@ -222,9 +236,81 @@ const createServiceLayer = (options) => {
  * 
  * Les options
  * @param {*} options
+ * @property {*} options.id - uuid de l'API Entrepôt
+ * @property {*} options.title
+ * @property {*} options.description
+ * @property {*} options.format
+ * @property {*} options.data | @property {*} options.url
+ * @fixme extent à récuperer
  */
 const createMapBoxLayer = (options) => {
-  throw new Error("Not yet implemented !");
+  if (options.url) {
+    // fetch()
+    // .then((response) => {
+    //   if (response.ok) {
+    //     return response.json()
+    //       .then((data) => {})
+    //       .catch((e) => {});
+    //   }
+    // });
+    throw new Error();
+  }
+
+  var vectorLayer = null;
+  if (options.data) {
+    var _glStyle = options.data;
+    var _glSources = _glStyle.sources;
+    var _glSourceId = Object.keys(_glSources)[0]; // first source only !
+    var _glSource = _glSources[_glSourceId]; 
+    var _glType = _glSource.type; // type vector only !
+    if (_glType === "vector") {
+      var _glTiles = _glSource.tiles; // tiles only !
+      if (!_glTiles) {
+        throw new Error();
+      }
+
+      var vectorFormat = new MVT({
+        featureClass : Feature
+      });
+
+      var vectorSource = new VectorTileSource({
+        attributions : "",
+        format : vectorFormat,
+        urls : _glTiles
+      });
+
+      vectorSource._title = options.title;
+      vectorSource._description = options.description;
+
+      vectorLayer = new VectorTileLayer({
+        source : vectorSource,
+        visible : false,
+        declutter : true
+      });vectorLayer
+
+      vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
+
+      var setStyle = () => {
+        applyStyle(vectorLayer, _glStyle, { source : _glSourceId })
+        .then(() => {
+          vectorLayer.setVisible(true);
+          vectorLayer.setOpacity(1);
+        })
+        .catch((e) => {
+          throw e;
+        });
+      };
+
+      if (vectorLayer.getSource()) {
+        setStyle();
+      } else {
+        vectorLayer.once("change:source", setStyle);
+      }
+    } else {
+      throw new Error();
+    }
+  }
+  return vectorLayer;
 };
 
 export {
