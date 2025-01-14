@@ -2,6 +2,11 @@
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 
 import { inject } from 'vue'
+// icones
+import NotificationInfo from '@/icons/NotificationInfo.vue';
+import NotificationSuccess from '@/icons/NotificationSuccess.vue';
+import NotificationError from '@/icons/NotificationError.vue';
+import NotificationWarning from '@/icons/NotificationWarning.vue';
 // composables
 import { useRoute } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
@@ -9,6 +14,8 @@ import { useMatchMedia } from '@/composables/matchMedia'
 import { useHeaderParams } from '@/composables/headerParams'
 import { useFooterParams } from '@/composables/footerParams'
 import { useBaseUrl } from '@/composables/baseUrl'
+// library
+import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 // components
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
@@ -64,13 +71,6 @@ const mandatoryLinks = computed(() => {
 })
 
 var service :any = inject('services');
-// INFO
-// Gestion des exceptions d'authentification
-var serviceMessageError = ref("");
-var serviceMessageClosed = ref(true);
-var onServiceMessageClose = () => {
-  serviceMessageClosed.value = true;
-};
 
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
@@ -92,8 +92,10 @@ service.isAccessValided()
 })
 .catch((e:any) => {
   console.error(e);
-  serviceMessageError.value = 'Exception during authentication : ' + e.message;
-  serviceMessageClosed.value = false;
+  push.error({
+    title: "Authentification",
+    message: "Exception sur l'authentication : " + e.message
+  });
 });
 
 // INFO
@@ -188,6 +190,34 @@ const navItems: DsfrNavigationProps['navItems'] = [
     text: '\u00C0 propos',
   }
 ]
+
+// icons dsfr pour les notifications
+const myNotificationsIcons = {
+  warning : markRaw(NotificationWarning),
+  success : markRaw(NotificationSuccess),
+  info : markRaw(NotificationInfo),
+  error : markRaw(NotificationError)
+}
+
+// TODO 
+// choix du theme en fonction du theme dark ou light
+const myNotificationsTheme: NotivueTheme = {
+  ...lightTheme,
+  '--nv-radius': '0',
+  '--nv-width': '350px',
+  '--nv-min-width': '300px',
+  '--nv-border-width': '1px',
+  '--nv-icon-size': '40px',
+  '--nv-success-accent': '#18753c', // And -bg, -fg, -border
+  '--nv-success-border': '#18753c',
+  '--nv-error-accent': '#ce0500',
+  '--nv-error-border': '#ce0500',
+  '--nv-warning-accent': '#b34000',
+  '--nv-warning-border': '#b34000',
+  '--nv-info-accent': '#0063cb',
+  '--nv-info-border': '#0063cb'
+}
+
 </script>
 
 <template>
@@ -206,14 +236,13 @@ const navItems: DsfrNavigationProps['navItems'] = [
     </template>
   </DsfrHeader>
 
-  <!-- Message d'erreur sur l'authentification -->
-  <DsfrAlert
-    :description="serviceMessageError"
-    type="error"
-    :closed="serviceMessageClosed"
-    :closeable=true
-    @close="onServiceMessageClose()"
-  />
+  <!-- Notifications -->
+  <Notivue v-slot="item">
+    <Notification 
+      :item="item" 
+      :icons="myNotificationsIcons"
+      :theme="myNotificationsTheme" />
+  </Notivue>
 
   <div>
     <router-view />
@@ -264,6 +293,30 @@ const navItems: DsfrNavigationProps['navItems'] = [
 </template>
 
 <style>
+  /* surcharge des popups de notifications : 
+  https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
+  */
+  .Notivue__content-message {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+  }
+  .Notivue__icon {
+    color: white;
+  }
+  [data-notivue='error'] .Notivue__icon {
+    background-color: #ce0500;
+  }
+  [data-notivue='success'] .Notivue__icon {
+    background-color: #18753c;
+  }
+  [data-notivue='info'] .Notivue__icon {
+    background-color: #0063cb;
+  }
+  [data-notivue='warning'] .Notivue__icon {
+    background-color: #b34000;
+  }
+
   #fr-footer-toggle {
     display: none;
   }

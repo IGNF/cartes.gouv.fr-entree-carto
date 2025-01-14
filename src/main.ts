@@ -6,12 +6,18 @@ import '@gouvminint/vue-dsfr/styles'
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 import '@gouvfr/dsfr/dist/utility/icons/icons.min.css'
 
+import 'notivue/notification.css'
+import 'notivue/animations.css'
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
 // plugin local
 import { createEulerian } from './plugins/Eulerian'
 import { createServices } from './plugins/Services'
+
+// library notificaiton
+import { createNotivue } from 'notivue'
 
 import { storePlugin } from 'pinia-plugin-store'
 
@@ -76,6 +82,18 @@ const logger = createLogger({
 
 const pinia = createPinia()
 
+const notivue = createNotivue({
+  position: 'bottom-center',
+  limit: 10,
+  enqueue: true,
+  avoidDuplicates: false,
+  notifications: {
+    global: {
+      duration: 3000
+    }
+  }
+})
+
 // INFO
 // on enregistre les informations de connexion dans le localStorage
 const store = storePlugin({
@@ -90,6 +108,7 @@ app.use(router)
 app.use(logger)
 app.use(eulerian)
 app.use(services)
+app.use(notivue)
 
 waitingPrepareApp().then(() => {
   app.mount('#app')

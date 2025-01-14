@@ -5,6 +5,7 @@ import MenuTierce from '@/components/menu/MenuTierce.vue';
 import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 
 import { useTemplateRef } from 'vue';
+
 const props = defineProps({
 })
 
@@ -37,18 +38,18 @@ const width = 300;
 
 // Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
-    if (tabIsActive(newTab) && is_expanded.value) {
-        wrapper.value.closeMenu();
+  if (tabIsActive(newTab) && is_expanded.value) {
+    wrapper.value.closeMenu();
+  } else {
+    activeTab.value = newTab + "Content";
+    // on change la largeur du menu pour les favoris
+    if (newTab === "MenuBookMarks") {
+      wrapper.value.widthMenu = 400;
     } else {
-        activeTab.value = newTab + "Content";
-        // on change la largeur du menu pour les favoris
-        if (newTab === "MenuBookMarks") {
-          wrapper.value.widthMenu = 400;
-        } else {
-          wrapper.value.widthMenu = width;
-        }
-        wrapper.value.openMenu();
+      wrapper.value.widthMenu = width;
     }
+    wrapper.value.openMenu();
+  }
 }
 
 function tabIsActive(componentName) {

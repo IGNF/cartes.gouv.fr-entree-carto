@@ -33,6 +33,9 @@ import {
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
 
+// lib notification
+import { push } from 'notivue'
+
 import { useMapStore } from "@/stores/mapStore";
 const mapStore = useMapStore();
 
@@ -96,6 +99,10 @@ const displayDataOnMap = (data) => {
       // creation de l'objet layer pour afficher un Vecteur ou un Service
       if (data.type === "carte") {
         getLayersFromPermalink(response);
+        push.success({
+          title: "Espace personnel",
+          message: "Ajout du permalien sur la carte",
+        });
         return;
       } else if (data.type === "service") {
         // les reponses possibles :
@@ -115,6 +122,10 @@ const displayDataOnMap = (data) => {
           })
           .then((layer) => {
             mapStore.getMap().addLayer(layer);
+            push.success({
+              title: "Espace personnel",
+              message: "Ajout de la donnée MapBox sur la carte",
+            });
           })
           .catch((e) => {
             throw e;
@@ -142,7 +153,11 @@ const displayDataOnMap = (data) => {
         });
       }
       
-      mapStore.getMap().addLayer(layer); 
+      mapStore.getMap().addLayer(layer);
+      push.success({
+        title: "Espace personnel",
+        message: "Ajout de la donnée sur la carte",
+      });
     })
     .catch((e) => {
       throw e;
@@ -150,7 +165,10 @@ const displayDataOnMap = (data) => {
   })
   .catch((e) => {
     console.error(e);
-    // TODO transmettre l'exception à la carte !?
+    push.error({
+      title: "Espace personnel",
+      message: "Exception sur l'ajout d'une donnée : " + e.message,
+    });
   })
 };
 

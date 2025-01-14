@@ -68,6 +68,7 @@
     "focus-trap": "^7.5.4",
     "focus-trap-vue": "^4.0.3",
     "msw": "2.6.4",
+    "notivue": "^2.4.5",
     "npm-run-all2": "^6.1.2",
     "oh-vue-icons": "1.0.0-rc3",
     "pinia": "^2.1.7",
