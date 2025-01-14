@@ -41,4 +41,24 @@ onBeforeUpdate(() => {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style></style>
+<style>
+.ol-overlay-container:has(.gp-label-div),
+.ol-overlay-container:has(.gp-styling-div) {
+  transform: translate(62px, 79px) !important;
+}
+
+@media (max-width: 627px) and (min-width: 576px) {
+  .ol-overlay-container:has(.gp-label-div),
+  .ol-overlay-container:has(.gp-styling-div) {
+    transform: translate(62px, 144px) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .ol-overlay-container:has(.gp-label-div),
+  .ol-overlay-container:has(.gp-styling-div) {
+    transform: translate(62px, 235px) !important;
+  }
+}
+
+</style>
