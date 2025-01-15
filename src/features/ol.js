@@ -24,6 +24,8 @@ import {
   GPX as GPXExtended
 } from 'geopf-extensions-openlayers';
 
+import t from './translation';
+
 /**
  * INFO
  * Toutes les couches ajoutées sur la carte ont un ID interne
@@ -91,7 +93,7 @@ const createVectorLayer = (options) => {
   }
 
   if (!vectorFormat) {
-    throw new Error("Le format n'est pas reconnu !");
+    throw new Error(t.ol.failed_format(options.format));
   }
 
   if (options.data) {
@@ -112,7 +114,7 @@ const createVectorLayer = (options) => {
   }
 
   if (!vectorSource) {
-    throw new Error("La source n'est pas instanciée !");
+    throw new Error(t.ol.failed_source("vecteur"));
   }
 
   vectorSource._title = options.title;
@@ -124,7 +126,7 @@ const createVectorLayer = (options) => {
   });
 
   if (!vectorLayer) {
-    throw new Error("La couche n'est pas instanciée !");
+    throw new Error(t.ol.failed_layer("vecteur"));
   }
 
   vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
@@ -172,7 +174,11 @@ const createServiceLayer = (options) => {
       style: options.data.styleName,
       attributions: '',
     });
-  
+
+    if (!sourceWMTS) {
+      throw new Error(t.ol.failed_source("service wmts"));
+    }
+
     sourceWMTS._title = options.data.title || options.title;
     sourceWMTS._description = options.data.description || options.description;
   
@@ -182,6 +188,10 @@ const createServiceLayer = (options) => {
       // extent
       source: sourceWMTS,
     });
+
+    if (!tileLayer) {
+      throw new Error(t.ol.failed_layer("service wmts"));
+    }
   
   } else {
     var sourceTileWMS = new TileWMSSource({
@@ -195,6 +205,10 @@ const createServiceLayer = (options) => {
       projection : options.data.projection || 'EPSG:3857',
       attributions: ''
     });
+
+    if (!sourceTileWMS) {
+      throw new Error(t.ol.failed_source("service wms"));
+    }
     
     sourceTileWMS._title = options.data.title || options.title;
     sourceTileWMS._description = options.data.description || options.description;
@@ -205,6 +219,10 @@ const createServiceLayer = (options) => {
       // extent
       source: sourceTileWMS
     });
+
+    if (!tileLayer) {
+      throw new Error(t.ol.failed_layer("service wms"));
+    }
 
     // fonctionnalité pour la gpf ?
     tileLayer.gpGFIparams = {
@@ -242,6 +260,7 @@ const createServiceLayer = (options) => {
  * @property {*} options.format
  * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer
+ * @todo messages
  */
 const createMapBoxLayer = (options) => {
 
@@ -256,7 +275,7 @@ const createMapBoxLayer = (options) => {
     if (_glType === "vector") {
       var _glTiles = _glSource.tiles; // tiles only !
       if (!_glTiles) {
-        throw new Error();
+        throw new Error("Source 'tiles' uniquement !");
       }
 
       var vectorFormat = new MVT({
@@ -276,7 +295,7 @@ const createMapBoxLayer = (options) => {
         source : vectorSource,
         visible : false,
         declutter : true
-      });vectorLayer
+      });
 
       vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
 
@@ -297,7 +316,7 @@ const createMapBoxLayer = (options) => {
         vectorLayer.once("change:source", setStyle);
       }
     } else {
-      throw new Error();
+      throw new Error("Type 'vector' uniquement !");
     }
     return vectorLayer;
   };

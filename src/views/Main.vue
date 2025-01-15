@@ -21,6 +21,8 @@ import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+// others
+import t from '@/features/translation'
 
 useAppStore()
 
@@ -93,8 +95,8 @@ service.isAccessValided()
 .catch((e:any) => {
   console.error(e);
   push.error({
-    title: "Authentification",
-    message: "Exception sur l'authentication : " + e.message
+    title: t.auth.title,
+    message: t.auth.failed(e.message)
   });
 });
 
@@ -207,7 +209,7 @@ const myNotificationsTheme: NotivueTheme = {
   '--nv-width': '350px',
   '--nv-min-width': '300px',
   '--nv-border-width': '1px',
-  '--nv-icon-size': '40px',
+  '--nv-icon-size': '30px',
   '--nv-success-accent': '#18753c', // And -bg, -fg, -border
   '--nv-success-border': '#18753c',
   '--nv-error-accent': '#ce0500',
@@ -303,6 +305,14 @@ const myNotificationsTheme: NotivueTheme = {
   }
   .Notivue__icon {
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    overflow: visible;
+    min-width: var(--nv-icon-size);
+    width: var(--nv-icon-size);
+    height: 70px;
+    margin: 0; /* haut | droit | bas | gauche */
   }
   [data-notivue='error'] .Notivue__icon {
     background-color: #ce0500;

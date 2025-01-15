@@ -32,6 +32,7 @@ import {
 } from '@/features/ol.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
+import t from '@/features/translation'
 
 // lib notification
 import { push } from 'notivue'
@@ -74,7 +75,7 @@ const displayDataOnMap = (data) => {
         // - profil altimétrique
         // - itineraire
         fct = service.getCompute;
-        throw new Error(`Le type ${data.type} n'est pas implementé !`);
+        throw new Error(t.bookmark.failed_not_yet_implemented(data.type));
         break;
       case "service":
         fct = service.getService;
@@ -86,7 +87,7 @@ const displayDataOnMap = (data) => {
         break;
     }
     if (!fct) {
-      throw new Error("Impossible de determiner le type de données !?");
+      throw new Error(t.bookmark.failed_type_unknow(data.type));
     }
     // appel de la requête de télechargement du fichier
     fct.call(service, data.id)
@@ -100,8 +101,8 @@ const displayDataOnMap = (data) => {
       if (data.type === "carte") {
         getLayersFromPermalink(response);
         push.success({
-          title: "Espace personnel",
-          message: "Ajout du permalien sur la carte",
+          title: t.bookmark.title,
+          message: t.bookmark.success_add_data("permalien")
         });
         return;
       } else if (data.type === "service") {
@@ -123,12 +124,12 @@ const displayDataOnMap = (data) => {
           .then((layer) => {
             mapStore.getMap().addLayer(layer);
             push.success({
-              title: "Espace personnel",
-              message: "Ajout de la donnée MapBox sur la carte",
+              title: t.bookmark.title,
+              message: t.bookmark.success_add_data("mapbox"),
             });
           })
           .catch((e) => {
-            throw e;
+            throw t.ol.failed_mapbox(e);
           });
           return;
         } else {
@@ -155,8 +156,8 @@ const displayDataOnMap = (data) => {
       
       mapStore.getMap().addLayer(layer);
       push.success({
-        title: "Espace personnel",
-        message: "Ajout de la donnée sur la carte",
+        title: t.bookmark.title,
+        message: t.bookmark.success_add_data(infos.extra.format),
       });
     })
     .catch((e) => {
@@ -166,8 +167,8 @@ const displayDataOnMap = (data) => {
   .catch((e) => {
     console.error(e);
     push.error({
-      title: "Espace personnel",
-      message: "Exception sur l'ajout d'une donnée : " + e.message,
+      title: t.bookmark.title,
+      message: t.bookmark.failed_add_data(e.message),
     });
   })
 };

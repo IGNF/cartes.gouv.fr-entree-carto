@@ -4,6 +4,8 @@ import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuTierce from '@/components/menu/MenuTierce.vue';
 import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 
+import { push } from 'notivue';
+
 import { useTemplateRef } from 'vue';
 
 const props = defineProps({
@@ -50,6 +52,10 @@ function tabClicked(newTab) {
     }
     wrapper.value.openMenu();
   }
+  push.info({
+    title: "test",
+    message: "test ! gfger gret yt ejhjjjjjjjjjjjjjjjjjjjjjj\nwtgjre'o(jy'(yk(yj(lkyn(ky('y'k(yj('kyl'))))))))"
+  });
 }
 
 function tabIsActive(componentName) {
