@@ -52,10 +52,6 @@ function tabClicked(newTab) {
     }
     wrapper.value.openMenu();
   }
-  push.info({
-    title: "test",
-    message: "test ! gfger gret yt ejhjjjjjjjjjjjjjjjjjjjjjj\nwtgjre'o(jy'(yk(yj(lkyn(ky('y'k(yj('kyl'))))))))"
-  });
 }
 
 function tabIsActive(componentName) {

@@ -207,7 +207,6 @@ const myNotificationsTheme: NotivueTheme = {
   ...lightTheme,
   '--nv-radius': '0',
   '--nv-width': '350px',
-  '--nv-min-width': '300px',
   '--nv-border-width': '1px',
   '--nv-icon-size': '30px',
   '--nv-success-accent': '#18753c', // And -bg, -fg, -border
@@ -298,11 +297,11 @@ const myNotificationsTheme: NotivueTheme = {
   /* surcharge des popups de notifications : 
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  .Notivue__content-message {
+  /* .Notivue__content-message {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: wrap;
-  }
+  } */
   .Notivue__icon {
     color: white;
     display: flex;
@@ -311,7 +310,6 @@ const myNotificationsTheme: NotivueTheme = {
     overflow: visible;
     min-width: var(--nv-icon-size);
     width: var(--nv-icon-size);
-    height: 70px;
     margin: 0; /* haut | droit | bas | gauche */
   }
   [data-notivue='error'] .Notivue__icon {
