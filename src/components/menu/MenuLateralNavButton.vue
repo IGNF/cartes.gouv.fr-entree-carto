@@ -28,7 +28,6 @@ const props = defineProps({
     visibility: Boolean
 })
 
-
 const icon = props.icon
 
 const emit = defineEmits(['tabClicked'])
@@ -79,9 +78,8 @@ defineExpose({
   button,
   id
 })
+
 </script>
-
-
 
 <template>
   <div ref="button">
@@ -97,8 +95,6 @@ defineExpose({
   </div>
 
 </template>
-
-
 
 <style scoped lang="scss">
 .noclick {

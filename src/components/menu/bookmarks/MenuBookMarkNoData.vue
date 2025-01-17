@@ -5,7 +5,6 @@
  * dans l'espace de l'utilisateur
  * 
  * @todo impl. handler sur l'enregistrement de la carte
- * @fixme impl. handler sur l'ouverture du catalogue
  */
 export default {
   name: 'MenuBookMarkNoData'
@@ -13,25 +12,8 @@ export default {
 </script>
 
 <script setup lang="js">
-
-import { useMapStore } from "@/stores/mapStore"
-const mapStore = useMapStore();
-
-const emit = defineEmits([
-  'onOpenCatalog'
-]);
-
-const openControl = (controlName) => {
-  mapStore.getMap().getControls().getArray().forEach(control => {
-    if (control.CLASSNAME === controlName) {
-      let button = [...control.element.children].filter((e) => {
-        if (e.className.includes("GPshowOpen"))
-            return e;
-        })
-        button[0].click();
-      }
-  })
-};
+import { inject } from 'vue';
+const emitter = inject('emitter');
 
 const buttons = [
   {
@@ -55,8 +37,11 @@ const buttons = [
     secondary: true,
     class: 'bookmark-button-container',
     onclick: () => {
-      // FIXME comment emettre un event vers un autre composant hors parent ?
-      emit('onOpenCatalog');
+      // envoi d'un evenement pour l'ouverture du catalogue
+      emitter.dispatchEvent("catalog:open:clicked", {
+        open : true,
+        componentName: "MenuCatalogue"
+      });
     }
   },
   {
@@ -67,8 +52,11 @@ const buttons = [
     secondary: true,
     class: 'bookmark-button-container',
     onclick: () => {
-      // ouvrir le contrôle d'import de données
-      openControl('LayerImport');
+      // envoi d'un evenement pour l'ouverture du contrôle d'import de données
+      emitter.dispatchEvent("layerimport:open:clicked", {
+        open : true,
+        componentName: "LayerImport"
+      });
     }
   }
 ];

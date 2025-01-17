@@ -67,6 +67,7 @@
     "eslint-plugin-vue": "^9.19.2",
     "focus-trap": "^7.5.4",
     "focus-trap-vue": "^4.0.3",
+    "mitt": "^3.0.1",
     "msw": "2.6.4",
     "notivue": "^2.4.5",
     "npm-run-all2": "^6.1.2",

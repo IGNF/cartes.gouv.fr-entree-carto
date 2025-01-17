@@ -14,9 +14,21 @@ const props = defineProps({
 
 const log = useLogger()
 
-
 const map = inject(props.mapId)
 const layerImport = ref(new LayerImport(props.layerImportOptions))
+
+// abonnement sur l'ouverture du controle
+const emitter = inject('emitter');
+emitter.addEventListener("layerimport:open:clicked", (e) => {
+  if (layerImport.value) {
+    let button = [...layerImport.value.element.children].filter((e) => {
+      if (e.className.includes("GPshowOpen")) {
+        return e;
+      }
+    });
+    button[0].click();
+  }
+});
 
 onMounted(() => {
   if (props.visibility) {

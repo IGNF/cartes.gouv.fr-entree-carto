@@ -1,0 +1,32 @@
+/**
+ * Registre des evenements globaux
+ * 
+ * @example
+ * const emitter = inject('emitter');
+ * emitter.addEventListener("test:clicked", (e) => { console.log(e); });
+ * emitter.dispatchEvent("test:clicked", { data : "ceci est un test !" });
+ */
+var EVENTS = {
+  /**
+   * Verifier si l'évenement est dans le registre
+   * @param {*} eventName 
+   * @returns {Boolean}
+   */
+  isNotRegistered: (eventName) => {
+    return !EVENTS.eventsName.includes(eventName);
+  },
+
+  /**
+   * Liste des evenements
+   * @fixme convention d'écriture ? ex. componentname:eventtype
+   */
+  eventsName: [
+    "test:clicked",
+    "service:documents:loaded",
+    "service:user:loaded",
+    "catalog:open:clicked",
+    "layerimport:open:clicked"
+  ]
+};
+
+export default EVENTS;

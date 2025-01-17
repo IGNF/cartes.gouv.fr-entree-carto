@@ -15,6 +15,7 @@ import { createLogger } from 'vue-logger-plugin'
 // plugin local
 import { createEulerian } from './plugins/Eulerian'
 import { createServices } from './plugins/Services'
+import { createBusEvent } from './plugins/BusEvent'
 
 // library notificaiton
 import { createNotivue } from 'notivue'
@@ -94,6 +95,8 @@ const notivue = createNotivue({
   }
 })
 
+const bus = createBusEvent();
+
 // INFO
 // on enregistre les informations de connexion dans le localStorage
 const store = storePlugin({
@@ -109,6 +112,7 @@ app.use(logger)
 app.use(eulerian)
 app.use(services)
 app.use(notivue)
+app.use(bus)
 
 waitingPrepareApp().then(() => {
   app.mount('#app')

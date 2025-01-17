@@ -4,9 +4,8 @@ import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuTierce from '@/components/menu/MenuTierce.vue';
 import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 
-import { push } from 'notivue';
-
 import { useTemplateRef } from 'vue';
+import { inject } from 'vue';
 
 const props = defineProps({
 })

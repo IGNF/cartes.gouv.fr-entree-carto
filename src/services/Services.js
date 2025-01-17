@@ -6,6 +6,8 @@ import Documents from '@/services/ServiceDocuments';
 
 import { useServiceStore } from '@/stores/serviceStore';
 
+import { inject } from 'vue';
+
 // INFO
 // recuperation des informations sur l'env
 const IAM_URL = import.meta.env.IAM_URL;
@@ -25,8 +27,8 @@ const IAM_CLIENT_SECRET_REMOTE = import.meta.env.IAM_CLIENT_SECRET_REMOTE;
  * ou {@link https://www.ory.sh/docs/oauth2-oidc/authorization-code-flow}
  * 
  * @see env
- * @fires service::user
- * @fires service::documents
+ * @fires service:user:loaded
+ * @fires service:documents:loaded
  * @example
  * import Services from '@/services/Services';
  * var service = new Services(options);
@@ -78,7 +80,6 @@ class Services {
     
     this.api = null;
     this.url = null;
-    this.target = null;
 
     this.#initialize(options);
 
@@ -89,7 +90,6 @@ class Services {
    * Initialisation du client oauth
    */
   #initialize (options) {
-    this.target = new EventTarget();
     this.api = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
     var clientId = this.mode === "local" ? IAM_CLIENT_ID : IAM_CLIENT_ID_REMOTE;
@@ -164,6 +164,7 @@ class Services {
    * @returns {Promise} - statut : login / logout / unknow
    */
   isAccessValided () {
+    const emitter = inject('emitter');
     var store = useServiceStore();
     // si IAM, on récupère les informations dans l'url
     const queryString = location.search;
@@ -200,24 +201,19 @@ class Services {
             return this.getUserMe()
             .then((user) => {
               console.debug(user);
-              this.target.dispatchEvent(
-                new CustomEvent("service::user", {
-                    bubbles : true,
-                    detail : user
-                })
-              );
+              emitter.dispatchEvent("service:user:loaded", {
+                bubbles : true,
+                detail : user
+              });
               // on execute une autre promise chainée
               // ex. les favoris !
               return this.getDocuments()
               .then((documents) => {
                 console.debug(documents);
-                this.target.dispatchEvent(
-                  new CustomEvent("service::documents", {
-                      bubbles : true,
-                      detail : documents
-                  })
-                );
-          
+                emitter.dispatchEvent("service:documents:loaded", {
+                  bubbles : true,
+                  detail : documents
+                });
               })
               .catch((e) => {
                 throw new Error('Error to get documents (' + e.message + ')');

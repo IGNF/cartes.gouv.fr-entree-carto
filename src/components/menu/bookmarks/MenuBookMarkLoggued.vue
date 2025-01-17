@@ -15,6 +15,7 @@ import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.v
 import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
 
 var service = inject('services');
+const emitter = inject('emitter');
 
 const IsEmpty = () => {
   var empty = true;
@@ -41,13 +42,14 @@ var documentsIsEmpty = computed(() => {
   return value;
 });
 
+// INFO
+// abonnement à l'evenement du service sur les documents afin de 
+// savoir quand tous les documents sont remontés
+emitter.addEventListener("service:documents:loaded", (e) => {
+  documentsIsReady.value = true;
+});
+
 onMounted(() => {
-  // INFO
-  // abonnement à l'evenement du service sur les documents afin de 
-  // savoir quand tous les documents sont remontés
-  service.target.addEventListener("service::documents", (e) => {
-    documentsIsReady.value = true;
-  });
 })
 
 </script>

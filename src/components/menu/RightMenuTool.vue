@@ -2,6 +2,8 @@
 import { useDataStore } from "@/stores/dataStore";
 import MenuControl from '@/components/menu/MenuControl.vue';
 
+import { inject } from 'vue';
+
 const props = defineProps({
   selectedControls : {Object},
   selectedLayers : {Object}
@@ -44,9 +46,16 @@ function tabClicked(newTab) {
   }
 }
 
+// abonnement sur l'ouverture du catalogue sur un evenement emis
+const emitter = inject('emitter');
+emitter.addEventListener("catalog:open:clicked", (e) => {
+  tabClicked(e.componentName);
+});
+
 function tabIsActive(componentName) {
     return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
+
 </script>
 
 <template>
