@@ -62,6 +62,7 @@ onMounted(() => {
       });
       break;
     case "TMS":
+      options.declutter = true;
       // INFO le style par defaut est utilisé !
       layer = new GeoportalMapBox({
         layer : name,

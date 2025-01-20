@@ -31,6 +31,8 @@ export function getLayerConf(layerOptions) {
         return new GeoportalMapBox({
           layer : name,
           configuration : value
+        }, {
+          declutter : true
         });
       default:
     }
