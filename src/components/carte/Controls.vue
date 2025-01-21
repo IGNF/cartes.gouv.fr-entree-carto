@@ -31,6 +31,7 @@ import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
+import ContextMenu from './control/ContextMenu.vue';
 import Print from './control/Print.vue'
 
 import Share from './control/Share.vue';
@@ -529,6 +530,13 @@ const layerImportOptions = {
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
     :analytic="useControls.ControlList.analytic"
     :control-list-options="controlListOptions"
+    :map-id="mapId"
+  />
+  <ContextMenu
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
+    :analytic="useControls.ContextMenu.analytic"
+    :context-menu-options="contextMenuOptions"
     :map-id="mapId"
   />
 </template>
