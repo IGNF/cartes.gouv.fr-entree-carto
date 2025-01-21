@@ -375,6 +375,17 @@ const layerImportOptions = {
   listable: true,
 };
 
+const refPrintModal = inject("refPrintModal")
+const contextMenuOptions = {
+  contextMenuItemsOptions : [            {
+                text : "Imprimer la carte",
+                classname : "ol-context-menu-custom fr-text--md",
+                callback : function() {
+                  refPrintModal.value.onModalPrintOpen()
+                },
+            }]
+}
+
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste

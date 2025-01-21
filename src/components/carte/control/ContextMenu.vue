@@ -16,20 +16,12 @@ const contextMenu = ref(new ContextMenu(props.contextMenuOptions));
 onMounted(() => {
   if (props.visibility) {
     map.addControl(contextMenu.value);
-    if (props.analytic) {
-      var el = contextMenu.value.element.querySelector("button[id^=GPshowContextMenuPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
 onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(contextMenu.value);
-    if (props.analytic) {
-      var el = contextMenu.value.element.querySelector("button[id^=GPshowContextMenuPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
   else {
     map.removeControl(contextMenu.value);
