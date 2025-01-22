@@ -376,14 +376,24 @@ const layerImportOptions = {
 };
 
 const refPrintModal = inject("refPrintModal")
+const modalShareRef = inject("modalShareRef")
 const contextMenuOptions = {
-  contextMenuItemsOptions : [            {
+  contextMenuItemsOptions : [            
+            {
                 text : "Imprimer la carte",
                 classname : "ol-context-menu-custom fr-text--md",
                 callback : function() {
                   refPrintModal.value.onModalPrintOpen()
-                },
-            }]
+                }
+            },
+            {
+                text : "Partager la carte",
+                classname : "ol-context-menu-custom fr-text--md",
+                callback : function() {
+                  modalShareRef.value.onModalShareOpen()
+                }
+            }
+          ]
 }
 
 </script>
