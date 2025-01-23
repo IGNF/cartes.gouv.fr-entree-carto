@@ -198,7 +198,9 @@ En mode petit écran on le positionne tout en haut en attendant mieux */
 }
 /* Petits écrans */
 @media (max-width: 576px) {
-  // FIXME : on cache les bouton "rouage" et "catalogue" si les résultats d'autocompletion sont affichés.
+  // FIXME : on cache les bouton "rouage" et "catalogue" si la recherche avancée est ouverte ou si les résultats d'autocompletion sont visibles
+  #mainMap:has(dialog[id^="GPadvancedSearchPanel"].GPelementVisible) ~ .menu-toggle-wrap > .menu-logo-list,
+  .menu-toggle-wrap:has(~ #mainMap dialog[id^="GPadvancedSearchPanel"].GPelementVisible) > .menu-logo-list,
   #mainMap:has(.GPautoCompleteList.GPelementVisible) ~ .menu-toggle-wrap > .menu-logo-list,
   .menu-toggle-wrap:has(~ #mainMap .GPautoCompleteList.GPelementVisible) > .menu-logo-list {
     display : none;
