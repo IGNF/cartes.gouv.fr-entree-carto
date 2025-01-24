@@ -16,6 +16,9 @@ const dataStore = useDataStore();
 const refModalTheme = ref(null)
 const modalShareRef = ref(null)
 const refPrintModal = ref(null)
+provide("refPrintModal", refPrintModal)
+provide("modalShareRef", modalShareRef)
+
 const onModalShareOpen = () => {
   modalShareRef.value.onModalShareOpen()
 }

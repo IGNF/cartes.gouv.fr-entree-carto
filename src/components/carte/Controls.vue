@@ -31,6 +31,7 @@ import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
+import ContextMenu from './control/ContextMenu.vue';
 import Print from './control/Print.vue'
 
 import Share from './control/Share.vue';
@@ -374,6 +375,27 @@ const layerImportOptions = {
   listable: true,
 };
 
+const refPrintModal = inject("refPrintModal")
+const modalShareRef = inject("modalShareRef")
+const contextMenuOptions = {
+  contextMenuItemsOptions : [            
+            {
+                text : "Imprimer la carte",
+                classname : "ol-context-menu-custom fr-text--md",
+                callback : function() {
+                  refPrintModal.value.onModalPrintOpen()
+                }
+            },
+            {
+                text : "Partager la carte",
+                classname : "ol-context-menu-custom fr-text--md",
+                callback : function() {
+                  modalShareRef.value.onModalShareOpen()
+                }
+            }
+          ]
+}
+
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
@@ -529,6 +551,13 @@ const layerImportOptions = {
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
     :analytic="useControls.ControlList.analytic"
     :control-list-options="controlListOptions"
+    :map-id="mapId"
+  />
+  <ContextMenu
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
+    :analytic="useControls.ContextMenu.analytic"
+    :context-menu-options="contextMenuOptions"
     :map-id="mapId"
   />
 </template>
