@@ -24,7 +24,7 @@ Principaux changements :
 
   - nouveau menu pour accéder à des fonctionnalités tierces comme le partage ou l'impression (#407)
   - ajout de la fonctionnalité d'impression de la carte (#431)
-  - ajout d'un menu contextuel lorsqu'un clic droit est réalisé sur la carte (#455)
+  - ajout d'un menu contextuel lorsqu'un clic droit est réalisé sur la carte (#455, #468)
 
 #### 🔨 [Evolution]
 
