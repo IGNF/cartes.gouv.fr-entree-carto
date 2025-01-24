@@ -12,6 +12,7 @@
 
 <script setup lang="js">
 import IconGeolocationSVG from "../../assets/geolocation.svg";
+import { useMapStore } from "@/stores/mapStore"
 
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
@@ -64,6 +65,7 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
+const mapStore = useMapStore();
 const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
@@ -377,25 +379,30 @@ const layerImportOptions = {
 
 const refPrintModal = inject("refPrintModal")
 const modalShareRef = inject("modalShareRef")
-const contextMenuOptions = {
+
+const contextMenuOptions = computed(() => {
+  return {
   contextMenuItemsOptions : [            
             {
                 text : "Imprimer la carte",
-                classname : "ol-context-menu-custom fr-text--md",
                 callback : function() {
                   refPrintModal.value.onModalPrintOpen()
                 }
             },
             {
                 text : "Partager la carte",
-                classname : "ol-context-menu-custom fr-text--md",
                 callback : function() {
                   modalShareRef.value.onModalShareOpen()
                 }
+            },
+            {
+                text : "Ajouter des données",
+                callback : () => {
+                  mapStore.getmenuCatalogueButton().firstChild.click()
+                }
             }
           ]
-}
-
+}})
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
