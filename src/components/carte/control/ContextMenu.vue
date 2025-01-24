@@ -1,7 +1,8 @@
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { ContextMenu } from 'geopf-extensions-openlayers';
+import { useMatchMedia } from '@/composables/matchMedia';
 
+const isSmallScreen = useMatchMedia('SM')
 
 const props = defineProps({
   mapId: String,
@@ -14,13 +15,13 @@ const map = inject(props.mapId)
 const contextMenu = ref(new ContextMenu(props.contextMenuOptions));
 
 onMounted(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(contextMenu.value);
   }
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(contextMenu.value);
   }
   else {
