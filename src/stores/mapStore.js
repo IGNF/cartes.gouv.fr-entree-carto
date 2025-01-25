@@ -70,7 +70,8 @@ const ns = ((value) => {
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
  * 
- *
+ * @todo données utilisateurs issues des favoris
+ * @todo translation des uuid & 'short' id
  */
 export const useMapStore = defineStore('map', () => {
   /////////////
@@ -304,6 +305,15 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  // TODO
+  // Gestion des données utilisateurs : favoris
+  // > on ajoute des 'short' ID au lieu de UUID dans le permalien !
+  function addBookmark (id) {}
+  function removeBookmark (id) {}
+  function updateBookmarkProperty (id, props) {}
+  function updateBookmarkPosition (ids) {}
+  function getBookmarkProperty (id) {}
+
   function getControls () {
     // INFO
     // on retourne la liste des widgets actifs
@@ -354,6 +364,11 @@ export const useMapStore = defineStore('map', () => {
     updateLayerProperty,
     updateLayerPosition,
     getLayerProperty,
+    addBookmark,
+    removeBookmark,
+    updateBookmarkProperty,
+    updateBookmarkPosition,
+    getBookmarkProperty,
     getControls,
     cleanControls,
     addControl,

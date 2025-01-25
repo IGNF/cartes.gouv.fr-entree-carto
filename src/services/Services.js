@@ -27,8 +27,8 @@ const IAM_CLIENT_SECRET_REMOTE = import.meta.env.IAM_CLIENT_SECRET_REMOTE;
  * ou {@link https://www.ory.sh/docs/oauth2-oidc/authorization-code-flow}
  * 
  * @see env
- * @fires service:user:loaded
- * @fires service:documents:loaded
+ * @fires emitter#service:user:loaded
+ * @fires emitter#service:documents:loaded
  * @example
  * import Services from '@/services/Services';
  * var service = new Services(options);

@@ -1,3 +1,14 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @listens emitter#layerimport:open:clicked
+   */
+  export default {
+    name: 'LayerImport'
+  };
+</script>
+
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin'
@@ -34,7 +45,6 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(layerImport.value);
     if (props.analytic) {
-    log.debug(layerImport.value.element)
       var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
       useActionButtonEulerian(el);
     }

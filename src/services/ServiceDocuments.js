@@ -125,6 +125,7 @@ var Documents = {
    * Obtenir des informations sur le document
    * 
    * On surcharge la reponse avec d'autres informations (champ extra):
+   * - id (short)
    * - date
    * - format
    * - target
@@ -144,9 +145,11 @@ var Documents = {
     // à partir des labels
     const extra = (labels) => {
       return {
+        id : id.split('-').slice(-1)[0], // short id
         format : this.labelsFormats.find((e) => labels.includes(e)),
         target : this.labelsTarget.find((e) => labels.includes(e)),
-        compute : this.labelsCompute.find((e) => labels.includes(e))
+        compute : this.labelsCompute.find((e) => labels.includes(e)),
+        date : new Date().toLocaleDateString()
       }
     };
 
@@ -164,8 +167,8 @@ var Documents = {
           document.description = data.description;
           document.mime_type = data.mime_type;
           document.extra = {
-            ...data.extra,
-            ...extra(data.labels)
+            ...extra(data.labels),
+            ...data.extra
           };
           founded = true;
           break;

@@ -4,6 +4,7 @@
  * Menu des Favoris en mode connecté 
  * avec un menu avec ou sans documents disponible
  * 
+ * @listens emitter#service:documents:loaded
  */
 export default {
   name: 'MenuBookMarkLoggued'

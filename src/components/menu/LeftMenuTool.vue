@@ -1,3 +1,12 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   */
+  export default {
+    name: 'LeftMenuTool'
+  };
+</script>
 <script setup lang="js">
 import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';

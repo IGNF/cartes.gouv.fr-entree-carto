@@ -1,3 +1,13 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @listens emitter#catalog:open:clicked
+   */
+  export default {
+    name: 'RightMenuTool'
+  };
+</script>
 <script setup lang="js">
 import { useDataStore } from "@/stores/dataStore";
 import MenuControl from '@/components/menu/MenuControl.vue';

@@ -153,7 +153,7 @@ const displayDataOnMap = (data) => {
           ...target
         });
       }
-      
+      // ajout de la couche sur la carte
       mapStore.getMap().addLayer(layer);
       push.success({
         title: t.bookmark.title,

@@ -219,7 +219,7 @@ export const handlers = {
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa3') {
         response = HttpResponse.json({
           "name": "croquis1.kml",
-          "description": "croquis avec un icone, une ligne et une surface",
+          "description": "croquis avec un icone et un label",
           "size": 3485,
           "mime_type": "application/octet-stream",
           "labels": [
@@ -227,13 +227,18 @@ export const handlers = {
             "drawing",
             "kml"
           ],
+          "extra": {
+            "id" : "100000",
+            "date" : "01/01/2025",
+            "format" : "kml"
+          },
           "_id": id
         });
       }
       if (id === '3fa85f64-5717-4562-b3fc-2c963f66afa4') {
         response = HttpResponse.json({
           "name": "croquis2.kml",
-          "description": "croquis avec un icone et un label",
+          "description": "croquis avec un icone, une ligne et une surface",
           "size": 3485,
           "mime_type": "application/octet-stream",
           "labels": [

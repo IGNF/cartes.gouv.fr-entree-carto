@@ -60,27 +60,74 @@ onUpdated(() => {
 
 /** 
  * Gestionnaires d'evenement sur les abonnements
+ * 
+ * @description
+ * Les couches sont ajoutées par le gestionnaire de couche (extensions).
+ * Mais, on s'abonne aux evenements pour y ajouter une action :
+ * ex. inscrire la couche dans le permalien (store)
+ * 
+ * Une couche est issue soit 
+ * - du catalogue
+ * - d'une donnée utilisateur
+ * 
+ * Les données utilisateur doivent être enregistrées sur l'espace personnel
+ * pour figurer dans le permalien, donc de type 'bookmark' !
+ * 
+ * L'ID de la couche d'un favori est de la forme : 
+ * ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+ * 
+ * Le UUID est utilisé indirectement dans le permalien, on utilise une version 'short'
+ * ex. 3fa85f64-5717-4562-b3fc-2c963f66afa3 --> 2c963f66afa3
  */
 const onAddLayer = (e) => {
-  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
-  log.debug("onAddLayer", id);
-  if (id) {
-    mapStore.addLayer(id);
+  log.debug("onAddLayer", e);
+  var id = null;
+  if (e.layer.name && e.layer.service) {
+    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+    if (id) {
+      mapStore.addLayer(id);
+    }
+  } else {
+    var gpId = e.layer.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.addBookmark(id);
+        }
+      }
+    }
   }
+  log.debug("onAddLayer", id);
 }
 const onRemoveLayer = (e) => {
-  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
-  log.debug("onRemoveLayer", id);
-  if (id) {
-    mapStore.removeLayer(id);
+  log.debug("onRemoveLayer", e);
+  var id = null;
+  if (e.layer.name && e.layer.service) {
+    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+    if (id) {
+      mapStore.removeLayer(id);
+    }
+  } else {
+    var gpId = e.layer.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.removeBookmark(id);
+        }
+      }
+    }
   }
+  log.debug("onRemoveLayer", id);
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);
   // INFO
   // on reimplemente le ZoomToExtent
-  // car on préfère utiliser le dataStore 
-  // pour le configurer
+  // au cas où les extensions n'y arrivent pas !?
   if (e.error) {
     var globalConstraints = dataStore.getGlobalConstraintsByName(e.layer.name, e.layer.service);
     if (globalConstraints) {
@@ -107,25 +154,61 @@ const onZoomToExtentLayer = (e) => {
   }
 }
 const onChangeOpacityLayer = (e) => {
-  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onChangeOpacityLayer", e);
-  mapStore.updateLayerProperty(id, {
-    opacity : e.opacity
-  });
+  var id = null;
+  if (e.layer.name && e.layer.service) {
+    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+    if (id) {
+      mapStore.updateLayerProperty(id, {
+        opacity : e.opacity
+      });
+    }
+  } else {
+    var gpId = e.layer.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.updateBookmarkProperty(id, {
+            opacity : e.opacity
+          });
+        }
+      }
+    }
+  }
 }
 const onChangeVisibilityLayer = (e) => {
-  var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
   log.debug("onChangeVisibilityLayer", e);
-  mapStore.updateLayerProperty(id, {
-    visible : e.visibility
-  });
+  var id = null;
+  if (e.layer.name && e.layer.service) {
+    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+    if (id) {
+      mapStore.updateLayerProperty(id, {
+        visible : e.visibility
+      });
+    }
+  } else {
+    var gpId = e.layer.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.updateBookmarkProperty(id, {
+            visible : e.visibility
+          });
+        }
+      }
+    }
+  }
 }
 const onChangePositionLayer = (e) => {
   log.debug("onChangePositionLayer", e);
   // INFO
-  // on met à jour uniquement les couches du catalogues ou enregistrées 
-  // dans l'espace personnel (les properties name&service sont renseignées)
+  // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
   mapStore.updateLayerPosition(e.layers.reverse().map((layer) => {
+    // TODO les couches utilisateur enregistrées !
     if (layer.name && layer.service) {
       return dataStore.getLayerIdByName(layer.name, layer.service);
     } 

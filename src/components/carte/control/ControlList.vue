@@ -47,7 +47,6 @@ watch(selectedControls, () => {
     if (props.visibility) {
       map.addControl(controlList.value);
       if (props.analytic) {
-      log.debug(controlList.value.element)
         var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
         useActionButtonEulerian(el);
       }
@@ -65,7 +64,6 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(controlList.value);
     if (props.analytic) {
-    log.debug(controlList.value.element)
       var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
       useActionButtonEulerian(el);
     }

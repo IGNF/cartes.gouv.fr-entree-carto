@@ -4,6 +4,8 @@
  * Menu des Favoris sans documents disponible
  * dans l'espace de l'utilisateur
  * 
+ * @fires emitter#catalog:open:clicked
+ * @fires emitter#layerimport:open:clicked
  * @todo impl. handler sur l'enregistrement de la carte
  */
 export default {
