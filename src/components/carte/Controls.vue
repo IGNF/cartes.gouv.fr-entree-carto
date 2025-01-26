@@ -175,6 +175,9 @@ const drawingOptions = {
   position: 'top-right',
   gutter: false,
   listable: true,
+  tools : {
+    "export" : false
+  }
 }
 
 const reverseGeocodeOptions = {
@@ -225,7 +228,8 @@ const mousePositionOptions = {
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
-  systems : [{
+  systems : [
+    {
       label : "G\u00e9ographique",
       crs : "EPSG:4326",
       type : "Geographical"
@@ -382,27 +386,28 @@ const refModalShare = inject("refModalShare")
 
 const contextMenuOptions = computed(() => {
   return {
-  contextMenuItemsOptions : [            
-            {
-                text : "Imprimer la carte",
-                callback : function() {
-                  refModalPrint.value.onModalPrintOpen()
-                }
-            },
-            {
-                text : "Partager la carte",
-                callback : function() {
-                  refModalShare.value.onModalShareOpen()
-                }
-            },
-            {
-                text : "Ajouter des données",
-                callback : () => {
-                  mapStore.getmenuCatalogueButton().firstChild.click()
-                }
-            }
-          ]
-}})
+    contextMenuItemsOptions : [            
+      {
+        text : "Imprimer la carte",
+        callback : function() {
+          refModalPrint.value.onModalPrintOpen()
+        }
+      },
+      {
+        text : "Partager la carte",
+        callback : function() {
+          refModalShare.value.onModalShareOpen()
+        }
+      },
+      {
+        text : "Ajouter des données",
+        callback : () => {
+          mapStore.getmenuCatalogueButton().firstChild.click()
+        }
+      }
+    ]
+  }
+})
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
