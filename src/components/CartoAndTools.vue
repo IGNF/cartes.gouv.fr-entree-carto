@@ -20,6 +20,9 @@ const refModalLogin: LoginModal = ref({})
 const refModalShare: ShareModal = ref({})
 const refModalPrint: PrintModal = ref({})
 
+provide("refModalPrint", refModalPrint)
+provide("refModalShare", refModalShare)
+
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()

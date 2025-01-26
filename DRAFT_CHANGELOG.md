@@ -17,12 +17,14 @@ Version 1.0.3 de l'entrée cartographique de la Géoplateforme.
 Principaux changements :
   - améliorations multiples sur le fonctionnel et l'affichage des résultats de la barre de recherche. A suivre.
   - ajout d'un menu de fonctionnalités tierces avec l'impression
-  - réorganisation des boutons et de l'accès à certaines fonctionnalités
+  - ajout d'un menu contextuel qui s'affiche avec un clic droit
+  - réorganisation des boutons et de l'accès à certaines fonctionnalités comme le catalogue ou le partage
 
 #### ✨ [Ajout]
 
   - nouveau menu pour accéder à des fonctionnalités tierces comme le partage ou l'impression (#407)
   - ajout de la fonctionnalité d'impression de la carte (#431)
+  - ajout d'un menu contextuel lorsqu'un clic droit est réalisé sur la carte (#455, #468, #472)
 
 #### 🔨 [Evolution]
 

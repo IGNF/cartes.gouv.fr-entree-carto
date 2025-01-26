@@ -145,6 +145,12 @@ export const useControls = {
     disable: true,
     analytic: true
   },
+  ContextMenu: {
+    id: 'ContextMenu',
+    active: true,
+    disable: true,
+    analytic: true
+  }
 }
 
 /**
@@ -321,6 +327,13 @@ export function useControlsMenuOptions() {
       name: useControls.ControlList.id,
       hint: 'Liste des controles supplémentaires non affichés',
       disabled: useControls.ControlList.disable
+    },
+    {
+      label: 'Menu contextuel',
+      id: 'contextMenu',
+      name: useControls.ContextMenu.id,
+      hint: 'Menu contextuel au clic droit sur la carte',
+      disabled: useControls.ContextMenu.disable
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)

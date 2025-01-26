@@ -79,6 +79,11 @@ defineExpose({
   id
 })
 
+onMounted(() => {
+  if (props.id == "MenuCatalogue") {
+    mapStore.setmenuCatalogueButton(button.value)
+  }
+})
 </script>
 
 <template>

@@ -12,6 +12,7 @@
 
 <script setup lang="js">
 import IconGeolocationSVG from "../../assets/geolocation.svg";
+import { useMapStore } from "@/stores/mapStore"
 
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
@@ -31,6 +32,7 @@ import Territories from './control/Territories.vue';
 import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
+import ContextMenu from './control/ContextMenu.vue';
 import Print from './control/Print.vue'
 
 import Share from './control/Share.vue';
@@ -63,6 +65,7 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
+const mapStore = useMapStore();
 const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
@@ -374,6 +377,32 @@ const layerImportOptions = {
   listable: true,
 };
 
+const refPrintModal = inject("refPrintModal")
+const modalShareRef = inject("modalShareRef")
+
+const contextMenuOptions = computed(() => {
+  return {
+  contextMenuItemsOptions : [            
+            {
+                text : "Imprimer la carte",
+                callback : function() {
+                  refPrintModal.value.onModalPrintOpen()
+                }
+            },
+            {
+                text : "Partager la carte",
+                callback : function() {
+                  modalShareRef.value.onModalShareOpen()
+                }
+            },
+            {
+                text : "Ajouter des données",
+                callback : () => {
+                  mapStore.getmenuCatalogueButton().firstChild.click()
+                }
+            }
+          ]
+}})
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
@@ -529,6 +558,13 @@ const layerImportOptions = {
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
     :analytic="useControls.ControlList.analytic"
     :control-list-options="controlListOptions"
+    :map-id="mapId"
+  />
+  <ContextMenu
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
+    :analytic="useControls.ContextMenu.analytic"
+    :context-menu-options="contextMenuOptions"
     :map-id="mapId"
   />
 </template>
