@@ -377,8 +377,8 @@ const layerImportOptions = {
   listable: true,
 };
 
-const refPrintModal = inject("refPrintModal")
-const modalShareRef = inject("modalShareRef")
+const refModalPrint = inject("refModalPrint")
+const refModalShare = inject("refModalShare")
 
 const contextMenuOptions = computed(() => {
   return {
@@ -386,13 +386,13 @@ const contextMenuOptions = computed(() => {
             {
                 text : "Imprimer la carte",
                 callback : function() {
-                  refPrintModal.value.onModalPrintOpen()
+                  refModalPrint.value.onModalPrintOpen()
                 }
             },
             {
                 text : "Partager la carte",
                 callback : function() {
-                  modalShareRef.value.onModalShareOpen()
+                  refModalShare.value.onModalShareOpen()
                 }
             },
             {

@@ -29,7 +29,7 @@ const props = defineProps({
   shareOptions: Object
 });
 
-const modalShareRef = ref(null)
+const refModalShare = ref(null)
 
 // paramètres du composant bouton
 const btnTitle = "Ouvrir le panneau de partage de carte";
@@ -49,7 +49,7 @@ onBeforeMount(() => {
 });
 
 const onModalShareOpen = () => {
-  modalShareRef.value.onModalShareOpen()
+  refModalShare.value.onModalShareOpen()
 }
 </script>
 
@@ -66,7 +66,7 @@ const onModalShareOpen = () => {
       no-outline
       @click="onModalShareOpen"
     />
-    <ShareModal ref="modalShareRef"/>
+    <ShareModal ref="refModalShare"/>
   </div>
 </template>
 
