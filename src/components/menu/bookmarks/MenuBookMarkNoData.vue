@@ -47,7 +47,7 @@ const buttons = [
     }
   },
   {
-    label: 'Importer un fichier',
+    label: 'Ajouter une donnée',
     icon: "fr-icon-upload-line",
     iconOnly: false,
     iconRight: false,

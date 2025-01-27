@@ -18,12 +18,15 @@ const props = defineProps({
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 const button = ref(new ButtonExport({
-  title : "Sauvegarde",
+  title : "Enregistrer",
   kind : "secondary",
   download : false,
   control: drawing.value,
+  menu : true,
+  direction : "column",
   format : "kml",
   icons : {
+    menu : "",
     button : "save"
   }
 }));
@@ -49,6 +52,8 @@ onBeforeUpdate(() => {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
+    /** abonnement au widget */
+    button.value.on("button:clicked", onSaveDrawing);
   }
   else {
     map.removeControl(button.value);
@@ -60,10 +65,11 @@ onBeforeUpdate(() => {
  * Gestionnaires d'evenement sur les abonnements
  * 
  * @description
+ * ...
  */
 
 const onSaveDrawing = (e) => {
-  log.debug("onSaveDrawing", e);
+  log.debug(e);
 }
 
 </script>
@@ -91,5 +97,4 @@ const onSaveDrawing = (e) => {
     transform: translate(62px, 235px) !important;
   }
 }
-
 </style>

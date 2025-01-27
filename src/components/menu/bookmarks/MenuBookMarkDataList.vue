@@ -5,6 +5,7 @@
  * - cartes ou permaliens
  * - données : croquis, imports, calculs et services
  * 
+ * @fires emitter#layerimport:open:clicked
  * @todo gestion de l'accessibilité des onglets
  * @todo handler sur les boutons d'enregistrement de cartes ou de fichiers
  * @todo mécanisme de date (tag extra de l'API Entrepôt): creation et modification
@@ -17,6 +18,9 @@ export default {
 <script setup lang="js">
 
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
+
+import { inject } from 'vue';
+const emitter = inject('emitter');
 
 // options
 const props = defineProps({
@@ -132,10 +136,19 @@ const lstMap = computed(() => {
   return map.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
 });
 
-// TODO gestionnaire d'evenements :
-// Action d'enregistrement du document sur l'espace personnel
+// gestionnaire d'evenements :
+// Action d'enregistrement du document sur l'espace personnel :
+// * un permalien pour "Enregistrer la carte"
+// * une donnée de type vecteur ou service pour "Ajouter une donnée"
 const addMap = () => {};
-const addData = () => {};
+const addData = () => {
+  // envoi d'un evenement pour l'ouverture du contrôle d'import de données
+  // et le widget realise l'enregistrement automatique dans l'espace personnel
+  emitter.dispatchEvent("layerimport:open:clicked", {
+    open : true,
+    componentName: "LayerImport"
+  });
+};
 
 onBeforeMount(() => {});
 
@@ -209,8 +222,7 @@ onMounted(() => {});
           :selected="selectedTabBookmarkIndex === 1">
           <!-- Bouton pour importer un fichier -->
           <DsfrButton
-            label="Ajouter un fichier"
-            disabled
+            label="Ajouter une donnée"
             tertiary
             size="sm"
             class="button-action"

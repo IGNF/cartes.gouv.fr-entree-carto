@@ -48,6 +48,10 @@ onMounted(() => {
       var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
       useActionButtonEulerian(el);
     }
+    /** abonnement au widget */
+    layerImport.value.on("layerimport:vector:added", onSaveImportVector);
+    layerImport.value.on("layerimport:service:added", onSaveImportService);
+    layerImport.value.on("layerimport:mapbox:added", onSaveImportMapbox);
   }
 })
 
@@ -64,8 +68,28 @@ onUpdated(() => {
       var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
       useActionButtonEulerian(el);
     }
+    /** abonnement au widget */
+    layerImport.value.on("layerimport:vector:added", onSaveImportVector);
+    layerImport.value.on("layerimport:service:added", onSaveImportService);
+    layerImport.value.on("layerimport:mapbox:added", onSaveImportMapbox);
   }
 })
+
+/** 
+ * Gestionnaires d'evenement sur les abonnements
+ * 
+ * @description
+ * ...
+ */
+const onSaveImportVector = (e) => {
+  log.debug(e);
+};
+const onSaveImportService = (e) => {
+  log.debug(e);
+};
+const onSaveImportMapbox = (e) => {
+  log.debug(e);
+};
 
 </script>
 

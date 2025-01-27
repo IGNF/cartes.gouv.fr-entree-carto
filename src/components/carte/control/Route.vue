@@ -4,7 +4,10 @@ import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
-import { Route } from 'geopf-extensions-openlayers';
+import { 
+  Route,
+  ButtonExport 
+ } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
   mapId: String,
@@ -19,10 +22,21 @@ const store = useDataStore();
 
 const map = inject(props.mapId);
 const route = ref(new Route(props.routeOptions));
+const button = ref(new ButtonExport({
+  title : "Enregistrer",
+  kind : "secondary",
+  download : false,
+  control: route.value,
+  format : "geojson",
+  icons : {
+    button : "save"
+  }
+}));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(route.value)
+    map.addControl(route.value);
+    map.addControl(button.value);
     /* abonnement au widget 
     * @fires route:drawstart
     * @fires route:drawend
@@ -31,6 +45,7 @@ onMounted(() => {
     route.value.on("route:drawstart", onDrawStart);
     route.value.on("route:drawend", onDrawEnd);
     route.value.on("route:compute", onCompute);
+    button.value.on("button:clicked", onSaveRoute);
     if (props.analytic) {
       var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
       useActionButtonEulerian(el);
@@ -47,15 +62,27 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(route.value);
+    map.addControl(button.value);
     if (props.analytic) {
       var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
       useActionButtonEulerian(el);
     }
+    /* abonnement au widget 
+    * @fires route:drawstart
+    * @fires route:drawend
+    * @fires route:compute
+    */
+    route.value.on("route:drawstart", onDrawStart);
+    route.value.on("route:drawend", onDrawEnd);
+    route.value.on("route:compute", onCompute);
+    button.value.on("button:clicked", onSaveRoute);
   }
 })
 
 /** 
  * gestionnaire d'evenement sur les abonnements
+ * @description
+ * ...
  */
 const onDrawStart = (e) => {
   log.debug(e);
@@ -64,6 +91,9 @@ const onDrawEnd = (e) => {
   log.debug(e);
 }
 const onCompute = (e) => {
+  log.debug(e);
+}
+const onSaveRoute = (e) => {
   log.debug(e);
 }
 </script>
