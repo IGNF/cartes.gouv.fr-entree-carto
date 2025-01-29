@@ -11,6 +11,7 @@ import {
 
 import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
+
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
@@ -22,7 +23,9 @@ const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const map = inject(props.mapId)
+const emitter = inject('emitter');
+const map = inject(props.mapId);
+
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {
@@ -35,6 +38,7 @@ onMounted(() => {
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
     layerSwitcher.value.on("layerswitcher:remove", onRemoveLayer);
+    layerSwitcher.value.on("layerswitcher:edit", onEditLayer);
     layerSwitcher.value.on("layerswitcher:extent", onZoomToExtentLayer);
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
@@ -122,6 +126,11 @@ const onRemoveLayer = (e) => {
     }
   }
   log.debug("onRemoveLayer", id);
+}
+const onEditLayer = (e) => {
+  // selon le type de données, on envoie une demande au widget
+  // ex. pour les croquis, on envoie : "drawing:edit:clicked"
+  emitter.dispatchEvent("drawing:edit:clicked", e);
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);

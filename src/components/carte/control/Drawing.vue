@@ -73,19 +73,13 @@ onBeforeUpdate(() => {
   }
 })
 
-// TODO 
 // reassocier la couche et l'outil de dessin
-// à l'ouverture de l'outil via le bouton 
-// d'edition du gestionnaire de couche
-// (L'edition envoie un event avec la couche associée)
-emitter.addEventListener("drawing:open:clicked", (e) => {
+// via le bouton d'edition du gestionnaire de couche
+// (un clic sur l'edition renvoie un event avec la couche associée)
+emitter.addEventListener("drawing:edit:clicked", (e) => {
   if (drawing.value) {
-    let button = [...drawing.value.element.children].filter((e) => {
-      if (e.className.includes("GPshowOpen")) {
-        return e;
-      }
-    });
-    button[0].click();
+    drawing.value.setCollapsed(false);
+    drawing.value.setLayer(e.layer);
   }
 });
 

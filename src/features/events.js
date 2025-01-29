@@ -29,6 +29,7 @@ var EVENTS = {
     "catalog:open:clicked",
     // widgets
     "drawing:open:clicked",
+    "drawing:edit:clicked",
     "drawing:saved",
     "layerimport:open:clicked",
     "layerimport:vector:saved",
