@@ -77,11 +77,15 @@ onUpdated(() => {
 
 /** 
  * gestionnaire d'evenement sur les abonnements
+ * 
+ * @description
+ * ...
+ * 
  */
- const onDrawStart = (e) => {
+ const onDrawStart = () => {
   log.debug(e);
 }
-const onDrawEnd = (e) => {
+const onDrawEnd = () => {
   log.debug(e);
 }
 const onCompute = (e) => {

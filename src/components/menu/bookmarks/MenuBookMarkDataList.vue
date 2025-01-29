@@ -85,8 +85,13 @@ const icon = (label) => {
   return icon;
 };
 
+const update = ref(null);
+
 // liste des données avec filtre sur la recherche (sur le nom complet)
 const lstData = computed(() => {
+  if (update.value) {
+    console.log("update data !");
+  }
   var data = [];
   for (const key in service.documents) {
     if (Object.prototype.hasOwnProperty.call(service.documents, key)) {
@@ -117,6 +122,9 @@ const lstData = computed(() => {
 
 // liste des cartes avec filtre sur la recherche (sur le nom complet)
 const lstMap = computed(() => {
+  if (update.value) {
+    console.log("update map !");
+  }
   var map = [];
   if (service.documents.carte) {
     for (let i = 0; i < service.documents.carte.length; i++) {
@@ -135,6 +143,15 @@ const lstMap = computed(() => {
   }
   return map.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
 });
+
+const onAddBookmark = (e) => {
+  console.log(e.uuid);
+  // mise à jour du menu si nouveau uuid !
+  update.value = e.uuid;
+}
+
+// abonnements
+emitter.addEventListener("drawing:added", onAddBookmark);
 
 // gestionnaire d'evenements :
 // Action d'enregistrement du document sur l'espace personnel :
@@ -252,6 +269,7 @@ onMounted(() => {});
   scrollbar-width: thin;
   overflow-x: hidden;
   max-height: calc(70vh - 270px);
+  padding: 1em;
 }
 .button-action {
     display: flex;
@@ -259,3 +277,4 @@ onMounted(() => {});
     justify-content: center;
 }
 </style>
+

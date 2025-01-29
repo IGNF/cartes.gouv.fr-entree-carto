@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw'
 // https://mswjs.io/docs/
 
+const API_URL = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
+
 var success = [
   /**
    * obtenir le token
@@ -18,7 +20,7 @@ var success = [
   /**
    * obtenir les informations de l'utilisateur
    */
-  http.get('https://data.geopf.fr/api/users/me', async ({ request }) => {
+  http.get(`${API_URL}/users/me`, async ({ request }) => {
     return HttpResponse.json({
           "email": "antoine.dupont@ign.fr",
           "creation": "2024-01-10T11:21:28.618783Z",
@@ -62,7 +64,7 @@ export const handlers = {
     /**
      * obtenir les documents de l'utilisateur (vide)
      */
-    http.get('https://data.geopf.fr/api/users/me/documents', async ({ request }) => {
+    http.get(`${API_URL}/users/me/documents`, async ({ request }) => {
       const url = new URL(request.url);
       const labels = url.searchParams.getAll('labels');
       
@@ -81,7 +83,7 @@ export const handlers = {
     /**
      * obtenir les documents de l'utilisateur
      */
-    http.get('https://data.geopf.fr/api/users/me/documents', async ({ request }) => {
+    http.get(`${API_URL}/users/me/documents`, async ({ request }) => {
       const url = new URL(request.url);
       const labels = url.searchParams.getAll('labels');
       
@@ -173,7 +175,7 @@ export const handlers = {
     /**
      * obtenir les informations d'un document
      */
-    http.get('https://data.geopf.fr/api/users/me/documents/:id', async ({ params }) => {
+    http.get(`${API_URL}/users/me/documents/:id`, async ({ params }) => {
       const { id } = params;
       var response = null;
       // cartes
@@ -376,7 +378,7 @@ export const handlers = {
     /**
      * telecharger le document
      */
-    http.get('https://data.geopf.fr/api/users/me/documents/:id/file', async ({ params }) => {
+    http.get(`${API_URL}/users/me/documents/:id/file`, async ({ params }) => {
       const { id } = params;
       var response = null;
       // cartes
@@ -487,13 +489,13 @@ export const handlers = {
     /**
      * echec sur l'obtention des informations de l'utilisateur
      */
-    http.get('https://data.geopf.fr/api/users/me', async ({ request }) => {
+    http.get(`${API_URL}/users/me`, async ({ request }) => {
       return new HttpResponse(null, { status: 401 })
     }),
     /**
      * echec sur l'obtention des documents de l'utilisateur
      */
-    http.get('https://data.geopf.fr/api/users/documents', async ({ request }) => {
+    http.get(`${API_URL}/users/documents`, async ({ request }) => {
       return new HttpResponse(null, { status: 401 })
     })
   ]

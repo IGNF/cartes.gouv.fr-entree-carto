@@ -12,6 +12,7 @@
 export default {
   auth: {
     title: "Authentification",
+    not_authentificated: "Vous devez vous authentifier",
     failed: (value) => { return `Exception sur l'authentication : ${value}`; }
   },
   bookmark: {
@@ -21,6 +22,11 @@ export default {
     success_add_data: (value) => { return `Ajout sur la carte de la donnée de type ${value}`; },
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}`; },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !`; },
+  },
+  drawing: {
+    title: "Croquis",
+    save_success: "Le croquis est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement du croquis"
   },
   ol: {
     title: "OpenLayers",

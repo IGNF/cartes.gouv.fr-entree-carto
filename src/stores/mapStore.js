@@ -318,12 +318,12 @@ export const useMapStore = defineStore('map', () => {
 
   // TODO
   // Gestion des données utilisateurs : favoris
-  // > on ajoute des 'short' ID au lieu de UUID dans le permalien !
-  function addBookmark (id) {}
-  function removeBookmark (id) {}
-  function updateBookmarkProperty (id, props) {}
-  function updateBookmarkPosition (ids) {}
-  function getBookmarkProperty (id) {}
+  // > transformation UUID -> 'short' ID dans le permalien !
+  function addBookmark (uuid) {}
+  function removeBookmark (uuid) {}
+  function updateBookmarkProperty (uuid, props) {}
+  function updateBookmarkPosition (uuids) {}
+  function getBookmarkProperty (uuid) {}
 
   function getControls () {
     // INFO

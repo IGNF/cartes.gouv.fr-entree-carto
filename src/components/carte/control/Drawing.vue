@@ -1,11 +1,21 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
+import { useMapStore } from '@/stores/mapStore';
+
 import { 
   Drawing,
   ButtonExport
 } from 'geopf-extensions-openlayers';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+
+const emitter = inject('emitter');
+var service = inject('services');
+
+const mapStore = useMapStore();
 const log = useLogger();
 
 const props = defineProps({
@@ -17,7 +27,7 @@ const props = defineProps({
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
-const button = ref(new ButtonExport({
+const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "secondary",
   download : false,
@@ -34,42 +44,129 @@ const button = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
-    map.addControl(button.value);
+    map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    button.value.on("button:clicked", onSaveDrawing);
+    btnSave.value.on("button:clicked", onSaveDrawing);
+    drawing.value.on("change:collapsed", onToggleShowDrawing);
   }
 })
 
 onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
-    map.addControl(button.value);
+    map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    button.value.on("button:clicked", onSaveDrawing);
+    btnSave.value.on("button:clicked", onSaveDrawing);
+    drawing.value.on("change:collapsed",onToggleShowDrawing);
   }
   else {
-    map.removeControl(button.value);
+    map.removeControl(btnSave.value);
     map.removeControl(drawing.value);
   }
 })
+
+// TODO 
+// reassocier la couche et l'outil de dessin
+// à l'ouverture de l'outil via le bouton 
+// d'edition du gestionnaire de couche
+// (L'edition envoie un event avec la couche associée)
+emitter.addEventListener("drawing:open:clicked", (e) => {
+  if (drawing.value) {
+    let button = [...drawing.value.element.children].filter((e) => {
+      if (e.className.includes("GPshowOpen")) {
+        return e;
+      }
+    });
+    button[0].click();
+  }
+});
+
+// gestionnaire d'evenement sur la liaison de la couche et l'outil
+// lors de la fermeture du controle
+const onToggleShowDrawing = (e) => {
+  log.debug(e);
+  if (e.target.collapsed) {
+    // dissociation de la couche du widget 
+    // pour permettre une autre saisie dans 
+    // une autre couche
+    drawing.value.setLayer();
+  }
+}
 
 /** 
  * Gestionnaires d'evenement sur les abonnements
  * 
  * @description
- * ...
+ * Ecouteur pour la sauvegarde d'un croquis
+ * > enregistrement d'un nouveau croquis
+ * > mise à jour du croquis s'il existe déjà
+ * 
+ * @param {Object} e
+ * @property {Object} type - event
+ * @property {Object} target - instance Export
+ * @property {String} content - export data
+ * @property {String} name - name
+ * @property {String} description - description
+ * @property {String} format - format : kml, geojson, ...
+ * @property {Object} layer - layer
  */
-
 const onSaveDrawing = (e) => {
   log.debug(e);
+  if (!service.authenticated) {
+    push.warning({
+      title: t.auth.title,
+      message: t.auth.not_authentificated
+    });
+    return; // pas plus loin...
+  }
+
+  var data = {
+    layer : e.layer,
+    content : e.content,
+    name : e.name,
+    description : e.description,
+    format : e.format.toLowerCase()
+  };
+
+  service.setDrawing(data)
+  .then((o) => {
+    // mise à jour du permalien
+    mapStore.addBookmark(o.uuid);
+    return o;
+  })
+  .then((o) => {
+    // emettre un event pour prévenir l'ajout d'un croquis
+    // au composant des favoris
+    emitter.dispatchEvent("drawing:saved", {
+      uuid : o.uuid,
+      action : o.action // added, updated, deleted
+    });
+  })
+  .then(() => {
+    // some stuff...
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.drawing.title,
+      message: t.drawing.save_success
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.drawing.title,
+      message: t.drawing.save_failed
+    });
+  });
 }
 
 </script>

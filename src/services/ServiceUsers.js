@@ -1,3 +1,4 @@
+import { inject } from 'vue';
 import { useServiceStore } from '@/stores/serviceStore';
 
 /**
@@ -45,10 +46,10 @@ var Users = {
     });
     var data = await response.json();
     this.user = data;
-
+    
     var store = useServiceStore();
     store.setService(this);
-    
+
     return data;
   },
 

@@ -159,8 +159,8 @@ class Services {
    * Permet de valider la connexion en obtenant un token
    * @see getUserMe
    * @see getDocuments
-   * @fires service::user
-   * @fires service::documents
+   * @fires service:user:loaded
+   * @fires service:documents:loaded
    * @returns {Promise} - statut : login / logout / unknow
    */
   isAccessValided () {

@@ -22,10 +22,19 @@ var EVENTS = {
    */
   eventsName: [
     "test:clicked",
+    // service
     "service:documents:loaded",
     "service:user:loaded",
+    // composants
     "catalog:open:clicked",
-    "layerimport:open:clicked"
+    // widgets
+    "drawing:open:clicked",
+    "drawing:saved",
+    "layerimport:open:clicked",
+    "layerimport:vector:saved",
+    "layerimport:compute:saved",
+    "layerimport:mapbox:saved",
+    "layerimport:service:saved"
   ]
 };
 

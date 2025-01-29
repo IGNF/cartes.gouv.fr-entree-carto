@@ -32,7 +32,7 @@ import {
 } from '@/features/ol.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
-import t from '@/features/translation'
+import t from '@/features/translation';
 
 // lib notification
 import { push } from 'notivue'
@@ -177,24 +177,100 @@ onBeforeMount(() => {});
 
 onMounted(() => {});
 
+const buttonsMap = [
+{
+    label: 'Renommer',
+    icon: "fr-icon-edit-line",
+    disabled: false,
+    iconOnly: true,
+    iconRight: false,
+    secondary: true,
+    noOutline: true,
+    style: "margin: unset;box-shadow: unset;",
+    class: 'bookmark-button-container-advanced',
+    onclick: () => {
+      // TODO ...
+    }
+  },
+  {
+    label: 'Supprimer',
+    icon: "fr-icon-delete-line",
+    disabled: false,
+    iconOnly: true,
+    iconRight: false,
+    secondary: true,
+    noOutline: true, 
+    style: "margin: unset;box-shadow: unset;",
+    class: 'bookmark-button-container-advanced',
+    onclick: () => {
+      // TODO ...
+    }
+  }
+];
+
+const buttonsData = [
+  ...buttonsMap,
+  {
+    label: 'Exporter',
+    icon: "fr-icon-download-line",
+    disabled: false,
+    iconOnly: true,
+    iconRight: false,
+    secondary: true,
+    noOutline: true,
+    style: "margin: unset;box-shadow: unset;",
+    class: 'bookmark-button-container-advanced',
+    onclick: () => {
+      // TODO ...
+    }
+  }
+];
+
 </script>
 
 <template>
-  <DsfrButton 
-    :data-id="data.id"
-    :data-type="data.type"
-    :title="data.full_name"
-    tertiary
-    no-outline
-    :icon="data.icon"
-    @click="displayDataOnMap(data)">
-      {{ data.name }}
-  </DsfrButton>
-  <div class="container-bookmark-advanced-infos fr-hint-text">
+  <div class="container-bookmark-entry">
+    <DsfrButton 
+      :data-id="data.id"
+      :data-type="data.type"
+      :title="data.full_name"
+      tertiary
+      no-outline
+      :icon="data.icon"
+      @click="displayDataOnMap(data)">
+        {{ data.name }}
+    </DsfrButton>
+    <div class="container-bookmark-entry-advanced-options">
+      <DsfrButtonGroup v-if="data.type === 'carte'"
+        :buttons="buttonsMap"
+        inlineLayoutWhen
+        size="sm" />
+      <DsfrButtonGroup v-else
+        :buttons="buttonsData"
+        inlineLayoutWhen
+        size="sm" />
+    </div>
+  </div>
+  <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span>{{ data.type_fr }}</span>
     <span v-if="data.ext"> - {{ data.ext }}</span>
     <span v-if="data.date"> - {{ data.date }}</span>
   </div>
-  <div class="container-bookmark-advanced-options"></div>
   <slot></slot>
 </template>
+
+<style>
+.container-bookmark-entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: baseline;
+}
+// FIXME ne marche pas !?
+.bookmark-button-container-advanced {
+  margin: unset;
+  box-shadow: unset;
+}
+</style>

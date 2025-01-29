@@ -49,9 +49,10 @@ onMounted(() => {
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    layerImport.value.on("layerimport:vector:added", onSaveImportVector);
-    layerImport.value.on("layerimport:service:added", onSaveImportService);
-    layerImport.value.on("layerimport:mapbox:added", onSaveImportMapbox);
+    layerImport.value.on("layerimport:vector:saved", onSaveImportVector);
+    layerImport.value.on("layerimport:service:saved", onSaveImportService);
+    layerImport.value.on("layerimport:mapbox:saved", onSaveImportMapbox);
+    layerImport.value.on("layerimport:compute:saved", onSaveImportCompute);
   }
 })
 
@@ -69,9 +70,10 @@ onUpdated(() => {
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    layerImport.value.on("layerimport:vector:added", onSaveImportVector);
-    layerImport.value.on("layerimport:service:added", onSaveImportService);
-    layerImport.value.on("layerimport:mapbox:added", onSaveImportMapbox);
+    layerImport.value.on("layerimport:vector:saved", onSaveImportVector);
+    layerImport.value.on("layerimport:service:saved", onSaveImportService);
+    layerImport.value.on("layerimport:mapbox:saved", onSaveImportMapbox);
+    layerImport.value.on("layerimport:compute:saved", onSaveImportCompute);
   }
 })
 
@@ -79,7 +81,21 @@ onUpdated(() => {
  * Gestionnaires d'evenement sur les abonnements
  * 
  * @description
- * ...
+ * 
+ * Ecouteur pour la sauvegarde automatique d'un import de type :
+ * - vecteur
+ * - service
+ * - mapbox
+ * - compute
+ * 
+ * @param {Object} e
+ * @property {Object} type - event
+ * @property {Object} target - instance Export
+ * @property {String} content - export data
+ * @property {String} name - name
+ * @property {String} description - description
+ * @property {String} format - format : kml, geojson, ...
+ * @property {Object} layer - layer
  */
 const onSaveImportVector = (e) => {
   log.debug(e);
@@ -88,6 +104,9 @@ const onSaveImportService = (e) => {
   log.debug(e);
 };
 const onSaveImportMapbox = (e) => {
+  log.debug(e);
+};
+const onSaveImportCompute = (e) => {
   log.debug(e);
 };
 
