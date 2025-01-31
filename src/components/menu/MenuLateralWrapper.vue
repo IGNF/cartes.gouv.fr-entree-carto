@@ -211,7 +211,7 @@ En mode petit écran on le positionne tout en haut en attendant mieux */
 @media (max-width: 627px) {
   // FIXME : on cache les bouton "rouage" et "catalogue" si un menu latéral est ouvert.
   // Cette instruction contourne le css scopé pour selectionner le menu suivant (tild) si le menu scopé est expanded
-  .menu-toggle-wrap:has(~ .menu-toggle-wrap.is_expanded) > .menu-logo-list
+  .menu-toggle-wrap:has(~ .menu-toggle-wrap.is_expanded) > .menu-logo-list,
   .menu-toggle-wrap.is_expanded ~ .menu-toggle-wrap > .menu-logo-list {
     display : none;
   }
