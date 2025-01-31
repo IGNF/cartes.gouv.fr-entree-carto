@@ -67,11 +67,6 @@ const shareNetworks = computed(() => {
     "url": contacts.networks.facebook + "?display=popup&u=" + mapStore.permalink
     },
     {
-      "name": "twitter-x",
-      "label": "Partager sur X (anciennement Twitter)",
-      "url": contacts.networks.twitter + "?url=" + permalinkEncoded.value + "&text=Ma carte IGN&via=&hashtags=IGNFrance"
-    },
-    {
       "name": "linkedin",
       "label": "Partager sur LinkedIn",
       "url": contacts.networks.linkedin + "?url=" + mapStore.permalink + "&title=Ma%20carte%20IGN"
