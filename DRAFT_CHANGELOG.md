@@ -37,6 +37,8 @@ Principaux changements :
 
 #### 🔥 [Suppression]
 
+  - suppression du partage par Twitter (#476)
+
 #### 🐛 [Correction]
 
   - ajout d'une croix de fermeture à la pop-up affichée par le marker de geolocalisation (#445)
