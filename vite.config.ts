@@ -80,5 +80,12 @@ export default defineConfig({
       "Access-Control-Expose-Headers": "*"
     }
   },
-  define: {}
+  define: {},
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler'
+      }
+    }
+  }
 })
