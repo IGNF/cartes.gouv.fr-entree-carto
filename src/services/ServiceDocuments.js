@@ -84,6 +84,12 @@ var Documents = {
    * Obtenir la liste des documents filtrée
    * 
    * @todo pagination des resultats !
+   * @example
+   * curl -X 'GET' \
+   * 'https://data.geopf.fr/api/users/me/documents?owned=true&shared=false&labels=cartes.gouv.fr&page=1&limit=10' \
+   * -H 'accept: application/json' \
+   * -H 'Authorization: Bearer ....
+   * 
    * @param {*} label 
    * @returns {Promise} - Liste des documents filtrée
    */

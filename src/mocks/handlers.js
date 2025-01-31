@@ -478,8 +478,27 @@ export const handlers = {
       }
       return response;
     }),
+    // TODO
     http.post(`${API_URL}/users/me/documents`, async ({ request, params }) => {
-      // TODO
+      const data = await request.formData();
+      const labels = data.getAll('labels');
+      var response;
+      if (labels.includes("drawing")) {
+        response = HttpResponse.json({
+          "name": data.get("name"),
+          "description": data.get("description"),
+          "size": 3485,
+          "mime_type": "application/vnd.google-earth.kml+xml",
+          "labels": [
+            "cartes.gouv.fr",
+            "drawing",
+            "kml"
+          ],
+          "extra": {},
+          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afc0"
+        });
+      }
+      return response;
     }),
     http.put(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
       // TODO
