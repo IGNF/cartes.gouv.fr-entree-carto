@@ -113,7 +113,8 @@ const layerSwitcherOptions = {
     position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
     panel: true,
-    counter: true
+    counter: true,
+    allowEdit: true
   }
 };
 

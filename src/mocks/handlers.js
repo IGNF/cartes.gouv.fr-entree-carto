@@ -477,6 +477,18 @@ export const handlers = {
         response = HttpResponse.json(buffer);
       }
       return response;
+    }),
+    http.post(`${API_URL}/users/me/documents`, async ({ request, params }) => {
+      // TODO
+    }),
+    http.put(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
+      // TODO
+    }),
+    http.patch(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
+      // TODO
+    }),
+    http.delete(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
+      // TODO
     })
   ),
   error : [

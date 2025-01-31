@@ -41,7 +41,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.0",
     "@gouvminint/vue-dsfr": "^5.14.2",
-    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.2-342.tgz",
+    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.2-343.tgz",
     "jspdf": "^2.5.2",
     "ol": "10.3.1",
     "serve": "^14.2.4",

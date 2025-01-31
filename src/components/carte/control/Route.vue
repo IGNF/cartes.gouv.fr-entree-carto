@@ -80,7 +80,7 @@ onUpdated(() => {
 })
 
 /** 
- * gestionnaire d'evenement sur les abonnements
+ * gestionnaire d'evenement sur les abonnements du widget
  * @description
  * ...
  */
@@ -93,6 +93,20 @@ const onDrawEnd = (e) => {
 const onCompute = (e) => {
   log.debug(e);
 }
+/**
+ * Gestionnaire d'evenement 
+ * 
+ * Ecouteur pour la sauvegarde d'un calcul d'itineraire
+ * 
+ * @param {Object} e
+ * @property {Object} type - event
+ * @property {Object} target - instance Export
+ * @property {String} content - export data
+ * @property {String} name - name
+ * @property {String} description - description
+ * @property {String} format - format : kml, geojson, ...
+ * @property {Object} layer - layer
+ */
 const onSaveRoute = (e) => {
   log.debug(e);
 }

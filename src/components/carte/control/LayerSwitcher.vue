@@ -38,7 +38,7 @@ onMounted(() => {
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
     layerSwitcher.value.on("layerswitcher:remove", onRemoveLayer);
-    layerSwitcher.value.on("layerswitcher:edit", onEditLayer);
+    layerSwitcher.value.on("layerswitcher:edit", onClickEditLayer);
     layerSwitcher.value.on("layerswitcher:extent", onZoomToExtentLayer);
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
@@ -126,11 +126,6 @@ const onRemoveLayer = (e) => {
     }
   }
   log.debug("onRemoveLayer", id);
-}
-const onEditLayer = (e) => {
-  // selon le type de données, on envoie une demande au widget
-  // ex. pour les croquis, on envoie : "drawing:edit:clicked"
-  emitter.dispatchEvent("drawing:edit:clicked", e);
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);
@@ -224,6 +219,23 @@ const onChangePositionLayer = (e) => {
   }));
 }
 
+/**
+ * Gestionnaire d'evenement
+ * 
+ * Permet d'envoyer un evenement vers l'outil de dessin
+ * quand l'on clique sur le bouton d'édition
+ * @see Drawing
+ * @fires emitter#drawing:edit:clicked
+ */
+const onClickEditLayer = (e) => {
+  log.debug("onClickEditLayer", e);
+  // selon le type de données, on envoie une demande au widget
+  // ex. pour les croquis, on envoie : "drawing:edit:clicked"
+  /**
+   * @event 
+   */
+  emitter.dispatchEvent("drawing:edit:clicked", e);
+}
 </script>
 
 <template>

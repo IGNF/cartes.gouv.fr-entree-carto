@@ -153,10 +153,14 @@ const onAddBookmark = (e) => {
 // abonnements
 emitter.addEventListener("drawing:added", onAddBookmark);
 
-// gestionnaire d'evenements :
-// Action d'enregistrement du document sur l'espace personnel :
-// * un permalien pour "Enregistrer la carte"
-// * une donnée de type vecteur ou service pour "Ajouter une donnée"
+/**
+ * gestionnaire d'evenements
+ * 
+ * Action d'enregistrement du document sur l'espace personnel :
+ * - un permalien pour "Enregistrer la carte"
+ * - une donnée de type vecteur ou service pour "Ajouter une donnée"
+ * @fires emitter#layerimport:open:clicked
+ */
 const addMap = () => {};
 const addData = () => {
   // envoi d'un evenement pour l'ouverture du contrôle d'import de données

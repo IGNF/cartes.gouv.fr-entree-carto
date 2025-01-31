@@ -27,6 +27,7 @@ const props = defineProps({
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
+// bouton d'enregistrement du croquis avec un menu
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "secondary",
@@ -73,9 +74,14 @@ onBeforeUpdate(() => {
   }
 })
 
-// reassocier la couche et l'outil de dessin
-// via le bouton d'edition du gestionnaire de couche
-// (un clic sur l'edition renvoie un event avec la couche associée)
+/** 
+ * Gestionnaire d'evenement
+ * 
+ * Reassocier la couche et l'outil de dessin
+ * via le bouton d'edition du gestionnaire de couche
+ * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @see LayerSwitcher
+ */
 emitter.addEventListener("drawing:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
@@ -83,8 +89,12 @@ emitter.addEventListener("drawing:edit:clicked", (e) => {
   }
 });
 
-// gestionnaire d'evenement sur la liaison de la couche et l'outil
-// lors de la fermeture du controle
+/**
+ * Gestionnaire d'evenement 
+ * 
+ * Permet la dissociation de la couche 
+ * et l'outil lors de la fermeture du controle
+ */
 const onToggleShowDrawing = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
@@ -96,13 +106,13 @@ const onToggleShowDrawing = (e) => {
 }
 
 /** 
- * Gestionnaires d'evenement sur les abonnements
+ * Gestionnaire d'evenement
  * 
- * @description
  * Ecouteur pour la sauvegarde d'un croquis
- * > enregistrement d'un nouveau croquis
- * > mise à jour du croquis s'il existe déjà
+ * - enregistrement d'un nouveau croquis
+ * - mise à jour du croquis s'il existe déjà
  * 
+ * @fires emitter#drawing:saved
  * @param {Object} e
  * @property {Object} type - event
  * @property {Object} target - instance Export
