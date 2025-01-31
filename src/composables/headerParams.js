@@ -27,32 +27,36 @@ export function useHeaderParams() {
               href: useBaseUrl() + '/catalogue',
               icon: 'ri-arrow-right-line',
               iconRight: true,
-            },
-            {
-              label: 'Se connecter',
-              to: '/login',
-              class: 'fr-icon-user-fill',
-              authenticated: false, // information pour l'authentification
-              onClick: (e) => {}
-            },
-            {
-              label: 'Se déconnecter',
-              to: '/logout',
-              class: 'fr-icon-logout-box-r-line',
-              authenticated: true, // information pour l'authentification
-              onClick: (e) => {}
-            },
-            {
-              label: "...", 
-              to: '/bookmarks',
-              href: useBaseUrl() + '/tableau-de-bord',
-              class: 'fr-icon-user-fill',
-              authenticated: true, // information pour l'authentification
-              onClick: (e) => {}
             }
         ],
         searchQuery: ref('')
     };
+
+    // activation de la connexion aux favoris
+    if (import.meta.env.IAM_DISABLE === '0') {
+      headerParams.value.quickLinks.push({
+        label: 'Se connecter',
+        to: '/login',
+        class: 'fr-icon-account-fill',
+        authenticated: false, // information pour l'authentification
+        onClick: (e) => {}
+      });
+      headerParams.value.quickLinks.push({
+        label: 'Se déconnecter',
+        to: '/logout',
+        class: 'fr-icon-logout-box-r-line',
+        authenticated: true, // information pour l'authentification
+        onClick: (e) => {}
+      });
+      headerParams.value.quickLinks.push({
+        label: "...", 
+        to: '/bookmarks',
+        href: useBaseUrl() + '/tableau-de-bord',
+        class: 'fr-icon-account-fill',
+        authenticated: true, // information pour l'authentification
+        onClick: (e) => {}
+      });
+    }
 
     return headerParams;
 };
