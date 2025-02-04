@@ -14,7 +14,7 @@
 </script>
 
 <script setup lang="js">
-import { OhVueIcon as VIcon } from 'oh-vue-icons'
+import { VIcon } from '@gouvminint/vue-dsfr'
 
 const props = defineProps({
   side: String,
@@ -23,7 +23,7 @@ const props = defineProps({
   width: Number,
   padding: Number
 })
-const icon = "io-close"
+const icon = "ion:close"
 const defaultScale = 0.8325;
 const iconProps = computed(() => typeof icon === 'string'
   ? { scale: defaultScale.value, name: icon }
@@ -108,7 +108,7 @@ defineExpose({
     background-image: conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--background-overlap-grey) 0deg, var(--background-overlap-grey) 67.38deg, transparent 67.38deg), conic-gradient(from 236.31deg at 100% 50%, transparent 0deg, var(--border-default-grey) 0deg, var(--border-default-grey) 67.38deg, transparent 67.38deg), linear-gradient(90deg, var(--border-default-grey), var(--border-default-grey)), linear-gradient(90deg, var(--background-overlap-grey), var(--background-overlap-grey));
   }
 
-  .navButton[aria-label]:hover .ov-icon {
+  .navButton[aria-label]:hover .vicon {
     position: absolute;
   }
 </style>

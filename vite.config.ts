@@ -12,9 +12,9 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {
   vueDsfrAutoimportPreset,
-  ohVueIconAutoimportPreset,
+  // ohVueIconAutoimportPreset,
   vueDsfrComponentResolver,
-} from '@gouvminint/vue-dsfr'
+} from '@gouvminint/vue-dsfr/meta'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,8 +38,6 @@ export default defineConfig({
         'vitest',
         // @ts-expect-error
         vueDsfrAutoimportPreset,
-        // @ts-expect-error
-        ohVueIconAutoimportPreset,
       ],
       vueTemplate: true,
       dts: './src/auto-imports.d.ts',
