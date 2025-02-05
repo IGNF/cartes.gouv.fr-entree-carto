@@ -106,37 +106,43 @@ function getLayersByProducer(layers) {
   
   return arr;
 }
-
+const activeAccordion1 = ref(0)
+const activeAccordion2 = ref(0)
 </script>
 
 <template>
   <div class="catalogue-content-with-radio-btn">
-
-    <template v-if="currDataFilter === 'producteur'" v-for="producer in producerDataLayers" :key="producer.producerLabel">
-      <DsfrAccordionsGroup>
-        <MenuCatalogueThematique v-if="producer.layers.length > 0"
+      <DsfrAccordionsGroup
+        v-model="activeAccordion1">
+        <template v-if="currDataFilter === 'producteur'" v-for="(producer, idx) in producerDataLayers" :key="producer.producerLabel">
+          <MenuCatalogueThematique v-if="producer.layers.length > 0"
+          :id="idx"
           :thematic-label="producer.producerLabel"
-          :layers-count="producer.layers.length">
+          :layers-count="producer.layers.length"
+          :key="producer.producerLabel">
           <LayerList
             :list-name="currDataFilter"
             :selected-layers="selectedLayers"
-            :layers="producer.layers"/>
+            :layers="producer.layers"
+            :key="producer.producerLabel"/>
         </MenuCatalogueThematique>
-      </DsfrAccordionsGroup>
-    </template>
+      </template>
+    </DsfrAccordionsGroup>
     
-    <template v-if="currDataFilter === 'theme'" v-for="thematic in thematicDataLayers" :key="thematic.thematicLabel">
-      <DsfrAccordionsGroup>
-        <MenuCatalogueThematique v-if="thematic.layers.length > 0"
-          :thematic-label="thematic.thematicLabel"
-          :layers-count="thematic.layers.length">
-          <LayerList
-            :list-name="currDataFilter"
-            :selected-layers="selectedLayers"
-            :layers="thematic.layers"/>
-        </MenuCatalogueThematique>
+      <DsfrAccordionsGroup 
+      v-model="activeAccordion2">
+        <template v-if="currDataFilter === 'theme'" v-for="(thematic, idx) in thematicDataLayers" :key="thematic.thematicLabel">
+          <MenuCatalogueThematique v-if="thematic.layers.length > 0"
+            :id="idx"
+            :thematic-label="thematic.thematicLabel"
+            :layers-count="thematic.layers.length">
+            <LayerList
+              :list-name="currDataFilter"
+              :selected-layers="selectedLayers"
+              :layers="thematic.layers"/>
+          </MenuCatalogueThematique>
+        </template>
       </DsfrAccordionsGroup>
-    </template>
     
     <LayerList
       v-if="currDataFilter == 'tout'"
@@ -152,6 +158,6 @@ function getLayersByProducer(layers) {
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 270px);
+  max-height: calc(70vh - 327px);
 }
 </style>
