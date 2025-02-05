@@ -78,20 +78,11 @@ const tabTitles = [
   }
 ];
 
-/** @type {Reactif} Selection de l'onglet */
-const selectedTabIndex = ref(0);
-
 /** @type {Reactif} Ordre de tri */
 const asc = ref(true);
 
-/** Index de l'onget par defaut (0) */
-const initialSelectedIndex = 0;
-
-/** Mise à jour de l'onget sélectionné */
-function selectTab (idx) {
-  asc.value = (selectedTabIndex.value < idx);
-  selectedTabIndex.value = idx;
-}
+/** @type {Reactif} Index de l'onget sélectionné */
+const selectedIndex = ref(0);
 
 /** Mise à jour du mot clef de recherche */
 function updateSearch(e) {
@@ -135,15 +126,13 @@ const currDataFilter = ref('producteur');
       <DsfrTabs
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
-        :initial-selected-index="initialSelectedIndex"
-        @select-tab="selectTab"
+        v-model="selectedIndex"
       >
         <!-- Contenu de l'onglet sélectionné par defaut : les fonds de cartes -->
         <DsfrTabContent
           class="catalogue-content"
           panel-id="tab-content-0"
           tab-id="tab-0"
-          :selected="selectedTabIndex === 0"
           :asc="asc"
         >
           <!-- Liste des fonds de carte et celles selectionnées
@@ -159,7 +148,6 @@ const currDataFilter = ref('producteur');
         <DsfrTabContent
           panel-id="tab-content-1"
           tab-id="tab-1"
-          :selected="selectedTabIndex === 1"
           :asc="asc"
         >
           <!-- Les sous categories -->
