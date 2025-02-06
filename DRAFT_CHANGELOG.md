@@ -14,6 +14,9 @@
 
 #### 🔨 [Evolution]
 
+- Upgrade version vue-dsfr : vers 8.1.1 [#478](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/478)
+
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
