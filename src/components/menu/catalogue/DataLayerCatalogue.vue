@@ -106,8 +106,8 @@ function getLayersByProducer(layers) {
   
   return arr;
 }
-const activeAccordion1 = ref(0)
-const activeAccordion2 = ref(0)
+const activeAccordion1 = ref(-1)
+const activeAccordion2 = ref(-1)
 </script>
 
 <template>
