@@ -52,17 +52,26 @@ var GetDocuments = {
     var store = useServiceStore();
     var storage = store.getService();
     var document = storage.documents.import.find((doc) => doc._id === id);
-    // 2 cas : "internal" ou "external"
+    var none = true;
+    // 3 cas : "internal" ou "external" ou aucun
     if (document.labels.includes("internal")) {
+      none = false;
       promise = new Promise((resolve, reject) => {
         resolve(data); // retourne un texte ou json !
       });
     }
     if (document.labels.includes("external")) {
+      none = false;
       promise = new Promise((resolve, reject) => {
         resolve(data.url); // retourne une string !
       });
     }
+    if (none) {
+      promise = new Promise((resolve, reject) => {
+        resolve(data); // retourne un texte ou json !
+      });
+    }
+
     // exception
     if (!promise) {
       promise = new Promise((resolve, reject) => {

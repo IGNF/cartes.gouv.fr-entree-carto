@@ -104,19 +104,26 @@ var SetDocuments = {
 
     const content = obj.content;
     const blob = new Blob([content], { type: this.getMimeType(obj.format) });
-    formData.append("file", blob);
+    formData.append("file", blob); // FIXME blob ou text ?
+
+    console.debug(...formData)
 
     var response = await this.getFetch().fetch(`${this.api}/users/me/documents/`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        // FIXME 'Content-Type': 'application/x-www-form-urlencoded' or 'multipart/form-data' ?
       },
       body: formData
     });
 
     var data = await response.json();
     
+    if (response.status !== 200 && response.status !== 201) {
+      // ERROR !
+      throw data;
+    }
+
     // enregistrer la réponse
     this.documents["drawing"].push(data);
 

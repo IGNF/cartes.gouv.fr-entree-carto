@@ -104,20 +104,24 @@ const lstData = computed(() => {
       } 
       for (let i = 0; i < elements.length; i++) {
         var element = elements[i];
+        // FIXME 
+        // date : information non dispo
+        // format : information non dispo
+        var extensions = [ "geojson", "gpx", "kml", "json"];
+        var ext = extensions.find((ext) => element.name.includes(ext));
         data.push({
           id : element._id,
-          full_name : element.name,
-          name : element.name.substring(0, element.name.lastIndexOf('.')),
-          ext : element.name.substring(element.name.lastIndexOf('.') + 1),
+          name : (ext) ? element.name.replace(ext, "").slice(0, -1) : element.name,
+          format : ext || "",
           type : key,
           type_fr : i18n(key),
           icon : icon(key),
-          date : "" // FIXME information non dispo
+          date : ""
         });
       }
     }
   }
-  return data.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
+  return data.filter((el) => !searchString.value || el.name.includes(searchString.value) );
 });
 
 // liste des cartes avec filtre sur la recherche (sur le nom complet)
@@ -131,17 +135,16 @@ const lstMap = computed(() => {
       const element = service.documents.carte[i];
       map.push({
         id : element._id,
-        full_name : element.name,
         name : element.name,
-        ext : null,
+        format : null,
         type : "carte",
         type_fr : "permalien",
         icon : "fr-icon-link", // icon de permalien
-        date : "" // FIXME information non dispo
+        date : ""
       });
     }
   }
-  return map.filter((el) => !searchString.value || el.full_name.includes(searchString.value) );
+  return map.filter((el) => !searchString.value || el.name.includes(searchString.value) );
 });
 
 const onAddBookmark = (e) => {
@@ -151,7 +154,7 @@ const onAddBookmark = (e) => {
 }
 
 // abonnements
-emitter.addEventListener("drawing:added", onAddBookmark);
+emitter.addEventListener("drawing:saved", onAddBookmark);
 
 /**
  * gestionnaire d'evenements

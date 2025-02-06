@@ -44,6 +44,7 @@ var Documents = {
     "gpx",
     "kml",
     "mapbox",
+    "json",
     "wms",
     "wmts"
   ],

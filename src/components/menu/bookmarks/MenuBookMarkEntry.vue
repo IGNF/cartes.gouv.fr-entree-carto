@@ -43,7 +43,7 @@ const mapStore = useMapStore();
 /**
  * Options :
  * - type : 'map' ou 'data'
- * - data : {id, full_name, name, ext, type, type_fr, icon, date}
+ * - data : {id, name, ext, type, type_fr, icon, date}
  */
 const props = defineProps({
   type : String,
@@ -55,7 +55,7 @@ const service = inject('services');
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
  * 
- * @param data - {id, full_name, name, ext, type, type_fr, icon, date}
+ * @param data - {id, name, format, type, type_fr, icon, date}
  */
 const displayDataOnMap = (data) => {
   service.getDocumentById(data.id)
@@ -142,16 +142,35 @@ const displayDataOnMap = (data) => {
       } else {
         opts = {
           id : data.id,
-          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX
+          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)
           title : data.name,
           description : infos.description,
           format : infos.extra.format
         };
-        target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
-        layer = createVectorLayer({
-          ...opts,
-          ...target
-        });
+        if (infos.extra.format === "mapbox") {
+          target = { data : response };
+          createMapBoxLayer({
+            ...opts,
+            ...target
+          })
+          .then((layer) => {
+            mapStore.getMap().addLayer(layer);
+            push.success({
+              title: t.bookmark.title,
+              message: t.bookmark.success_add_data("mapbox"),
+            });
+          })
+          .catch((e) => {
+            throw t.ol.failed_mapbox(e);
+          });
+          return;
+        } else {
+          target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
+          layer = createVectorLayer({
+            ...opts,
+            ...target
+          });
+        }
       }
       // ajout de la couche sur la carte
       mapStore.getMap().addLayer(layer);
@@ -233,7 +252,7 @@ const buttonsData = [
     <DsfrButton 
       :data-id="data.id"
       :data-type="data.type"
-      :title="data.full_name"
+      :title="data.name"
       tertiary
       no-outline
       :icon="data.icon"
@@ -253,7 +272,7 @@ const buttonsData = [
   </div>
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span>{{ data.type_fr }}</span>
-    <span v-if="data.ext"> - {{ data.ext }}</span>
+    <span v-if="data.format"> - {{ data.format }}</span>
     <span v-if="data.date"> - {{ data.date }}</span>
   </div>
   <slot></slot>

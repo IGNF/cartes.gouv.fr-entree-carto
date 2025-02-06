@@ -110,9 +110,10 @@ class Services {
     this.#client = new OAuth2Client(settings);
     this.#fetchWrapper = new OAuth2Fetch({
       client: this.#client,
+      scheduleRefresh: true,
       getNewToken: async () => {
         // en mode distant, on ne redemande pas de jeton
-        if (this.token && Object.keys(this.token).length && this.mode === "remote") {
+        if (this.token && Object.keys(this.token).length && this.token.expiresAt > Date.now()) {
           return this.token;
         }
         var token = await this.#client.authorizationCode.getToken({
@@ -137,6 +138,12 @@ class Services {
         console.error(e);
       }
     });
+    this.#fetchWrapper.getToken = () => {
+      if (this.token && (this.token.expiresAt === null || this.token.expiresAt > Date.now())) {
+        return this.token;
+      }
+      return this.refreshToken();
+    };
   }
 
   /**
