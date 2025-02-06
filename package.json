@@ -40,7 +40,8 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.0",
-    "@gouvminint/vue-dsfr": "^5.14.2",
+    "@gouvminint/vue-dsfr": "^8.1.1",
+    "@iconify/vue": "^4.3.0",
     "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.2-340-main.tgz",
     "jspdf": "^2.5.2",
     "ol": "10.3.1",

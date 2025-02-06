@@ -16,13 +16,13 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuCatalogue",
-            icon : "catalogIcon",
+            icon : "octicon:book-24",
             title : "Catalogue de données",
             visibility : true
         },
         {
             componentName : "MenuControl",
-            icon : "menuWidgetIcon",
+            icon : "ri:tools-line",
             title : "Catalogue d'outils",
             visibility : true
         }

@@ -14,21 +14,20 @@
 
 const props = defineProps({
     thematicLabel: String,
+    id: Number,
     layersCount: Number
 });
 
 const title = computed(() => {
     return props.thematicLabel + ` (${props.layersCount})`
 });
-const expandedId = ref('');
 
 </script>
 
 <template>
     <DsfrAccordion
-        :title="title"
-        :expanded-id="expandedId"
-        @expand="expandedId = $event">
+      :id="'accordion-' + id"
+      :title="title">
         <slot></slot>
     </DsfrAccordion>
 </template>

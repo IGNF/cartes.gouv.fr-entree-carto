@@ -15,6 +15,7 @@ import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 import { useClipboard } from '@vueuse/core'
+import { VIcon } from '@gouvminint/vue-dsfr'
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
@@ -93,7 +94,7 @@ const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
 const target = ref(null);
 
-const icon = "co-copy"
+const icon = "cil:copy"
 const defaultScale = ref(0.8325);
 const iconProps = computed(() => typeof icon === 'string'
   ? { scale: defaultScale.value, name: icon }
