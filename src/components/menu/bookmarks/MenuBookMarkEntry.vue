@@ -253,6 +253,7 @@ const buttonsData = [
       :data-id="data.id"
       :data-type="data.type"
       :title="data.name"
+      class="button-bookmark-entry"
       tertiary
       no-outline
       :icon="data.icon"
@@ -287,6 +288,15 @@ const buttonsData = [
   align-content: center;
   align-items: baseline;
 }
+.button-bookmark-entry {
+  width: 210px;
+}
+.button-bookmark-entry > span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 // FIXME ne marche pas !?
 .bookmark-button-container-advanced {
   margin: unset;
