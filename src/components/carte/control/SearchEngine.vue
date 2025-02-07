@@ -54,7 +54,7 @@ onUpdated(() => {
 onUnmounted(() => {})
 
 /**
- * Gestionnaire d'evenement sur l'abonnement 
+ * Gestionnaire d'evenement sur l'abonnement
  * à la recherche de couche
  */
 const onClickSearch = (e) => {
@@ -67,7 +67,7 @@ const onClickGeocodeResult = (e) => {}
 const onClickSeachByCoordinates = (e) => {}
 const onClickSearchGeolocation = (e) => {
   // TODO geolocalisation demandée :
-  // on enregistre les informations utiles dans une couche "geolocalisation" : 
+  // on enregistre les informations utiles dans une couche "geolocalisation" :
   // > l'icone de geolocalisation est à afficher avec ses coordonnées
   // > dans la popup d'information (+ adresse par geocodage ?)
   // en mode connecté, elle est enregistrée afin d'être utilisé pour un partage (permalien),
@@ -84,7 +84,8 @@ const onClickSearchGeolocation = (e) => {
 /* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
   div[id^="GPsearchEngine-"] {
     position: relative;
-    width: 480px;
+    /* FIXME repasser à 480px quand fusion des boutons rech avancée et rech par coords */
+    width: 550px;
     margin: 0 auto;
     left: unset;
   }
