@@ -33,15 +33,15 @@ import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
-import Print from './control/Print.vue'
-
-import Share from './control/Share.vue';
-
-// Icone pour le marker du widget SearcEngine
 
 import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
+
+import { LoggerUtils } from 'geopf-extensions-openlayers';
+
+const isProduction = (import.meta.env.MODE === "production");
+isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
 
 const props = defineProps({
   controlOptions: Array,
@@ -70,15 +70,8 @@ const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
+
 // liste des options pour les contrôles;
-
-const shareOptions = {
-  position: useControlsExtensionPosition().shareOptions
-};
-const printOptions = {
-  position: useControlsExtensionPosition().printOptions
-};
-
 const searchEngineOptions = {
   id: "1",
   collapsed: false,
@@ -415,17 +408,6 @@ const contextMenuOptions = computed(() => {
 >>> sinon, visibility:false
 -->
 <template>
-  <!-- <Share
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Share.id)"
-    :share-options="useControlsExtensionPosition()().shareOptions"
-  /> -->
-  <!-- <Print
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Print.id)"
-    :print-options="printOptions"
-    :map-id="mapId"
-  /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
