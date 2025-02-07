@@ -30,10 +30,15 @@ const drawing = ref(new Drawing(props.drawingOptions));
 // bouton d'enregistrement du croquis avec un menu
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
-  kind : "secondary",
+  kind : "primary",
   download : false,
   control: drawing.value,
   menu : true,
+  menuOptions : {
+    above : true,
+    outside : true,
+    selectFormat : false
+  },
   direction : "column",
   format : "kml",
   icons : {

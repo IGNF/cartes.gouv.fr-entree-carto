@@ -23,7 +23,15 @@ const button = ref(new ButtonExport({
   download : false,
   control: elevationPath.value,
   format : "geojson",
+  menu : true,
+  menuOptions : {
+    above : true,
+    outside : true,
+    selectFormat : false
+  },
+  direction : "column",
   icons : {
+    menu : "",
     button : "save"
   }
 }));
