@@ -11,6 +11,9 @@ import {
 
 import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
 
 const props = defineProps({
   mapId: String,
@@ -104,6 +107,18 @@ const onAddLayer = (e) => {
     }
   }
   log.debug("onAddLayer", id);
+  if (id) {
+    // notification
+    push.success({
+      title: t.layerswitcher.title,
+      message: t.layerswitcher.add_success
+    });
+  } else {
+    push.warn({
+      title: t.layerswitcher.title,
+      message: t.layerswitcher.add_failed
+    });
+  }
 }
 const onRemoveLayer = (e) => {
   log.debug("onRemoveLayer", e);
@@ -126,6 +141,18 @@ const onRemoveLayer = (e) => {
     }
   }
   log.debug("onRemoveLayer", id);
+  if (id) {
+    // notification
+    push.success({
+      title: t.layerswitcher.title,
+      message: t.layerswitcher.remove_success
+    });
+  } else {
+    push.warn({
+      title: t.layerswitcher.title,
+      message: t.layerswitcher.remove_failed
+    });
+  }
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);

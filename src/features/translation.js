@@ -9,6 +9,8 @@
  * });
  */
 
+import LayerSwitcher from "@/components/carte/control/LayerSwitcher.vue";
+
 export default {
   auth: {
     title: "Authentification",
@@ -27,6 +29,18 @@ export default {
     title: "Croquis",
     save_success: "Le croquis est enregistré dans l'espace personnel",
     save_failed: "Une erreur est survenue sur l'enregistrement du croquis"
+  },
+  layerswitcher: {
+    title: "Gestionnaire de couche",
+    add_success: "La couche est ajoutée à la carte",
+    add_failed: "Une erreur est survenue dans l'ajout de la couche",
+    remove_success: "La couche est supprimé de la carte",
+    remove_failed: "Une erreur est survenue dans la suppression de la couche"
+  },
+  searchengine: {
+    title: "Recherche de couche",
+    add_success: "La couche est ajoutée à la carte",
+    add_failed: "Une erreur est survenue dans l'ajout de la couche"
   },
   ol: {
     title: "OpenLayers",
