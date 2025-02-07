@@ -40,11 +40,7 @@ const tabTitles = [
   { title: 'Données', tabId: 'tab-bookmark-data', panelId: 'tab-content-bookmark-data' }
 ];
 
-const initialSelectedIndex = 1;
-const selectedTabBookmarkIndex = ref(initialSelectedIndex);
-function selectTabBookmark (idx) {
-  selectedTabBookmarkIndex.value = idx;
-}
+const selectedIndex = ref(0);
 
 const service = inject('services');
 
@@ -201,8 +197,7 @@ onMounted(() => {});
         id="tabs-bookmark"
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
-        :initial-selected-index="initialSelectedIndex"
-        @select-tab="selectTabBookmark">
+        v-model="selectedIndex">
 
         <!-- TODO Ajouter l'accessibilité avec l'update vers la v6 ou sup
         <template #tab-items>
@@ -223,8 +218,7 @@ onMounted(() => {});
 
         <DsfrTabContent
           panel-id="tab-content-bookmark-maps"
-          tab-id="tab-bookmark-maps"
-          :selected="selectedTabBookmarkIndex === 0">
+          tab-id="tab-bookmark-maps">
           <!-- Bouton pour enregistrer la carte -->
           <DsfrButton
             label="Enregistrer la carte"
