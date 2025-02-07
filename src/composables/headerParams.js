@@ -27,11 +27,11 @@ export function useHeaderParams() {
               href: useBaseUrl() + '/catalogue',
               icon: 'ri-arrow-right-line',
               iconRight: true,
-            },
-            
+            }
         ],
         searchQuery: ref('')
     };
+
     // activation de la connexion aux favoris
     if (import.meta.env.IAM_DISABLE === '0') {
       headerParams.value.quickLinks.push({

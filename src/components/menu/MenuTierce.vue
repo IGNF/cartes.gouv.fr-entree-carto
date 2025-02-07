@@ -39,7 +39,7 @@ function openControl(controlName) {
   })
 }
 
-const icon = "LayerImport";
+const icon = "mingcute:file-import-line"
 const defaultScale = 0.8325;
 const iconProps = computed(() => typeof icon === 'string'
   ? { scale: defaultScale.value, name: icon }
@@ -74,7 +74,7 @@ const authenticatedClass = ref({
   <DsfrButton
     tertiary
     no-outline
-    :icon="iconProps"
+    icon="mingcute:file-import-line"
     @click="openControl('LayerImport')"
     >
     Importer des données
@@ -82,7 +82,7 @@ const authenticatedClass = ref({
   <DsfrButton
     tertiary
     no-outline
-    icon="fr-icon-link"
+    icon="ant-design:link-outlined"
     @click="$emit('onModalShareOpen')"
     >
     Partager, intégrer la carte
@@ -90,7 +90,7 @@ const authenticatedClass = ref({
   <DsfrButton
     tertiary
     no-outline
-    icon="px-print"
+    icon="material-symbols:print-outline"
     @click="$emit('onModalPrintOpen')"
     class="tierce-print"
     >
@@ -101,9 +101,8 @@ const authenticatedClass = ref({
     tertiary
     no-outline
     @click="$emit('onModalThemeOpen')"
-    icon="fr-icon-theme-fill"
     >
-    Paramètres d'affichage
+    <span class="fr-icon-theme-fill fr-link--icon-left"></span>  Paramètres d'affichage
   </DsfrButton>
 </div>
 </template>
