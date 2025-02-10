@@ -11,9 +11,6 @@
 </script>
 
 <script setup lang="js">
-import IconGeolocationSVG from "../../assets/geolocation.svg";
-import { useMapStore } from "@/stores/mapStore"
-
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
 import OverviewMap from './control/OverviewMap.vue';
@@ -34,9 +31,12 @@ import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
 
+import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
+
+import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
@@ -166,7 +166,7 @@ const controlListOptions = {
 
 const drawingOptions = {
   id: "11",
-  position: 'top-right',
+  position: useControlsExtensionPosition().drawingOptions,
   gutter: false,
   listable: true,
   tools : {
@@ -558,6 +558,11 @@ const contextMenuOptions = computed(() => {
 </template>
 
 <style>
+
+// HACK je ne comprends rien, mais ça marche...
+.gpf-panel {
+  position: absolute;
+}
 
 .position-container-bottom-left,
 .position-container-bottom-right,
