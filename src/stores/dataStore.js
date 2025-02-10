@@ -26,33 +26,39 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const techUrl = "data/layers.json";
+      const techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
       const editoUrl =
         import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
+      const privateUrl =
+        import.meta.env.VITE_GPF_CONF_PRIVATE_URL || "data/private.json";
 
       const editoRes = await fetch(editoUrl);
       const techRes = await fetch(techUrl);
+      const privateRes = await fetch(privateUrl);
 
       const tech = await techRes.json();
       const edito = await editoRes.json();
+      const priv = await privateRes.json();
 
       const editoWithTech = Object.fromEntries(Object.keys(edito.layers).map(id => {
         return [id, {
           ...tech.layers[id],
+          ...priv.layers[id],
           ...edito.layers[id]
         }]
       }));
 
       const res = {
         ...tech.layers,
+        ...priv.layers,
         ...editoWithTech
       }; // merge
       // ajoute la clé aux props
       Object.keys(res).map((key) => { 
-        res[key].key = key
-        let ret = {}
-        ret[key] = res[key]
-        return ret
+        res[key].key = key;
+        let ret = {};
+        ret[key] = res[key];
+        return ret;
       })
 
       m_territories.value = edito.territories;
@@ -61,7 +67,10 @@ export const useDataStore = defineStore('data', () => {
       m_thematics.value = edito.thematics;
       m_featured.value = edito.featured || [];
       m_layers.value = res;
-      m_generalOptions.value = tech.generalOptions;
+      m_generalOptions.value.apiKeys = {
+        ...tech.generalOptions.apiKeys,
+        ...priv.generalOptions.apiKeys
+      }
       m_tileMatrixSets.value = tech.tileMatrixSets;
       this.isLoaded = true;
       return res;

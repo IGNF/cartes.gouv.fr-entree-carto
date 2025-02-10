@@ -6,6 +6,8 @@
 
 ### 🎉 Résumé
 
+Mise à jour de la dépendance au framework VueDsfr et du processus de mise à jour du catalogue des couches.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -16,12 +18,13 @@
 
 - Upgrade version vue-dsfr : vers 8.1.1 [#478](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/478)
 
-
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
+
+- Mise à jour automatique du catalogue de couches [481](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/481)
 
 #### 🔒 [Sécurité]
 
