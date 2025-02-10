@@ -4,7 +4,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
-import { useUrlParams } from "@/composables/urlParams.js";
+import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
 /**
@@ -70,7 +70,8 @@ const ns = ((value) => {
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
  * 
- *
+ * @todo données utilisateurs issues des favoris
+ * @todo translation des uuid & 'short' id
  */
 export const useMapStore = defineStore('map', () => {
   /////////////
@@ -315,6 +316,15 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  // TODO
+  // Gestion des données utilisateurs : favoris
+  // > transformation UUID -> 'short' ID dans le permalien !
+  function addBookmark (uuid) {}
+  function removeBookmark (uuid) {}
+  function updateBookmarkProperty (uuid, props) {}
+  function updateBookmarkPosition (uuids) {}
+  function getBookmarkProperty (uuid) {}
+
   function getControls () {
     // INFO
     // on retourne la liste des widgets actifs
@@ -344,6 +354,8 @@ export const useMapStore = defineStore('map', () => {
 
   return {
     map,
+    layers,
+    controls,
     zoom,
     center,
     x,
@@ -366,6 +378,11 @@ export const useMapStore = defineStore('map', () => {
     updateLayerProperty,
     updateLayerPosition,
     getLayerProperty,
+    addBookmark,
+    removeBookmark,
+    updateBookmarkProperty,
+    updateBookmarkPosition,
+    getBookmarkProperty,
     getControls,
     cleanControls,
     addControl,

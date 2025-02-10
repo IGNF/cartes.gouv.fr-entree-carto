@@ -59,8 +59,8 @@ onUnmounted(() => {})
  */
 const onClickSearch = (e) => {
   var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
-  log.debug("onClickSearch", id);
   mapStore.addLayer(id);
+  log.debug("onClickSearch", id);
 }
 const onClickAutocompletResult = (e) => {}
 const onClickGeocodeResult = (e) => {}

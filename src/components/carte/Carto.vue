@@ -77,3 +77,10 @@ const mapIsReady = computed(() => {
     height: inherit;
 }
 </style>
+
+<style>
+/* HACK (sale) je ne comprends pas mais ça marche... */
+.gpf-panel {
+  position: absolute;
+}
+</style>
