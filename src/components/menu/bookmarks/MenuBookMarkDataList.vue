@@ -236,8 +236,7 @@ onMounted(() => {});
 
         <DsfrTabContent
           panel-id="tab-content-bookmark-data"
-          tab-id="tab-bookmark-data"
-          :selected="selectedTabBookmarkIndex === 1">
+          tab-id="tab-bookmark-data">
           <!-- Bouton pour importer un fichier -->
           <DsfrButton
             label="Ajouter une donnée"

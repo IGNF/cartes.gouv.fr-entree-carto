@@ -71,7 +71,7 @@ const log = useLogger();
 log.debug(props.controlOptions);
 
 
-// liste des options pour les contrôles;
+// liste des options pour les contrôles
 const searchEngineOptions = {
   id: "1",
   collapsed: false,

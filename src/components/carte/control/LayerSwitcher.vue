@@ -97,9 +97,9 @@ const onAddLayer = (e) => {
   } else {
     var gpId = e.layer.layer.gpResultLayerId;
     if (gpId) {
-      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
-        id = gpId.split(':').pop();
+        // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
           mapStore.addBookmark(id);
         }
@@ -114,7 +114,7 @@ const onAddLayer = (e) => {
       message: t.layerswitcher.add_success
     });
   } else {
-    push.warn({
+    push.warning({
       title: t.layerswitcher.title,
       message: t.layerswitcher.add_failed
     });
@@ -131,9 +131,9 @@ const onRemoveLayer = (e) => {
   } else {
     var gpId = e.layer.layer.gpResultLayerId;
     if (gpId) {
-      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
-        id = gpId.split(':').pop();
+        // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
           mapStore.removeBookmark(id);
         }
@@ -148,7 +148,7 @@ const onRemoveLayer = (e) => {
       message: t.layerswitcher.remove_success
     });
   } else {
-    push.warn({
+    push.warning({
       title: t.layerswitcher.title,
       message: t.layerswitcher.remove_failed
     });

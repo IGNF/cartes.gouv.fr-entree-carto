@@ -72,7 +72,7 @@ const onClickSearch = (e) => {
       message: t.searchengine.add_success
     });
   } else {
-    push.warn({
+    push.warning({
       title: t.searchengine.title,
       message: t.searchengine.add_failed
     });
