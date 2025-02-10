@@ -559,11 +559,6 @@ const contextMenuOptions = computed(() => {
 
 <style>
 
-// HACK je ne comprends rien, mais ça marche...
-.gpf-panel {
-  position: absolute;
-}
-
 .position-container-bottom-left,
 .position-container-bottom-right,
 .position-container-top-left,
