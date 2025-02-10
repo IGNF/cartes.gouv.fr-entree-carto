@@ -38,9 +38,7 @@ export default {
     remove_failed: "Une erreur est survenue dans la suppression de la couche"
   },
   searchengine: {
-    title: "Recherche de couche",
-    add_success: "La couche est ajoutée à la carte",
-    add_failed: "Une erreur est survenue dans l'ajout de la couche"
+    title: "Recherche de couche"
   },
   ol: {
     title: "OpenLayers",

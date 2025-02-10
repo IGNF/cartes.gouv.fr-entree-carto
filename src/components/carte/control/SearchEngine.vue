@@ -8,10 +8,6 @@ import {
   SearchEngine
 } from 'geopf-extensions-openlayers'
 
-// lib notification
-import { push } from 'notivue';
-import t from '@/features/translation';
-
 // FIXME
 // choisir où placer le tracker Eulerian sur ce widget !
 
@@ -65,18 +61,6 @@ const onClickSearch = (e) => {
   var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
   mapStore.addLayer(id);
   log.debug("onClickSearch", id);
-  if (id) {
-    // notification
-    push.success({
-      title: t.searchengine.title,
-      message: t.searchengine.add_success
-    });
-  } else {
-    push.warning({
-      title: t.searchengine.title,
-      message: t.searchengine.add_failed
-    });
-  }
 }
 const onClickAutocompletResult = (e) => {}
 const onClickGeocodeResult = (e) => {}
