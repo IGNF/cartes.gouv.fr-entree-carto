@@ -67,6 +67,8 @@ var SetDocuments = {
    * - PATCH /users/me/documents/{document}
    * 
    * Actions :
+   * - mettre à jour l'ID de la couche : gpResultLayerId
+   * - mettre à jour le titre du gestionnaire de couche : gpResultLayerDiv
    * - enregistrer la réponse dans le localStorage : service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
@@ -96,11 +98,11 @@ var SetDocuments = {
     formData.append("labels", this.tag);
     formData.append("labels", "drawing");
     formData.append("labels", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
-    formData.append("extra", JSON.stringify({
+    formData.append("extra", {
       format: obj.format.toLowerCase(),
       target: "internal",
       date: new Date().toLocaleDateString()
-    }));
+    }); // FIXME string ou json ?
 
     const content = obj.content;
     const blob = new Blob([content], { type: this.getMimeType(obj.format) });
@@ -133,6 +135,15 @@ var SetDocuments = {
     // mise à jour de l'id interne de la couche
     if (obj.layer.gpResultLayerId) {
       obj.layer.gpResultLayerId = `bookmark:${obj.format.toLowerCase()}:${uuid}`;
+    }
+
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (obj.layer.gpResultLayerDiv) {
+      var div = obj.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = obj.name;
+        div.title = obj.description;
+      }  
     }
 
     var store = useServiceStore();

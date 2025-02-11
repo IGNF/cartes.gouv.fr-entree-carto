@@ -1,7 +1,22 @@
+import { useServiceStore } from '@/stores/serviceStore';
 import { http, HttpResponse } from 'msw'
 // https://mswjs.io/docs/
 
 const API_URL = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
+
+// liste des clefs pour le POST / PUT / PATCH / DELETE
+var keys = [
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc0", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc1", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc2", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc3", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc4", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc5", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc6", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc7", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc8", use: false},
+  {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc9", use: false}
+];
 
 var success = [
   /**
@@ -373,6 +388,14 @@ export const handlers = {
           "_id": id
         });
       }
+      // new drawing
+      if (keys.map((key) => key.uuid).includes(id)) {
+        var store = useServiceStore();
+        var service = store.getService();
+        var drawings = service.documents.drawing;
+        var resp = drawings.find((e) => e._id === id);
+        response = HttpResponse.json(resp);
+      }
       return response;
     }),
     /**
@@ -476,16 +499,45 @@ export const handlers = {
         );
         response = HttpResponse.json(buffer);
       }
+      // new drawing : on renvoie toujours le même pour toutes les clefs !
+      if (keys.map((key) => key.uuid).includes(id)) {
+        const buffer = await fetch('./mocks/test-drawing.kml').then(
+          (response) => response.text()
+        );
+        response = HttpResponse.xml(buffer);
+      }
       return response;
     }),
+    /** 
+     * creation d'un document 
+     * l'upload est simulé, et les clefs sont limitées à 10
+     * @see keys
+     * @todo type drawing only !
+     */
     http.post(`${API_URL}/users/me/documents`, async ({ request, params }) => {      
       const data = await request.formData();
       console.debug(...data);
       const labels = data.getAll('labels');
       const file = data.get('file');
-      // TODO upload file
+
+      // on simule un upload file
       const content = await file.text();
-      console.log(content);
+      console.debug(content);
+
+      var store = useServiceStore();
+      var service = store.getService();
+      var drawings = service.documents.drawing;
+      // mise à jour des clefs déjà utilisées
+      drawings.forEach(d => {
+        var res = keys.find((e) => e.uuid === d._id);
+        if (res) {
+          res.use = true;
+        }
+  
+      });
+      var key = keys.find((e) => e.use === false);
+      key.use = true;
+      console.debug(keys);
 
       var response;
       if (labels.includes("drawing")) {
@@ -501,7 +553,7 @@ export const handlers = {
             "internal"
           ],
           "extra": data.get("extra"),
-          "_id": "3fa85f64-5717-4562-b3fc-2c963f66afc0"
+          "_id": key.uuid
         });
       }
       return response;

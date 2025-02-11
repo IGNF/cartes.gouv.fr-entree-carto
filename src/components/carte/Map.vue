@@ -62,35 +62,35 @@ onMounted(() => {
 })
 
 /**
-*  To focus on map and activate keyboard control.
-*  Trigerred on mouse over
-*/
+ *  To focus on map and activate keyboard control.
+ *  Trigerred on mouse over
+ */
 const onFocusOnMap = () => {
   // Si le focus est actuellement sur une balise <input> ou <select>, on ne change pas de focus
-    if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
-      mapRef.value.focus();
-    }
+  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
+    mapRef.value.focus();
   }
+}
   
-  const updateSize = () => {
-    map.updateSize();
-  }
+const updateSize = () => {
+  map.updateSize();
+}
   
-  // on expose en publique la reference au DOM
-  defineExpose({
-    mapRef,
-    updateSize
-  });
+// on expose en publique la reference au DOM
+defineExpose({
+  mapRef,
+  updateSize
+});
 </script>
 
 <template>
   <div
-  :id="mapId"
-  ref="mapRef"
-  tabindex="0"
-  @mouseover="onFocusOnMap">
-  <slot />
-</div>
+    :id="mapId"
+    ref="mapRef"
+    tabindex="0"
+    @mouseover="onFocusOnMap">
+    <slot />
+  </div>
 </template>
 
 <style>

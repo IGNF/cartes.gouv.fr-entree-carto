@@ -90,10 +90,10 @@ onUpdated(() => {
  * ...
  * 
  */
-const onDrawStart = () => {
+const onDrawStart = (e) => {
   log.debug(e);
 }
-const onDrawEnd = () => {
+const onDrawEnd = (e) => {
   log.debug(e);
 }
 const onCompute = (e) => {

@@ -81,22 +81,32 @@ onUpdated(() => {
  * pour figurer dans le permalien, donc de type 'bookmark' !
  * 
  * L'ID de la couche d'un favori est de la forme : 
- * ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+ * ex. layer.gpResultLayerId = "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
  * 
  * Le UUID est utilisé indirectement dans le permalien, on utilise une version 'short'
  * ex. 3fa85f64-5717-4562-b3fc-2c963f66afa3 --> 2c963f66afa3
+ * 
+ * On garde un lien entre la couche et le gestionnaire de couche en y stockant le container
+ * DOM dans l'objet layer natif d'openlayers :
+ * ex. layer.gpResultLayerDiv = '<div id=GPlayerSwitcher_ID_2-2 ...'
+ * 
  */
 const onAddLayer = (e) => {
   log.debug("onAddLayer", e);
+  var lyr = e.layer;
   var id = null;
-  if (e.layer.name && e.layer.service) {
-    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
       mapStore.addLayer(id);
     }
   } else {
-    var gpId = e.layer.layer.gpResultLayerId;
+    // Données issues d'un widget
+    // ex. drawing, layerimport, ...
+    var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
+      // on garde un lien fort entre le layer natif / le widget layerswitcher
+      lyr.layer.gpResultLayerDiv = lyr.div;
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
         // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
@@ -122,14 +132,15 @@ const onAddLayer = (e) => {
 }
 const onRemoveLayer = (e) => {
   log.debug("onRemoveLayer", e);
+  var lyr = e.layer;
   var id = null;
-  if (e.layer.name && e.layer.service) {
-    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
       mapStore.removeLayer(id);
     }
   } else {
-    var gpId = e.layer.layer.gpResultLayerId;
+    var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
@@ -156,11 +167,12 @@ const onRemoveLayer = (e) => {
 }
 const onZoomToExtentLayer = (e) => {
   log.debug("onZoomToExtentLayer", e);
+  var lyr = e.layer;
   // INFO
   // on reimplemente le ZoomToExtent
   // au cas où les extensions n'y arrivent pas !?
   if (e.error) {
-    var globalConstraints = dataStore.getGlobalConstraintsByName(e.layer.name, e.layer.service);
+    var globalConstraints = dataStore.getGlobalConstraintsByName(lyr.name, lyr.service);
     if (globalConstraints) {
       var view = map.getView();
       var crsTarget = view.getProjection();
@@ -186,16 +198,17 @@ const onZoomToExtentLayer = (e) => {
 }
 const onChangeOpacityLayer = (e) => {
   log.debug("onChangeOpacityLayer", e);
+  var lyr = e.layer;
   var id = null;
-  if (e.layer.name && e.layer.service) {
-    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
       mapStore.updateLayerProperty(id, {
         opacity : e.opacity
       });
     }
   } else {
-    var gpId = e.layer.layer.gpResultLayerId;
+    var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
       // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
       if (gpId.startsWith('bookmark')) {
@@ -211,16 +224,17 @@ const onChangeOpacityLayer = (e) => {
 }
 const onChangeVisibilityLayer = (e) => {
   log.debug("onChangeVisibilityLayer", e);
+  var lyr = e.layer;
   var id = null;
-  if (e.layer.name && e.layer.service) {
-    id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
       mapStore.updateLayerProperty(id, {
         visible : e.visibility
       });
     }
   } else {
-    var gpId = e.layer.layer.gpResultLayerId;
+    var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
       // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
       if (gpId.startsWith('bookmark')) {

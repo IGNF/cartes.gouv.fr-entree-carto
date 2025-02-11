@@ -32,6 +32,8 @@ const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
   download : false,
+  name: "Mon croquis",
+  description: "Saisie d'un croquis",
   control: drawing.value,
   menu : true,
   menuOptions : {
