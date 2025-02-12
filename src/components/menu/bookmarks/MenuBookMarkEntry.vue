@@ -32,10 +32,10 @@ import {
 } from '@/features/ol.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
-import t from '@/features/translation';
 
 // lib notification
 import { push } from 'notivue'
+import t from '@/features/translation';
 
 import { useMapStore } from "@/stores/mapStore";
 const mapStore = useMapStore();
@@ -51,6 +51,7 @@ const props = defineProps({
 });
 
 const service = inject('services');
+const emitter = inject('emitter');
 
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
@@ -196,10 +197,16 @@ onBeforeMount(() => {});
 
 onMounted(() => {});
 
+// INFO
+// ajout des informations utiles
+// - data-id : uuid
+// - data-type : ex. drawing, import, carte...
 const buttonsMap = [
 {
     label: 'Renommer',
     icon: "fr-icon-edit-line",
+    "data-id": props.data.id,
+    "data-type": props.data.type,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -207,13 +214,33 @@ const buttonsMap = [
     noOutline: true,
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: () => {
-      // TODO ...
+    onclick: (e) => {
+      console.debug(e);
+      var data = {
+        uuid : e.target.dataset.id,
+        type : e.target.dataset.type
+      };
+      service.updateDocument(data)
+      .then((o) => {
+        // emettre un event pour prévenir la modification d'un document
+        // au composant des favoris
+        emitter.dispatchEvent("document:updated", {
+          uuid : o.uuid,
+          action : o.action // added, updated, deleted
+        });
+      })
+      .then(() => {
+        // FIXME
+        // doit on modifier les informations du gestionnaire de couche ?
+        // ex. Name et Description
+      });
     }
   },
   {
     label: 'Supprimer',
     icon: "fr-icon-delete-line",
+    "data-id": props.data.id,
+    "data-type": props.data.type,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -221,8 +248,26 @@ const buttonsMap = [
     noOutline: true, 
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: () => {
-      // TODO ...
+    onclick: (e) => {
+      console.debug(e);
+      var data = {
+        uuid : e.target.dataset.id,
+        type : e.target.dataset.type
+      };
+      service.deleteDocument(data)
+      .then((o) => {
+        // emettre un event pour prévenir de la suppression d'un document
+        // au composant des favoris
+        emitter.dispatchEvent("document:deleted", {
+          uuid : o.uuid,
+          action : o.action // added, updated, deleted
+        });
+      })
+      .then(() => {
+        // FIXME
+        // doit on modifier le statut de la couche dans le gestionnaire de couche ?
+        // ex. mettre à jour gpResultLayerId pour une autre sauvegarde eventuelle
+      });
     }
   }
 ];
@@ -232,6 +277,8 @@ const buttonsData = [
   {
     label: 'Exporter',
     icon: "fr-icon-download-line",
+    "data-id": props.data.id,
+    "data-type": props.data.type,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -239,8 +286,44 @@ const buttonsData = [
     noOutline: true,
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: () => {
-      // TODO ...
+    onclick: (e) => {
+      console.debug(e);
+      var data = {
+        uuid : e.target.dataset.id,
+        type : e.target.dataset.type
+      };
+      service.exportDocument(data)
+      .then((o) => {
+        // emettre un event pour prévenir de l'export d'un document
+        // au composant des favoris
+        emitter.dispatchEvent("document:exported", {
+          uuid : o.uuid,
+          action : o.action // added, updated, deleted
+        });
+        return o;
+      })
+      .then((o) => {
+        var mimeType = o.mimeType;
+        var content = o.content;
+        var name = o.name;
+        var ext = o.ext;
+
+        // au cas où...
+        var filename = (name.includes(ext)) ? name : name + "." +ext;
+
+        var link = document.createElement("a");
+        // determiner le bon charset !
+        var charset = "utf-8";
+        link.setAttribute("href", "data:" + mimeType + ";charset=" + charset + "," + encodeURIComponent(content));
+        link.setAttribute("download", filename);
+        if (document.createEvent) {
+          var event = document.createEvent("MouseEvents");
+          event.initEvent("click", true, true);
+          link.dispatchEvent(event);
+        } else {
+          link.click();
+        }
+      });
     }
   }
 ];

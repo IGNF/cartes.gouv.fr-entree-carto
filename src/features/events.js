@@ -25,17 +25,16 @@ var EVENTS = {
     // service
     "service:documents:loaded",
     "service:user:loaded",
+    "document:saved",
+    "document:updated",
+    "document:deleted",
+    "document:exported",
     // composants
     "catalog:open:clicked",
     // widgets
     "drawing:open:clicked",
     "drawing:edit:clicked",
-    "drawing:saved",
-    "layerimport:open:clicked",
-    "layerimport:vector:saved",
-    "layerimport:compute:saved",
-    "layerimport:mapbox:saved",
-    "layerimport:service:saved"
+    "layerimport:open:clicked"
   ]
 };
 

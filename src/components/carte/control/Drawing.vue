@@ -82,7 +82,7 @@ onBeforeUpdate(() => {
 })
 
 /** 
- * Gestionnaire d'evenement
+ * Gestionnaire d'evenement : abonnement sur "drawing:edit:clicked"
  * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
@@ -119,7 +119,14 @@ const onToggleShowDrawing = (e) => {
  * - enregistrement d'un nouveau croquis
  * - mise à jour du croquis s'il existe déjà
  * 
- * @fires emitter#drawing:saved
+ * Actions :
+ * - ajouter le croquis dans le permalien
+ * - emettre un event pour les favoris
+ * - mettre à jour l'ID de la couche : gpResultLayerId
+ * - mettre à jour le titre du gestionnaire de couche : gpResultLayerDiv
+ * - notifier l'utilisateur
+ * 
+ * @fires emitter#document:saved
  * @param {Object} e
  * @property {Object} type - event
  * @property {Object} target - instance Export
@@ -144,10 +151,11 @@ const onSaveDrawing = (e) => {
     content : e.content,
     name : e.name,
     description : e.description,
-    format : e.format.toLowerCase()
+    format : e.format.toLowerCase(),
+    type : "drawing"
   };
 
-  service.setDrawing(data)
+  service.setDocument(data)
   .then((o) => {
     // mise à jour du permalien
     mapStore.addBookmark(o.uuid);
@@ -156,13 +164,27 @@ const onSaveDrawing = (e) => {
   .then((o) => {
     // emettre un event pour prévenir l'ajout d'un croquis
     // au composant des favoris
-    emitter.dispatchEvent("drawing:saved", {
+    emitter.dispatchEvent("document:saved", {
       uuid : o.uuid,
       action : o.action // added, updated, deleted
     });
+    return o;
+  })
+  .then((o) => {
+    // mise à jour de l'id interne de la couche
+    if (data.layer.gpResultLayerId) {
+      data.layer.gpResultLayerId = `bookmark:${data.format.toLowerCase()}:${o.uuid}`;
+    }
   })
   .then(() => {
-    // some stuff...
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (data.layer.gpResultLayerDiv) {
+      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = data.name;
+        div.title = data.description;
+      }  
+    }
   })
   .then(() => {
     // notification

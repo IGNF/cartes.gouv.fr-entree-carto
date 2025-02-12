@@ -143,14 +143,17 @@ const lstMap = computed(() => {
   return map.filter((el) => !searchString.value || el.name.includes(searchString.value) );
 });
 
-const onAddBookmark = (e) => {
+const onUpdateBookmark = (e) => {
   console.log(e.uuid);
   // mise à jour du menu si nouveau uuid !
   update.value = e.uuid;
 }
 
 // abonnements
-emitter.addEventListener("drawing:saved", onAddBookmark);
+emitter.addEventListener("document:saved", onUpdateBookmark);
+emitter.addEventListener("document:updated", onUpdateBookmark);
+emitter.addEventListener("document:deleted", onUpdateBookmark);
+emitter.addEventListener("document:exported", onUpdateBookmark);
 
 /**
  * gestionnaire d'evenements

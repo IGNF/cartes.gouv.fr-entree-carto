@@ -512,7 +512,7 @@ export const handlers = {
      * creation d'un document 
      * l'upload est simulé, et les clefs sont limitées à 10
      * @see keys
-     * @todo type drawing only !
+     * @todo les autres type, drawing only !
      */
     http.post(`${API_URL}/users/me/documents`, async ({ request, params }) => {      
       const data = await request.formData();
@@ -565,7 +565,21 @@ export const handlers = {
       // TODO
     }),
     http.delete(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
-      // TODO
+      const { id } = params;
+
+      var key = keys.find((e) => e.uuid === id);
+      key.use = false;
+      console.debug(keys);
+
+      return new HttpResponse(null, {
+        status: 204,
+        statusText: 'Delete document',
+        headers: {
+          'cache-control': 'no-cache,no-store,max-age=0,must-revalidate',
+          'expires': 0,
+          'pragma': 'no-cache' 
+        }
+      });
     })
   ),
   error : [

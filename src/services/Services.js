@@ -142,7 +142,7 @@ class Services {
       if (this.token && (this.token.expiresAt === null || this.token.expiresAt > Date.now())) {
         return this.token;
       }
-      return this.refreshToken();
+      return this.#fetchWrapper.refreshToken();
     };
   }
 
