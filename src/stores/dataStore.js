@@ -98,6 +98,10 @@ export const useDataStore = defineStore('data', () => {
     return m_layers.value;
   }
 
+  function getLayersNames() {
+    return Object.values(m_layers.value).map(l => l.name);
+  }
+
   function getLayerIdByName(name, service) {
     // Ex. OCSGE.COUVERTURE.2011$GEOPORTAIL:OGC:WMS
     // ID : {name}$GEOPORTAIL:(OGC|GPP):(WMTS|WMS|TMS|WFS)
@@ -256,6 +260,7 @@ export const useDataStore = defineStore('data', () => {
     getThematics,
     getFeatured,
     getLayers,
+    getLayersNames,
     getLayerKeysByID,
     getLayerIdByName,
     getLayerByName,

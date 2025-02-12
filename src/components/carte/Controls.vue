@@ -95,7 +95,8 @@ const searchEngineOptions = {
     filterServices : "WMTS,WMS,TMS",
     filterWMTSPriority : true,
     filterLayersPriority : dataStore.getFeatured().toString(),
-    serviceOptions: {}
+    serviceOptions: {},
+    filterLayers : dataStore.getLayersNames()
   },
   autocompleteOptions : {
     serviceOptions : {
