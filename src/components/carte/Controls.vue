@@ -94,6 +94,7 @@ const searchEngineOptions = {
     addToMap: false,
     filterServices : "WMTS,WMS,TMS",
     filterWMTSPriority : true,
+    filterProjections : "IGNF:LAMB93",
     filterLayersPriority : dataStore.getFeatured().toString(),
     serviceOptions: {},
     filterLayers : dataStore.getLayersNames()
