@@ -84,7 +84,7 @@ var SetDocuments = {
    * @property {String} obj.description - description
    * @property {String} obj.format - format : kml, geojson, ...
    * @property {String} obj.type - drawing, import, ...
-   * @returns {Promise} - { UUID, action : added, updated, deleted }
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   setDocument : async function (obj) {
     const formData = new FormData();
@@ -138,11 +138,10 @@ var SetDocuments = {
   },
 
   /**
-   * Mettre à jour un document
+   * Mettre à jour du document
    * 
    * Appels de l'API Entrepôt :
    * - PUT /users/me/documents/{document}
-   * - PATCH /users/me/documents/{document}
    * 
    * Actions :
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
@@ -152,10 +151,82 @@ var SetDocuments = {
    * ...
    * 
    * @param {*} obj
-   * @returns {Promise} - { UUID, action : added, updated, deleted }
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.type - drawing, import, ...
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   updateDocument : async function (obj) {
     return Promise.resolve();
+  },
+
+  /**
+   * Mettre à jour le nom du document
+   * 
+   * Appels de l'API Entrepôt :
+   * - PATCH /users/me/documents/{document}
+   * 
+   * Actions :
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
+   * - retourner le UUID et le type d'action
+   * 
+   * @example
+   * curl -X 'PATCH' \
+   * 'https://data.geopf.fr/api/users/me/documents/a6187561-bed1-4b3c-aea2-89227387ac45' \
+   * -H 'accept: application/json' \
+   * -H 'Authorization: Bearer ... \
+   * -H 'Content-Type: application/json' \
+   * -d '{
+   *  "name": "test3",
+   *  "public_url": true
+   * }'
+   * 
+   * @param {*} obj
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.name - nouveau nom
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   */
+  renameDocument : async function (obj) {
+    var uuid = obj.uuid;
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+    // construction du body
+    var body = this.documents[obj.type][idx];
+    body.name = obj.name;
+
+    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${uuid}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200 && response.status !== 201) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // uuid
+    var uuid = data._id;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "updated"
+    };
   },
 
   /**
@@ -177,7 +248,7 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
-   * @returns {Promise} - { UUID, action : added, updated, deleted }
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   deleteDocument : async function (obj) {
     var uuid = obj.uuid;
@@ -227,7 +298,7 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
-   * @returns {Promise} - { UUID, action : added, updated, deleted }
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   exportDocument : async function (obj) {
     var uuid = obj.uuid;
@@ -249,10 +320,14 @@ var SetDocuments = {
     }
     var json = (infos.extra.format === 'json' || infos.extra.format === 'geojson');
     return {
-      content : (json) ? JSON.stringify(content) : content,
-      mimeType : this.getMimeType(infos.extra.format),
-      name : infos.name,
-      ext : infos.extra.format
+      uuid : uuid,
+      action : "exported",
+      extra : {
+        content : (json) ? JSON.stringify(content) : content,
+        mimeType : this.getMimeType(infos.extra.format),
+        name : infos.name,
+        ext : infos.extra.format
+      }
     };
   }
 };

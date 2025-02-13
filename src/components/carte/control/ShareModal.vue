@@ -21,11 +21,6 @@ const eulerian = useEulerian();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
 
-// paramètres du composant bouton
-const btnTitle = "Ouvrir le panneau de partage de carte";
-const btnIcon = "fr-icon-link"; // FIXME icone de partage dsfr !?
-const btnLabel = "";
-
 // paramètres du composant de la modale
 const title = "Partager une carte";
 const size = "lg";
@@ -92,8 +87,6 @@ const iframe = computed(() => {
 const clipboardSource = ref('')
 const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
-const target = ref(null);
-
 const icon = "cil:copy"
 const defaultScale = ref(0.8325);
 const iconProps = computed(() => typeof icon === 'string'
@@ -146,16 +139,15 @@ defineExpose({
             readonly
             descriptionId=""
           >
-          <template #label>
-            Lien permanent vers la carte
-            <DsfrButton
-            tertiary
-            :noOutline="true"
-            @click="copy(mapStore.permalink)">
-            <VIcon
-            v-bind="iconProps"/>
-          </DsfrButton>
-          </template>
+            <template #label>
+              Lien permanent vers la carte
+              <DsfrButton
+                tertiary
+                :noOutline="true"
+                @click="copy(mapStore.permalink)">
+                <VIcon v-bind="iconProps"/>
+              </DsfrButton>
+            </template>
           </DsfrInput>
         </p>
         <p>
@@ -168,16 +160,15 @@ defineExpose({
             descriptionId=""
             style="height: 200px;"
           >
-          <template #label>
-            Copiez le code HTML pour intégrer la carte dans un site
-            <DsfrButton
-            tertiary
-            :noOutline="true"
-            @click="copy(iframe)">
-            <VIcon
-            v-bind="iconProps"/>
-          </DsfrButton>
-          </template>
+            <template #label>
+              Copiez le code HTML pour intégrer la carte dans un site
+              <DsfrButton
+                tertiary
+                :noOutline="true"
+                @click="copy(iframe)">
+                <VIcon v-bind="iconProps"/>
+              </DsfrButton>
+            </template>
           </DsfrInput>
         </p>
       </div>

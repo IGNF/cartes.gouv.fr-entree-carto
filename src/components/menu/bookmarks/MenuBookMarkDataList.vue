@@ -144,9 +144,14 @@ const lstMap = computed(() => {
 });
 
 const onUpdateBookmark = (e) => {
-  console.log(e.uuid);
-  // mise à jour du menu si nouveau uuid !
-  update.value = e.uuid;
+  console.log(e);
+  // mise à jour du menu si 
+  // - nouveau document
+  // - mise à jour
+  // - suppression
+  // attention à la mise à jour du même document !
+  var timestamp = Date.now();
+  update.value = Object.assign(e, { timestamp : timestamp });
 }
 
 // abonnements

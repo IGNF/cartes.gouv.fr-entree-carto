@@ -562,7 +562,10 @@ export const handlers = {
       // TODO
     }),
     http.patch(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
-      // TODO
+      const { id } = params;
+
+      const body = await request.json();
+      return HttpResponse.json(body);
     }),
     http.delete(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
       const { id } = params;

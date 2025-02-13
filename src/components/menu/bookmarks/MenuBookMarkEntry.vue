@@ -15,7 +15,8 @@
  * - enregistrement de l'ID dans la couche native : 
  *   ex. gpResultLayerId = 'bookmark:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
- * @todo gestion des exceptions à transmettre
+ * @todo gestion des exceptions sur les actions avec notification
+ * @todo renommer un favoris
  * @todo le type service mapbox est à mettre en place
  * @todo le type compute est à mettre en place
  */
@@ -25,6 +26,7 @@ export default {
 </script>
 
 <script setup lang="js">
+
 import { 
   createVectorLayer, 
   createServiceLayer,
@@ -197,8 +199,114 @@ onBeforeMount(() => {});
 
 onMounted(() => {});
 
+const refDivRename = useTemplateRef('div-rename');
+const rename = ref('');
+
+const onClickButtonRename = (e) => {
+  console.debug(e);
+  refDivRename.value.classList.toggle("fr-hidden");
+  rename.value = props.data.name;
+};
+const onClickButtonDelete = (e) => {
+  console.debug(e);
+  var data = {
+    uuid : e.target.dataset.id,
+    type : e.target.dataset.type
+  };
+  service.deleteDocument(data)
+    .then((o) => {
+      // emettre un event pour prévenir de la suppression d'un document
+      // au composant des favoris
+      emitter.dispatchEvent("document:deleted", {
+        uuid : o.uuid,
+        action : o.action // added, updated, deleted
+      });
+    })
+    .then(() => {
+      // FIXME
+      // doit on modifier le statut de la couche dans le gestionnaire de couche ?
+      // ex. modifier gpResultLayerId avec le type (drawing, layerimport, compute, ...)
+    });
+};
+const onClickButtonExport = (e) => {
+  console.debug(e);
+  var data = {
+    uuid : e.target.dataset.id,
+    type : e.target.dataset.type
+  };
+  service.exportDocument(data)
+  .then((o) => {
+    // emettre un event pour prévenir de l'export d'un document
+    // au composant des favoris
+    emitter.dispatchEvent("document:exported", {
+      uuid : o.uuid,
+      action : o.action // added, updated, deleted
+    });
+    return o;
+  })
+  .then((o) => {
+    var mimeType = o.extra.mimeType;
+    var content = o.extra.content;
+    var name = o.extra.name;
+    var ext = o.extra.ext;
+  
+    // au cas où...
+    var filename = (name.includes(ext)) ? name : name + "." + ext;
+  
+    var link = document.createElement("a");
+    // determiner le bon charset !
+    var charset = "utf-8";
+    link.setAttribute("href", "data:" + mimeType + ";charset=" + charset + "," + encodeURIComponent(content));
+    link.setAttribute("download", filename);
+    if (document.createEvent) {
+      var event = document.createEvent("MouseEvents");
+      event.initEvent("click", true, true);
+      link.dispatchEvent(event);
+    } else {
+      link.click();
+    }
+  });
+};
+
+const onClickButtonValidateRename = (e) => {
+  console.debug(e);
+  var data = {
+    uuid : props.data.id,
+    type : props.data.type,
+    name : rename.value
+  };
+  
+  if (rename.value === props.data.name) {
+    return;
+  }
+
+  service.renameDocument(data)
+  .then((o) => {
+    // emettre un event pour prévenir la modification d'un document
+    // au composant des favoris
+    emitter.dispatchEvent("document:updated", {
+      uuid : o.uuid,
+      action : o.action // added, updated, deleted
+    });
+  })
+  .then(() => {
+    // FIXME
+    // doit on fermer dés que l'action est realisée ?
+    refDivRename.value.classList.toggle("fr-hidden");
+  })
+  .then(() => {
+    // FIXME
+    // doit on modifier les informations du gestionnaire de couche ?
+    // ex. modifier Name
+  });
+
+};
+const onClickButtonCancelRename  = (e) => {
+  refDivRename.value.classList.toggle("fr-hidden");
+};
+
 // INFO
-// ajout des informations utiles
+// on ajoute des informations utiles directement dans le dataset des boutons
 // - data-id : uuid
 // - data-type : ex. drawing, import, carte...
 const buttonsMap = [
@@ -207,6 +315,7 @@ const buttonsMap = [
     icon: "fr-icon-edit-line",
     "data-id": props.data.id,
     "data-type": props.data.type,
+    "data-name": props.data.name,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -214,33 +323,14 @@ const buttonsMap = [
     noOutline: true,
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: (e) => {
-      console.debug(e);
-      var data = {
-        uuid : e.target.dataset.id,
-        type : e.target.dataset.type
-      };
-      service.updateDocument(data)
-      .then((o) => {
-        // emettre un event pour prévenir la modification d'un document
-        // au composant des favoris
-        emitter.dispatchEvent("document:updated", {
-          uuid : o.uuid,
-          action : o.action // added, updated, deleted
-        });
-      })
-      .then(() => {
-        // FIXME
-        // doit on modifier les informations du gestionnaire de couche ?
-        // ex. Name et Description
-      });
-    }
+    onclick: onClickButtonRename
   },
   {
     label: 'Supprimer',
     icon: "fr-icon-delete-line",
     "data-id": props.data.id,
     "data-type": props.data.type,
+    "data-name": props.data.name,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -248,27 +338,7 @@ const buttonsMap = [
     noOutline: true, 
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: (e) => {
-      console.debug(e);
-      var data = {
-        uuid : e.target.dataset.id,
-        type : e.target.dataset.type
-      };
-      service.deleteDocument(data)
-      .then((o) => {
-        // emettre un event pour prévenir de la suppression d'un document
-        // au composant des favoris
-        emitter.dispatchEvent("document:deleted", {
-          uuid : o.uuid,
-          action : o.action // added, updated, deleted
-        });
-      })
-      .then(() => {
-        // FIXME
-        // doit on modifier le statut de la couche dans le gestionnaire de couche ?
-        // ex. mettre à jour gpResultLayerId pour une autre sauvegarde eventuelle
-      });
-    }
+    onclick: onClickButtonDelete
   }
 ];
 
@@ -279,6 +349,7 @@ const buttonsData = [
     icon: "fr-icon-download-line",
     "data-id": props.data.id,
     "data-type": props.data.type,
+    "data-name": props.data.name,
     disabled: false,
     iconOnly: true,
     iconRight: false,
@@ -286,52 +357,16 @@ const buttonsData = [
     noOutline: true,
     style: "margin: unset;box-shadow: unset;",
     class: 'bookmark-button-container-advanced',
-    onclick: (e) => {
-      console.debug(e);
-      var data = {
-        uuid : e.target.dataset.id,
-        type : e.target.dataset.type
-      };
-      service.exportDocument(data)
-      .then((o) => {
-        // emettre un event pour prévenir de l'export d'un document
-        // au composant des favoris
-        emitter.dispatchEvent("document:exported", {
-          uuid : o.uuid,
-          action : o.action // added, updated, deleted
-        });
-        return o;
-      })
-      .then((o) => {
-        var mimeType = o.mimeType;
-        var content = o.content;
-        var name = o.name;
-        var ext = o.ext;
-
-        // au cas où...
-        var filename = (name.includes(ext)) ? name : name + "." +ext;
-
-        var link = document.createElement("a");
-        // determiner le bon charset !
-        var charset = "utf-8";
-        link.setAttribute("href", "data:" + mimeType + ";charset=" + charset + "," + encodeURIComponent(content));
-        link.setAttribute("download", filename);
-        if (document.createEvent) {
-          var event = document.createEvent("MouseEvents");
-          event.initEvent("click", true, true);
-          link.dispatchEvent(event);
-        } else {
-          link.click();
-        }
-      });
-    }
+    onclick: onClickButtonExport
   }
 ];
 
 </script>
 
 <template>
+  <!-- Menu d'un favori -->
   <div class="container-bookmark-entry">
+    <!-- Bouton de selection d'un favori à afficher sur la carte -->
     <DsfrButton 
       :data-id="data.id"
       :data-type="data.type"
@@ -343,6 +378,11 @@ const buttonsData = [
       @click="displayDataOnMap(data)">
         {{ data.name }}
     </DsfrButton>
+    <!-- Groupe d'action : 
+     - renommer
+     - exporter
+     - supprimer
+    -->
     <div class="container-bookmark-entry-advanced-options">
       <DsfrButtonGroup v-if="data.type === 'carte'"
         :buttons="buttonsMap"
@@ -354,10 +394,39 @@ const buttonsData = [
         size="sm" />
     </div>
   </div>
+  <!-- Informations :
+    - type : service, calcul, croquis, import
+    - format? : geojson, ...
+    - date?
+  -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span>{{ data.type_fr }}</span>
     <span v-if="data.format"> - {{ data.format }}</span>
     <span v-if="data.date"> - {{ data.date }}</span>
+  </div>
+  <!-- Menu pour renommer un favori -->
+  <div ref="div-rename" class="container-bookmark-entry-rename fr-hidden">
+    <DsfrInput
+      v-model="rename"
+      label="Renommer"
+      placeholder=""
+    />
+    <div class="container-bookmark-entry-buttons-rename">
+      <DsfrButton
+        size="sm"
+        icon="ri:close-line"
+        tertiary
+        no-outline
+        class="fr-p-1w"
+        @click="onClickButtonCancelRename" />
+      <DsfrButton
+        size="sm"
+        icon="ri:check-line"
+        tertiary
+        no-outline
+        class="fr-p-1w"
+        @click="onClickButtonValidateRename" />
+    </div>
   </div>
   <slot></slot>
 </template>
@@ -379,6 +448,14 @@ const buttonsData = [
   white-space: nowrap;
   overflow: hidden;
 }
+
+.container-bookmark-entry-rename {
+  display: flex;
+}
+.container-bookmark-entry-buttons-rename {
+  display: flex;
+}
+
 
 // FIXME ne marche pas !?
 .bookmark-button-container-advanced {

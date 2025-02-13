@@ -13,15 +13,7 @@ export default {
 </script>
 
 <script lang="js" setup>
-import { useDataStore }  from '@/stores/dataStore';
-import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian.js';
-import { useClipboard } from '@vueuse/core'
 import ShareModal from '@/components/carte/control/ShareModal.vue'
-
-const eulerian = useEulerian();
-const dataStore = useDataStore();
-const mapStore = useMapStore();
 
 const props = defineProps({
   mapId: String,
