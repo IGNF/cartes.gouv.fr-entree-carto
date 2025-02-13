@@ -17,6 +17,7 @@ Mise à jour de la dépendance au framework VueDsfr et du processus de mise à j
 #### 🔨 [Evolution]
 
 - Upgrade version vue-dsfr : vers 8.1.1 [#478](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/478)
+- Mise en cohérence des couches renvoyées par le moteur de recherche avec celles disponibles dans l'outil catalogue [#483](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/483)
 
 #### 🔥 [Obsolète]
 
