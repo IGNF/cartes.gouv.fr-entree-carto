@@ -96,6 +96,12 @@ const onClickSearchGeolocation = (e) => {
     max-height: unset;
   }
 
+  /* FIXME l'affichage ne se fait pas comme sur les extensions... Pourquoi ??*/
+  dialog[id^=GPadvancedSearchPanel] {
+    max-height: 50vh;
+    overflow: auto;
+  }
+
   /* MODE MOBILE : les boutons sont en dessous de la barre de recherche qui prend toute la largeur */
   @media (max-width: 576px){
     div[id^=GPsearchEngine-]{
@@ -108,4 +114,5 @@ const onClickSearchGeolocation = (e) => {
       height: 70vh;
     }
   }
+
 </style>
