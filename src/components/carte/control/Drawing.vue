@@ -27,21 +27,36 @@ const props = defineProps({
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
-// bouton d'enregistrement du croquis avec un menu
+// bouton d'enregistrement / export du croquis avec un menu
+const btnExport = ref(new ButtonExport({
+  title : "Exporter",
+  kind : "secondary",
+  download : true,
+  name: "Mon croquis",
+  description: "",
+  control: drawing.value,
+  menu : true,
+  menuOptions : {
+    outside: true,
+    above: true,
+    selectFormat: false,
+    labelDesc: false
+  },
+  direction : "column",
+  format : "kml",
+  icons : {
+    menu : "",
+    button : "export"
+  }
+}));
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
   download : false,
   name: "Mon croquis",
-  description: "Saisie d'un croquis",
+  description: "",
   control: drawing.value,
-  menu : true,
-  menuOptions : {
-    above : true,
-    outside : true,
-    selectFormat : false
-  },
-  direction : "column",
+  menu: false,
   format : "kml",
   icons : {
     menu : "",
@@ -52,6 +67,7 @@ const btnSave = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
+    map.addControl(btnExport.value);
     map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
@@ -59,6 +75,7 @@ onMounted(() => {
     }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveDrawing);
+    btnExport.value.on("button:clicked", onExportDrawing);
     drawing.value.on("change:collapsed", onToggleShowDrawing);
   }
 })
@@ -66,6 +83,7 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
+    map.addControl(btnExport.value);
     map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
@@ -73,11 +91,13 @@ onBeforeUpdate(() => {
     }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveDrawing);
+    btnExport.value.on("button:clicked", onExportDrawing);
     drawing.value.on("change:collapsed",onToggleShowDrawing);
   }
   else {
     map.removeControl(btnSave.value);
     map.removeControl(drawing.value);
+    map.removeControl(btnExport.value);
   }
 })
 
@@ -149,7 +169,7 @@ const onSaveDrawing = (e) => {
   var data = {
     layer : e.layer,
     content : e.content,
-    name : e.name,
+    name : btnExport.value.intputName.value || e.name,
     description : e.description,
     format : e.format.toLowerCase(),
     type : "drawing"
@@ -201,6 +221,7 @@ const onSaveDrawing = (e) => {
     });
   });
 }
+const onExportDrawing = (e) => {}
 
 </script>
 

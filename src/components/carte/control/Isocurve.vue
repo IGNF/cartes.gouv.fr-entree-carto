@@ -24,16 +24,11 @@ const map = inject(props.mapId)
 const isocurve = ref(new Isocurve(props.isocurveOptions))
 const button = ref(new ButtonExport({
   title : "Enregistrer",
-  kind : "secondary",
+  kind : "primary",
   download : false,
   control: isocurve.value,
   format : "geojson",
-  menu : true,
-  menuOptions : {
-    above : true,
-    outside : true,
-    selectFormat : false
-  },
+  menu : false,
   direction : "column",
   icons : {
     menu : "",

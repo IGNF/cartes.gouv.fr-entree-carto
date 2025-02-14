@@ -19,17 +19,11 @@ const map = inject(props.mapId);
 const elevationPath = ref(new ElevationPath(props.elevationPathOptions));
 const button = ref(new ButtonExport({
   title : "Enregistrer",
-  kind : "secondary",
+  kind : "primary",
   download : false,
   control: elevationPath.value,
   format : "geojson",
-  menu : true,
-  menuOptions : {
-    above : true,
-    outside : true,
-    selectFormat : false
-  },
-  direction : "column",
+  menu : false,
   icons : {
     menu : "",
     button : "save"

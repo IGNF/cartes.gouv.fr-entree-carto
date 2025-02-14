@@ -24,16 +24,11 @@ const map = inject(props.mapId);
 const route = ref(new Route(props.routeOptions));
 const button = ref(new ButtonExport({
   title : "Enregistrer",
-  kind : "secondary",
+  kind : "primary",
   download : false,
   control: route.value,
   format : "geojson",
-  menu : true,
-  menuOptions : {
-    above : true,
-    outside : true,
-    selectFormat : false
-  },
+  menu : false,
   direction : "column",
   icons : {
     menu : "",
