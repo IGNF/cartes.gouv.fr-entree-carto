@@ -28,6 +28,7 @@ Mise à jour de la dépendance au framework VueDsfr. Amélioration du processus 
 
 - Mise à jour automatique du catalogue de couches [481](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/481)
 - Correction graphique de la hauteur du catalogue qui pouvait parfois dépasser en hauteur sur le footer [#484](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/484)
+- Correction graphique de la hauteur du panel de recherche avancée par parcelle qui pouvait dépasser sur le footer [#488](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/488)
 
 #### 🔒 [Sécurité]
 
