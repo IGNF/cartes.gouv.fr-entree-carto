@@ -55,10 +55,13 @@ export const useDataStore = defineStore('data', () => {
       }; // merge
       // ajoute la clé aux props
       Object.keys(res).map((key) => { 
+        if(!res[key].serviceParams.id.includes('WFS')
+          && res[key].defaultProjection != "IGNF:LAMB93"){
         res[key].key = key;
         let ret = {};
         ret[key] = res[key];
         return ret;
+      }
       })
 
       m_territories.value = edito.territories;
