@@ -19,6 +19,8 @@ export const useDataStore = defineStore('data', () => {
   const m_featured = ref([]);
   const isLoaded = ref(false);
   const error = ref("");
+  const filterServices = "WMTS,WMS,TMS";
+  const filterProjections = "IGNF:LAMB93,EPSG:2154";
 
   /**
    * @todo utiliser l'implementation officielle @link{https://vueuse.org/core/useFetch/}
@@ -55,12 +57,13 @@ export const useDataStore = defineStore('data', () => {
       }; // merge
       // ajoute la clé aux props
       Object.keys(res).map((key) => { 
-        if(!res[key].serviceParams.id.includes('WFS')
-          && res[key].defaultProjection != "IGNF:LAMB93"){
-        res[key].key = key;
-        let ret = {};
-        ret[key] = res[key];
-        return ret;
+        if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service))
+          && filterProjections.split(",").some(proj => !res[key].defaultProjection.includes(proj)))
+        {
+          res[key].key = key;
+          let ret = {};
+          ret[key] = res[key];
+          return ret;
       }
       })
 
@@ -265,6 +268,8 @@ export const useDataStore = defineStore('data', () => {
   return {
     error,
     isLoaded,
+    filterProjections,
+    filterServices,
     fetchData,
     getTerritories,
     getContacts,
