@@ -12,6 +12,8 @@ Amélioration du processus de recherche de couches et de mise à jour du catalog
 
 ### 💥 Breaking changes
 
+Rafraichissement forcé du LocalStorage (paramètres de la carte stockés dans la session du navigateur).
+
 ### 📖 Changelog
 
 #### ✨ [Ajout]
