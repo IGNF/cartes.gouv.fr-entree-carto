@@ -43,9 +43,13 @@ const collapsable = true;
 /** @type {Reactif} property à rechercher */
 const searchString = ref("");
 
+const searchedLayers = computed(() => {
+  return useSearchInArray(Object.values(props.layers), searchString.value, ['title', 'description', 'name'])
+});
+
 /** Liste des couches de fonds */
 const baseLayers = computed(() => {
-  return Object.values(props.layers).filter((layer) => {
+  return searchedLayers.value.filter((layer) => {
     if (layer.hasOwnProperty("base") &&  layer.base) {
       return layer
     }
@@ -54,7 +58,7 @@ const baseLayers = computed(() => {
 
 /** Liste des couches de données */
 const dataLayers = computed(() => {
-  return Object.values(props.layers).filter((layer) => {
+  return searchedLayers.value.filter((layer) => {
     if (!layer.hasOwnProperty("base") || !layer.base) {
       return layer;
     }
@@ -83,11 +87,6 @@ const asc = ref(true);
 
 /** @type {Reactif} Index de l'onget sélectionné */
 const selectedIndex = ref(0);
-
-/** Mise à jour du mot clef de recherche */
-function updateSearch(e) {
-  searchString.value = e;
-}
 
 /** Sous categories */
 const dataFilters = [
@@ -118,8 +117,7 @@ const currDataFilter = ref('producteur');
        >>> on sauvegarde ce mot clef pour les autres composants
       -->
       <DsfrSearchBar
-        :model-value="searchString"
-        @update:model-value="updateSearch"
+        v-model="searchString"
       />
     </div>
       <!-- Liste des onglets -->
@@ -139,9 +137,9 @@ const currDataFilter = ref('producteur');
            >>> on transmet aussi la liste des couches issues de la recherche
           -->
           <LayerList
-            :list-name="'dataLayer'"
+            list-name="baseLayer"
             :selected-layers="selectedLayers"
-            :layers="useSearchInArray(baseLayers, searchString, ['title', 'description', 'name'])"/>
+            :layers="baseLayers"/>
         </DsfrTabContent>
 
         <!-- Contenu d'un autre onglet : les données catégorisées -->
@@ -162,10 +160,9 @@ const currDataFilter = ref('producteur');
           <DataLayerCatalogue
             :data-layers="dataLayers"
             :curr-data-filter="currDataFilter"
-            :search-string="searchString"
             :selected-layers="selectedLayers"
           />
-      </DsfrTabContent>
+        </DsfrTabContent>
       </DsfrTabs>
   </div>
 </template>

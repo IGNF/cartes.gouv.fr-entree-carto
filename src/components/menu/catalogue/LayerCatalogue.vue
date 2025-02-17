@@ -39,15 +39,12 @@ onUpdated(() => {
 </script>
 
 <template>
-
     <DsfrCheckbox
         :model-value="active"
         :label="layer.title"
-        :id="layer.id"
         @update:modelValue="layerInteraction($event, layer)"
     />
     <div class="layer-description" v-html="layer.description"></div>
-
 </template>
 
 <style>
