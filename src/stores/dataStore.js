@@ -58,12 +58,15 @@ export const useDataStore = defineStore('data', () => {
       // ajoute la clé aux props
       Object.keys(res).map((key) => { 
         if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service))
-          && filterProjections.split(",").some(proj => !res[key].defaultProjection.includes(proj)))
+          && !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))
         {
           res[key].key = key;
           let ret = {};
           ret[key] = res[key];
           return ret;
+      }
+      else  {
+        delete res[key];
       }
       })
 
