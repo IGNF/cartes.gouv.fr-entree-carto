@@ -19,6 +19,7 @@ import DataLayerCatalogue from '@/components/menu/catalogue/DataLayerCatalogue.v
 import { useSearchInArray } from '@/composables/searchInArray';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import { useDebounceFn } from '@vueuse/core'
 
 const log = useLogger();
 const store = useMapStore();
@@ -40,8 +41,27 @@ log.debug(props.layers);
 
 const collapsable = true;
 
-/** @type {Reactif} property à rechercher */
+/** @type {Reactif} Etat actualisé de la chaine de caractère à chercher dans la barre de recherche */
+const searchStringModelValue = ref("");
+/** @type {Reactif} property à rechercher mise à jour en prenant en compte le debounce */
 const searchString = ref("");
+
+// If no invokation after 300ms due to repeated input,
+// the function will be called anyway.
+const debouncedFn = useDebounceFn(() => {
+  searchString.value = searchStringModelValue.value }
+  , 300)
+
+watch(searchStringModelValue, (newVal) => {
+  // Sensation de latence plus importante quand on vide la barre de recherche.
+  // on update donc dès que c'est vide 
+  if (newVal.length == 0) {
+    searchString.value = newVal
+  }
+  else {
+    debouncedFn()
+  }
+})
 
 const searchedLayers = computed(() => {
   return useSearchInArray(Object.values(props.layers), searchString.value, ['title', 'description', 'name'])
@@ -117,7 +137,7 @@ const currDataFilter = ref('producteur');
        >>> on sauvegarde ce mot clef pour les autres composants
       -->
       <DsfrSearchBar
-        v-model="searchString"
+        v-model="searchStringModelValue"
       />
     </div>
       <!-- Liste des onglets -->
