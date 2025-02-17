@@ -52,15 +52,8 @@ const debouncedFn = useDebounceFn(() => {
   searchString.value = searchStringModelValue.value }
   , 300)
 
-watch(searchStringModelValue, (newVal) => {
-  // Sensation de latence plus importante quand on vide la barre de recherche.
-  // on update donc dès que c'est vide 
-  if (newVal.length == 0) {
-    searchString.value = newVal
-  }
-  else {
+watch(searchStringModelValue, () => {
     debouncedFn()
-  }
 })
 
 const searchedLayers = computed(() => {
