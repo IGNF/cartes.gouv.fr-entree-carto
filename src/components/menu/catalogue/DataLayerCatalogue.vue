@@ -4,7 +4,6 @@
    * ...
    * @property {Object} dataLayers
    * @property {String} currDataFilter
-   * @property {String} searchString
    * @property {Object} selectedLayers
    */
   export default {
@@ -13,12 +12,10 @@
 </script>
 
 <script setup lang="js">
-import { useSearchInArray } from '@/composables/searchInArray'
 
 const props = defineProps({
   dataLayers: Object,
   currDataFilter : String,
-  searchString: String,
   selectedLayers: Object
 })
 
@@ -29,6 +26,7 @@ const thematicDataLayers = computed(() => {
 const producerDataLayers = computed(() => {
   return getLayersByProducer(props.dataLayers);
 })
+
 
 function getLayersByThematic(layers) {
   let arr = [... new Set(Object.values(layers)
@@ -42,27 +40,19 @@ function getLayersByThematic(layers) {
   .map((thematic) => {
     return {
       thematicLabel : thematic,
-      layers : useSearchInArray (
-        Object.values(layers)
+      layers : Object.values(layers)
           .filter(layer => layer.hasOwnProperty("thematic") && thematic === layer.thematic)
-          .map(layer => layer),
-        props.searchString,
-        ['title', 'description', 'name']
-      )
+          .map(layer => layer)
     }
   });
   
   arr.push({
     thematicLabel : "Autres",
-    layers : useSearchInArray(
-      Object.values(layers).filter((layer) => {
+    layers : Object.values(layers).filter((layer) => {
         if(!layer.hasOwnProperty("thematic") || layer.thematic.length === 0) {
           return layer;
         }
-      }),
-      props.searchString,
-      ['title', 'description', 'name']
-    )
+      })
   });
   
   return arr;
@@ -80,75 +70,78 @@ function getLayersByProducer(layers) {
   .map((producer) => {
     return {
       producerLabel : producer,
-      layers : useSearchInArray(
-        Object.values(layers)
+      layers : Object.values(layers)
           .filter(layer => layer.hasOwnProperty("producer") && producer === layer.producer)
-          .map(layer => layer),
-        props.searchString,
-        ['title', 'description', 'name']
-      )
+          .map(layer => layer)
     }
   });
   
   arr.push({
     producerLabel : "IGN",
-    layers : useSearchInArray(
-      Object.values(layers)
+    layers : Object.values(layers)
         .filter((l) => {
           if(!l.hasOwnProperty("producer") || l.producer.length == 0) {
             return l;
           }
         }),
-      props.searchString,
-      ['title', 'description', 'name']
-    )
   });
   
   return arr;
 }
 const activeAccordion1 = ref(-1)
 const activeAccordion2 = ref(-1)
+
 </script>
 
 <template>
   <div class="catalogue-content-with-radio-btn">
       <DsfrAccordionsGroup
         v-model="activeAccordion1">
-        <template v-if="currDataFilter === 'producteur'" v-for="(producer, idx) in producerDataLayers" :key="producer.producerLabel">
-          <MenuCatalogueThematique v-if="producer.layers.length > 0"
+        <template v-for="(producer, idx) in producerDataLayers" :key="producer.producerLabel">
+          <div>
+            <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer.layers.length > 0"
           :id="idx"
           :thematic-label="producer.producerLabel"
           :layers-count="producer.layers.length"
-          :key="producer.producerLabel">
+          :key="producer.producerLabel + '-menuCatalogueThematique'">
           <LayerList
-            :list-name="currDataFilter"
+            :key="producer.producerLabel"
+            :list-name="producer.producerLabel"
             :selected-layers="selectedLayers"
-            :layers="producer.layers"
-            :key="producer.producerLabel"/>
-        </MenuCatalogueThematique>
+            :layers="producer.layers"/>
+          </MenuCatalogueThematique>
+          </div>
+          
       </template>
     </DsfrAccordionsGroup>
     
       <DsfrAccordionsGroup 
       v-model="activeAccordion2">
-        <template v-if="currDataFilter === 'theme'" v-for="(thematic, idx) in thematicDataLayers" :key="thematic.thematicLabel">
-          <MenuCatalogueThematique v-if="thematic.layers.length > 0"
+        <template v-for="(thematic, idx) in thematicDataLayers" :key="thematic.thematicLabel">
+          <div>
+            <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic.layers.length > 0"
             :id="idx"
             :thematic-label="thematic.thematicLabel"
-            :layers-count="thematic.layers.length">
+            :layers-count="thematic.layers.length"
+            :key="thematic.thematicLabel + '-menuCatalogueThematique'">
+
+
             <LayerList
-              :list-name="currDataFilter"
+              :key="thematic.thematicLabel"
+              :list-name="thematic.thematicLabel"
               :selected-layers="selectedLayers"
               :layers="thematic.layers"/>
-          </MenuCatalogueThematique>
+            </MenuCatalogueThematique>
+          </div>
         </template>
       </DsfrAccordionsGroup>
     
-    <LayerList
-      v-if="currDataFilter == 'tout'"
-      :list-name="currDataFilter"
-      :selected-layers="selectedLayers"
-      :layers="useSearchInArray(props.dataLayers, searchString, ['title', 'description', 'name'])"/>
+      <div v-show="currDataFilter == 'tout'">
+        <LayerList 
+          list-name="tout"
+          :selected-layers="selectedLayers"
+          :layers="props.dataLayers.slice(0,10)"/>
+      </div>
     
   </div>
 </template>
