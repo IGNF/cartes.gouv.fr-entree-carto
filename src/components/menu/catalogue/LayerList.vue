@@ -21,13 +21,24 @@ const props = defineProps({
     listName: String
 });
 
+function getUniqueKey(layer) {
+  let key = layer.key ? layer.key : layer.name
+  key = key + "-" + props.listName
+  return key
+}
+
 </script>
 
 <template>
-    <template v-for="layer in layers" :key="`${layer.key}-${listName}`">
+  <div>
+    <template v-for="layer in layers" :key="getUniqueKey(layer)">
+      <div>
         <LayerCatalogue
             :active="(selectedLayers) ? selectedLayers.filter(l => l.key == layer.key).length > 0 : false"    
             :layer="layer"    
         />
+      </div>
+
     </template>
+  </div>
 </template>

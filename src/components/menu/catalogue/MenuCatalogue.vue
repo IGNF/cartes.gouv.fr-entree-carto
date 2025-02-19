@@ -19,6 +19,7 @@ import DataLayerCatalogue from '@/components/menu/catalogue/DataLayerCatalogue.v
 import { useSearchInArray } from '@/composables/searchInArray';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import { useDebounceFn } from '@vueuse/core'
 
 const log = useLogger();
 const store = useMapStore();
@@ -40,12 +41,28 @@ log.debug(props.layers);
 
 const collapsable = true;
 
-/** @type {Reactif} property à rechercher */
+/** @type {Reactif} Etat actualisé de la chaine de caractère à chercher dans la barre de recherche */
+const searchStringModelValue = ref("");
+/** @type {Reactif} property à rechercher mise à jour en prenant en compte le debounce */
 const searchString = ref("");
+
+// If no invokation after 300ms due to repeated input,
+// the function will be called anyway.
+const debouncedFn = useDebounceFn(() => {
+  searchString.value = searchStringModelValue.value }
+  , 300)
+
+watch(searchStringModelValue, () => {
+    debouncedFn()
+})
+
+const searchedLayers = computed(() => {
+  return useSearchInArray(Object.values(props.layers), searchString.value, ['title', 'description', 'name'])
+});
 
 /** Liste des couches de fonds */
 const baseLayers = computed(() => {
-  return Object.values(props.layers).filter((layer) => {
+  return searchedLayers.value.filter((layer) => {
     if (layer.hasOwnProperty("base") &&  layer.base) {
       return layer
     }
@@ -54,7 +71,7 @@ const baseLayers = computed(() => {
 
 /** Liste des couches de données */
 const dataLayers = computed(() => {
-  return Object.values(props.layers).filter((layer) => {
+  return searchedLayers.value.filter((layer) => {
     if (!layer.hasOwnProperty("base") || !layer.base) {
       return layer;
     }
@@ -83,11 +100,6 @@ const asc = ref(true);
 
 /** @type {Reactif} Index de l'onget sélectionné */
 const selectedIndex = ref(0);
-
-/** Mise à jour du mot clef de recherche */
-function updateSearch(e) {
-  searchString.value = e;
-}
 
 /** Sous categories */
 const dataFilters = [
@@ -118,8 +130,7 @@ const currDataFilter = ref('producteur');
        >>> on sauvegarde ce mot clef pour les autres composants
       -->
       <DsfrSearchBar
-        :model-value="searchString"
-        @update:model-value="updateSearch"
+        v-model="searchStringModelValue"
       />
     </div>
       <!-- Liste des onglets -->
@@ -139,9 +150,9 @@ const currDataFilter = ref('producteur');
            >>> on transmet aussi la liste des couches issues de la recherche
           -->
           <LayerList
-            :list-name="'dataLayer'"
+            list-name="baseLayer"
             :selected-layers="selectedLayers"
-            :layers="useSearchInArray(baseLayers, searchString, ['title', 'description', 'name'])"/>
+            :layers="baseLayers"/>
         </DsfrTabContent>
 
         <!-- Contenu d'un autre onglet : les données catégorisées -->
@@ -162,10 +173,9 @@ const currDataFilter = ref('producteur');
           <DataLayerCatalogue
             :data-layers="dataLayers"
             :curr-data-filter="currDataFilter"
-            :search-string="searchString"
             :selected-layers="selectedLayers"
           />
-      </DsfrTabContent>
+        </DsfrTabContent>
       </DsfrTabs>
   </div>
 </template>
@@ -189,6 +199,6 @@ const currDataFilter = ref('producteur');
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
-  max-height: calc(70vh - 70px);
+  max-height: calc(70vh - 96px);
 }
 </style>

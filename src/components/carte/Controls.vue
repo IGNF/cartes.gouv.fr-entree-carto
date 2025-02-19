@@ -85,10 +85,12 @@ const searchEngineOptions = {
   },
   searchOptions: {
     addToMap: false,
-    filterServices : "WMTS,WMS,TMS",
+    filterServices : dataStore.filterServices,
     filterWMTSPriority : true,
+    filterProjections : dataStore.filterProjections,
     filterLayersPriority : dataStore.getFeatured().toString(),
-    serviceOptions: {}
+    serviceOptions: {},
+    filterLayers : dataStore.getLayersNames()
   },
   autocompleteOptions : {
     serviceOptions : {
