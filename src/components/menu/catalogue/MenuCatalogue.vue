@@ -91,7 +91,7 @@ const tabTitles = [
   {
     title : "Données",
     tabId : "tab-1",
-    panelId : "tab-content-10"
+    panelId : "tab-content-1"
   }
 ];
 
