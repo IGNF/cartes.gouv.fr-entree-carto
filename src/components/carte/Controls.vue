@@ -96,8 +96,9 @@ const searchEngineOptions = {
     filterWMTSPriority : true,
     filterProjections : dataStore.filterProjections,
     filterLayersPriority : dataStore.getFeatured().toString(),
-    serviceOptions: {},
-    filterLayers : dataStore.getLayersSignatures(),
+    filterLayers : true,
+    filterTMS : true,
+    filterLayersList : dataStore.getLayersSignatures(),
     serviceOptions : {
       maximumResponses : 50
     },
