@@ -97,7 +97,11 @@ const searchEngineOptions = {
     filterProjections : dataStore.filterProjections,
     filterLayersPriority : dataStore.getFeatured().toString(),
     serviceOptions: {},
-    filterLayers : dataStore.getLayersSignatures()
+    filterLayers : dataStore.getLayersSignatures(),
+    serviceOptions : {
+      maximumResponses : 50
+    },
+    maximumEntries : 5
   },
   autocompleteOptions : {
     serviceOptions : {
