@@ -29,7 +29,7 @@ import t from './translation';
 /**
  * INFO
  * Toutes les couches ajoutées sur la carte ont un ID interne
- * sous la forme : bookmark:[type]:UUID
+ * sous la forme : bookmark:[type]-[format]:UUID
  * Ceci permet de savoir que la couche est issue de l'espace personnel
  * avec un UUID, et donc qu'elle est enregistrée.
  */
@@ -129,7 +129,7 @@ const createVectorLayer = (options) => {
     throw new Error(t.ol.failed_layer("vecteur"));
   }
 
-  vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
+  vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
 
   return vectorLayer;
 };

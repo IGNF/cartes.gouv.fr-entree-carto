@@ -65,10 +65,10 @@ onUpdated(() => {
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    layerImport.value.on("layerimport:vector:saved", onSaveImportVector);
-    layerImport.value.on("layerimport:service:saved", onSaveImportService);
-    layerImport.value.on("layerimport:mapbox:saved", onSaveImportMapbox);
-    layerImport.value.on("layerimport:compute:saved", onSaveImportCompute);
+    layerImport.value.on("layerimport:vector:added", onSaveImportVector);
+    layerImport.value.on("layerimport:service:added", onSaveImportService);
+    layerImport.value.on("layerimport:mapbox:added", onSaveImportMapbox);
+    layerImport.value.on("layerimport:compute:added", onSaveImportCompute);
   }
 })
 

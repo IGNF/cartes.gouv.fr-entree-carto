@@ -13,7 +13,7 @@
  * - récupèration des informations complementaires
  * - téléchargement du fichier
  * - enregistrement de l'ID dans la couche native : 
- *   ex. gpResultLayerId = 'bookmark:3fa85f64-5717-4562-b3fc-2c963f66afa5'
+ *   ex. gpResultLayerId = 'bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
  * @todo gestion des exceptions sur les actions avec notification
  * @todo renommer un favoris
@@ -148,7 +148,8 @@ const displayDataOnMap = (data) => {
           extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)
           title : data.name,
           description : infos.description,
-          format : infos.extra.format
+          format : infos.extra.format,
+          type : data.type
         };
         if (infos.extra.format === "mapbox") {
           target = { data : response };

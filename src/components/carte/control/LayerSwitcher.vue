@@ -81,7 +81,7 @@ onUpdated(() => {
  * pour figurer dans le permalien, donc de type 'bookmark' !
  * 
  * L'ID de la couche d'un favori est de la forme : 
- * ex. layer.gpResultLayerId = "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+ * ex. layer.gpResultLayerId = "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
  * 
  * Le UUID est utilisé indirectement dans le permalien, on utilise une version 'short'
  * ex. 3fa85f64-5717-4562-b3fc-2c963f66afa3 --> 2c963f66afa3
@@ -109,7 +109,7 @@ const onAddLayer = (e) => {
       lyr.layer.gpResultLayerDiv = lyr.div;
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
-        // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+        // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
           mapStore.addBookmark(id);
         }
@@ -144,7 +144,7 @@ const onRemoveLayer = (e) => {
     if (gpId) {
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
-        // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+        // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
           mapStore.removeBookmark(id);
         }
@@ -210,7 +210,7 @@ const onChangeOpacityLayer = (e) => {
   } else {
     var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
-      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
       if (gpId.startsWith('bookmark')) {
         id = gpId.split(':').pop();
         if (id) {
@@ -236,7 +236,7 @@ const onChangeVisibilityLayer = (e) => {
   } else {
     var gpId = lyr.layer.gpResultLayerId;
     if (gpId) {
-      // ex. "bookmark:kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
       if (gpId.startsWith('bookmark')) {
         id = gpId.split(':').pop();
         if (id) {
@@ -266,16 +266,43 @@ const onChangePositionLayer = (e) => {
  * Permet d'envoyer un evenement vers l'outil de dessin
  * quand l'on clique sur le bouton d'édition
  * @see Drawing
- * @fires emitter#drawing:edit:clicked
+ * @fires emitter#vector:edit:clicked
+ * @todo Edition des styles mapbox
  */
 const onClickEditLayer = (e) => {
   log.debug("onClickEditLayer", e);
+
+  // INFO
   // selon le type de données, on envoie une demande au widget
-  // ex. pour les croquis, on envoie : "drawing:edit:clicked"
-  /**
-   * @event 
-   */
-  emitter.dispatchEvent("drawing:edit:clicked", e);
+  // ex. pour les croquis, on envoie : "vector:edit:clicked"
+  // la couche nous fournit une information utile : 
+  //   ex. gpResultLayerId = drawing | layerimport:(KML|GEOJSON...)
+  // mais, attention dès que le dessin est enregistré, l'id est modifié :
+  //  ex. gpResultLayerId = bookmark:drawing-kml:UUID
+
+  var gpId = e.layer.gpResultLayerId;
+  if (gpId) {
+    // on liste tous les cas de figures possibles pour un vecteur à éditer
+    if (gpId.toLowerCase().includes("drawing") || 
+        gpId.toLowerCase().includes("layerimport:kml") ||
+        gpId.toLowerCase().includes("layerimport:gpx") ||
+        gpId.toLowerCase().includes("layerimport:geojson") || 
+        gpId.toLowerCase().includes("bookmark:drawing-kml") || 
+        gpId.toLowerCase().includes("bookmark:import-kml") ||
+        gpId.toLowerCase().includes("bookmark:import-gpx") ||
+        gpId.toLowerCase().includes("bookmark:import-geojson")) {
+      /**
+       * @event 
+       * pour l'édition d'un drawing ou un import vecteur
+       */
+      emitter.dispatchEvent("vector:edit:clicked", e);
+      return;
+    }
+  }
+  push.warning({
+    title: t.layerswitcher.title,
+    message: t.layerswitcher.failed_not_yet_implemented
+  });
 }
 </script>
 

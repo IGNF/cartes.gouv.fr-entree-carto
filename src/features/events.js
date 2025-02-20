@@ -29,12 +29,14 @@ var EVENTS = {
     "document:updated",
     "document:deleted",
     "document:exported",
-    // composants
-    "catalog:open:clicked",
     // widgets
+    "catalog:open:clicked",
     "drawing:open:clicked",
-    "drawing:edit:clicked",
-    "layerimport:open:clicked"
+    "layerimport:open:clicked",
+    // edition
+    "vector:edit:clicked",
+    "mapbox:edit:clicked",
+    "service:edit:clicked"
   ]
 };
 

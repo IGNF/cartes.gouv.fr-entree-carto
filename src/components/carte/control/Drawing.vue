@@ -74,9 +74,9 @@ onMounted(() => {
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveDrawing);
-    btnExport.value.on("button:clicked", onExportDrawing);
-    drawing.value.on("change:collapsed", onToggleShowDrawing);
+    btnSave.value.on("button:clicked", onSaveVector);
+    btnExport.value.on("button:clicked", onExportVector);
+    drawing.value.on("change:collapsed", onToggleShowVector);
   }
 })
 
@@ -90,9 +90,9 @@ onBeforeUpdate(() => {
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveDrawing);
-    btnExport.value.on("button:clicked", onExportDrawing);
-    drawing.value.on("change:collapsed",onToggleShowDrawing);
+    btnSave.value.on("button:clicked", onSaveVector);
+    btnExport.value.on("button:clicked", onExportVector);
+    drawing.value.on("change:collapsed",onToggleShowVector);
   }
   else {
     map.removeControl(btnSave.value);
@@ -102,14 +102,14 @@ onBeforeUpdate(() => {
 })
 
 /** 
- * Gestionnaire d'evenement : abonnement sur "drawing:edit:clicked"
+ * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
  * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
  * @see LayerSwitcher
  */
-emitter.addEventListener("drawing:edit:clicked", (e) => {
+emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
@@ -122,7 +122,7 @@ emitter.addEventListener("drawing:edit:clicked", (e) => {
  * Permet la dissociation de la couche 
  * et l'outil lors de la fermeture du controle
  */
-const onToggleShowDrawing = (e) => {
+const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
     // dissociation de la couche du widget 
@@ -135,7 +135,7 @@ const onToggleShowDrawing = (e) => {
 /** 
  * Gestionnaire d'evenement
  * 
- * Ecouteur pour la sauvegarde d'un croquis
+ * Ecouteur pour la sauvegarde d'un croquis ou un import vecteur
  * - enregistrement d'un nouveau croquis
  * - mise à jour du croquis s'il existe déjà
  * 
@@ -156,7 +156,7 @@ const onToggleShowDrawing = (e) => {
  * @property {String} format - format : kml, geojson, ...
  * @property {Object} layer - layer
  */
-const onSaveDrawing = (e) => {
+const onSaveVector = (e) => {
   log.debug(e);
   if (!service.authenticated) {
     push.warning({
@@ -166,13 +166,14 @@ const onSaveDrawing = (e) => {
     return; // pas plus loin...
   }
 
+  var type = e.layer.gpResultLayerId.toLowerCase().split(':')[0]; // ex. drawing
   var data = {
     layer : e.layer,
     content : e.content,
-    name : btnExport.value.intputName.value || e.name,
+    name : btnExport.value.inputName.value || e.name,
     description : e.description,
     format : e.format.toLowerCase(),
-    type : "drawing"
+    type : type
   };
 
   service.setDocument(data)
@@ -193,7 +194,7 @@ const onSaveDrawing = (e) => {
   .then((o) => {
     // mise à jour de l'id interne de la couche
     if (data.layer.gpResultLayerId) {
-      data.layer.gpResultLayerId = `bookmark:${data.format.toLowerCase()}:${o.uuid}`;
+      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${o.uuid}`;
     }
   })
   .then(() => {
@@ -221,7 +222,14 @@ const onSaveDrawing = (e) => {
     });
   });
 }
-const onExportDrawing = (e) => {}
+/**
+ * Gestionnaire d'evenement
+ * 
+ * Ecouteur pour l'export d'un croquis ou un import vecteur
+ * 
+ * @param {Object} e
+ */
+const onExportVector = (e) => {}
 
 </script>
 

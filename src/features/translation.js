@@ -33,7 +33,8 @@ export default {
     add_success: 'La couche est ajoutée à la carte',
     add_failed: 'Une erreur est survenue dans l\'ajout de la couche',
     remove_success: 'La couche est supprimé de la carte',
-    remove_failed: 'Une erreur est survenue dans la suppression de la couche'
+    remove_failed: 'Une erreur est survenue dans la suppression de la couche',
+    failed_not_yet_implemented: 'L\'édition de ce type de données n\'est pas encore gérée !',
   },
   searchengine: {
     title: 'Recherche de couche'
