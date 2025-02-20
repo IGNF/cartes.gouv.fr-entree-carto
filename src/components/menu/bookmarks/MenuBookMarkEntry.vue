@@ -211,8 +211,8 @@ const onClickButtonRename = (e) => {
 const onClickButtonDelete = (e) => {
   console.debug(e);
   var data = {
-    uuid : e.target.dataset.id,
-    type : e.target.dataset.type
+    uuid : props.data.id,
+    type : props.data.type
   };
   service.deleteDocument(data)
     .then((o) => {
@@ -232,8 +232,8 @@ const onClickButtonDelete = (e) => {
 const onClickButtonExport = (e) => {
   console.debug(e);
   var data = {
-    uuid : e.target.dataset.id,
-    type : e.target.dataset.type
+    uuid : props.data.id,
+    type : props.data.type
   };
   service.exportDocument(data)
   .then((o) => {

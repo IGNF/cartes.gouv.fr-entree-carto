@@ -569,14 +569,10 @@ export const handlers = {
     }),
     http.delete(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
       const { id } = params;
-
-      var key = keys.find((e) => e.uuid === id);
-      key.use = false;
-      console.debug(keys);
-
+      
       return new HttpResponse(null, {
         status: 204,
-        statusText: 'Delete document',
+        statusText: `Delete document ${id}`,
         headers: {
           'cache-control': 'no-cache,no-store,max-age=0,must-revalidate',
           'expires': 0,
