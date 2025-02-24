@@ -55,6 +55,7 @@ function openMenu() {
 }
 
 defineExpose({
+  widthMenu,
   closeMenu,
   openMenu
 })
