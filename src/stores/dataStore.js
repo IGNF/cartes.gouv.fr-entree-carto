@@ -116,8 +116,8 @@ export const useDataStore = defineStore('data', () => {
     return m_layers.value;
   }
 
-  function getLayersNames() {
-    return Object.values(m_layers.value).map(l => l.name);
+  function getLayersSignatures() {
+    return Object.fromEntries(Object.entries(m_layers.value).map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]]));
   }
 
   function getLayerIdByName(name, service) {
@@ -280,7 +280,7 @@ export const useDataStore = defineStore('data', () => {
     getThematics,
     getFeatured,
     getLayers,
-    getLayersNames,
+    getLayersSignatures,
     getLayerKeysByID,
     getLayerIdByName,
     getLayerByName,

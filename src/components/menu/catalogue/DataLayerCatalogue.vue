@@ -77,7 +77,7 @@ function getLayersByProducer(layers) {
   });
   
   arr.push({
-    producerLabel : "IGN",
+    producerLabel : "Autres",
     layers : Object.values(layers)
         .filter((l) => {
           if(!l.hasOwnProperty("producer") || l.producer.length == 0) {
