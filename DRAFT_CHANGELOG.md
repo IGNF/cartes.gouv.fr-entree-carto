@@ -24,6 +24,7 @@ Rafraichissement forcé du LocalStorage (paramètres de la carte stockés dans l
 - Mise en cohérence des couches renvoyées par le moteur de recherche avec celles disponibles dans l'outil catalogue [#483](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/483)[#498](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/498)
 - Changement du nom du menu supérieur-droit : Menu carte s'affiche désormais dans la tooltip au survol [#485](https://github.com/IGNF/cartes.gouv.fr-entree-carto/pull/485)
 - Barre de recherche : résultats "Lieux et adresses" et "Cartes et données" s'affichent sur la même fenêtre de résultats [ext-gpf-#346](https://github.com/IGNF/geopf-extensions-openlayers/pull/346)
+- Mise en conformité avec la maquette du copier-coller (https://github.com/IGNF/cartes.gouv.fr-entree-carto/issues/479)
 
 #### 🔥 [Obsolète]
 
