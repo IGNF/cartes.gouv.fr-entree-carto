@@ -14,8 +14,7 @@ export default {};
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
-import { useClipboard } from '@vueuse/core'
-import { VIcon } from '@gouvminint/vue-dsfr'
+import TextCopyToClipboard from '@/components/utils/TextCopyToClipboard.vue'
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
@@ -89,17 +88,8 @@ const iframe = computed(() => {
     allowfullscreen>
   </iframe>`;
 });
-const clipboardSource = ref('')
-const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
 const target = ref(null);
-
-const icon = "cil:copy"
-const defaultScale = ref(0.8325);
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
 
 onMounted(() => {
   nextTick(function () {
@@ -147,14 +137,11 @@ defineExpose({
             descriptionId=""
           >
           <template #label>
-            Lien permanent vers la carte
-            <DsfrButton
-            tertiary
-            :noOutline="true"
-            @click="copy(mapStore.permalink)">
-            <VIcon
-            v-bind="iconProps"/>
-          </DsfrButton>
+            <TextCopyToClipboard
+              :copiedText="mapStore.permalink"
+              label="Lien permanent"
+              description="Toute personne ayant ce lien peut visualiser votre carte sans avoir à se créer de compte."
+            />
           </template>
           </DsfrInput>
         </p>
@@ -169,14 +156,11 @@ defineExpose({
             style="height: 200px;"
           >
           <template #label>
-            Copiez le code HTML pour intégrer la carte dans un site
-            <DsfrButton
-            tertiary
-            :noOutline="true"
-            @click="copy(iframe)">
-            <VIcon
-            v-bind="iconProps"/>
-          </DsfrButton>
+            <TextCopyToClipboard
+              :copiedText="iframe"
+              label="Iframe"
+              description="Insérer directement dans vos mails,  Réseaux sociaux ..."
+            />
           </template>
           </DsfrInput>
         </p>
