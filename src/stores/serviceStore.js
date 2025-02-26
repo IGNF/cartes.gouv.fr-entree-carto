@@ -2,7 +2,7 @@ import {
   defineStore
 } from 'pinia';
 
-import Services from '@/services/Services';
+import { serviceFactotyCreate } from '@/services/ServiceFactory';
 
 // INFO
 // le store est connecté au plugin 'pinia-plugin-store'
@@ -22,11 +22,7 @@ export const useServiceStore = defineStore({
       return this.connexion;
     },
     setService (s) {
-      if (s) {
-        this.connexion = new Services(s);
-      } else {
-        this.connexion = new Services();
-      }
+      this.connexion = serviceFactotyCreate(s);
     }
   }
 });

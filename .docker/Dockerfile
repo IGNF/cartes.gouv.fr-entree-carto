@@ -4,7 +4,7 @@
 # build :
 # > docker image build -f .docker/Dockerfile --tag cartes.gouv.fr-entree-carto:latest .
 #   choisir un environnement :
-#   --build-arg  MODE_ENV="production|development|test"
+#   --build-arg  MODE_ENV="production|development|demo|stage"
 #
 # run :
 # > docker run -d --restart=always  -p 8082:8082 cartes.gouv.fr-entree-carto:latest
@@ -16,11 +16,12 @@
 #----------------------------------------------------------------------
 # cartes.gouv.fr-entree-carto : Génération d'un build statique
 #----------------------------------------------------------------------
-FROM node:20-alpine as builder
+FROM node:22-alpine AS builder
 
 ARG BASE_URL="/cartes"
 ARG MODE_ENV="production"
 
+RUN sed -i 's/https/http/' /etc/apk/repositories
 RUN apk add git
 
 WORKDIR /app

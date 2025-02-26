@@ -8,7 +8,7 @@ import NotificationSuccess from '@/icons/NotificationSuccess.vue';
 import NotificationError from '@/icons/NotificationError.vue';
 import NotificationWarning from '@/icons/NotificationWarning.vue';
 // composables
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
 import { useMatchMedia } from '@/composables/matchMedia'
 import { useHeaderParams } from '@/composables/headerParams'
@@ -26,6 +26,8 @@ import t from '@/features/translation'
 
 useAppStore()
 
+const route = useRoute()
+const router = useRouter()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
@@ -91,13 +93,18 @@ service.isAccessValided()
       }
     });
   }
+  if (status !== "no-auth") {
+    router.replace({ query: undefined });
+  }
 })
 .catch((e:any) => {
   console.error(e);
   push.error({
     title: t.auth.title,
-    message: t.auth.failed(e.message)
+    message: t.auth.failed(e.message || e)
   });
+})
+.finally(() => {
 });
 
 // INFO
@@ -124,8 +131,6 @@ const quickLinks = computed(() => {
 })
 
 // paramètre pour la barre de navigations
-const route = useRoute()
-
 const navItems: DsfrNavigationProps['navItems'] = [
   {
     title: 'Commencer avec cartes.gouv',

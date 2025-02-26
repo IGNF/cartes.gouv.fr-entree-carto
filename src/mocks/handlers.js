@@ -2,7 +2,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 import { http, HttpResponse } from 'msw'
 // https://mswjs.io/docs/
 
-const API_URL = import.meta.env.VITE_API_URL || "https://data.geopf.fr/api";
+const API_URL = (import.meta.env.IAM_AUTH_MODE === "remote") ? import.meta.env.IAM_ENTREPOT_API_URL_REMOTE : import.meta.env.IAM_ENTREPOT_API_URL;
 
 // liste des clefs pour le POST / PUT / PATCH / DELETE
 var keys = [
