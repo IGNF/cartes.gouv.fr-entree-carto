@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+
+    nginx_proxy:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+            args:
+              HTTP_PROXY: "http://proxy.ign.fr:3128"
+              HTTPS_PROXY: "http://proxy.ign.fr:3128"
+        image: cartesgouvfr-nginx_proxy:latest
+        container_name: cartesgouvfr-nginx_proxy
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+        # - HOST:CONTAINER
+          - 1234:80
+        networks:
+          - web_dev
+
+networks:
+    web_dev:
+        external: true

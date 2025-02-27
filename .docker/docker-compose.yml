@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
     # build du projet :
-    # > docker image build -f .docker/Dockerfile --tag cartes.gouv.fr-entree-carto:latest .
+    # > docker image build -f .docker/Dockerfile --tag cartesgouvfr-entree_carto:latest .
     # > docker run -d -p 8082:8082 cartes.gouv.fr-entree-carto:latest
     # ou 
     # > docker-compose -f .docker/docker-compose.yml up --build -d
@@ -13,7 +13,7 @@ services:
     # surcharge des env :
     # --build-arg MODE_ENV=stage
     # --build-arg BASE_URL=/cartes
-    run:
+    entree_carto:
         build:
             context: ..
             dockerfile: ./.docker/Dockerfile
@@ -22,8 +22,8 @@ services:
               MODE_ENV: "stage"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
-        image: cartes.gouv.fr-entree-carto:latest
-        container_name: cartes.gouv.fr-entree-carto
+        image: ignf/cartes.gouv.fr-carto:latest
+        container_name: cartesgouvfr-entree_carto
         environment:
             - HTTP_PROXY=${HTTP_PROXY}
             - HTTPS_PROXY=${HTTPS_PROXY}
