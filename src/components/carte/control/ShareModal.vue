@@ -13,9 +13,8 @@ export default {};
 <script lang="js" setup>
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian';
-import { useClipboard } from '@vueuse/core'
-import { VIcon } from '@gouvminint/vue-dsfr'
+import { useEulerian } from '@/plugins/Eulerian.js';
+import TextCopyToClipboard from '@/components/utils/TextCopyToClipboard.vue';
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
@@ -84,15 +83,8 @@ const iframe = computed(() => {
     allowfullscreen>
   </iframe>`;
 });
-const clipboardSource = ref('')
-const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
 
-const icon = "cil:copy"
-const defaultScale = ref(0.8325);
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
+const target = ref(null);
 
 onMounted(() => {
   nextTick(function () {
@@ -139,15 +131,13 @@ defineExpose({
             readonly
             descriptionId=""
           >
-            <template #label>
-              Lien permanent vers la carte
-              <DsfrButton
-                tertiary
-                :noOutline="true"
-                @click="copy(mapStore.permalink)">
-                <VIcon v-bind="iconProps"/>
-              </DsfrButton>
-            </template>
+          <template #label>
+            <TextCopyToClipboard
+              :copiedText="mapStore.permalink"
+              label="Lien permanent"
+              description="Toute personne ayant ce lien peut visualiser votre carte sans avoir à se créer de compte."
+            />
+          </template>
           </DsfrInput>
         </p>
         <p>
@@ -160,15 +150,13 @@ defineExpose({
             descriptionId=""
             style="height: 200px;"
           >
-            <template #label>
-              Copiez le code HTML pour intégrer la carte dans un site
-              <DsfrButton
-                tertiary
-                :noOutline="true"
-                @click="copy(iframe)">
-                <VIcon v-bind="iconProps"/>
-              </DsfrButton>
-            </template>
+          <template #label>
+            <TextCopyToClipboard
+              :copiedText="iframe"
+              label="Iframe"
+              description="Insérer directement dans vos mails,  Réseaux sociaux ..."
+            />
+          </template>
           </DsfrInput>
         </p>
       </div>

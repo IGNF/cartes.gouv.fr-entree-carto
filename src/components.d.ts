@@ -83,6 +83,7 @@ declare module 'vue' {
     ShareModal: typeof import('./components/carte/control/ShareModal.vue')['default']
     StoreData: typeof import('./components/StoreData.vue')['default']
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
+    TextCopyToClipboard: typeof import('./components/utils/TextCopyToClipboard.vue')['default']
     VIcon: typeof import('oh-vue-icons')['OhVueIcon']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
