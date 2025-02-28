@@ -11,9 +11,6 @@
 </script>
 
 <script setup lang="js">
-import IconGeolocationSVG from "../../assets/geolocation.svg";
-import { useMapStore } from "@/stores/mapStore"
-
 import SearchEngine from './control/SearchEngine.vue';
 import ScaleLine from './control/ScaleLine.vue';
 import OverviewMap from './control/OverviewMap.vue';
@@ -33,15 +30,18 @@ import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
-import Print from './control/Print.vue'
 
-import Share from './control/Share.vue';
-
-// Icone pour le marker du widget SearcEngine
-
+import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
+
+import IconGeolocationSVG from "../../assets/geolocation.svg";
+
+import { LoggerUtils } from 'geopf-extensions-openlayers';
+
+const isProduction = (import.meta.env.MODE === "production");
+isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
 
 const props = defineProps({
   controlOptions: Array,
@@ -70,15 +70,8 @@ const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
-// liste des options pour les contrôles;
 
-const shareOptions = {
-  position: useControlsExtensionPosition().shareOptions
-};
-const printOptions = {
-  position: useControlsExtensionPosition().printOptions
-};
-
+// liste des options pour les contrôles
 const searchEngineOptions = {
   id: "1",
   collapsed: false,
@@ -120,7 +113,8 @@ const layerSwitcherOptions = {
     position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
     panel: true,
-    counter: true
+    counter: true,
+    allowEdit: true
   }
 };
 
@@ -179,9 +173,12 @@ const controlListOptions = {
 
 const drawingOptions = {
   id: "11",
-  position: 'top-right',
+  position: useControlsExtensionPosition().drawingOptions,
   gutter: false,
   listable: true,
+  tools : {
+    "export" : false
+  }
 }
 
 const reverseGeocodeOptions = {
@@ -232,7 +229,8 @@ const mousePositionOptions = {
   gutter: false,
   listable: true,
   // On ajoute les systemes UTM pour les territoires
-  systems : [{
+  systems : [
+    {
       label : "G\u00e9ographique",
       crs : "EPSG:4326",
       type : "Geographical"
@@ -384,49 +382,39 @@ const layerImportOptions = {
   listable: true,
 };
 
-const refPrintModal = inject("refPrintModal")
-const modalShareRef = inject("modalShareRef")
+const refModalPrint = inject("refModalPrint")
+const refModalShare = inject("refModalShare")
 
 const contextMenuOptions = computed(() => {
   return {
-  contextMenuItemsOptions : [            
-            {
-                text : "Imprimer la carte",
-                callback : function() {
-                  refPrintModal.value.onModalPrintOpen()
-                }
-            },
-            {
-                text : "Partager la carte",
-                callback : function() {
-                  modalShareRef.value.onModalShareOpen()
-                }
-            },
-            {
-                text : "Ajouter des données",
-                callback : () => {
-                  mapStore.getmenuCatalogueButton().firstChild.click()
-                }
-            }
-          ]
-}})
+    contextMenuItemsOptions : [            
+      {
+        text : "Imprimer la carte",
+        callback : function() {
+          refModalPrint.value.onModalPrintOpen()
+        }
+      },
+      {
+        text : "Partager la carte",
+        callback : function() {
+          refModalShare.value.onModalShareOpen()
+        }
+      },
+      {
+        text : "Ajouter des données",
+        callback : () => {
+          mapStore.getmenuCatalogueButton().firstChild.click()
+        }
+      }
+    ]
+  }
+})
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
 >>> sinon, visibility:false
 -->
 <template>
-  <!-- <Share
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Share.id)"
-    :share-options="useControlsExtensionPosition()().shareOptions"
-  /> -->
-  <!-- <Print
-    v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Print.id)"
-    :print-options="printOptions"
-    :map-id="mapId"
-  /> -->
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"

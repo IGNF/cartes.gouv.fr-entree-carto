@@ -14,16 +14,11 @@ export default {};
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
-import TextCopyToClipboard from '@/components/utils/TextCopyToClipboard.vue'
+import TextCopyToClipboard from '@/components/utils/TextCopyToClipboard.vue';
 
 const eulerian = useEulerian();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
-
-// paramètres du composant bouton
-const btnTitle = "Ouvrir le panneau de partage de carte";
-const btnIcon = "fr-icon-link"; // FIXME icone de partage dsfr !?
-const btnLabel = "";
 
 // paramètres du composant de la modale
 const title = "Partager une carte";

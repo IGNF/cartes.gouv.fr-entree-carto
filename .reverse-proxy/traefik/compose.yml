@@ -1,0 +1,48 @@
+services:
+
+    mkcert:
+
+        image: vishnunair/docker-mkcert
+        container_name: mkcert
+        environment:
+          - domain=docker.localhost,*.docker.localhost
+        volumes:
+          - ./certs/:/root/.local/share/mkcert
+        labels:
+          - "traefik.enable=false"
+        networks:
+          - web_dev
+
+    traefik:
+        image: traefik:latest
+        container_name: traefik
+        ports:
+          - "8080:80"
+          - "443:443"
+        #     - "8080:8080"
+
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - $PWD/traefik.toml:/etc/traefik/traefik.toml
+          - $PWD/dynamic.toml:/etc/traefik/dynamic.toml
+          - $PWD/acme.json:/acme.json
+          - $PWD/certs:/etc/ssl
+
+        restart: always
+        networks:
+          - web_dev
+        extra_hosts:
+          - host.docker.internal:host-gateway
+        depends_on:
+          - mkcert
+        labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.traefik.rule=Host(`docker.localhost`)"
+          - "traefik.http.routers.traefik.entrypoints=https"
+          - "traefik.http.routers.traefik.tls=true"
+          - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+          - "traefik.http.routers.traefik.entrypoints=websecure"
+
+networks:
+  web_dev:
+    external: true

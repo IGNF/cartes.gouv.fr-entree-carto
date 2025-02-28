@@ -3,25 +3,38 @@ version: "3.7"
 services:
 
     # build du projet :
-    # > docker image build -f .docker/Dockerfile --tag cartes.gouv.fr-entree-carto:latest .
-    # > docker run -d --restart=always  -p 8082:8082 cartes.gouv.fr-entree-carto:latest
-    run:
+    # > docker image build -f .docker/Dockerfile --tag cartesgouvfr-entree_carto:latest .
+    # > docker run -d -p 8082:8082 cartes.gouv.fr-entree-carto:latest
+    # ou 
+    # > docker-compose -f .docker/docker-compose.yml up --build -d
+    # proxy pour npm :
+    # --build-arg HTTP_PROXY=http://proxy.ign.fr:3128 
+    # --build-arg HTTPS_PROXY=http://proxy.ign.fr:3128 
+    # surcharge des env :
+    # --build-arg MODE_ENV=stage
+    # --build-arg BASE_URL=/cartes
+    entree_carto:
         build:
             context: ..
             dockerfile: ./.docker/Dockerfile
             args:
               BASE_URL: "/cartes"
-              MODE_ENV: "production"
-        image: cartes.gouv.fr-entree-carto:latest
-        container_name: cartes.gouv.fr-entree-carto
+              MODE_ENV: "stage"
+              HTTP_PROXY: "http://proxy.ign.fr:3128"
+              HTTPS_PROXY: "http://proxy.ign.fr:3128"
+        image: ignf/cartes.gouv.fr-carto:latest
+        container_name: cartesgouvfr-entree_carto
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
         ports:
+        # - HOST:CONTAINER
           - 8082:8082
         networks:
-          - cartes.gouv.fr-network
+          - web_dev
 
 networks:
-  cartes.gouv.fr-network:
-    name: cartes.gouv.fr-network
-    driver: bridge
-    ipam:
-      driver: default
+    web_dev:
+        external: true

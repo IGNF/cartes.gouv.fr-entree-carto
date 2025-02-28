@@ -28,7 +28,6 @@ const props = defineProps({
     visibility: Boolean
 })
 
-
 const icon = props.icon
 
 const emit = defineEmits(['tabClicked'])
@@ -70,7 +69,7 @@ function closeLeftPanels() {
 
 function clickButton() {
   console.log("click on button" + props.id)
-  button.click()
+  button.value.children[0].click()
 }
 const button = ref(null)
 const id = ref(props.id)
@@ -87,12 +86,8 @@ onMounted(() => {
 })
 </script>
 
-
-
 <template>
-  <div
-  ref="button"
-  >
+  <div ref="button">
     <DsfrButton
       :id="id"
       secondary
@@ -105,8 +100,6 @@ onMounted(() => {
   </div>
 
 </template>
-
-
 
 <style scoped lang="scss">
 .noclick {

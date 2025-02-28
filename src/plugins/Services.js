@@ -1,16 +1,18 @@
 import { inject } from 'vue';
-import Services from '@/services/Services';
+
+import { serviceFactotyCreate } from '@/services/ServiceFactory';
 
 const servicesSymbol = Symbol('vue-services-plugin');
 
-export class PluginServices extends Services {
+export class PluginServices {
+
   /**
    * constructeur
    * @param {*} options
    */
   constructor(options) {
     console.debug("connexion", options);
-    super(options);
+    this.instance = serviceFactotyCreate(options);
   }
 
   /**
@@ -20,7 +22,7 @@ export class PluginServices extends Services {
   install(app) {
     app.provide(servicesSymbol, this);
     app.config.globalProperties.$services = this;
-    app.provide('services', this);
+    app.provide('services', this.instance);
   }
 }
 

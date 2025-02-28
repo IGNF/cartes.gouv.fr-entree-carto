@@ -36,6 +36,8 @@ onMounted(() => {
       var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
       useActionButtonEulerian(el);
     }
+    /* abonnement au widget */
+    territories.value.on("territories:change", onChangeTerritories);
   }
 })
 
@@ -53,9 +55,19 @@ onUpdated(() => {
       var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
       useActionButtonEulerian(el);
     }
+    /* abonnement au widget */
+    territories.value.on("territories:change", onChangeTerritories);
   }
 })
 
+/** 
+ * gestionnaire d'evenement sur les abonnements
+ * @description
+ * ...
+ */
+ const onChangeTerritories = (e) => {
+  log.debug(e);
+}
 </script>
 
 <template>

@@ -359,7 +359,8 @@ export function useControlsExtensionPosition() {
     measureAzimuthOptions : 'top-right',
     elevationPathOptions : 'top-right',
     layerImportOptions : 'top-right',
-    mousePositionOptions : 'top-right'
+    mousePositionOptions : 'top-right',
+    drawingOptions : 'top-right'
   }
 }
 
@@ -401,6 +402,11 @@ export function useControlsPosition() {
     leftC.push(useControls.ReverseGeocode.id)
   if (useControlsExtensionPosition().reverseGeocodeOptions.includes("right"))
     rightC.push(useControls.ReverseGeocode.id) 
+  // ReverseGeocode
+  if (useControlsExtensionPosition().drawingOptions.includes("left"))
+    leftC.push(useControls.Drawing.id)
+  if (useControlsExtensionPosition().drawingOptions.includes("right"))
+    rightC.push(useControls.Drawing.id)
   // GetFeatureInfo
   if (useControlsExtensionPosition().getFeatureInfoOptions.includes("left"))
     leftC.push(useControls.GetFeatureInfo.id)
