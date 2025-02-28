@@ -43,6 +43,8 @@ On recharge la spa à cause de la validation sso avec redirection vers
   main : isAccessValided ( authentication_failed=1 ) === error -> mount --> /?from=login&success=0
 ```
 
+---
+
 On clique sur 'Se deconnecter'
 `/logout :  cartes.gouv.fr/logout/?app=entree-carto -> appel sso --> redirect`
 

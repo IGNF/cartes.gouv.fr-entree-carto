@@ -41,10 +41,6 @@ class ServiceRemote extends ServiceBase {
       if (parseInt(auth_success, 10)) {
         this.authenticated = true;
         status = "login";
-        // TODO 
-        // on met en place une serie de promise chainées :
-        // - getUserMe
-        // - getDocuments
         promise = this.getUserMe()
           .then((user) => {
             console.debug(user);
@@ -72,9 +68,7 @@ class ServiceRemote extends ServiceBase {
             throw new Error('Error to get user info (' + e.message + ')');
           });
       } else {
-        promise = new Promise((resolve, reject) => {
-          reject("Erreur inattendue !");
-        });
+        promise = Promise.reject("Erreur inattendue !");
       }
     }
 
@@ -85,15 +79,11 @@ class ServiceRemote extends ServiceBase {
       this.documents = {};
       this.error = {};
       status = "logout";
-      promise = new Promise((resolve, reject) => {
-        resolve(status);
-      });
+      promise = Promise.resolve(status);
     }
     
     if (auth_failed !== null) {
-      promise = new Promise((resolve, reject) => {
-        reject("Erreur inattendue !");
-      });
+      promise = Promise.reject("Erreur inattendue !");
     }
     
     // enregistrement dans le storage du statut de la connexion
@@ -101,13 +91,17 @@ class ServiceRemote extends ServiceBase {
     return promise || Promise.resolve(status);
   }
 
-  async getAccessLogin () {
-    return IAM_REDIRECT_REMOTE + "/login?app=entree-carto";
+  async getAccessLogin() {
+    return `${IAM_REDIRECT_REMOTE}/login?app=entree-carto`;
   }
-  async getAccessLogout () {
-    return IAM_REDIRECT_REMOTE + "/logout?app=entree-carto";
+
+  async getAccessLogout() {
+    return `${IAM_REDIRECT_REMOTE}/logout?app=entree-carto`;
   }
-  async getAccessToken () {}
+
+  async getAccessToken() {
+    // Implémentation de la méthode getAccessToken si nécessaire
+  }
 }
 
 export default ServiceRemote;
