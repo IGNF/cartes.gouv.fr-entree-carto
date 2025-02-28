@@ -42,21 +42,34 @@ export const useDataStore = defineStore('data', () => {
       const edito = await editoRes.json();
       const priv = await privateRes.json();
 
-      const editoWithTech = Object.fromEntries(Object.keys(edito.layers).map(id => {
-        return [id, {
-          ...tech.layers[id],
-          ...priv.layers[id],
-          ...edito.layers[id]
-        }]
-      }));
+      const editoWithTech = Object.fromEntries(
+        Object.keys(edito.layers).map(id => {
+          // si l'id de la couche dans edito a bien une correspondance dans tech ou private
+          if (tech.layers.hasOwnProperty(id) || priv.layers.hasOwnProperty(id)) {
+            // on rajoute les info edito à l'entrée
+            return [id, {
+              ...tech.layers[id],
+              ...priv.layers[id],
+              ...edito.layers[id]
+            }]
+          } else {
+            // sinon on supprime l'entrée edito avec le filter
+            return undefined;
+          }
+      }).filter(entry => entry));
 
+      // on fusionne tech et priv avec l'objet edito nettoyé
       const res = {
         ...tech.layers,
         ...priv.layers,
         ...editoWithTech
-      }; // merge
-      // ajoute la clé aux props
+      };
+
+      // ajoute la clé aux propriétés
       Object.keys(res).map((key) => { 
+        // On filtre les couches : 
+        // - on garde celle qui correspondent à un des filterServices
+        // - on supprime celles qui possèdent une des filterProjections
         if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service))
           && !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))
         {
