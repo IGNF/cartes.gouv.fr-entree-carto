@@ -28,6 +28,17 @@ Etapes
 * dans le dossier **/.reverse-proxy/nginx/** du projet **cartes.gouv.fr-entree-carto** : `docker-compose -f docker-compose.yml up --build`
   > creation du container : `cartesgouvfr-nginx_proxy:80`
 
+## Problemes
+
+L'appel de `localhost:1234 (nginx)` redirige correctement vers la route de cartesgouvfr
+L'appel de `localhost:1234/cartes (nginx)` redirige correctement vers la route de cartesgouvfr-entree_carto
+
+La connexion 'Se connecter' de cartesgouvfr-entree_carto redirige vers `localhost:1234/login/?app)entree-carto` pour le sso.
+Mais la validation sso ne redirige pas correctement la réponse vers `localhost:1234/cartes/login/?success=1` mais `localhost:9092/cartes/login/?success=1` !?
+
+Donc, dans les config, on force à utiliser `localhost:1234`...
+Pas mieux, la réponse du sso est une redirection vers... `http://cartesgouvfr-app_dev-1:8000/` !?
+
 ## Env
 
 * cartes.gouv.fr-entree-carto :

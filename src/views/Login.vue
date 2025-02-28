@@ -21,6 +21,7 @@ onMounted(() => {
   var code = urlParams.get('code');
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
+  var success = urlParams.get('success'); // remote
   var auth = urlParams.get('authentication_failed'); // remote
 
   // Si aucun parametre de session dans l'URL de la route '/login',
@@ -36,15 +37,19 @@ onMounted(() => {
   // IAM authentification redirige vers la route '/login' aprés validation
   // Et, elle fournit 
   // * le 'code' et la 'session' dans l'url pour le mode 'local'
-  // * 'authentication_failed' pour le mode 'remote'
+  // * 'authentication_failed' ou 'success' pour le mode 'remote'
   // Puis, on revient dans l'application !
+  var value = 0;
   if (service.mode === "local" && code && session && state) {
-    router.push({ path : '/',  query: { from : 'login', success : 1 } });
+    value = 1;
   } else if (service.mode === "remote" && auth !== null) {
-    router.push({ path : '/',  query: { from : 'login', success : auth } });
+    value = parseInt(auth, 10);
+  } else if (service.mode === "remote" && success !== null) {
+    value = parseInt(success, 10);
   } else {
-    router.push({ path : '/',  query: { from : 'login', success : 0 } });
+    value = 0;
   }
+  router.push({ path : '/',  query: { from : 'login', success : value } });
 });
 
 </script>

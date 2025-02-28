@@ -30,13 +30,15 @@ onMounted(() => {
   }
   // IAM de deconnexion redirige vers la route '/logout' aprés validation
   // Et, elle fournit la 'session' en mode 'local' ou 'success' pour le mode 'remote'
+  var value = 0;
   if (service.mode === "local" && session) {
-    router.push({ path : '/', query : { from: 'lougout', success: 1 } });
+    value = 1;
   } else if (service.mode === "remote" && success !== null) {
-    router.push({ path : '/', query : { from: 'lougout', success: parseInt(success, 10) } });
+    value = parseInt(success, 10);
   } else {
-    router.push({ path : '/', query : { from: 'lougout', success: 0 } });
+    value = 0;
   }
+  router.push({ path : '/',  query: { from : 'logout', success : value } });
 });
 </script>
 

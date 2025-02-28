@@ -18,7 +18,7 @@ services:
             - https_proxy=${HTTPS_PROXY}
         ports:
         # - HOST:CONTAINER
-          - 1234:80
+          - 1234:1234
         networks:
           - web_dev
 

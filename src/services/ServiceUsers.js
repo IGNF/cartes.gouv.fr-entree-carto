@@ -41,7 +41,7 @@ var Users = {
    * @returns {Promise} - ...
    */
   getUserMe : async function () {
-    var response = await this.getFetch().fetch(`${this.api}/users/me`, {
+    var response = await this.getFetch()(`${this.api}/users/me`, {
       method: 'GET'
     });
     var data = await response.json();

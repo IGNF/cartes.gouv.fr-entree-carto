@@ -105,7 +105,7 @@ var SetDocuments = {
 
     console.debug(...formData)
 
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents/`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -198,7 +198,7 @@ var SetDocuments = {
     var body = this.documents[obj.type][idx];
     body.name = obj.name;
 
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${uuid}`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
       headers: {
         'Accept': 'application/json'
@@ -252,7 +252,7 @@ var SetDocuments = {
    */
   deleteDocument : async function (obj) {
     var uuid = obj.uuid;
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${uuid}`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'DELETE',
       headers: {
         'Accept': '*/*'

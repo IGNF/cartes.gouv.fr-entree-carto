@@ -106,7 +106,7 @@ var Documents = {
       "limit=100"
     ];
     var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents?${kvp}`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
       method: 'GET'
     });
     var data = await response.json();
@@ -133,7 +133,7 @@ var Documents = {
    * @returns {Promise} - Information du document
    */
   getDocumentById: async function (id) {
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${id}`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${id}`, {
       method: 'GET'
     });
     var data = await response.json();
@@ -193,7 +193,7 @@ var Documents = {
    * @returns {Promise} - Le contenu du fichier
    */
   getFileById: async function (id) {
-    var response = await this.getFetch().fetch(`${this.api}/users/me/documents/${id}/file`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
       method: 'GET'
     });
     var type = response.headers.get("content-type");

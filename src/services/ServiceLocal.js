@@ -17,6 +17,7 @@ const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
 class ServiceLocal extends ServiceBase {
 
   #client
+  #fetchWrapper
 
   constructor(options) {
     super(options);
@@ -34,6 +35,7 @@ class ServiceLocal extends ServiceBase {
 
     // variables à instancier !
     this.#client = null;
+    this.#fetchWrapper = null;
 
     this.api = IAM_ENTREPOT_API_URL;
     
@@ -61,7 +63,7 @@ class ServiceLocal extends ServiceBase {
   
     this.#client = new OAuth2Client(settings);
 
-    var fetchWrapper = new OAuth2Fetch({
+    this.#fetchWrapper = new OAuth2Fetch({
       client: this.#client,
       scheduleRefresh: true,
       getNewToken: async () => {
@@ -91,7 +93,7 @@ class ServiceLocal extends ServiceBase {
       }
     });
 
-    this.setFetch(fetchWrapper);
+    this.setFetch(this.#fetchWrapper.fetch);
   }
 
   /**
@@ -342,7 +344,7 @@ class ServiceLocal extends ServiceBase {
     const today = new Date(token.expiresAt);
     console.debug("expires token", today);
 
-    this.getFetch().token = token; // HACK !?
+    this.#fetchWrapper.token = token; // HACK !?
 
     var store = useServiceStore();
     store.setService(this);
