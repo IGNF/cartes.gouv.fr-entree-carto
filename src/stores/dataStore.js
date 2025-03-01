@@ -56,19 +56,22 @@ export const useDataStore = defineStore('data', () => {
         ...editoWithTech
       }; // merge
       // ajoute la clé aux props
-      Object.keys(res).map((key) => { 
-        if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service))
-          && !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))
+      Object.keys(res).map((key) => {
+        if (!res[key]) {
+          return
+        }
+        if(res[key].serviceParams && 
+          filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) && 
+          !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))
         {
           res[key].key = key;
           let ret = {};
           ret[key] = res[key];
           return ret;
-      }
-      else  {
-        delete res[key];
-      }
-      })
+        } else  {
+          delete res[key];
+        }
+      });
 
       m_territories.value = edito.territories;
       m_contacts.value = edito.contacts;
