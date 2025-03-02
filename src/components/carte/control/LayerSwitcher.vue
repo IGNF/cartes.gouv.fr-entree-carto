@@ -280,7 +280,7 @@ const onClickEditLayer = (e) => {
   // mais, attention dès que le dessin est enregistré, l'id est modifié :
   //  ex. gpResultLayerId = bookmark:drawing-kml:UUID
 
-  var gpId = e.layer.gpResultLayerId;
+  var gpId = e.layer.gpResultLayerId.toLowerCase();
   if (gpId) {
     // on liste tous les cas de figures possibles pour un vecteur à éditer
     if (gpId.toLowerCase().includes("drawing") || 

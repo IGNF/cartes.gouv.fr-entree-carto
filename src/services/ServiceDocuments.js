@@ -107,7 +107,10 @@ var Documents = {
     ];
     var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
     var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "X-Requested-With" : "XMLHttpRequest"
+      }
     });
     var data = await response.json();
     this.documents[label] = data;
@@ -134,7 +137,10 @@ var Documents = {
    */
   getDocumentById: async function (id) {
     var response = await this.getFetch()(`${this.api}/users/me/documents/${id}`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "X-Requested-With" : "XMLHttpRequest"
+      }
     });
     var data = await response.json();
 
@@ -194,7 +200,10 @@ var Documents = {
    */
   getFileById: async function (id) {
     var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "X-Requested-With" : "XMLHttpRequest"
+      }
     });
     var type = response.headers.get("content-type");
     var data = null;

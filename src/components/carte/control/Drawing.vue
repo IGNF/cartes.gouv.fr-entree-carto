@@ -114,6 +114,23 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
   }
+  // INFO
+  // on sauvegarde / exporte au format natif
+  var gpId = e.layer.gpResultLayerId.toLowerCase();
+  if (gpId) {
+    var format;
+    if (gpId.includes("drawing")) {
+      format = "kml";
+    } else if (gpId.includes("geojson")) {
+      format = "geojson";
+    } else if (gpId.includes("gpx")) {
+      format = "gpx";
+    } else {
+      format = "kml";
+    }
+    btnExport.value.setFormat(format);
+    btnSave.value.setFormat(format);
+  }
 });
 
 /**

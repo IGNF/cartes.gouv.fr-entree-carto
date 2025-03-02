@@ -109,7 +109,8 @@ var SetDocuments = {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        // FIXME 'Content-Type': 'application/x-www-form-urlencoded' or 'multipart/form-data' ?
+        "X-Requested-With" : "XMLHttpRequest",
+        'Content-Type': 'application/x-www-form-urlencoded' // 'multipart/form-data' ?
       },
       body: formData
     });
@@ -201,7 +202,8 @@ var SetDocuments = {
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest"
       },
       body: JSON.stringify(body)
     });
@@ -255,7 +257,8 @@ var SetDocuments = {
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'DELETE',
       headers: {
-        'Accept': '*/*'
+        'Accept': '*/*',
+        "X-Requested-With" : "XMLHttpRequest"
       }
     });
 
