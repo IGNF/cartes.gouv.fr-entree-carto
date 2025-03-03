@@ -119,14 +119,14 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   var gpId = e.layer.gpResultLayerId.toLowerCase();
   if (gpId) {
     var format;
-    if (gpId.includes("drawing")) {
+    if (gpId.includes("drawing") || gpId.includes("kml")) {
       format = "kml";
     } else if (gpId.includes("geojson")) {
       format = "geojson";
     } else if (gpId.includes("gpx")) {
       format = "gpx";
     } else {
-      format = "kml";
+      format = "kml"; // par defaut ?
     }
     btnExport.value.setFormat(format);
     btnSave.value.setFormat(format);
@@ -183,17 +183,48 @@ const onSaveVector = (e) => {
     return; // pas plus loin...
   }
 
-  var type = e.layer.gpResultLayerId.toLowerCase().split(':')[0]; // ex. drawing
+  var gpID = e.layer.gpResultLayerId.toLowerCase();
+  var type = gpID.split(':')[0];
+  
   var data = {
     layer : e.layer,
     content : e.content,
     name : btnExport.value.inputName.value || e.name,
     description : e.description,
     format : e.format.toLowerCase(),
-    type : type
+    type : gpID.split(':')[0] // ex. drawing, import, ...
   };
 
-  service.setDocument(data)
+  var promise;
+  if (type !== "bookmark") {
+    promise = createVectorDocument(data);
+  } else {
+    // INFO
+    // mise à jour, il existe donc un uuid dans l'ID de la couche
+    var uuid = gpID.split(':')[2];
+    data.uuid = uuid;
+    promise = updateVectorDocument(uuid, data);
+  }
+  
+  promise
+  .then(() => {
+    // notification
+    push.success({
+      title: t.drawing.title,
+      message: t.drawing.save_success
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.drawing.title,
+      message: t.drawing.save_failed
+    });
+  });
+}
+
+const createVectorDocument = (data) => {
+  return service.setDocument(data)
   .then((o) => {
     // mise à jour du permalien
     mapStore.addBookmark(o.uuid);
@@ -223,22 +254,31 @@ const onSaveVector = (e) => {
         div.title = data.description;
       }  
     }
-  })
-  .then(() => {
-    // notification
-    push.success({
-      title: t.drawing.title,
-      message: t.drawing.save_success
-    });
-  })
-  .catch((error) => {
-    console.error(error);
-    push.error({
-      title: t.drawing.title,
-      message: t.drawing.save_failed
-    });
   });
 }
+const updateVectorDocument = (data) => {
+  return service.updateDocument(data)
+  .then((o) => {
+    // emettre un event pour prévenir l'ajout d'un croquis 
+    // au composant des favoris
+    emitter.dispatchEvent("document:updated", {
+      uuid : o.uuid,
+      action : o.action // added, updated, deleted
+    });
+    return o;
+  })
+  .then(() => {
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (data.layer.gpResultLayerDiv) {
+      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = data.name;
+        div.title = data.description;
+      }  
+    }
+  });
+}
+
 /**
  * Gestionnaire d'evenement
  * 

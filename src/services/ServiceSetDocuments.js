@@ -90,27 +90,30 @@ var SetDocuments = {
     const formData = new FormData();
     formData.append("name", obj.name);
     formData.append("description", obj.description);
-    formData.append("labels", this.tag);
-    formData.append("labels", obj.type);
-    formData.append("labels", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
-    formData.append("extra", {
+    formData.append("labels[]", this.tag);
+    formData.append("labels[]", obj.type);
+    formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
+    formData.append("extra", JSON.stringify({
       format: obj.format.toLowerCase(),
       target: "internal",
       date: new Date().toLocaleDateString()
-    }); // FIXME string ou json ?
+    }));
 
     const content = obj.content;
     const blob = new Blob([content], { type: this.getMimeType(obj.format) });
     formData.append("file", blob); // FIXME blob ou text ?
 
-    console.debug(...formData)
+    // Débogage du contenu de formData
+    for (let pair of formData.entries()) {
+      console.debug(pair[0]+ ': ' + pair[1]);
+    }
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         "X-Requested-With" : "XMLHttpRequest",
-        'Content-Type': 'application/x-www-form-urlencoded' // 'multipart/form-data' ?
+        // 'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formData
     });
@@ -153,11 +156,54 @@ var SetDocuments = {
    * 
    * @param {*} obj
    * @property {String} obj.uuid - ...
+   * @property {String} obj.content - export
+   * @property {String} obj.format - format : kml, geojson, ...
    * @property {String} obj.type - drawing, import, ...
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   updateDocument : async function (obj) {
-    return Promise.resolve();
+    // uuid
+    var uuid = obj.uuid;
+
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+
+    const formData = new FormData();
+    const blob = new Blob([obj.content], { type: this.getMimeType(obj.format) });
+    formData.append("file", blob); // FIXME blob ou text ?
+
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest",
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "updated"
+    };
   },
 
   /**

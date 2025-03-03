@@ -170,7 +170,7 @@ var Documents = {
           document.description = data.description;
           document.mime_type = data.mime_type;
           document.extra = {
-            ...extra(data.labels),
+            ...extra(data.labels), // FIXME les extras additionnels ne sont pas enregistrés sur l'entrepot !
             ...data.extra
           };
           founded = true;
