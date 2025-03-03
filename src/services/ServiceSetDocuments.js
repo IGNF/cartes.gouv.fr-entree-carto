@@ -90,9 +90,22 @@ var SetDocuments = {
     const formData = new FormData();
     formData.append("name", obj.name);
     formData.append("description", obj.description);
-    formData.append("labels[]", this.tag);
-    formData.append("labels[]", obj.type);
-    formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
+
+    const labels = [
+      this.tag, 
+      obj.type, 
+      this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e))
+    ];
+    formData.append("labels", labels.join(","));
+
+    // FIXME
+    // ça ne marche pas !?
+    // formData.append("labels[]", this.tag);
+    // formData.append("labels[]", obj.type);
+    // formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
+    
+    // FIXME 
+    // le champ extra n'est pas pris en compte par l'API Entrepot !?
     formData.append("extra", JSON.stringify({
       format: obj.format.toLowerCase(),
       target: "internal",
@@ -108,7 +121,7 @@ var SetDocuments = {
       console.debug(pair[0]+ ': ' + pair[1]);
     }
 
-    var response = await this.getFetch()(`${this.api}/users/me/documents/`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -142,7 +155,7 @@ var SetDocuments = {
   },
 
   /**
-   * Mettre à jour du document
+   * Mettre à jour un document
    * 
    * Appels de l'API Entrepôt :
    * - PUT /users/me/documents/{document}
@@ -151,6 +164,7 @@ var SetDocuments = {
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
+   * @fixme On ne peut pas mettre à jour le contenu d'un document avec le PUT pour le mode remote !
    * @example
    * ...
    * 
@@ -177,7 +191,7 @@ var SetDocuments = {
     formData.append("file", blob); // FIXME blob ou text ?
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
-      method: 'POST',
+      method: (this.mode === 'local') ? 'PUT' : 'POST', // HACK : PUT ou POST
       headers: {
         'Accept': 'application/json',
         "X-Requested-With" : "XMLHttpRequest",
