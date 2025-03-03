@@ -2,7 +2,7 @@
   /**
    * @description
    * ...
-   * @property {Object} layers
+   * @property {Array} layers Le tableau des layers ordonnés
    * @property {Object} selectedLayers
    * @property {String} listName
    * @see LayerCatalogue
@@ -16,7 +16,7 @@
 import LayerCatalogue from "@/components/menu/catalogue/LayerCatalogue.vue"
 
 const props = defineProps({
-    layers: Object,
+    layers: Array,
     selectedLayers: Object,
     listName: String
 });
