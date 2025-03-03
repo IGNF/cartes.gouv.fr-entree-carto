@@ -200,10 +200,14 @@ const onSaveVector = (e) => {
     promise = createVectorDocument(data);
   } else {
     // INFO
-    // mise à jour, il existe donc un uuid dans l'ID de la couche
+    // mise à jour, l'ID de la couche fournit 
+    // - un uuid 
+    // - le type
     var uuid = gpID.split(':')[2];
+    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = type;
     data.uuid = uuid;
-    promise = updateVectorDocument(uuid, data);
+    promise = updateVectorDocument(data);
   }
   
   promise
