@@ -155,7 +155,7 @@ var SetDocuments = {
   },
 
   /**
-   * Mettre à jour un document
+   * Mettre à jour un document (Geometrie)
    * 
    * Appels de l'API Entrepôt :
    * - PUT /users/me/documents/{document}
@@ -175,7 +175,7 @@ var SetDocuments = {
    * @property {String} obj.type - drawing, import, ...
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
-  updateDocument : async function (obj) {
+  updateGeometryDocument : async function (obj) {
     // uuid
     var uuid = obj.uuid;
 
@@ -209,6 +209,70 @@ var SetDocuments = {
 
     // enregistrer la réponse
     this.documents[obj.type][idx] = data;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "updated"
+    };
+  },
+
+  /**
+   * Mettre à jour un document (extra)
+   * 
+   * Appels de l'API Entrepôt :
+   * - PUT /users/me/documents/{document}
+   * 
+   * Actions :
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
+   * - retourner le UUID et le type d'action
+   * 
+   * @example
+   * ...
+   * 
+   * @param {*} obj
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.extra - { format : kml, geojson, ... }
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   * @param {*} obj 
+   */
+  updateMetadataDocument : async function (obj) {
+    var uuid = obj.uuid;
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+    // construction du body
+    var body = this.documents[obj.type][idx];
+    body.extra = obj.extra;
+
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest"
+      },
+      body: JSON.stringify(body)
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200 && response.status !== 201) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // uuid
+    var uuid = data._id;
 
     // mise à jour du store
     var store = useServiceStore();

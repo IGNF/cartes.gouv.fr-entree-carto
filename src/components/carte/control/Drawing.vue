@@ -227,29 +227,57 @@ const onSaveVector = (e) => {
   });
 }
 
-const createVectorDocument = (data) => {
-  return service.setDocument(data)
-  .then((o) => {
+const createVectorDocument = async (data) => {
+  try {
+    const o = await service.setDocument(data)
+    var uuid = o.uuid;
+    var action = o.action;
+
     // mise à jour du permalien
-    mapStore.addBookmark(o.uuid);
-    return o;
-  })
-  .then((o) => {
+    mapStore.addBookmark(uuid);
+    
+    // mise à jour de l'id interne de la couche
+    if (data.layer.gpResultLayerId) {
+      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${uuid}`;
+    }
+    
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (data.layer.gpResultLayerDiv) {
+      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = data.name;
+        div.title = data.description;
+      }  
+    }
+
+    // mise à jour des metadata du document
+    // await service.updateMetadataDocument({
+    //   uuid : uuid,
+    //   type : data.type,
+    //   extra : {
+    //     format: data.format.toLowerCase(),
+    //     target: "internal",
+    //     date: new Date().toLocaleDateString()
+    //   }
+    // });
+
     // emettre un event pour prévenir l'ajout d'un croquis
     // au composant des favoris
     emitter.dispatchEvent("document:saved", {
-      uuid : o.uuid,
-      action : o.action // added, updated, deleted
+      uuid : uuid,
+      action : action // added, updated, deleted
     });
-    return o;
-  })
-  .then((o) => {
-    // mise à jour de l'id interne de la couche
-    if (data.layer.gpResultLayerId) {
-      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${o.uuid}`;
-    }
-  })
-  .then(() => {
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+const updateVectorDocument = async (data) => {
+  try {
+    const o = await service.updateGeometryDocument(data);
+    var uuid = o.uuid;
+    var action = o.action;
+
     // mise à jour de l'entrée du gestionnaire de couche
     if (data.layer.gpResultLayerDiv) {
       var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
@@ -258,29 +286,29 @@ const createVectorDocument = (data) => {
         div.title = data.description;
       }  
     }
-  });
-}
-const updateVectorDocument = (data) => {
-  return service.updateDocument(data)
-  .then((o) => {
+
+    // mise à jour des metadata du document
+    // await service.updateMetadataDocument({
+    //   uuid : uuid,
+    //   type : data.type,
+    //   extra : {
+    //     format: data.format.toLowerCase(),
+    //     target: "internal",
+    //     date: new Date().toLocaleDateString()
+    //   }
+    // });
+
     // emettre un event pour prévenir l'ajout d'un croquis 
     // au composant des favoris
     emitter.dispatchEvent("document:updated", {
-      uuid : o.uuid,
-      action : o.action // added, updated, deleted
+      uuid : uuid,
+      action : action // added, updated, deleted
     });
-    return o;
-  })
-  .then(() => {
-    // mise à jour de l'entrée du gestionnaire de couche
-    if (data.layer.gpResultLayerDiv) {
-      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
-      if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
-      }  
-    }
-  });
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 /**

@@ -458,7 +458,7 @@ const buttonsData = [
 }
 
 
-// FIXME ne marche pas !?
+/* FIXME ne marche pas !? */
 .bookmark-button-container-advanced {
   margin: unset;
   box-shadow: unset;
