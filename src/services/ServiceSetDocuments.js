@@ -177,7 +177,7 @@ var SetDocuments = {
     formData.append("file", blob); // FIXME blob ou text ?
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         "X-Requested-With" : "XMLHttpRequest",

@@ -1,6 +1,6 @@
 # Les vues principales (routes)
 
-## Déroulement de l'authentification
+## Les routes de l'authentification
 
 Lors de l'authentification, les routes '/', '/login' et '/logout' sont utilisée.
 
@@ -29,7 +29,7 @@ La méthode publique `service.isAccessValided()` permet de valider l'authentific
 
 Le mode d'authentification distante fonctionne sur le même principe avec quelques particularités
 
-**Se connecter** :
+1. **Se connecter** :
 
 - redirection vers la route de cartes.gouv.fr :
   `/login : Login.vue : mount() --> cartes.gouv.fr/login/?app=entree-carto -> appel sso --> redirect`
@@ -40,7 +40,7 @@ Le mode d'authentification distante fonctionne sur le même principe avec quelqu
 - échec de la validation :
   `/login?authentication_failed=1 -> Main.vue : service.isAccessValided ( authentication_failed=1 ) === login -> mount() --> /?from=login&success=0`
 
-**Se deconnecter** :
+2. **Se deconnecter** :
 
 - redirection vers la route de cartes.gouv.fr :
   `/logout : Logout.vue : mount() --> cartes.gouv.fr/logout/?app=entree-carto -> appel sso --> redirect`
