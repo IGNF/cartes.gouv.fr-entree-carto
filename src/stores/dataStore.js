@@ -11,6 +11,7 @@ import {
 export const useDataStore = defineStore('data', () => {
   const m_informations = ref({});
   const m_thematics = ref([]);
+  const m_producers = ref([]);
   const m_layers = ref({});
   const m_generalOptions = ref({});
   const m_tileMatrixSets = ref({});
@@ -42,15 +43,31 @@ export const useDataStore = defineStore('data', () => {
       const edito = await editoRes.json();
       const priv = await privateRes.json();
 
+      var themes = []
       const editoWithTech = Object.fromEntries(
         Object.keys(edito.layers).map(id => {
           // si l'id de la couche dans edito a bien une correspondance dans tech ou private
           if (tech.layers.hasOwnProperty(id) || priv.layers.hasOwnProperty(id)) {
+            // gestion des thematiques si c'est une string on tranforme en tableau
+            let ret = edito.layers[id];
+            if(edito.layers[id].hasOwnProperty("thematic") 
+              && typeof edito.layers[id].thematic == 'string'
+              && edito.layers[id].thematic.length > 0) {
+              themes.push(edito.layers[id].thematic)
+              ret.thematic = [edito.layers[id].thematic];
+            }
+            // gestion des producers si c'est une string on tranforme en tableau
+            if(edito.layers[id].hasOwnProperty("producer") 
+              && typeof edito.layers[id].producer == 'string'
+              && edito.layers[id].producer.length > 0) {
+              themes.push(edito.layers[id].producer)
+              ret.producer = [edito.layers[id].producer];
+            }
             // on rajoute les info edito à l'entrée
             return [id, {
               ...tech.layers[id],
               ...priv.layers[id],
-              ...edito.layers[id]
+              ...ret
             }]
           } else {
             // sinon on supprime l'entrée edito avec le filter
@@ -76,6 +93,9 @@ export const useDataStore = defineStore('data', () => {
           res[key].key = key;
           let ret = {};
           ret[key] = res[key];
+          // initialise les sans thématiques à Autres
+          if (!ret[key].hasOwnProperty("thematic")) { ret[key].thematic =  ["Autres"];}
+          if (!ret[key].hasOwnProperty("producer")) { ret[key].producer =  [];}
           return ret;
       }
       else  {
@@ -86,7 +106,6 @@ export const useDataStore = defineStore('data', () => {
       m_territories.value = edito.territories;
       m_contacts.value = edito.contacts;
       m_informations.value = edito.informations;
-      m_thematics.value = edito.thematics;
       m_featured.value = edito.featured || [];
       m_layers.value = res;
       m_generalOptions.value.apiKeys = {
@@ -94,6 +113,19 @@ export const useDataStore = defineStore('data', () => {
         ...priv.generalOptions.apiKeys
       }
       m_tileMatrixSets.value = tech.tileMatrixSets;
+
+      // Initialisation Objet thematiques
+      m_thematics.value = [...new Set(themes)].sort();
+      m_thematics.value.push("Autres");
+      m_thematics.value = m_thematics.value.map((thematic) => {
+        return [thematic, getLayersByThematic(m_layers.value, thematic)]
+      })
+      // Initialisation Objet producers
+      m_producers.value = [...new Set(themes)].sort();
+      m_producers.value = m_producers.value.map((producer) => {
+        return [producer, getLayersByProducer(m_layers.value, producer)]
+      })
+
       this.isLoaded = true;
       return res;
 
@@ -118,7 +150,50 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getThematics() {
-    return m_thematics.value;
+    return m_thematics;
+  }
+  function getLayersByThematic(layers, thematic) {
+    return Object.keys(layers).filter(key => layers[key].thematic.includes(thematic))
+    .map(layerID => {
+        let layerObj = {}
+        layerObj[layerID] = layers[layerID]
+        return layers[layerID]
+    })
+    .sort((a, b) => {
+      const nomA = a.title.toLowerCase();
+      const nomB = b.title.toLowerCase();
+      if (nomA < nomB) {
+          return -1;
+      }
+      if (nomA > nomB) {
+          return 1;
+      }
+      return 0;
+    })
+  }
+
+  function getProducers() {
+    return m_producers;
+  }
+
+  function getLayersByProducer(layers, producer) {
+    return Object.keys(layers).filter(key => layers[key].producer.includes(producer))
+    .map(layerID => {
+        let layerObj = {}
+        layerObj[layerID] = layers[layerID]
+        return layers[layerID]
+    })
+    .sort((a, b) => {
+      const nomA = a.title.toLowerCase();
+      const nomB = b.title.toLowerCase();
+      if (nomA < nomB) {
+          return -1;
+      }
+      if (nomA > nomB) {
+          return 1;
+      }
+      return 0;
+  })
   }
 
   function getFeatured() {
@@ -291,6 +366,7 @@ export const useDataStore = defineStore('data', () => {
     getContacts,
     getInformations,
     getThematics,
+    getProducers,
     getFeatured,
     getLayers,
     getLayersSignatures,
