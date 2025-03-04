@@ -126,7 +126,7 @@ export const useDataStore = defineStore('data', () => {
 
       // Initialisation Objet thematiques 
       // réduction à des valeurs uniques
-      m_thematics.value = [...new Set(themes)].sort();
+      m_thematics.value = [...new Set(themes)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
       m_thematics.value.push("Autres");
       // Les layers sont des copies de m_layers
       // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
@@ -135,7 +135,7 @@ export const useDataStore = defineStore('data', () => {
       })
       // Initialisation Objet producers
       // réduction à des valeurs uniques
-      m_producers.value = [...new Set(producers)].sort();
+      m_producers.value = [...new Set(producers)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
       // Les layers sont des copies de m_layers
       // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
       m_producers.value = m_producers.value.map((producer) => {
