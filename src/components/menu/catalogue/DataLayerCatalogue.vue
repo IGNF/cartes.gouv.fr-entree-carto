@@ -12,6 +12,7 @@
 </script>
 
 <script setup lang="js">
+import { useDataStore } from "@/stores/dataStore"
 
 const props = defineProps({
   dataLayers: Object,
@@ -19,75 +20,24 @@ const props = defineProps({
   selectedLayers: Object
 })
 
-const thematicDataLayers = computed(() => {
-  return getLayersByThematic(props.dataLayers);
+const dataStore = useDataStore();
+
+const thematics = computed(() => {
+  return dataStore.getThematics().value.map(thematic => {
+    const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
+    const ret = [thematic[0], layerArr]
+    return ret;
+  })
 })
 
-const producerDataLayers = computed(() => {
-  return getLayersByProducer(props.dataLayers);
-})
+const producers = computed(() => {
+  return dataStore.getProducers().value.map(thematic => {
+    const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
+    const ret = [thematic[0], layerArr]
+    return ret;
+  })
+});
 
-
-function getLayersByThematic(layers) {
-  let arr = [... new Set(Object.values(layers)
-    .filter((layer) => {
-      if (layer.hasOwnProperty("thematic") && layer.thematic.length > 0) {
-        return layer.thematic;
-      }
-    })
-    .map(layer => layer.thematic)
-  )]
-  .map((thematic) => {
-    return {
-      thematicLabel : thematic,
-      layers : Object.values(layers)
-          .filter(layer => layer.hasOwnProperty("thematic") && thematic === layer.thematic)
-          .map(layer => layer)
-    }
-  });
-  
-  arr.push({
-    thematicLabel : "Autres",
-    layers : Object.values(layers).filter((layer) => {
-        if(!layer.hasOwnProperty("thematic") || layer.thematic.length === 0) {
-          return layer;
-        }
-      })
-  });
-  
-  return arr;
-}
-
-function getLayersByProducer(layers) {
-  let arr = [... new Set(Object.values(layers)
-    .filter((layer) => {
-      if (layer.hasOwnProperty("producer") && layer.producer.length > 0) {
-        return layer.producer
-      }
-    })
-    .map(layer => layer.producer)
-  )]
-  .map((producer) => {
-    return {
-      producerLabel : producer,
-      layers : Object.values(layers)
-          .filter(layer => layer.hasOwnProperty("producer") && producer === layer.producer)
-          .map(layer => layer)
-    }
-  });
-  
-  arr.push({
-    producerLabel : "Autres",
-    layers : Object.values(layers)
-        .filter((l) => {
-          if(!l.hasOwnProperty("producer") || l.producer.length == 0) {
-            return l;
-          }
-        }),
-  });
-  
-  return arr;
-}
 const activeAccordion1 = ref(-1)
 const activeAccordion2 = ref(-1)
 
@@ -97,18 +47,18 @@ const activeAccordion2 = ref(-1)
   <div class="catalogue-content-with-radio-btn">
       <DsfrAccordionsGroup
         v-model="activeAccordion1">
-        <template v-for="(producer, idx) in producerDataLayers" :key="producer.producerLabel">
+        <template v-for="(producer, idx) in producers" :key="producer[0]">
           <div>
-            <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer.layers.length > 0"
+            <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer[1].length > 0"
           :id="idx"
-          :thematic-label="producer.producerLabel"
-          :layers-count="producer.layers.length"
-          :key="producer.producerLabel + '-menuCatalogueThematique'">
+          :thematic-label="producer[0]"
+          :layers-count="producer[1].length"
+          :key="producer[0] + '-menuCatalogueThematique'">
           <LayerList
-            :key="producer.producerLabel"
-            :list-name="producer.producerLabel"
+            :key="producer[0]"
+            :list-name="producer[0]"
             :selected-layers="selectedLayers"
-            :layers="producer.layers"/>
+            :layers="producer[1]"/>
           </MenuCatalogueThematique>
           </div>
           
@@ -117,20 +67,18 @@ const activeAccordion2 = ref(-1)
     
       <DsfrAccordionsGroup 
       v-model="activeAccordion2">
-        <template v-for="(thematic, idx) in thematicDataLayers" :key="thematic.thematicLabel">
+        <template v-for="(thematic, idx) in thematics" :key="thematic[0]">
           <div>
-            <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic.layers.length > 0"
+            <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic[1].length > 0"
             :id="idx"
-            :thematic-label="thematic.thematicLabel"
-            :layers-count="thematic.layers.length"
-            :key="thematic.thematicLabel + '-menuCatalogueThematique'">
-
-
+            :thematic-label="thematic[0]"
+            :layers-count="thematic[1].length"
+            :key="thematic[0] + '-menuCatalogueThematique'">
             <LayerList
-              :key="thematic.thematicLabel"
-              :list-name="thematic.thematicLabel"
+              :key="thematic[0]"
+              :list-name="thematic[0]"
               :selected-layers="selectedLayers"
-              :layers="thematic.layers"/>
+              :layers="thematic[1]"/>
             </MenuCatalogueThematique>
           </div>
         </template>
@@ -140,7 +88,7 @@ const activeAccordion2 = ref(-1)
         <LayerList 
           list-name="tout"
           :selected-layers="selectedLayers"
-          :layers="props.dataLayers.slice(0,10)"/>
+          :layers="props.dataLayers"/>
       </div>
     
   </div>
