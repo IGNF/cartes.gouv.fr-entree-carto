@@ -114,14 +114,20 @@ export const useDataStore = defineStore('data', () => {
       }
       m_tileMatrixSets.value = tech.tileMatrixSets;
 
-      // Initialisation Objet thematiques
+      // Initialisation Objet thematiques 
+      // réduction à des valeurs uniques
       m_thematics.value = [...new Set(themes)].sort();
       m_thematics.value.push("Autres");
+      // Les layers sont des copies de m_layers
+      // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
       m_thematics.value = m_thematics.value.map((thematic) => {
         return [thematic, getLayersByThematic(m_layers.value, thematic)]
       })
       // Initialisation Objet producers
-      m_producers.value = [...new Set(themes)].sort();
+      // réduction à des valeurs uniques
+      m_producers.value = [...new Set(producers)].sort();
+      // Les layers sont des copies de m_layers
+      // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
       m_producers.value = m_producers.value.map((producer) => {
         return [producer, getLayersByProducer(m_layers.value, producer)]
       })
