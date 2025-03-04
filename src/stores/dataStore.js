@@ -44,6 +44,7 @@ export const useDataStore = defineStore('data', () => {
       const priv = await privateRes.json();
 
       var themes = []
+      var producers = []
       const editoWithTech = Object.fromEntries(
         Object.keys(edito.layers).map(id => {
           // si l'id de la couche dans edito a bien une correspondance dans tech ou private
@@ -51,17 +52,26 @@ export const useDataStore = defineStore('data', () => {
             // gestion des thematiques si c'est une string on tranforme en tableau
             let ret = edito.layers[id];
             if(edito.layers[id].hasOwnProperty("thematic") 
-              && typeof edito.layers[id].thematic == 'string'
               && edito.layers[id].thematic.length > 0) {
-              themes.push(edito.layers[id].thematic)
-              ret.thematic = [edito.layers[id].thematic];
+                if (typeof edito.layers[id].thematic == 'string') {
+                  // this line convert the thematic in array donc passe aussi dans la condition suivante
+                  ret.thematic = [edito.layers[id].thematic];
+                }
+                if (Array.isArray(edito.layers[id].thematic)) {
+                  themes.push(...edito.layers[id].thematic)
+                }
+
             }
             // gestion des producers si c'est une string on tranforme en tableau
-            if(edito.layers[id].hasOwnProperty("producer") 
-              && typeof edito.layers[id].producer == 'string'
+            if(edito.layers[id].hasOwnProperty("producer")
               && edito.layers[id].producer.length > 0) {
-              themes.push(edito.layers[id].producer)
-              ret.producer = [edito.layers[id].producer];
+                if (typeof edito.layers[id].producer == 'string') {
+                  // this line convert the thematic in array donc passe aussi dans la condition suivante
+                  ret.producer = [edito.layers[id].producer];
+                }
+                if (Array.isArray(edito.layers[id].producer)) {
+                  producers.push(...edito.layers[id].producer)
+                }
             }
             // on rajoute les info edito à l'entrée
             return [id, {
@@ -165,17 +175,7 @@ export const useDataStore = defineStore('data', () => {
         layerObj[layerID] = layers[layerID]
         return layers[layerID]
     })
-    .sort((a, b) => {
-      const nomA = a.title.toLowerCase();
-      const nomB = b.title.toLowerCase();
-      if (nomA < nomB) {
-          return -1;
-      }
-      if (nomA > nomB) {
-          return 1;
-      }
-      return 0;
-    })
+    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
   }
 
   function getProducers() {
@@ -189,17 +189,7 @@ export const useDataStore = defineStore('data', () => {
         layerObj[layerID] = layers[layerID]
         return layers[layerID]
     })
-    .sort((a, b) => {
-      const nomA = a.title.toLowerCase();
-      const nomB = b.title.toLowerCase();
-      if (nomA < nomB) {
-          return -1;
-      }
-      if (nomA > nomB) {
-          return 1;
-      }
-      return 0;
-  })
+    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
   }
 
   function getFeatured() {
