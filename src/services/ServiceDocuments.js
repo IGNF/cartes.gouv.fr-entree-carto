@@ -61,6 +61,21 @@ var Documents = {
   ],
 
   /**
+   * Verifier si aucun document n'est disponible
+   * 
+   * @returns {Boolean} - Vrai si aucun document n'est disponible
+   */
+  isEmpty: function () {
+    for (let index = 0; index < this.labels.length; index++) {
+      const label = this.labels[index];
+      if (this.documents[label] && this.documents[label].length > 0) {
+        return false;
+      }
+    }
+    return true;
+  },
+
+  /**
    * Obtenir la liste des documents
    * 
    * @typedef {Object} documents

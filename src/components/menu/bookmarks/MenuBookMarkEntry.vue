@@ -31,7 +31,7 @@ import {
   createVectorLayer, 
   createServiceLayer,
   createMapBoxLayer 
-} from '@/features/ol.js';
+} from '@/features/ol-create-layer.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
 

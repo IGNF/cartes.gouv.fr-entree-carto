@@ -8,11 +8,11 @@ import { useServiceStore } from '@/stores/serviceStore';
  * @example
  * import Documents from '@/services/serviceDocuments';
  * // requêtes
- * Documents.setDrawing(data);
- * Documents.setImport(data);
- * Documents.setCompute(data);
- * Documents.setService(data);
- * Documents.setCartes(data);
+ * Documents.setDocument(data);
+ * Documents.updateGeometryDocument(data);
+ * Documents.updateMetadataDocument(data);
+ * Documents.renameDocument(data);
+ * Documents.deleteDocument(data);
  * ...
  * // propriétés
  * Documents.documents;
@@ -224,7 +224,7 @@ var SetDocuments = {
    * Mettre à jour un document (extra)
    * 
    * Appels de l'API Entrepôt :
-   * - PUT /users/me/documents/{document}
+   * - PATCH /users/me/documents/{document}
    * 
    * Actions :
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
@@ -236,12 +236,15 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.name - name
+   * @property {String} obj.description - description
    * @property {String} obj.extra - { format : kml, geojson, ... }
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    * @param {*} obj 
    */
   updateMetadataDocument : async function (obj) {
     var uuid = obj.uuid;
+
     // recherche du document
     var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
     if (idx === -1) {
@@ -251,6 +254,8 @@ var SetDocuments = {
     // construction du body
     var body = this.documents[obj.type][idx];
     body.extra = obj.extra;
+    body.name = obj.name;
+    body.description = obj.description;
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
@@ -263,7 +268,7 @@ var SetDocuments = {
 
     var data = await response.json();
     
-    if (response.status !== 200 && response.status !== 201) {
+    if (response.status !== 200) {
       // ERROR !
       throw data;
     }
@@ -313,6 +318,7 @@ var SetDocuments = {
    */
   renameDocument : async function (obj) {
     var uuid = obj.uuid;
+
     // recherche du document
     var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
     if (idx === -1) {
@@ -320,8 +326,9 @@ var SetDocuments = {
       throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
     }
     // construction du body
-    var body = this.documents[obj.type][idx];
-    body.name = obj.name;
+    var body = {
+      name: obj.name
+    };
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
