@@ -1,6 +1,18 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @listens emitter#catalog:open:clicked
+   */
+  export default {
+    name: 'RightMenuTool'
+  };
+</script>
 <script setup lang="js">
-import { useDataStore } from "@/stores/dataStore"
+import { useDataStore } from "@/stores/dataStore";
 import MenuControl from '@/components/menu/MenuControl.vue';
+
+import { inject } from 'vue';
 
 const props = defineProps({
   selectedControls : {Object},
@@ -9,7 +21,7 @@ const props = defineProps({
 
 const dataStore = useDataStore();
 
-const side = "right"
+const side = "right";
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
@@ -28,31 +40,39 @@ const tabArray = computed(() => {
         }
     ];
 
-    return arr
+    return arr;
 })
 
-const activeTab = ref("MenuControlContent")
-const is_expanded = ref()
-const wrapper = ref(null)
+const activeTab = ref("MenuControlContent");
+const is_expanded = ref();
+const wrapper = ref(null);
 
 function tabClicked(newTab) {
-  if (tabIsActive(newTab) && is_expanded.value)
-      wrapper.value.closeMenu()
-  else{
+  if (tabIsActive(newTab) && is_expanded.value) {
+      wrapper.value.closeMenu();
+  } else {
       activeTab.value = newTab + "Content";
-      wrapper.value.openMenu()
+      wrapper.value.openMenu();
   }
 }
 
+// abonnement sur l'ouverture du catalogue sur un evenement emis
+const emitter = inject('emitter');
+emitter.addEventListener("catalog:open:clicked", (e) => {
+  tabClicked(e.componentName);
+});
+
 function tabIsActive(componentName) {
-    return activeTab.value.replace("Content" , '') === componentName ? true : false
+    return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
+
 </script>
 
 <template>
   <MenuLateralWrapper
     :side="side"
     :visibility="true"
+    :width=500
     :id="activeTab"
     v-model="is_expanded"
     ref="wrapper">

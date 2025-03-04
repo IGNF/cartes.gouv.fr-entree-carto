@@ -2,21 +2,32 @@
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 
 import { inject } from 'vue'
+// icones
+import NotificationInfo from '@/icons/NotificationInfo.vue';
+import NotificationSuccess from '@/icons/NotificationSuccess.vue';
+import NotificationError from '@/icons/NotificationError.vue';
+import NotificationWarning from '@/icons/NotificationWarning.vue';
 // composables
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
 import { useMatchMedia } from '@/composables/matchMedia'
 import { useHeaderParams } from '@/composables/headerParams'
 import { useFooterParams } from '@/composables/footerParams'
 import { useBaseUrl } from '@/composables/baseUrl'
+// library
+import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 // components
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+// others
+import t from '@/features/translation'
 
 useAppStore()
 
+const route = useRoute()
+const router = useRouter()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
@@ -63,53 +74,37 @@ const mandatoryLinks = computed(() => {
   })
 })
 
+var service :any = inject('services');
+
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
 // et si elle est valide, on demande le jeton de connexion, puis, 
-// on récupère les informations utilisateurs
-var service :any = inject('services');
-var serviceMessageError = ref("");
-var serviceMessageClosed = ref(true);
-var onServiceMessageClose = () => {
-  serviceMessageClosed.value = true;
-};
+// on récupère les informations utilisateurs. 
+// Pour les favoris, on récupère aussi les documents.
 service.isAccessValided()
 .then((status:any) => {
   if (status === "login") {
-    // on recupère le token
-    service.getAccessToken()
-    .then((token:any) => {
-      if (token) {
-        // on recherche des informations de l'utilisateur
-        service.getUserMe()
-        .then((data:any) => {
-          // on met à jour le header en renseignant les informations utilisateurs
-          var last_name = data.last_name;
-          var first_name = data.first_name;
-          headerParams.value.quickLinks.forEach((element:any) => {
-            if (element.label === "...") {
-              element.label = `${first_name} ${last_name}`;
-            }
-          });
-        })
-        .catch((e:any) => {
-          console.error(e);
-          serviceMessageError.value = 'Error to get user info : ' + e.message;
-          serviceMessageClosed.value = false;
-        })
+    // on met à jour le header en renseignant les informations utilisateurs
+    var last_name = service.user.last_name;
+    var first_name = service.user.first_name;
+    headerParams.value.quickLinks.forEach((element:any) => {
+      if (element.label === "...") {
+        element.label = `${first_name} ${last_name}`;
       }
-    })
-    .catch((e:any) => {
-      console.error(e);
-      serviceMessageError.value = 'Error to get token : ' + e.message;
-      serviceMessageClosed.value = false;
-    })
+    });
+  }
+  if (status !== "no-auth") {
+    router.replace({ query: undefined });
   }
 })
 .catch((e:any) => {
   console.error(e);
-  serviceMessageError.value = 'Error during authentication : ' + e.message;
-  serviceMessageClosed.value = false;
+  push.error({
+    title: t.auth.title,
+    message: t.auth.failed(e.message || e)
+  });
+})
+.finally(() => {
 });
 
 // INFO
@@ -136,8 +131,6 @@ const quickLinks = computed(() => {
 })
 
 // paramètre pour la barre de navigations
-const route = useRoute()
-
 const navItems: DsfrNavigationProps['navItems'] = [
   {
     title: 'Commencer avec cartes.gouv',
@@ -204,6 +197,33 @@ const navItems: DsfrNavigationProps['navItems'] = [
     text: '\u00C0 propos',
   }
 ]
+
+// icons dsfr pour les notifications
+const myNotificationsIcons = {
+  warning : markRaw(NotificationWarning),
+  success : markRaw(NotificationSuccess),
+  info : markRaw(NotificationInfo),
+  error : markRaw(NotificationError)
+}
+
+// TODO 
+// choix du theme en fonction du theme dark ou light
+const myNotificationsTheme: NotivueTheme = {
+  ...lightTheme,
+  '--nv-radius': '0',
+  '--nv-width': '350px',
+  '--nv-border-width': '1px',
+  '--nv-icon-size': '30px',
+  '--nv-success-accent': '#18753c', // And -bg, -fg, -border
+  '--nv-success-border': '#18753c',
+  '--nv-error-accent': '#ce0500',
+  '--nv-error-border': '#ce0500',
+  '--nv-warning-accent': '#b34000',
+  '--nv-warning-border': '#b34000',
+  '--nv-info-accent': '#0063cb',
+  '--nv-info-border': '#0063cb'
+}
+
 </script>
 
 <template>
@@ -222,13 +242,13 @@ const navItems: DsfrNavigationProps['navItems'] = [
     </template>
   </DsfrHeader>
 
-  <DsfrAlert
-    :description="serviceMessageError"
-    type="error"
-    :closed="serviceMessageClosed"
-    :closeable=true
-    @close="onServiceMessageClose()"
-  />
+  <!-- Notifications -->
+  <Notivue v-slot="item">
+    <Notification 
+      :item="item" 
+      :icons="myNotificationsIcons"
+      :theme="myNotificationsTheme" />
+  </Notivue>
 
   <div>
     <router-view />
@@ -279,6 +299,37 @@ const navItems: DsfrNavigationProps['navItems'] = [
 </template>
 
 <style>
+  /* surcharge des popups de notifications : 
+  https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
+  */
+  /* .Notivue__content-message {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+  } */
+  .Notivue__icon {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    overflow: visible;
+    min-width: var(--nv-icon-size);
+    width: var(--nv-icon-size);
+    margin: 0; /* haut | droit | bas | gauche */
+  }
+  [data-notivue='error'] .Notivue__icon {
+    background-color: #ce0500;
+  }
+  [data-notivue='success'] .Notivue__icon {
+    background-color: #18753c;
+  }
+  [data-notivue='info'] .Notivue__icon {
+    background-color: #0063cb;
+  }
+  [data-notivue='warning'] .Notivue__icon {
+    background-color: #b34000;
+  }
+
   #fr-footer-toggle {
     display: none;
   }

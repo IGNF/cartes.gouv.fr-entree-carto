@@ -13,15 +13,7 @@ export default {
 </script>
 
 <script lang="js" setup>
-import { useDataStore }  from '@/stores/dataStore';
-import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian.js';
-import { useClipboard } from '@vueuse/core'
 import ShareModal from '@/components/carte/control/ShareModal.vue'
-
-const eulerian = useEulerian();
-const dataStore = useDataStore();
-const mapStore = useMapStore();
 
 const props = defineProps({
   mapId: String,
@@ -29,7 +21,7 @@ const props = defineProps({
   shareOptions: Object
 });
 
-const modalShareRef = ref(null)
+const refModalShare = ref(null)
 
 // paramètres du composant bouton
 const btnTitle = "Ouvrir le panneau de partage de carte";
@@ -49,7 +41,7 @@ onBeforeMount(() => {
 });
 
 const onModalShareOpen = () => {
-  modalShareRef.value.onModalShareOpen()
+  refModalShare.value.onModalShareOpen()
 }
 </script>
 
@@ -66,7 +58,7 @@ const onModalShareOpen = () => {
       no-outline
       @click="onModalShareOpen"
     />
-    <ShareModal ref="modalShareRef"/>
+    <ShareModal ref="refModalShare"/>
   </div>
 </template>
 

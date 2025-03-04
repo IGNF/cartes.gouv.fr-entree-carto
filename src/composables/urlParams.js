@@ -23,9 +23,18 @@ import {
  * 
  * @see mapStore
  */
-export function useUrlParams() {
+export function useUrlParams(url) {
   var params = {};
-  const urlParams = useUrlSearchParams("history");
+  var urlParams = {};
+  if (url) {
+    const _url = new URL(url);
+    const _urlSearchParams = new URLSearchParams(_url.search);
+    for (const [key, value] of _urlSearchParams.entries()) {
+      urlParams[key] = value;
+    }
+  } else {
+    urlParams = useUrlSearchParams("history");
+  }
   if (urlParams) {
     const keys = Object.keys(urlParams);
     for (let index = 0; index < keys.length; index++) {

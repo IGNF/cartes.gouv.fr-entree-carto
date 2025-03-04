@@ -1,6 +1,6 @@
 import { URL, fileURLToPath } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, ProxyOptions, ViteDevServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
@@ -69,14 +69,37 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    sourcemap: true
+  },
   server: {
+    cors : true,
     headers : {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "*",
-      "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Methods": "*",
       "Access-Control-Expose-Headers": "*"
-    }
+    },
+    // proxy : {
+    //   '/': {
+    //     target: "http://localhost:5173",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     ws: true,
+    //     configure: (proxy, _options) => {
+    //         proxy.on('error', (err, _req, _res) => {
+    //           console.log('proxy error', err);
+    //         });
+    //         proxy.on('proxyReq', (proxyReq, req, _res) => {
+    //           console.log('Sending Request to the Target:', req.method, req.url);
+    //         });
+    //         proxy.on('proxyRes', (proxyRes, req, _res) => {
+    //           console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+    //         });
+    //     },
+    //   }
+    // }
   },
   define: {},
   css: {
