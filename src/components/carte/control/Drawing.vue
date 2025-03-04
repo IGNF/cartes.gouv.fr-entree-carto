@@ -114,6 +114,23 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
   }
+  // INFO
+  // on sauvegarde / exporte au format natif
+  var gpId = e.layer.gpResultLayerId.toLowerCase();
+  if (gpId) {
+    var format;
+    if (gpId.includes("drawing") || gpId.includes("kml")) {
+      format = "kml";
+    } else if (gpId.includes("geojson")) {
+      format = "geojson";
+    } else if (gpId.includes("gpx")) {
+      format = "gpx";
+    } else {
+      format = "kml"; // par defaut ?
+    }
+    btnExport.value.setFormat(format);
+    btnSave.value.setFormat(format);
+  }
 });
 
 /**
@@ -166,47 +183,34 @@ const onSaveVector = (e) => {
     return; // pas plus loin...
   }
 
-  var type = e.layer.gpResultLayerId.toLowerCase().split(':')[0]; // ex. drawing
+  var gpID = e.layer.gpResultLayerId.toLowerCase();
+  var type = gpID.split(':')[0];
+  
   var data = {
     layer : e.layer,
     content : e.content,
     name : btnExport.value.inputName.value || e.name,
     description : e.description,
     format : e.format.toLowerCase(),
-    type : type
+    type : gpID.split(':')[0] // ex. drawing, import, ...
   };
 
-  service.setDocument(data)
-  .then((o) => {
-    // mise à jour du permalien
-    mapStore.addBookmark(o.uuid);
-    return o;
-  })
-  .then((o) => {
-    // emettre un event pour prévenir l'ajout d'un croquis
-    // au composant des favoris
-    emitter.dispatchEvent("document:saved", {
-      uuid : o.uuid,
-      action : o.action // added, updated, deleted
-    });
-    return o;
-  })
-  .then((o) => {
-    // mise à jour de l'id interne de la couche
-    if (data.layer.gpResultLayerId) {
-      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${o.uuid}`;
-    }
-  })
-  .then(() => {
-    // mise à jour de l'entrée du gestionnaire de couche
-    if (data.layer.gpResultLayerDiv) {
-      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
-      if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
-      }  
-    }
-  })
+  var promise;
+  if (type !== "bookmark") {
+    promise = createVectorDocument(data);
+  } else {
+    // INFO
+    // mise à jour, l'ID de la couche fournit 
+    // - un uuid 
+    // - le type
+    var uuid = gpID.split(':')[2];
+    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = type;
+    data.uuid = uuid;
+    promise = updateVectorDocument(data);
+  }
+  
+  promise
   .then(() => {
     // notification
     push.success({
@@ -222,6 +226,91 @@ const onSaveVector = (e) => {
     });
   });
 }
+
+const createVectorDocument = async (data) => {
+  try {
+    const o = await service.setDocument(data)
+    var uuid = o.uuid;
+    var action = o.action;
+
+    // mise à jour du permalien
+    mapStore.addBookmark(uuid);
+    
+    // mise à jour de l'id interne de la couche
+    if (data.layer.gpResultLayerId) {
+      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${uuid}`;
+    }
+    
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (data.layer.gpResultLayerDiv) {
+      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = data.name;
+        div.title = data.description;
+      }  
+    }
+
+    // mise à jour des metadata du document
+    // await service.updateMetadataDocument({
+    //   uuid : uuid,
+    //   type : data.type,
+    //   extra : {
+    //     format: data.format.toLowerCase(),
+    //     target: "internal",
+    //     date: new Date().toLocaleDateString()
+    //   }
+    // });
+
+    // emettre un event pour prévenir l'ajout d'un croquis
+    // au composant des favoris
+    emitter.dispatchEvent("document:saved", {
+      uuid : uuid,
+      action : action // added, updated, deleted
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+const updateVectorDocument = async (data) => {
+  try {
+    const o = await service.updateGeometryDocument(data);
+    var uuid = o.uuid;
+    var action = o.action;
+
+    // mise à jour de l'entrée du gestionnaire de couche
+    if (data.layer.gpResultLayerDiv) {
+      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
+      if (div) {
+        div.innerHTML = data.name;
+        div.title = data.description;
+      }  
+    }
+
+    // mise à jour des metadata du document
+    // await service.updateMetadataDocument({
+    //   uuid : uuid,
+    //   type : data.type,
+    //   extra : {
+    //     format: data.format.toLowerCase(),
+    //     target: "internal",
+    //     date: new Date().toLocaleDateString()
+    //   }
+    // });
+
+    // emettre un event pour prévenir l'ajout d'un croquis 
+    // au composant des favoris
+    emitter.dispatchEvent("document:updated", {
+      uuid : uuid,
+      action : action // added, updated, deleted
+    });
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 /**
  * Gestionnaire d'evenement
  * 
