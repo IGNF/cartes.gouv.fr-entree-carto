@@ -30,14 +30,14 @@ const IsEmpty = () => {
   }
   return empty;
 };
-var documentsIsReady = ref(false);
+var toggle = ref(false);
 var documentsIsEmpty = computed(() => {
   // INFO
   // les promises sur les documents ne sont pas encore completement remontées !
-  // on met donc une ref 'documentsIsReady' qui est complété par l'evenement émis 
+  // on met donc une ref 'toggle' qui est complété par l'evenement émis 
   // par le service
   var value = IsEmpty();
-  if (documentsIsReady.value) {
+  if (toggle.value) {
     return IsEmpty();
   }
   return value;
@@ -47,7 +47,19 @@ var documentsIsEmpty = computed(() => {
 // abonnement à l'evenement du service sur les documents afin de 
 // savoir quand tous les documents sont remontés
 emitter.addEventListener("service:documents:loaded", (e) => {
-  documentsIsReady.value = true;
+  toggle.value = !toggle.value;
+});
+// INFO
+// abonnement à l'evenement du service afin de 
+// mettre à jour le menu si un document a été ajouté, modifié ou supprimé...
+emitter.addEventListener("document:saved", (e) => {
+  toggle.value = !toggle.value;
+});
+emitter.addEventListener("document:deleted", (e) => {
+  toggle.value = !toggle.value;
+});
+emitter.addEventListener("document:updated", (e) => {
+  toggle.value = !toggle.value;
 });
 
 onMounted(() => {

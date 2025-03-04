@@ -23,8 +23,10 @@ var EVENTS = {
   eventsName: [
     "test:clicked",
     // service
+    "service:changed",
     "service:documents:loaded",
     "service:user:loaded",
+    // document
     "document:saved",
     "document:updated",
     "document:deleted",

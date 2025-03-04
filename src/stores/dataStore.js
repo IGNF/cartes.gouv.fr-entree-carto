@@ -57,9 +57,6 @@ export const useDataStore = defineStore('data', () => {
       }; // merge
       // ajoute la clé aux props
       Object.keys(res).map((key) => {
-        if (!res[key]) {
-          return
-        }
         if(res[key].serviceParams && 
           filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) && 
           !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))

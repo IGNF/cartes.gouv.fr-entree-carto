@@ -8,11 +8,11 @@ import { useServiceStore } from '@/stores/serviceStore';
  * @example
  * import Documents from '@/services/serviceDocuments';
  * // requêtes
- * Documents.setDrawing(data);
- * Documents.setImport(data);
- * Documents.setCompute(data);
- * Documents.setService(data);
- * Documents.setCartes(data);
+ * Documents.setDocument(data);
+ * Documents.updateGeometryDocument(data);
+ * Documents.updateMetadataDocument(data);
+ * Documents.renameDocument(data);
+ * Documents.deleteDocument(data);
  * ...
  * // propriétés
  * Documents.documents;
@@ -90,26 +90,43 @@ var SetDocuments = {
     const formData = new FormData();
     formData.append("name", obj.name);
     formData.append("description", obj.description);
-    formData.append("labels", this.tag);
-    formData.append("labels", obj.type);
-    formData.append("labels", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
-    formData.append("extra", {
+
+    const labels = [
+      this.tag, 
+      obj.type, 
+      this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e))
+    ];
+    formData.append("labels", labels.join(","));
+
+    // FIXME
+    // ça ne marche pas !?
+    // formData.append("labels[]", this.tag);
+    // formData.append("labels[]", obj.type);
+    // formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
+    
+    // FIXME 
+    // le champ extra n'est pas pris en compte par l'API Entrepot !?
+    formData.append("extra", JSON.stringify({
       format: obj.format.toLowerCase(),
       target: "internal",
       date: new Date().toLocaleDateString()
-    }); // FIXME string ou json ?
+    }));
 
     const content = obj.content;
     const blob = new Blob([content], { type: this.getMimeType(obj.format) });
     formData.append("file", blob); // FIXME blob ou text ?
 
-    console.debug(...formData)
+    // Débogage du contenu de formData
+    for (let pair of formData.entries()) {
+      console.debug(pair[0]+ ': ' + pair[1]);
+    }
 
-    var response = await this.getFetch()(`${this.api}/users/me/documents/`, {
+    var response = await this.getFetch()(`${this.api}/users/me/documents`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        // FIXME 'Content-Type': 'application/x-www-form-urlencoded' or 'multipart/form-data' ?
+        "X-Requested-With" : "XMLHttpRequest",
+        // 'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formData
     });
@@ -138,10 +155,76 @@ var SetDocuments = {
   },
 
   /**
-   * Mettre à jour du document
+   * Mettre à jour un document (Geometrie)
    * 
    * Appels de l'API Entrepôt :
    * - PUT /users/me/documents/{document}
+   * 
+   * Actions :
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
+   * - retourner le UUID et le type d'action
+   * 
+   * @fixme On ne peut pas mettre à jour le contenu d'un document avec le PUT pour le mode remote !
+   * @example
+   * ...
+   * 
+   * @param {*} obj
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.content - export
+   * @property {String} obj.format - format : kml, geojson, ...
+   * @property {String} obj.type - drawing, import, ...
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   */
+  updateGeometryDocument : async function (obj) {
+    // uuid
+    var uuid = obj.uuid;
+
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+
+    const formData = new FormData();
+    const blob = new Blob([obj.content], { type: this.getMimeType(obj.format) });
+    formData.append("file", blob); // FIXME blob ou text ?
+
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+      method: (this.mode === 'local') ? 'PUT' : 'POST', // HACK : PUT ou POST
+      headers: {
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest",
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "updated"
+    };
+  },
+
+  /**
+   * Mettre à jour un document (extra)
+   * 
+   * Appels de l'API Entrepôt :
+   * - PATCH /users/me/documents/{document}
    * 
    * Actions :
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
@@ -153,10 +236,57 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.name - name
+   * @property {String} obj.description - description
+   * @property {String} obj.extra - { format : kml, geojson, ... }
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   * @param {*} obj 
    */
-  updateDocument : async function (obj) {
-    return Promise.resolve();
+  updateMetadataDocument : async function (obj) {
+    var uuid = obj.uuid;
+
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+    // construction du body
+    var body = this.documents[obj.type][idx];
+    body.extra = obj.extra;
+    body.name = obj.name;
+    body.description = obj.description;
+
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest"
+      },
+      body: JSON.stringify(body)
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // uuid
+    var uuid = data._id;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "updated"
+    };
   },
 
   /**
@@ -188,6 +318,7 @@ var SetDocuments = {
    */
   renameDocument : async function (obj) {
     var uuid = obj.uuid;
+
     // recherche du document
     var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
     if (idx === -1) {
@@ -195,13 +326,15 @@ var SetDocuments = {
       throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
     }
     // construction du body
-    var body = this.documents[obj.type][idx];
-    body.name = obj.name;
+    var body = {
+      name: obj.name
+    };
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest"
       },
       body: JSON.stringify(body)
     });
@@ -255,7 +388,8 @@ var SetDocuments = {
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'DELETE',
       headers: {
-        'Accept': '*/*'
+        'Accept': '*/*',
+        "X-Requested-With" : "XMLHttpRequest"
       }
     });
 
