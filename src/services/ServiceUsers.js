@@ -42,7 +42,10 @@ var Users = {
    */
   getUserMe : async function () {
     var response = await this.getFetch()(`${this.api}/users/me`, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        "X-Requested-With" : "XMLHttpRequest"
+      }
     });
     var data = await response.json();
     this.user = data;
