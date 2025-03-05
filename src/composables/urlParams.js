@@ -12,6 +12,7 @@ import {
  * - lon / lat : ...
  * - layers : ... 
  * - controls : ...
+ * - bookmarks : ...
  * - zoom : ...
  * 
  * @example
@@ -19,6 +20,7 @@ import {
  * &c=-4.088682731825065,47.99263846894371
  * &z=10
  * &l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0),ACCES.BIOMETHANE$GEOPORTAIL:OGC:WMTS(0.47;1;0)
+ * &d=2b31e041-51a1-4774-8a6c-f8dac4f93795(1;1;0)
  * &permalink=yes
  * 
  * @see mapStore
@@ -54,6 +56,9 @@ export function useUrlParams(url) {
           break;
         case "w":
           params.controls = urlParams[key];
+          break;
+        case "d":
+          params.bookmarks = urlParams[key];
           break;
         case "z":
           params.zoom = parseInt(urlParams[key], 10);
