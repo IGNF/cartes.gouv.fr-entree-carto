@@ -109,16 +109,6 @@ export const useMapStore = defineStore('map', () => {
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
   
-  //////////////////
-  // DOM elements
-  //////////////////
-  var menuCatalogueButton = ref();
-  function getmenuCatalogueButton () {
-    return menuCatalogueButton.value;
-  }
-  function setmenuCatalogueButton (m) {
-    menuCatalogueButton.value = m;
-  }
 
   //////////////////
   // objets calculés
@@ -366,11 +356,8 @@ export const useMapStore = defineStore('map', () => {
     noInformation,
     permalink,
     permalinkShare,
-    menuCatalogueButton,
     getMap,
     setMap,
-    getmenuCatalogueButton,
-    setmenuCatalogueButton,
     getLayers,
     cleanLayers,
     addLayer,

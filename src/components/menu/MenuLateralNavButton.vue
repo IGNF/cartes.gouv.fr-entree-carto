@@ -16,8 +16,10 @@
 <script setup lang="js">
 import { useControlsPosition } from '@/composables/controls'
 import { useMapStore } from "@/stores/mapStore"
+import { useDomeStore } from "@/stores/domStore"
 
 const mapStore = useMapStore();
+const domStore = useDomeStore();
 
 const props = defineProps({
     icon: String,
@@ -81,7 +83,7 @@ defineExpose({
 
 onMounted(() => {
   if (props.id == "MenuCatalogue") {
-    mapStore.setmenuCatalogueButton(button.value)
+    domStore.setmenuCatalogueButton(button.value)
   }
 })
 </script>

@@ -32,6 +32,7 @@ import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
 
 import { useMapStore } from "@/stores/mapStore";
+import { useDomStore } from "@/stores/domStore";
 import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
@@ -65,7 +66,7 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
-const mapStore = useMapStore();
+const domStore = useDomStore();
 const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
@@ -403,7 +404,7 @@ const contextMenuOptions = computed(() => {
       {
         text : "Ajouter des données",
         callback : () => {
-          mapStore.getmenuCatalogueButton().firstChild.click()
+          domStore.getmenuCatalogueButton().firstChild.click()
         }
       }
     ]
