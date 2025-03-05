@@ -14,7 +14,8 @@
 
 #### 🔨 [Evolution]
 
-- Mise en conformité avec la maquette du copier-coller (https://github.com/IGNF/cartes.gouv.fr-entree-carto/issues/479)
+  - Mise en conformité avec la maquette du copier-coller (#479)
+  - Cartalogue : tri par ordre alphabétique des couches selon le thème et le producteur (#503)
 
 #### 🔥 [Obsolète]
 
