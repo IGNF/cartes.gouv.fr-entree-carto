@@ -104,8 +104,8 @@ export const useDataStore = defineStore('data', () => {
           let ret = {};
           ret[key] = res[key];
           // initialise les sans thématiques à Autres
-          if (!ret[key].hasOwnProperty("thematic")) { ret[key].thematic =  ["Autres"];}
-          if (!ret[key].hasOwnProperty("producer")) { ret[key].producer =  [];}
+          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length == 0) { ret[key].thematic =  ["Autres"];}
+          if (!ret[key].hasOwnProperty("producer") || ret[key].producer.length == 0) { ret[key].producer =  ["Autres"];}
           return ret;
       }
       else  {
@@ -136,6 +136,7 @@ export const useDataStore = defineStore('data', () => {
       // Initialisation Objet producers
       // réduction à des valeurs uniques
       m_producers.value = [...new Set(producers)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+      m_producers.value.push("Autres");
       // Les layers sont des copies de m_layers
       // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
       m_producers.value = m_producers.value.map((producer) => {
