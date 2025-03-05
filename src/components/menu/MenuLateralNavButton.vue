@@ -16,10 +16,10 @@
 <script setup lang="js">
 import { useControlsPosition } from '@/composables/controls'
 import { useMapStore } from "@/stores/mapStore"
-import { useDomeStore } from "@/stores/domStore"
+import { useDomStore } from "@/stores/domStore"
 
 const mapStore = useMapStore();
-const domStore = useDomeStore();
+const domStore = useDomStore();
 
 const props = defineProps({
     icon: String,

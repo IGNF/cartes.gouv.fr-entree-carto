@@ -97,6 +97,42 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  ///////////
+  // helpers
+  ///////////
+  
+  const _get = (value) => {
+    return value.split(",").map(function (l) {
+      const regex = /\(.*\)/gm;
+      const name = l.replace(regex, "");
+      return name;
+    }).filter(name => name != ''); // array
+  }
+
+  const _add = (key, value) => {
+    if (!key) {
+      return;
+    }
+    if (_get(value).includes(key)) {
+      return;
+    }
+    var l = (value === "") ? [] : value.split(",");
+    l.push(key + "(1;1;0)"); // options par defaut
+    return l.toString(); // string
+  };
+
+  const _remove = (key, value) => {
+    if (!key) {
+      return;
+    }
+    const index = _get(value).indexOf(key);
+    if (index !== -1) {
+      var l = value.split(",");
+      l.splice(index, 1);
+      return l.toString(); // string
+    }
+  }
+
   //////////////////
   // objets simples
   //////////////////
@@ -120,7 +156,9 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+    return (bookmarks.value.length > 0) ? 
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
   var permalinkShare = computed(() => {
@@ -129,7 +167,9 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
+    return (bookmarks.value.length > 0) ? 
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
   var center = computed(() => {
@@ -140,6 +180,12 @@ export const useMapStore = defineStore('map', () => {
   // objets complexes
   ////////////////////
 
+  /**
+   * @type {*}
+   * @description
+   * La liste des couches
+   * ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
+   */
   var layers = useStorage(ns('layers'), DEFAULT.LAYERS);
   if (!layers.value) {
     var l = DEFAULT.LAYERS.split(",").filter(function (l) {
@@ -153,6 +199,12 @@ export const useMapStore = defineStore('map', () => {
       }
     }
   }
+  /**
+   * @type {*}
+   * @description
+   * La liste des contrôles
+   * ex. Isocurve(1)
+   */
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
@@ -161,6 +213,16 @@ export const useMapStore = defineStore('map', () => {
     for (let j = 0; j < c.length; j++) {
       addControl(c[j]);
     }
+  }
+  /**
+   * @type {*}
+   * @description
+   * La liste des favoris
+   * ex. UUID(1;1;0)
+   */
+  var bookmarks = useStorage(ns('bookmarks'), "");
+  if (!bookmarks.value) {
+    bookmarks.value = "";
   }
 
   ///////////
@@ -207,6 +269,9 @@ export const useMapStore = defineStore('map', () => {
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
   })
+  watch(bookmarks, () => {
+    localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
+  })
 
   //////////////////
   // getter/setter
@@ -220,34 +285,21 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function getLayers () {
-    // INFO
-    // on retourne la liste des couches sans les options
-    return layers.value.split(",").map(function (l) {
-      const regex = /\(.*\)/gm;
-      const name = l.replace(regex, "");
-      return name;
-    }).filter(name => name != ''); // array
+    return _get(layers.value); // array
   }
   function cleanLayers() {
     layers.value = "";
   }
   function addLayer (id) {
-    if (!id) {
-      return;
+    var value = _add(id, layers.value); // string
+    if (value) {
+      layers.value = value;
     }
-    if (getLayers().includes(id)) {
-      return;
-    }
-    var l = (layers.value === "") ? [] : layers.value.split(",");
-    l.push(id + "(1;1;0)"); // options par defaut
-    layers.value = l.toString(); // string
   }
   function removeLayer (id) {
-    const index = getLayers().indexOf(id);
-    if (index !== -1) {
-      var l = layers.value.split(",");
-      l.splice(index, 1);
-      layers.value = l.toString(); // string
+    var value = _remove(id, layers.value); // string
+    if (value) {
+      layers.value = value;
     }
   }
   function updateLayerProperty (id, props) {
@@ -308,9 +360,26 @@ export const useMapStore = defineStore('map', () => {
 
   // TODO
   // Gestion des données utilisateurs : favoris
+  // > si authentifié !
   // > transformation UUID -> 'short' ID dans le permalien !
-  function addBookmark (uuid) {}
-  function removeBookmark (uuid) {}
+  function getBookmarks () {
+    return _get(bookmarks.value); // array
+  }
+  function cleanBookmarks() {
+    bookmarks.value = "";
+  }
+  function addBookmark (uuid) {
+    var value = _add(uuid, bookmarks.value); // string
+    if (value) {
+      bookmarks.value = value;
+    }
+  }
+  function removeBookmark (uuid) {
+    var value = _remove(uuid, bookmarks.value); // string
+    if (value) {
+      bookmarks.value = value;
+    }
+  }
   function updateBookmarkProperty (uuid, props) {}
   function updateBookmarkPosition (uuids) {}
   function getBookmarkProperty (uuid) {}
@@ -326,19 +395,15 @@ export const useMapStore = defineStore('map', () => {
     controls.value = "";
   }
   function addControl (id) {
-    if (getControls().includes(id)) {
-      return;
+    var value = _add(id, controls.value); // string
+    if (value) {
+      controls.value = value;
     }
-    var c = (controls.value === "") ? [] : controls.value.split(",");
-    c.push(id);
-    controls.value = c.toString(); // string
   }
   function removeControl (id) {
-    const index = getControls().indexOf(id);
-    if (index !== -1) {
-      var c = controls.value.split(",");
-      c.splice(index, 1);
-      controls.value = c.toString(); // string
+    var value = _remove(id, controls.value); // string
+    if (value) {
+      controls.value = value;
     }
   }
 
@@ -365,6 +430,8 @@ export const useMapStore = defineStore('map', () => {
     updateLayerProperty,
     updateLayerPosition,
     getLayerProperty,
+    getBookmarks,
+    cleanBookmarks,
     addBookmark,
     removeBookmark,
     updateBookmarkProperty,
