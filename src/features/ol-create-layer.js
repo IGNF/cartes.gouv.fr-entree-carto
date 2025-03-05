@@ -24,6 +24,8 @@ import {
   GPX as GPXExtended
 } from 'geopf-extensions-openlayers';
 
+import { DEFAULT_STYLE } from './ol-style';
+
 import t from './translation';
 
 /**
@@ -64,14 +66,18 @@ const createVectorLayer = (options) => {
       vectorFormat = new GeoJSON(); 
       // Extended
       if (options.extended) {
-        vectorFormat = new GeoJSONExtended(); 
+        vectorFormat = new GeoJSONExtended({
+          defaultStyle : DEFAULT_STYLE
+        }); 
       }
       break;
     case "kml":
       vectorFormat = new KML();
       // Extended
       if (options.extended) {
-        vectorFormat = new KMLExtended(); 
+        vectorFormat = new KMLExtended({
+          defaultStyle : DEFAULT_STYLE
+        }); 
       }
       break;
     case "gpx":
@@ -82,6 +88,7 @@ const createVectorLayer = (options) => {
         // modifier la classe GPXExtended dans les extensions !
         // > gestion de la callback interne readExtensions()
         vectorFormat = new GPXExtended({
+          defaultStyle : DEFAULT_STYLE,
           readExtensions : function (feature, node) {
             this.readExtensions(feature, node);
           }

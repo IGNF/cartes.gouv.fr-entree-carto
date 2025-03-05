@@ -93,7 +93,7 @@ class ServiceLocal extends ServiceBase {
       }
     });
 
-    this.setFetch(this.#fetchWrapper.fetch);
+    this.setFetch(this.#fetchWrapper.fetch.bind(this.#fetchWrapper));
   }
 
   /**

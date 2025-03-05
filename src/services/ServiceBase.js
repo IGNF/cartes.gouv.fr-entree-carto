@@ -46,8 +46,8 @@ class ServiceBase {
    * Set Fetch
    * @param {Object} fetch 
    */
-  setFetch (fetch) {
-    this.#fetch = fetch;
+  setFetch (fetcher) {
+    this.#fetch = fetcher;
   }
 
   async isAccessValided () {

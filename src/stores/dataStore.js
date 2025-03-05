@@ -107,11 +107,10 @@ export const useDataStore = defineStore('data', () => {
           if (!ret[key].hasOwnProperty("thematic")) { ret[key].thematic =  ["Autres"];}
           if (!ret[key].hasOwnProperty("producer")) { ret[key].producer =  [];}
           return ret;
-      }
-      else  {
-        delete res[key];
-      }
-      })
+        } else  {
+          delete res[key];
+        }
+      });
 
       m_territories.value = edito.territories;
       m_contacts.value = edito.contacts;

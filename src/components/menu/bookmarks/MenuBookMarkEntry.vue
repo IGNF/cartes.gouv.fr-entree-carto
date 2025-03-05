@@ -31,7 +31,7 @@ import {
   createVectorLayer, 
   createServiceLayer,
   createMapBoxLayer 
-} from '@/features/ol.js';
+} from '@/features/ol-create-layer.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
 
@@ -458,7 +458,7 @@ const buttonsData = [
 }
 
 
-// FIXME ne marche pas !?
+/* FIXME ne marche pas !? */
 .bookmark-button-container-advanced {
   margin: unset;
   box-shadow: unset;

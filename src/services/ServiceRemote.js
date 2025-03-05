@@ -41,32 +41,26 @@ class ServiceRemote extends ServiceBase {
       if (parseInt(auth_success, 10)) {
         this.authenticated = true;
         status = "login";
-        promise = this.getUserMe()
-          .then((user) => {
-            console.debug(user);
-            emitter.dispatchEvent("service:user:loaded", {
-              bubbles : true,
-              detail : user
-            });
-            return this.getDocuments()
-            .then((documents) => {
-              console.debug(documents);
-              emitter.dispatchEvent("service:documents:loaded", {
-                bubbles : true,
-                detail : documents
-              });
-            })
-            .catch((e) => {
-              throw new Error('Error to get documents (' + e.message + ')');
-            }) 
-          })
-          .then(() => {
-            // on retourne le statut
-            return status;
-          })
-          .catch((e) => {
-            throw new Error('Error to get user info (' + e.message + ')');
+        try {
+          const user = await this.getUserMe();
+          console.debug(user);
+          emitter.dispatchEvent("service:user:loaded", {
+            bubbles: true,
+            detail: user
           });
+
+          const documents = await this.getDocuments();
+          console.debug(documents);
+          emitter.dispatchEvent("service:documents:loaded", {
+            bubbles: true,
+            detail: documents
+          });
+
+          promise = Promise.resolve(status);
+        } catch (e) {
+          console.error('Error:', e);
+          promise = Promise.reject('Error to get user info or documents (' + e.message + ')');
+        };
       } else {
         promise = Promise.reject("Erreur inattendue !");
       }
