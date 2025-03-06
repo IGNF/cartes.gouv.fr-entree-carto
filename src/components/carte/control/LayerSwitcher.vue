@@ -280,23 +280,25 @@ const onClickEditLayer = (e) => {
   // mais, attention dès que le dessin est enregistré, l'id est modifié :
   //  ex. gpResultLayerId = bookmark:drawing-kml:UUID
 
-  var gpId = e.layer.gpResultLayerId.toLowerCase();
-  if (gpId) {
-    // on liste tous les cas de figures possibles pour un vecteur à éditer
-    if (gpId.toLowerCase().includes("drawing") || 
-        gpId.toLowerCase().includes("layerimport:kml") ||
-        gpId.toLowerCase().includes("layerimport:gpx") ||
-        gpId.toLowerCase().includes("layerimport:geojson") || 
-        gpId.toLowerCase().includes("bookmark:drawing-kml") || 
-        gpId.toLowerCase().includes("bookmark:import-kml") ||
-        gpId.toLowerCase().includes("bookmark:import-gpx") ||
-        gpId.toLowerCase().includes("bookmark:import-geojson")) {
-      /**
-       * @event 
-       * pour l'édition d'un drawing ou un import vecteur
-       */
-      emitter.dispatchEvent("vector:edit:clicked", e);
-      return;
+  if (e.layer.gpResultLayerId) {
+    var gpId = e.layer.gpResultLayerId.toLowerCase();
+    if (gpId) {
+      // on liste tous les cas de figures possibles pour un vecteur à éditer
+      if (gpId.toLowerCase().includes("drawing") || 
+          gpId.toLowerCase().includes("layerimport:kml") ||
+          gpId.toLowerCase().includes("layerimport:gpx") ||
+          gpId.toLowerCase().includes("layerimport:geojson") || 
+          gpId.toLowerCase().includes("bookmark:drawing-kml") || 
+          gpId.toLowerCase().includes("bookmark:import-kml") ||
+          gpId.toLowerCase().includes("bookmark:import-gpx") ||
+          gpId.toLowerCase().includes("bookmark:import-geojson")) {
+        /**
+         * @event 
+         * pour l'édition d'un drawing ou un import vecteur
+         */
+        emitter.dispatchEvent("vector:edit:clicked", e);
+        return;
+      }
     }
   }
   push.warning({
