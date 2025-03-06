@@ -12,7 +12,6 @@ export default {};
 
 <script lang="js" setup>
 import { useClipboard } from '@vueuse/core'
-import { VIcon } from '@gouvminint/vue-dsfr'
 import { useMatchMedia } from '@/composables/matchMedia';
 
 const isSmallScreen = useMatchMedia('SM')
