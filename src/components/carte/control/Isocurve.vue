@@ -23,16 +23,16 @@ const store = useDataStore();
 const map = inject(props.mapId)
 const isocurve = ref(new Isocurve(props.isocurveOptions))
 const button = ref(new ButtonExport({
-  title : "Exporter",
+  title : "Enregistrer",
   kind : "primary",
-  download : true,
+  download : false,
   control: isocurve.value,
   format : "geojson",
-  menu : true,
+  menu : false,
   direction : "column",
   icons : {
     menu : "",
-    button : "export"
+    button : "save"
   }
 }));
 
