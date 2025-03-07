@@ -16,12 +16,16 @@
 
   - Mise en conformité avec la maquette du copier-coller (#479)
   - Cartalogue : tri par ordre alphabétique des couches selon le thème et le producteur (#503)
+  - Recherche : la recherche par coordonnées est intégrée à la recherche avancée (#508)
 
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
+
+  - Itinéraire : correction de l'affichage des résultats d'itinéraire (#508)
+  - Catalogue : correction en cas de couche sans configuration chargée (#503)
 
 #### 🔒 [Sécurité]
 
