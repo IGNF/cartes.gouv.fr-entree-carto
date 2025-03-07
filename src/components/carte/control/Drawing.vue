@@ -30,7 +30,7 @@ const drawing = ref(new Drawing(props.drawingOptions));
 // bouton d'enregistrement / export du croquis avec un menu
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
-  kind : "secondary",
+  kind : "primary",
   download : true,
   name: "Mon croquis",
   description: "",
@@ -49,6 +49,7 @@ const btnExport = ref(new ButtonExport({
     button : "export"
   }
 }));
+/*
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
@@ -63,6 +64,7 @@ const btnSave = ref(new ButtonExport({
     button : "save"
   }
 }));
+*/
 
 onMounted(() => {
   if (props.visibility) {
