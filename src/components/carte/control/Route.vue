@@ -23,16 +23,16 @@ const store = useDataStore();
 const map = inject(props.mapId);
 const route = ref(new Route(props.routeOptions));
 const button = ref(new ButtonExport({
-  title : "Enregistrer",
+  title : "Exporter",
   kind : "primary",
-  download : false,
+  download : true,
   control: route.value,
   format : "geojson",
-  menu : false,
+  menu : true,
   direction : "column",
   icons : {
     menu : "",
-    button : "save"
+    button : "export"
   }
 }));
 

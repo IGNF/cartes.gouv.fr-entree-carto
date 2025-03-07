@@ -18,15 +18,15 @@ const log = useLogger();
 const map = inject(props.mapId);
 const elevationPath = ref(new ElevationPath(props.elevationPathOptions));
 const button = ref(new ButtonExport({
-  title : "Enregistrer",
+  title : "Exporter",
   kind : "primary",
-  download : false,
+  download : true,
   control: elevationPath.value,
   format : "geojson",
-  menu : false,
+  menu : true,
   icons : {
     menu : "",
-    button : "save"
+    button : "export"
   }
 }));
 

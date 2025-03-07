@@ -30,7 +30,7 @@ const drawing = ref(new Drawing(props.drawingOptions));
 // bouton d'enregistrement / export du croquis avec un menu
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
-  kind : "secondary",
+  kind : "primary",
   download : true,
   name: "Mon croquis",
   description: "",
@@ -49,6 +49,7 @@ const btnExport = ref(new ButtonExport({
     button : "export"
   }
 }));
+/*
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
@@ -63,18 +64,19 @@ const btnSave = ref(new ButtonExport({
     button : "save"
   }
 }));
+*/
 
 onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
-    map.addControl(btnSave.value);
+    // map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveVector);
+    // btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
     drawing.value.on("change:collapsed", onToggleShowVector);
   }
@@ -84,18 +86,18 @@ onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
-    map.addControl(btnSave.value);
+    // map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveVector);
+    // btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
     drawing.value.on("change:collapsed",onToggleShowVector);
   }
   else {
-    map.removeControl(btnSave.value);
+    // map.removeControl(btnSave.value);
     map.removeControl(drawing.value);
     map.removeControl(btnExport.value);
   }
@@ -129,7 +131,7 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
       format = "kml"; // par defaut ?
     }
     btnExport.value.setFormat(format);
-    btnSave.value.setFormat(format);
+    // btnSave.value.setFormat(format);
   }
 });
 
