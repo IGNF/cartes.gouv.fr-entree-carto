@@ -6,6 +6,10 @@
 
 ### 🎉 Résumé
 
+La recherche par coordonnées est désormais accessible via la recherche avancée.
+Le widget Catalogue ("Cartalogue") tri désormais les sections et le titre des couches par ordre alphabétique. La description des couches peut être rendue visible en cliquant sur un bouton "Afficher plus".
+Les résultats de calcul d'itinéraire sont affichés de manière plus lisible.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
