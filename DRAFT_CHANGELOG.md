@@ -16,6 +16,7 @@
 
   - Mise en conformité avec la maquette du copier-coller (#479)
   - Cartalogue : tri par ordre alphabétique des couches selon le thème et le producteur (#503)
+  - Cartalogue : description des couches cachée, ajout d'un bouton "Afficher plus" pour la voir (#507)
 
 #### 🔥 [Obsolète]
 
