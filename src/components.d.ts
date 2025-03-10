@@ -14,6 +14,7 @@ declare module 'vue' {
     ControlList: typeof import('./components/carte/control/ControlList.vue')['default']
     ControlListElement: typeof import('./components/menu/ControlListElement.vue')['default']
     Controls: typeof import('./components/carte/Controls.vue')['default']
+    CustomAccordeon: typeof import('./components/utils/CustomAccordeon.vue')['default']
     DataLayerCatalogue: typeof import('./components/menu/catalogue/DataLayerCatalogue.vue')['default']
     Drawing: typeof import('./components/carte/control/Drawing.vue')['default']
     DsfrAccordion: typeof import('@gouvminint/vue-dsfr')['DsfrAccordion']
@@ -84,7 +85,6 @@ declare module 'vue' {
     StoreData: typeof import('./components/StoreData.vue')['default']
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
     TextCopyToClipboard: typeof import('./components/utils/TextCopyToClipboard.vue')['default']
-    VIcon: typeof import('oh-vue-icons')['OhVueIcon']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }

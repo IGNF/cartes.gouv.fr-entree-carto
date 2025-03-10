@@ -20,6 +20,7 @@ services:
             args:
               BASE_URL: "/cartes"
               MODE_ENV: "stage"
+              SOURCE_MAP: "true"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
         image: ignf/cartes.gouv.fr-carto:latest

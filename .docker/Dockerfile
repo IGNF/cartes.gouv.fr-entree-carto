@@ -20,6 +20,7 @@ FROM node:22-alpine AS builder
 
 ARG BASE_URL="/cartes"
 ARG MODE_ENV="production"
+ARG SOURCE_MAP="false"
 
 RUN sed -i 's/https/http/' /etc/apk/repositories
 RUN apk add git
@@ -28,7 +29,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm install \
-    && BASE_URL=${BASE_URL} npm run build-only -- --mode=${MODE_ENV}
+    && BASE_URL=${BASE_URL} SOURCE_MAP=${SOURCE_MAP} npm run build-only -- --mode=${MODE_ENV}
 
 #----------------------------------------------------------------------
 # cartesgouvfr-entree_carto : Config d'un serveur statique avec nginx

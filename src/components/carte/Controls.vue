@@ -80,6 +80,7 @@ const searchEngineOptions = {
   displayButtonAdvancedSearch: true,
   displayButtonGeolocate: true,
   displayButtonCoordinateSearch: true,
+  coordinateSearchInAdvancedSearch: true,
   displayButtonClose: false,
   resources: {
     search: true
