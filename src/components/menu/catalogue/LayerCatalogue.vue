@@ -44,10 +44,10 @@ onUpdated(() => {
         :label="layer.title"
         @update:modelValue="layerInteraction($event, layer)"
     />
-    <CustomAccordeon
+    <!-- <CustomAccordeon
         class="layer-description"
         :description="layer.description"
-    />
+    /> -->
 </template>
 
 <style>

@@ -166,7 +166,7 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getThematics() {
-    return m_thematics;
+    return m_thematics.value;
   }
   function getLayersByThematic(layers, thematic) {
     return Object.keys(layers).filter(key => layers[key].thematic.includes(thematic))
@@ -179,7 +179,7 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getProducers() {
-    return m_producers;
+    return m_producers.value;
   }
 
   function getLayersByProducer(layers, producer) {
