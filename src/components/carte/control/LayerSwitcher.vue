@@ -109,9 +109,10 @@ const onAddLayer = (e) => {
       lyr.layer.gpResultLayerDiv = lyr.div;
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
+        // seulement pour les données utilisateurs !
         // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
-          mapStore.addBookmark(id);
+          mapStore.addBookmark(id); // uuid
         }
       }
     }
