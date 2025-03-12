@@ -24,17 +24,13 @@ const dataStore = useDataStore();
 
 const thematics = computed(() => {
   return dataStore.getThematics().value.map(thematic => {
-    const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
-    const ret = [thematic[0], layerArr]
-    return ret;
+    return [thematic[0],   props.dataLayers.filter(layer => thematic[1].includes(layer.key))]
   })
 })
 
 const producers = computed(() => {
-  return dataStore.getProducers().value.map(thematic => {
-    const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
-    const ret = [thematic[0], layerArr]
-    return ret;
+  return dataStore.getProducers().value.map(producer => {
+    return [producer[0],   props.dataLayers.filter(layer => producer[1].includes(layer.key))]
   })
 });
 

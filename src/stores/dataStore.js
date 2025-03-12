@@ -171,11 +171,8 @@ export const useDataStore = defineStore('data', () => {
   function getLayersByThematic(layers, thematic) {
     return Object.keys(layers).filter(key => layers[key].thematic.includes(thematic))
     .map(layerID => {
-        let layerObj = {}
-        layerObj[layerID] = layers[layerID]
-        return layers[layerID]
+        return layerID
     })
-    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
   }
 
   function getProducers() {
@@ -185,11 +182,8 @@ export const useDataStore = defineStore('data', () => {
   function getLayersByProducer(layers, producer) {
     return Object.keys(layers).filter(key => layers[key].producer.includes(producer))
     .map(layerID => {
-        let layerObj = {}
-        layerObj[layerID] = layers[layerID]
-        return layers[layerID]
+        return layerID
     })
-    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
   }
 
   function getFeatured() {
