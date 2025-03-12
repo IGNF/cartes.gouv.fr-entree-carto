@@ -51,6 +51,7 @@ const activeAccordion2 = ref(-1)
           :layers-count="producer[1].length"
           :key="producer[0] + '-menuCatalogueThematique'">
           <LayerList
+            v-if="idx == activeAccordion1"
             :key="producer[0]"
             :list-name="producer[0]"
             :selected-layers="selectedLayers"
@@ -71,6 +72,7 @@ const activeAccordion2 = ref(-1)
             :layers-count="thematic[1].length"
             :key="thematic[0] + '-menuCatalogueThematique'">
             <LayerList
+              v-if="idx == activeAccordion2"
               :key="thematic[0]"
               :list-name="thematic[0]"
               :selected-layers="selectedLayers"
