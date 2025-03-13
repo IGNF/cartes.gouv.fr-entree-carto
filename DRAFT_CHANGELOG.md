@@ -1,10 +1,12 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.6...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.5-2...HEAD>
 
-## 🔖 version 1.0.6 - __DATE__
+## 🔖 version 1.0.5-2 - __DATE__
 
 ### 🎉 Résumé
+
+Hotfix : correction du cartalogue pour meilleures performances
 
 ### 💥 Breaking changes
 
