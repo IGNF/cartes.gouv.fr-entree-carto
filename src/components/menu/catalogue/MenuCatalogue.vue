@@ -66,7 +66,7 @@ const baseLayers = computed(() => {
     if (layer.hasOwnProperty("base") &&  layer.base) {
       return layer
     }
-  })
+  }).sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
 });
 
 /** Liste des couches de données */
@@ -75,7 +75,7 @@ const dataLayers = computed(() => {
     if (!layer.hasOwnProperty("base") || !layer.base) {
       return layer;
     }
-  })
+  }).sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
 });
 
 /** Titre principal */
