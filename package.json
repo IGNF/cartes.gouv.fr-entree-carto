@@ -70,7 +70,7 @@
     "focus-trap": "^7.5.4",
     "focus-trap-vue": "^4.0.3",
     "mitt": "^3.0.1",
-    "msw": "2.7.0",
+    "msw": "2.7.3",
     "notivue": "^2.4.5",
     "npm-run-all2": "^6.1.2",
     "oh-vue-icons": "1.0.0-rc3",
