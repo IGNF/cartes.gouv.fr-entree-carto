@@ -38,8 +38,9 @@ export const useDataStore = defineStore('data', () => {
       return [thematic, getLayersByThematic(thematic)]
     })
     return ret
-});
-const m_producers = computed(() => {
+  });
+
+  const m_producers = computed(() => {
     let ret = []
     // Initialisation Objet producers
     // réduction à des valeurs uniques
@@ -51,7 +52,7 @@ const m_producers = computed(() => {
     return ret.map((producer) => {
       return [producer, getLayersByProducer(producer)]
     })
-});
+  });
 
   /**
    * @todo utiliser l'implementation officielle @link{https://vueuse.org/core/useFetch/}
@@ -99,7 +100,8 @@ const m_producers = computed(() => {
           }
           // sinon on supprime l'entrée edito avec le filter
           return undefined;
-      }).filter(entry => entry));
+        }).filter(entry => entry)
+      );
 
       // on fusionne tech et priv avec l'objet edito nettoyé
       const res = {
@@ -109,11 +111,11 @@ const m_producers = computed(() => {
       };
 
       // on ajoute la clé (ID) aux propriétés
-      Object.keys(res).map((key) => { 
+      Object.keys(res).map((key) => {
         // On filtre les couches : 
         // - on garde celle qui correspondent à un des filterServices
         // - on supprime celles qui possèdent une des filterProjections
-        if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) && 
+        if (filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) &&
           !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj))) {
           res[key].key = key; // ID
           let ret = {};
@@ -127,14 +129,14 @@ const m_producers = computed(() => {
             themes.value.push(...ret[key].thematic)
           }
           // initialise les sans thématiques à Autres
-          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length === 0) { 
+          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length === 0) {
             ret[key].thematic = ["Autres"];
           }
           if (!ret[key].hasOwnProperty("producer") || ret[key].producer.length === 0) {
             ret[key].producer = ["Autres"];
           }
           return ret;
-        } else  {
+        } else {
           delete res[key];
         }
       });
@@ -158,14 +160,13 @@ const m_producers = computed(() => {
       this.isLoaded = false;
       error.value = err.message;
     }
-
   }
 
-  function getTerritories () {
+  function getTerritories() {
     return m_territories.value;
   }
 
-  function getContacts () {
+  function getContacts() {
     return m_contacts.value;
   }
 
@@ -203,8 +204,7 @@ const m_producers = computed(() => {
   function getLayersSignatures() {
     return Object.fromEntries(
       Object.entries(m_layers.value)
-        .map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]]
-      )
+        .map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]])
     );
   }
 
@@ -331,13 +331,13 @@ const m_producers = computed(() => {
     var params = null;
 
     if (id) {
-        // get layer configuration object
-        var l = this.getLayerByID(id);
-        params = {};
-        params.projection = l.defaultProjection;
-        params.minScale = l.globalConstraint.minScaleDenominator;
-        params.maxScale = l.globalConstraint.maxScaleDenominator;
-        params.extent = l.globalConstraint.bbox;
+      // get layer configuration object
+      var l = this.getLayerByID(id);
+      params = {};
+      params.projection = l.defaultProjection;
+      params.minScale = l.globalConstraint.minScaleDenominator;
+      params.maxScale = l.globalConstraint.maxScaleDenominator;
+      params.extent = l.globalConstraint.bbox;
     }
 
     return params;
