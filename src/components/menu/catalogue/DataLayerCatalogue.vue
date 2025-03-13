@@ -23,13 +23,13 @@ const props = defineProps({
 const dataStore = useDataStore();
 
 const thematics = computed(() => {
-  return dataStore.getThematics().value.map(thematic => {
+  return dataStore.getThematics().map(thematic => {
     return [thematic[0],   props.dataLayers.filter(layer => thematic[1].includes(layer.key))]
   })
 })
 
 const producers = computed(() => {
-  return dataStore.getProducers().value.map(producer => {
+  return dataStore.getProducers().map(producer => {
     return [producer[0],   props.dataLayers.filter(layer => producer[1].includes(layer.key))]
   })
 });
