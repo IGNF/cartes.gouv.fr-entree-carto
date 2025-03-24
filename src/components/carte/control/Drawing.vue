@@ -8,6 +8,8 @@ import {
   ButtonExport
 } from 'geopf-extensions-openlayers';
 
+import { toShare } from '@/features/share';
+
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
@@ -27,6 +29,7 @@ const props = defineProps({
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
+
 // bouton d'enregistrement / export du croquis avec un menu
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
@@ -113,6 +116,7 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
+    btnExport.value.inputName.value = e.options.title || "";
   }
   // INFO
   // on sauvegarde / exporte au format natif
@@ -146,6 +150,7 @@ const onToggleShowVector = (e) => {
     // pour permettre une autre saisie dans 
     // une autre couche
     drawing.value.setLayer();
+    btnExport.value.inputName.value = "";
   }
 }
 
@@ -164,6 +169,7 @@ const onToggleShowVector = (e) => {
  * - notifier l'utilisateur
  * 
  * @fires emitter#document:saved
+ * @fires emitter#document:updated
  * @param {Object} e
  * @property {Object} type - event
  * @property {Object} target - instance Export
@@ -192,7 +198,8 @@ const onSaveVector = (e) => {
     name : btnExport.value.inputName.value || e.name,
     description : e.description,
     format : e.format.toLowerCase(),
-    type : gpID.split(':')[0] // ex. drawing, import, ...
+    target : "internal",
+    type : gpID.split(':')[0].replace("layer", "") // ex. drawing, import, bookmark...
   };
 
   var promise;
@@ -211,6 +218,26 @@ const onSaveVector = (e) => {
   }
   
   promise
+  .then((o) => {
+    var document = service.find(o.uuid); // un peu redondant...
+    if (document) {
+      var url = toShare(document, { 
+        opacity: data.layer.get('opacity'), 
+        visible: +data.layer.get('visible'),
+        gray: 0,
+        stop: 1 // HACK !
+      });
+      // nouvelle donnée à ajouter ou mise à jour au permalien
+      if (o.action === "added") {
+        mapStore.addBookmark(url);
+      }
+      else if (o.action === "updated") {
+        mapStore.updateBookmark(url);
+      } else {
+        throw new Error("Action not yet implemented !");
+      }
+    }
+  })
   .then(() => {
     // notification
     push.success({
@@ -227,14 +254,22 @@ const onSaveVector = (e) => {
   });
 }
 
+/**
+ * Créer un document pour un vecteur
+ * @param data 
+ * @property {String} data.content - export data
+ * @property {String} data.name - name
+ * @property {String} data.description - description
+ * @property {String} data.format - format : kml, geojson, ...
+ * @property {String} data.target - internal, external
+ * @property {String} data.type - drawing, import, bookmark
+ * @property {Object} data.layer - layer
+ */
 const createVectorDocument = async (data) => {
   try {
     const o = await service.setDocument(data)
     var uuid = o.uuid;
     var action = o.action;
-
-    // mise à jour du permalien
-    mapStore.addBookmark(uuid);
     
     // mise à jour de l'id interne de la couche
     if (data.layer.gpResultLayerId) {
@@ -250,16 +285,27 @@ const createVectorDocument = async (data) => {
       }  
     }
 
-    // mise à jour des metadata du document
-    // await service.updateMetadataDocument({
-    //   uuid : uuid,
-    //   type : data.type,
-    //   extra : {
-    //     format: data.format.toLowerCase(),
-    //     target: "internal",
-    //     date: new Date().toLocaleDateString()
-    //   }
-    // });
+    // rendre public le document
+    const s = await service.sharingDocument({
+      uuid : uuid,
+      type : data.type
+    });
+    console.debug(s);
+
+    // mise à jour des extras du document
+    const x = await service.updateMetadataDocument({
+      uuid : uuid,
+      type : data.type,
+      name : data.name,
+      description : data.description,
+      // FIXME extra !? sinon, labels !
+      extra : {
+        format: data.format.toLowerCase(),
+        target: "internal",
+        date: new Date().toLocaleDateString()
+      }
+    });
+    console.debug(x);
 
     // emettre un event pour prévenir l'ajout d'un croquis
     // au composant des favoris
@@ -267,11 +313,23 @@ const createVectorDocument = async (data) => {
       uuid : uuid,
       action : action // added, updated, deleted
     });
+
+    return o;
+
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+/**
+ * Mettre à jour un document pour un vecteur
+ * @param data 
+ * @property {String} data.content - export data
+ * @property {String} data.name - name
+ * @property {String} data.description - description
+ * @property {String} data.format - format : kml, geojson, ...
+ * @property {Object} data.layer - layer
+ */
 const updateVectorDocument = async (data) => {
   try {
     const o = await service.updateGeometryDocument(data);
@@ -287,23 +345,39 @@ const updateVectorDocument = async (data) => {
       }  
     }
 
-    // mise à jour des metadata du document
-    // await service.updateMetadataDocument({
-    //   uuid : uuid,
-    //   type : data.type,
-    //   extra : {
-    //     format: data.format.toLowerCase(),
-    //     target: "internal",
-    //     date: new Date().toLocaleDateString()
-    //   }
-    // });
+    const document = service.find(uuid);
+    if (document && !document.public_url) {
+      // rendre public le document
+      const s = await service.sharingDocument({
+        uuid : uuid,
+        type : data.type
+      });
+      console.debug(s);
+    }
 
+    // mise à jour des extras du document
+    const x = await service.updateMetadataDocument({
+      uuid : uuid,
+      type : data.type,
+      name : data.name,
+      description : data.description,
+      // FIXME extra !? sinon, labels !
+      extra : {
+        format: data.format.toLowerCase(),
+        target: "internal",
+        date: new Date().toLocaleDateString()
+      }
+    });
+    console.debug(x);
+    
     // emettre un event pour prévenir l'ajout d'un croquis 
     // au composant des favoris
     emitter.dispatchEvent("document:updated", {
       uuid : uuid,
       action : action // added, updated, deleted
     });
+
+    return o;
 
   } catch (error) {
     console.error(error);

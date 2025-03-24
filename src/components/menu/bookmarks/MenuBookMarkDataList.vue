@@ -18,14 +18,25 @@ export default {
 <script setup lang="js">
 
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
-
+import { useMapStore } from '@/stores/mapStore';
 import { inject } from 'vue';
+
+// lib notification
+import { push } from 'notivue'
+import t from '@/features/translation';
+
+const mapStore = useMapStore();
+const service = inject('services');
 const emitter = inject('emitter');
 
 // options
 const props = defineProps({
   title: String
 });
+
+// INFO
+// flag pour permettre l'ajout direct d'une couche ou via le mécanisme de permalien
+var download = false;
 
 // recherche de données
 const searchString = ref('');
@@ -41,8 +52,6 @@ const tabTitles = [
 ];
 
 const selectedIndex = ref(0);
-
-const service = inject('services');
 
 // mapping label i18n FR
 const i18n = (label) => {
@@ -103,7 +112,7 @@ const lstData = computed(() => {
         // FIXME 
         // date : information non dispo
         // format : information non dispo
-        var extensions = [ "geojson", "gpx", "kml", "json"];
+        var extensions = [ ".geojson", ".gpx", ".kml", ".json"];
         var ext = extensions.find((ext) => element.name.includes(ext));
         data.push({
           id : element._id,
@@ -168,7 +177,9 @@ emitter.addEventListener("document:exported", onUpdateBookmark);
  * - une donnée de type vecteur ou service pour "Ajouter une donnée"
  * @fires emitter#layerimport:open:clicked
  */
-const addMap = () => {};
+const addMap = () => {
+  refDivMapName.value.classList.toggle("fr-hidden");
+};
 const addData = () => {
   // envoi d'un evenement pour l'ouverture du contrôle d'import de données
   // et le widget realise l'enregistrement automatique dans l'espace personnel
@@ -176,6 +187,77 @@ const addData = () => {
     open : true,
     componentName: "LayerImport"
   });
+};
+
+const refDivMapName = useTemplateRef('div-map-name');
+const name = ref('');
+
+const onClickMapButtonValidateName = (e) => {
+  refDivMapName.value.classList.toggle("fr-hidden");
+  // recupèrer le permalien
+  var permalink = mapStore.permalink;
+  
+  // fournir un nom au document via UI avec bouton valider / annuler 
+  const data = {
+    name : name.value,
+    description : "permalien",
+    format : "json",
+    target : "internal",
+    type : "carte",
+    content : JSON.stringify({
+      name : name.value,
+      date : new Date().toISOString(),
+      permalink : permalink
+    })
+  };
+
+  createCarteDocument(data)
+  .then(() => {
+    // refDivMapName.value.classList.toggle("fr-hidden");
+  })
+  .then(() => {
+    name.value = "";
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.bookmark.title,
+      message: t.bookmark.save_map_success
+    });
+  })
+  .catch((e) => {
+    console.error(e);
+    push.error({
+      title: t.bookmark.title,
+      message: t.bookmark.save_failed
+    });
+  });
+  
+};
+const onClickMapButtonCancelName  = (e) => {
+  refDivMapName.value.classList.toggle("fr-hidden");
+};
+
+const createCarteDocument = async (data) => {
+  // enregistrement du permalien dans un document
+  // avec le nom fourni par l'utilisateur
+  try {
+    const o = await service.setDocument(data)
+    var uuid = o.uuid;
+    var action = o.action;
+
+    // emettre un event pour prévenir l'ajout d'un document
+    // au composant des favoris
+    emitter.dispatchEvent("document:saved", {
+      uuid : uuid,
+      action : action // added, updated, deleted
+    });
+
+    return o;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 };
 
 onBeforeMount(() => {});
@@ -230,15 +312,38 @@ onMounted(() => {});
           <!-- Bouton pour enregistrer la carte -->
           <DsfrButton
             label="Enregistrer la carte"
-            disabled
             tertiary
             size="sm"
             class="button-action"
             icon="fr-icon-save-line"
             @click="addMap()"/>
+          <!-- Affichage du menu pour nommer le permalien dans les favoris -->
+          <div ref="div-map-name" class="container-bookmark-map-name fr-hidden">
+            <DsfrInput
+              v-model="name"
+              label="Nommer"
+              placeholder=""
+            />
+            <div class="container-bookmark-map-buttons-name">
+              <DsfrButton
+                size="sm"
+                icon="ri:close-line"
+                tertiary
+                no-outline
+                class="fr-p-1w"
+                @click="onClickMapButtonCancelName" />
+              <DsfrButton
+                size="sm"
+                icon="ri:check-line"
+                tertiary
+                no-outline
+                class="fr-p-1w"
+                @click="onClickMapButtonValidateName" />
+            </div>
+          </div>
           <!-- Affichage des cartes ou permaliens -->
           <div class="container-bookmark-map-item fr-p-1w" v-for="map in lstMap">
-            <MenuBookMarkEntry :data="map" type="map"></MenuBookMarkEntry>
+            <MenuBookMarkEntry :data="map" type="map" :download="download"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 
@@ -261,7 +366,7 @@ onMounted(() => {});
             - menu options : renommer, partager, supprimer
           -->
           <div class="container-bookmark-data-item fr-p-1w" v-for="data in lstData">
-            <MenuBookMarkEntry :data="data" type="data"></MenuBookMarkEntry>
+            <MenuBookMarkEntry :data="data" type="data" :download="download"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 
@@ -269,6 +374,15 @@ onMounted(() => {});
     </div>
   </div>
 </template>
+
+<style>
+.container-bookmark-map-name {
+  display: flex;
+}
+.container-bookmark-map-buttons-name {
+  display: flex;
+}
+</style>
 
 <style lang="css" scoped>
 #tab-content-bookmark-maps,

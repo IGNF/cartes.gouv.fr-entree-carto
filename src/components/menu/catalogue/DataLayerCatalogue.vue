@@ -47,43 +47,43 @@ const activeAccordion2 = ref(-1)
 
 <template>
   <div class="catalogue-content-with-radio-btn">
-      <!-- <DsfrAccordionsGroup
+      <DsfrAccordionsGroup
         v-model="activeAccordion1">
-      </DsfrAccordionsGroup> -->
-      <template v-for="(producer, idx) in producers" :key="producer[0]">
-        <div>
-          <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer[1].length > 0"
-            :id="idx"
-            :thematic-label="producer[0]"
-            :layers-count="producer[1].length"
-            :key="producer[0] + '-menuCatalogueThematique'">
-            <LayerList
-              :key="producer[0]"
-              :list-name="producer[0]"
-              :selected-layers="selectedLayers"
-              :layers="producer[1]"/>
-          </MenuCatalogueThematique>
-        </div>
-      </template>
+        <template v-for="(producer, idx) in producers" :key="producer[0]">
+          <div>
+            <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer[1].length > 0"
+              :id="idx"
+              :thematic-label="producer[0]"
+              :layers-count="producer[1].length"
+              :key="producer[0] + '-menuCatalogueThematique'">
+              <LayerList
+                :key="producer[0]"
+                :list-name="producer[0]"
+                :selected-layers="selectedLayers"
+                :layers="producer[1]"/>
+            </MenuCatalogueThematique>
+          </div>
+        </template>
+      </DsfrAccordionsGroup>
     
-    <!-- <DsfrAccordionsGroup 
-      v-model="activeAccordion2">
-    </DsfrAccordionsGroup> -->
-    <template v-for="(thematic, idx) in thematics" :key="thematic[0]">
-      <div>
-        <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic[1].length > 0"
-          :id="idx"
-          :thematic-label="thematic[0]"
-          :layers-count="thematic[1].length"
-          :key="thematic[0] + '-menuCatalogueThematique'">
-          <LayerList
-            :key="thematic[0]"
-            :list-name="thematic[0]"
-            :selected-layers="selectedLayers"
-            :layers="thematic[1]"/>
-        </MenuCatalogueThematique>
-      </div>
-    </template>
+      <DsfrAccordionsGroup 
+        v-model="activeAccordion2">
+        <template v-for="(thematic, idx) in thematics" :key="thematic[0]">
+          <div>
+            <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic[1].length > 0"
+              :id="idx"
+              :thematic-label="thematic[0]"
+              :layers-count="thematic[1].length"
+              :key="thematic[0] + '-menuCatalogueThematique'">
+              <LayerList
+                :key="thematic[0]"
+                :list-name="thematic[0]"
+                :selected-layers="selectedLayers"
+                :layers="thematic[1]"/>
+            </MenuCatalogueThematique>
+          </div>
+        </template>
+      </DsfrAccordionsGroup>
     
       <div v-show="currDataFilter == 'tout'">
         <LayerList 

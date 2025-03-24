@@ -27,6 +27,7 @@ import { mainMap } from "@/composables/keys"
 const props = defineProps({
   selectedControls : Array,
   selectedLayers : Object,
+  selectedBookmarks : Object
 })
 
 const mapStore = useMapStore()
@@ -66,7 +67,8 @@ const mapIsReady = computed(() => {
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
       :map-Id="mainMap"
-      :selected-layers="props.selectedLayers"/>
+      :selected-layers="props.selectedLayers"
+      :selected-bookmarks="props.selectedBookmarks"/>
   </Map>
 </template>
 

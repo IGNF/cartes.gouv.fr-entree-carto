@@ -31,6 +31,7 @@ var EVENTS = {
     "document:updated",
     "document:deleted",
     "document:exported",
+    "document:shared",
     // widgets
     "catalog:open:clicked",
     "drawing:open:clicked",

@@ -7,6 +7,10 @@ import { useStorage } from '@vueuse/core';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
+// FIXME
+// comment reduire la taille de la chaine de caractères dans l'url ?
+// import { decode, encode } from "universal-base64url";
+
 /**
  * Valeurs par defaut
  * pour la liste des contrôles par defaut, on utilise toujours 
@@ -47,6 +51,7 @@ const ns = ((value) => {
  * - cartes.gouv.fr.permalinkShare
  * - cartes.gouv.fr.firstVisit
  * - cartes.gouv.fr.layers
+ * - cartes.gouv.fr.bookmarks
  * - cartes.gouv.fr.zoom -> absolue !
  * - cartes.gouv.fr.x --> webmercator
  * - cartes.gouv.fr.y --> webmercator
@@ -70,8 +75,16 @@ const ns = ((value) => {
  *   et ',' pour chaque couches
  *   (!) pour le moment, on implemente tout simplement une liste des contrôles actifs !
  * 
- * @todo données utilisateurs issues des favoris
- * @todo translation des uuid & 'short' id
+ * - La structure d'un favoris par URL de partage
+ *   ex. https://data.geopf.fr/documents/1p2pDnXdwZfaCfsAkriU9UJBLO9vuKxb8M7Fna7iDrx4s1.bin?
+ *    uuid=bb2903e4-4bee-4322-9fcf-de9a0d983490&
+ *    name=Mon+croquis&
+ *    description=export&
+ *    format=kml&
+ *    opacity=1&
+ *    visible=1&
+ *    gray=0
+ * 
  */
 export const useMapStore = defineStore('map', () => {
   /////////////
@@ -119,7 +132,9 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+    return (bookmarks.value.length > 0) ? 
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26stop%3D1/g, "")}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
   var permalinkShare = computed(() => {
@@ -128,7 +143,9 @@ export const useMapStore = defineStore('map', () => {
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
-    return `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
+    return (bookmarks.value.length > 0) ? 
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&d=${bookmarks.value.replace(/%26stop%3D1/g, "")}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
   });
 
   var center = computed(() => {
@@ -139,6 +156,12 @@ export const useMapStore = defineStore('map', () => {
   // objets complexes
   ////////////////////
 
+  /**
+   * @type {*}
+   * @description
+   * La liste des couches
+   * ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
+   */
   var layers = useStorage(ns('layers'), DEFAULT.LAYERS);
   if (!layers.value) {
     var l = DEFAULT.LAYERS.split(",").filter(function (l) {
@@ -152,6 +175,12 @@ export const useMapStore = defineStore('map', () => {
       }
     }
   }
+  /**
+   * @type {*}
+   * @description
+   * La liste des contrôles
+   * ex. Isocurve(1)
+   */
   var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
@@ -160,6 +189,23 @@ export const useMapStore = defineStore('map', () => {
     for (let j = 0; j < c.length; j++) {
       addControl(c[j]);
     }
+  }
+  /**
+   * @type {*}
+   * @description
+   * La liste des favoris
+   * ex. https://data.geopf.fr/documents/1p2pDnXdwZfaCfsAkriU9UJBLO9vuKxb8M7Fna7iDrx4s1.bin?
+   *    uuid=bb2903e4-4bee-4322-9fcf-de9a0d983490&
+   *    name=Mon+croquis&
+   *    description=export&
+   *    format=kml&
+   *    opacity=1&
+   *    visible=1&
+   *    gray=0
+   */
+  var bookmarks = useStorage(ns('bookmarks'), "");
+  if (!bookmarks.value) {
+    bookmarks.value = "";
   }
 
   ///////////
@@ -205,6 +251,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
+  })
+  watch(bookmarks, () => {
+    localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
   })
 
   //////////////////
@@ -305,14 +354,90 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
-  // TODO
-  // Gestion des données utilisateurs : favoris
-  // > transformation UUID -> 'short' ID dans le permalien !
-  function addBookmark (uuid) {}
-  function removeBookmark (uuid) {}
-  function updateBookmarkProperty (uuid, props) {}
-  function updateBookmarkPosition (uuids) {}
-  function getBookmarkProperty (uuid) {}
+  // Gestion des données utilisateurs : url de partage des favoris
+  function getBookmarks () {
+    return bookmarks.value.split(",");
+  }
+  function getBookmarksByKey () {
+    return bookmarks.value.split(",").map((b) => {
+      return decodeURIComponent(b).split("?")[0];
+    }); // array
+  }
+  function getBookmarksByID () {
+    return bookmarks.value.split(",").map((b) => {
+      var params = decodeURIComponent(b).split("?")[1];
+      var p = new URLSearchParams(params);
+      var id = p.get("id");
+      return id;
+    }); // array
+  }
+  function addBookmark (url) {
+    if (!url) {
+      return;
+    }
+    var _url = url.split("?")[0];
+    if (getBookmarksByKey().includes(_url)) {
+      return;
+    }
+
+    var b = (bookmarks.value === "") ? [] : bookmarks.value.split(",");
+    var key = encodeURIComponent(url); // encode(url) en base64 ?
+    b.push(key);
+    bookmarks.value = b.toString(); // string
+  }
+  function removeBookmark (url) {
+    var _url = url.split("?")[0];
+    const index = getBookmarksByKey().indexOf(_url);
+    if (index !== -1) {
+      var b = bookmarks.value.split(",");
+      b.splice(index, 1);
+      bookmarks.value = b.toString(); // string
+    }
+  }
+  function removeBookmarkByID (id) {
+    const index = getBookmarksByID().indexOf(id);
+    if (index !== -1) {
+      var b = bookmarks.value.split(",");
+      b.splice(index, 1);
+      bookmarks.value = b.toString(); // string
+    }
+  }
+  function updateBookmark (url) {
+    var _url = url.split("?")[0];
+    const index = getBookmarksByKey().indexOf(_url);
+    if (index !== -1) {
+      var b = bookmarks.value.split(",");
+      b[index] = encodeURIComponent(url); // encode(url) en base64 ?;
+      bookmarks.value = b.toString(); // string
+    }
+  }
+  function updateBookmarkPropertyByID (id, props) {
+    const index = getBookmarksByID().indexOf(id);
+    if (index !== -1) {
+      var b = bookmarks.value.split(",");
+      var _url = decodeURIComponent(b[index]);
+      var p = new URLSearchParams(_url.split("?")[1]);
+      for (const key in props) {
+        if (Object.prototype.hasOwnProperty.call(props, key)) {
+          const value = props[key];
+          p.set(key, value);
+        }
+      }
+      b[index] = encodeURIComponent(_url.split("?")[0] + "?" + p.toString());
+      bookmarks.value = b.toString(); // string
+    }
+  }
+  function getBookmarkProperty (url) {
+    var params = {};
+    const index = getBookmarksByKey().indexOf(url.split('?')[0]);
+    if (index !== -1) {
+      var p = new URLSearchParams(url.split('?')[1]);
+      p.forEach((value, key) => {
+        params[key] = value;
+      });
+    } 
+    return params;
+  }
 
   function getControls () {
     // INFO
@@ -345,6 +470,7 @@ export const useMapStore = defineStore('map', () => {
     map,
     layers,
     controls,
+    bookmarks,
     zoom,
     center,
     x,
@@ -364,10 +490,12 @@ export const useMapStore = defineStore('map', () => {
     updateLayerProperty,
     updateLayerPosition,
     getLayerProperty,
+    getBookmarks,
     addBookmark,
     removeBookmark,
-    updateBookmarkProperty,
-    updateBookmarkPosition,
+    removeBookmarkByID,
+    updateBookmark,
+    updateBookmarkPropertyByID,
     getBookmarkProperty,
     getControls,
     cleanControls,

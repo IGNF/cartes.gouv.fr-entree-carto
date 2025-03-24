@@ -162,6 +162,9 @@ var GetDocuments = {
    */
   getCartes : async function (id) {
     var data = await this.getFileById(id);
+    if (typeof data === "string") {
+      data = JSON.parse(data);
+    }
     var promise = new Promise((resolve, reject) => {
       resolve(data.permalink); // retourne une string !
     });

@@ -60,8 +60,12 @@ var Documents = {
     "profil"
   ],
 
+  //////////////////////////
+  // Méthodes helpers
+  //////////////////////////
+
   /**
-   * Verifier si aucun document n'est disponible
+   * Verifie si aucun document n'est disponible
    * 
    * @returns {Boolean} - Vrai si aucun document n'est disponible
    */
@@ -74,6 +78,29 @@ var Documents = {
     }
     return true;
   },
+
+  /**
+   * Recherche un document par son uuid
+   * 
+   * @param {*} uuid 
+   * @returns document
+   */
+  find: function (uuid) {
+    for (let index = 0; index < this.labels.length; index++) {
+      const label = this.labels[index];
+      if (this.documents[label] && this.documents[label].length > 0) {
+        var document = this.documents[label].find((doc) => doc._id === uuid);
+        if (document) {
+          return document;
+        }
+      }
+    }
+    return null;
+  },
+
+  //////////////////////////
+  // Méthodes de service
+  //////////////////////////
 
   /**
    * Obtenir la liste des documents
@@ -184,6 +211,7 @@ var Documents = {
           document.labels = data.labels;
           document.description = data.description;
           document.mime_type = data.mime_type;
+          document.public_url = data.public_url;
           document.extra = {
             ...extra(data.labels), // FIXME les extras additionnels ne sont pas enregistrés sur l'entrepot !
             ...data.extra
