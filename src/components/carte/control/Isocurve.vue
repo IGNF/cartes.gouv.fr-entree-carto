@@ -39,6 +39,9 @@ const button = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(isocurve.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      button.value.getContainer().style.display = "none";
+    }
     map.addControl(button.value);
     if (props.analytic) {
       var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");

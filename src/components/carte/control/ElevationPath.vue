@@ -33,6 +33,9 @@ const button = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(elevationPath.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      button.value.getContainer().style.display = "none";
+    }
     map.addControl(button.value);
     /* abonnement au widget 
     * @fires elevationpath:drawstart
