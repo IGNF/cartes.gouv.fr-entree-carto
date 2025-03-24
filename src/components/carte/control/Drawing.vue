@@ -90,6 +90,9 @@ onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
     map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
