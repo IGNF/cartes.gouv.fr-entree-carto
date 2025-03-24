@@ -16,7 +16,6 @@
  *   ex. gpResultLayerId = 'bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
  * @todo gestion des exceptions sur les actions avec notification
- * @todo renommer un favoris
  * @todo le type service mapbox est à mettre en place
  * @todo le type compute est à mettre en place
  */
@@ -31,9 +30,11 @@ import {
   createVectorLayer, 
   createServiceLayer,
   createMapBoxLayer 
-} from '@/features/ol-create-layer.js';
+} from '@/features/layer.js';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
+
+import { toShare } from '@/features/share.js';
 
 // lib notification
 import { push } from 'notivue'
@@ -49,7 +50,8 @@ const mapStore = useMapStore();
  */
 const props = defineProps({
   type : String,
-  data : Object
+  data : Object,
+  download : Boolean
 });
 
 const service = inject('services');
@@ -58,11 +60,11 @@ const emitter = inject('emitter');
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
  * 
- * @param data - {id, name, format, type, type_fr, icon, date}
+ * @param data - {id, name, format, type, ...}
  */
-const displayDataOnMap = (data) => {
+const onAddData = (data) => {
   service.getDocumentById(data.id)
-  .then((infos) => {
+  .then((document) => {
     var fct = null;
     switch (data.type) {
       case "drawing":
@@ -92,6 +94,7 @@ const displayDataOnMap = (data) => {
     if (!fct) {
       throw new Error(t.bookmark.failed_type_unknow(data.type));
     }
+    var permalink = false;
     // appel de la requête de télechargement du fichier
     fct.call(service, data.id)
     .then((response) => {
@@ -100,7 +103,6 @@ const displayDataOnMap = (data) => {
       var target = {};
       var layer = null;
       
-      // creation de l'objet layer pour afficher un Vecteur ou un Service
       if (data.type === "carte") {
         getLayersFromPermalink(response);
         push.success({
@@ -108,18 +110,19 @@ const displayDataOnMap = (data) => {
           message: t.bookmark.success_add_data("permalien")
         });
         return;
-      } else if (data.type === "service") {
+      } 
+      if (data.type === "service") {
         // les reponses possibles :
         // - style (json) ou url pour mapbox, 
         // - liste de parametres (json) pour wms et wmts
         opts = {
           id : data.id,
-          title : data.name,
-          description : infos.description,
-          format : infos.extra.format // wms, wmts ou mapbox
+          name : data.name,
+          description : document.description,
+          format : document.extra.format // wms, wmts ou mapbox
         };
-        if (infos.extra.format === "mapbox") {
-          target = (infos.extra.target && infos.extra.target === "internal") ? { data : response } : { url : response };
+        if (document.extra.format === "mapbox") {
+          target = (document.extra.target && document.extra.target === "internal") ? { data : response } : { url : response };
           createMapBoxLayer({
             ...opts,
             ...target
@@ -142,16 +145,17 @@ const displayDataOnMap = (data) => {
             ...target
           });
         }
-      } else {
+      }
+      if (data.type === "drawing" || data.type === "import") {
         opts = {
           id : data.id,
           extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)
-          title : data.name,
-          description : infos.description,
-          format : infos.extra.format,
+          name : data.name,
+          description : document.description,
+          format : document.extra.format,
           type : data.type
         };
-        if (infos.extra.format === "mapbox") {
+        if (document.extra.format === "mapbox") {
           target = { data : response };
           createMapBoxLayer({
             ...opts,
@@ -169,18 +173,26 @@ const displayDataOnMap = (data) => {
           });
           return;
         } else {
-          target = (infos.extra.target && infos.extra.target === "external") ? { url : response } : { data : response };
-          layer = createVectorLayer({
-            ...opts,
-            ...target
-          });
+          permalink = true;
         }
       }
-      // ajout de la couche sur la carte
-      mapStore.getMap().addLayer(layer);
+      // ajout de la couche sur la carte sauf si on passe par 
+      // le mécanisme de permalien / partage d'url
+      if (!permalink) {
+        mapStore.getMap().addLayer(layer);
+      }
+    })
+    .then(() => {
+      // ajout du document dans le permalien pour partage
+      if (permalink) {
+        var url = toShare(document, {});
+        mapStore.addBookmark(url);
+      }
+    })
+    .then(() => {
       push.success({
         title: t.bookmark.title,
-        message: t.bookmark.success_add_data(infos.extra.format),
+        message: t.bookmark.success_add_data(document.extra.format),
       });
     })
     .catch((e) => {
@@ -311,7 +323,7 @@ const onClickButtonCancelRename  = (e) => {
 // - data-id : uuid
 // - data-type : ex. drawing, import, carte...
 const buttonsMap = [
-{
+  {
     label: 'Renommer',
     icon: "fr-icon-edit-line",
     "data-id": props.data.id,
@@ -376,7 +388,7 @@ const buttonsData = [
       tertiary
       no-outline
       :icon="data.icon"
-      @click="displayDataOnMap(data)">
+      @click="onAddData(data)">
         {{ data.name }}
     </DsfrButton>
     <!-- Groupe d'action : 

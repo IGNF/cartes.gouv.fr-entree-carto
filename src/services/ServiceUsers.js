@@ -37,7 +37,7 @@ var Users = {
    * Obtenir les informations de l'utilisateur
    * afin de les afficher dans l'interface : prénom - nom 
    * 
-   * @type {Object}
+   * @type {Object} user
    * @returns {Promise} - ...
    */
   getUserMe : async function () {

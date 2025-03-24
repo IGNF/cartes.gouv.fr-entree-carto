@@ -30,7 +30,10 @@ import GetFeatureInfo from './control/GetFeatureInfo.vue';
 import LayerImport from './control/LayerImport.vue';
 import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
+import FullScreen from './control/FullScreen.vue';
+import ReverseGeocode from './control/ReverseGeocode.vue';
 
+import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
@@ -66,6 +69,7 @@ const props = defineProps({
 //  (...)
 // ]
 const mapStore = useMapStore();
+const domStore = useDomStore();
 const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
@@ -404,7 +408,7 @@ const contextMenuOptions = computed(() => {
       {
         text : "Ajouter des données",
         callback : () => {
-          mapStore.getmenuCatalogueButton().firstChild.click()
+          domStore.getmenuCatalogueButton().firstChild.click()
         }
       }
     ]

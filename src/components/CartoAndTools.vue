@@ -11,6 +11,7 @@ import PrintModal from "@/components/carte/control/PrintModal.vue";
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
 
+import { fromShare } from '@/features/share';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
@@ -62,6 +63,42 @@ const selectedLayers = computed(() => {
   });
 });
 
+// liste des favoris selectionnés par l'utilisateur, donc disponibles dans le permalien
+// (cette liste est recalculée à chaque fois que le mapStore est modifié)
+const selectedBookmarks = computed(() => {
+  var bookmarks: any = [];
+  mapStore.getBookmarks().forEach( (bookmark: string) => {
+    // transformer un partage d'URL en un objet 
+    var obj = fromShare(decodeURIComponent(bookmark));
+    // INFO
+    // on a une condition spéciale pour écarter les documents 
+    // que l'on ne souhaite pas intégrer dans le mécanisme de reactivité
+    //  ex. les favoris issus de l'outil de dessin 
+    //  car le widget Drawing a son propre mécanisme
+    //  d'ajout de couche sur la carte...
+    if (!obj.stop) {
+      // on ajoute une clef unique... besoin interne
+      obj.key = obj.id;
+      /*
+      * Liste des paramètres utiles (liste non exhaustive):
+      * - url
+      * - id
+      * - name
+      * - description
+      * - format
+      * - opacity
+      * - visible
+      * - gray
+      * - type (ex. drawing, import, service...)
+      * - stop
+      * - ...
+      */
+      bookmarks.push(obj);
+    }
+  });
+  return bookmarks;
+});
+
 // liste des contrôles utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedControls = computed(() => {
@@ -95,7 +132,8 @@ provide("selectedLayers", selectedLayers);
     <Carto
       ref="cartoRef"
       :selected-layers="selectedLayers"
-      :selected-controls="selectedControls"/>
+      :selected-controls="selectedControls"
+      :selected-bookmarks="selectedBookmarks"/>
 
     <!-- Le menu des contrôles et le catalogue -->
     <RightMenuTool

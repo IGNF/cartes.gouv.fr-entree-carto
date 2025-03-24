@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw'
 // https://mswjs.io/docs/
 
 const API_URL = (import.meta.env.IAM_AUTH_MODE === "remote") ? import.meta.env.IAM_ENTREPOT_API_URL_REMOTE : import.meta.env.IAM_ENTREPOT_API_URL;
-
+const BASE_URL = encodeURI(location.origin + import.meta.env.BASE_URL);
 // liste des clefs pour le POST / PUT / PATCH / DELETE
 var keys = [
   {uuid: "3fa85f64-5717-4562-b3fc-2c963f66afc0", use: false},
@@ -249,6 +249,7 @@ export const handlers = {
             "date" : "01/01/2025",
             "format" : "kml"
           },
+          "public_url": `${BASE_URL}/mocks/croquis1.kml`,
           "_id": id
         });
       }
@@ -263,6 +264,7 @@ export const handlers = {
             "drawing",
             "kml"
           ],
+          "public_url": `${BASE_URL}/mocks/croquis2.kml`,
           "_id": id
         });
       }
@@ -279,6 +281,7 @@ export const handlers = {
             "geojson",
             "internal"
           ],
+          "public_url": `${BASE_URL}/mocks/regions.geojson`,
           "_id": id
         });
       }
@@ -294,6 +297,7 @@ export const handlers = {
             "gpx",
             "internal"
           ],
+          "public_url": `${BASE_URL}/mocks/rando_corse.gpx`,
           "_id": id
         });
       }
@@ -309,6 +313,7 @@ export const handlers = {
             "kml",
             "internal"
           ],
+          "public_url": `${BASE_URL}/mocks/decoupage_top100.kml`,
           "_id": id
         });
       }
@@ -553,6 +558,7 @@ export const handlers = {
             "internal"
           ],
           "extra": data.get("extra"),
+          "public_url": `${BASE_URL}/mocks/test-drawing.kml`,
           "_id": key.uuid
         });
       }

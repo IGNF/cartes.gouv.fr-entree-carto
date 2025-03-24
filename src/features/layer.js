@@ -24,7 +24,7 @@ import {
   GPX as GPXExtended
 } from 'geopf-extensions-openlayers';
 
-import { DEFAULT_STYLE } from './ol-style';
+import { DEFAULT_STYLE } from './style';
 
 import t from './translation';
 
@@ -49,7 +49,7 @@ import t from './translation';
  * Les options
  * @param {*} options 
  * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.title
+ * @property {*} options.name
  * @property {*} options.description
  * @property {*} options.format
  * @property {*} options.extended - mode étendu des formats
@@ -61,11 +61,12 @@ const createVectorLayer = (options) => {
   var vectorSource = null;
   var vectorLayer = null;
 
+  var extended = (options.extended === undefined) ? true : options.extended;
   switch (options.format.toLowerCase()) {
     case "geojson":
       vectorFormat = new GeoJSON(); 
       // Extended
-      if (options.extended) {
+      if (extended) {
         vectorFormat = new GeoJSONExtended({
           defaultStyle : DEFAULT_STYLE
         }); 
@@ -74,7 +75,7 @@ const createVectorLayer = (options) => {
     case "kml":
       vectorFormat = new KML();
       // Extended
-      if (options.extended) {
+      if (extended) {
         vectorFormat = new KMLExtended({
           defaultStyle : DEFAULT_STYLE
         }); 
@@ -83,7 +84,7 @@ const createVectorLayer = (options) => {
     case "gpx":
       vectorFormat = new GPX();
       // Extended
-      if (options.extended) {
+      if (extended) {
         // HACK
         // modifier la classe GPXExtended dans les extensions !
         // > gestion de la callback interne readExtensions()
@@ -124,7 +125,7 @@ const createVectorLayer = (options) => {
     throw new Error(t.ol.failed_source("vecteur"));
   }
 
-  vectorSource._title = options.title;
+  vectorSource._title = options.name;
   vectorSource._description = options.description;
 
   vectorLayer = new VectorLayer({
@@ -151,7 +152,7 @@ const createVectorLayer = (options) => {
  * Les options
  * @param {*} options  
  * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.title
+ * @property {*} options.name
  * @property {*} options.description
  * @property {*} options.format
  * @property {*} options.data
@@ -186,7 +187,7 @@ const createServiceLayer = (options) => {
       throw new Error(t.ol.failed_source("service wmts"));
     }
 
-    sourceWMTS._title = options.data.title || options.title;
+    sourceWMTS._title = options.data.name || options.name;
     sourceWMTS._description = options.data.description || options.description;
   
     tileLayer = new TileLayer({
@@ -217,7 +218,7 @@ const createServiceLayer = (options) => {
       throw new Error(t.ol.failed_source("service wms"));
     }
     
-    sourceTileWMS._title = options.data.title || options.title;
+    sourceTileWMS._title = options.data.name || options.name;
     sourceTileWMS._description = options.data.description || options.description;
     
     tileLayer = new TileLayer({
@@ -262,7 +263,7 @@ const createServiceLayer = (options) => {
  * Les options
  * @param {*} options
  * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.title
+ * @property {*} options.name
  * @property {*} options.description
  * @property {*} options.format
  * @property {*} options.data | @property {*} options.url
@@ -295,7 +296,7 @@ const createMapBoxLayer = (options) => {
         urls : _glTiles
       });
 
-      vectorSource._title = options.title;
+      vectorSource._title = options.name;
       vectorSource._description = options.description;
 
       vectorLayer = new VectorTileLayer({

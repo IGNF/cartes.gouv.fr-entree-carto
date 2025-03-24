@@ -11,6 +11,8 @@ import {
 
 import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
+import { toShare } from '@/features/share';
+
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
@@ -27,6 +29,7 @@ const mapStore = useMapStore();
 const dataStore = useDataStore();
 
 const emitter = inject('emitter');
+const service = inject('services');
 const map = inject(props.mapId);
 
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
@@ -95,24 +98,21 @@ const onAddLayer = (e) => {
   log.debug("onAddLayer", e);
   var lyr = e.layer;
   var id = null;
+  // Données issues du catalogue
   if (lyr.name && lyr.service) {
     id = dataStore.getLayerIdByName(lyr.name, lyr.service);
-    if (id) {
-      mapStore.addLayer(id);
-    }
   } else {
     // Données issues d'un widget
     // ex. drawing, layerimport, ...
     var gpId = lyr.layer.gpResultLayerId;
+    id = gpId;
     if (gpId) {
-      // on garde un lien fort entre le layer natif / le widget layerswitcher
+      // on sauvegarde un lien entre le layer natif / le widget layerswitcher
       lyr.layer.gpResultLayerDiv = lyr.div;
-      id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
+        // on utilise le uuid pour les données utilisateurs !
         // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
-        if (id) {
-          mapStore.addBookmark(id);
-        }
+        id = gpId.split(':').pop();
       }
     }
   }
@@ -134,6 +134,7 @@ const onRemoveLayer = (e) => {
   log.debug("onRemoveLayer", e);
   var lyr = e.layer;
   var id = null;
+  // Données issues du catalogue
   if (lyr.name && lyr.service) {
     id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
@@ -144,9 +145,10 @@ const onRemoveLayer = (e) => {
     if (gpId) {
       id = gpId.split(':').pop();
       if (gpId.startsWith('bookmark')) {
-        // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+        // ex. "bookmark:import-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         if (id) {
-          mapStore.removeBookmark(id);
+          // on supprime le lien dans le store
+          mapStore.removeBookmarkByID(id);
         }
       }
     }
@@ -214,7 +216,7 @@ const onChangeOpacityLayer = (e) => {
       if (gpId.startsWith('bookmark')) {
         id = gpId.split(':').pop();
         if (id) {
-          mapStore.updateBookmarkProperty(id, {
+          mapStore.updateBookmarkPropertyByID(id, {
             opacity : e.opacity
           });
         }
@@ -240,7 +242,7 @@ const onChangeVisibilityLayer = (e) => {
       if (gpId.startsWith('bookmark')) {
         id = gpId.split(':').pop();
         if (id) {
-          mapStore.updateBookmarkProperty(id, {
+          mapStore.updateBookmarkPropertyByID(id, {
             visible : e.visibility
           });
         }

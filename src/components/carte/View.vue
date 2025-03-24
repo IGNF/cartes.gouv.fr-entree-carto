@@ -12,25 +12,25 @@
 </script>
 
 <script setup lang="js">
-import View from 'ol/View'
+import View from 'ol/View';
 import {
   toLonLat as toLonLatProj,
   fromLonLat as fromLonLatProj
 } from "ol/proj";
 
-import { useMapStore } from "@/stores/mapStore"
-import { mainMap } from "@/composables/keys"
+import { useMapStore } from "@/stores/mapStore";
+import { mainMap } from "@/composables/keys";
 
-const store = useMapStore()
+const store = useMapStore();
 
 const props = defineProps({
   zoom : Number,
   center : Array,
-  mapId: String,
-})
+  mapId: String
+});
 
 // recuperation de l'objet 'map' du composant parent
-const map = inject(props.mapId)
+const map = inject(props.mapId);
 
 /**
  * creation de la vue
@@ -38,7 +38,7 @@ const map = inject(props.mapId)
 const view = new View({ 
   zoom: props.zoom, 
   center: fromLonLatProj(props.center)
-})
+});
 
 /**
  * abonnement à l'evenement 'change:center' de la vue
@@ -60,14 +60,24 @@ view.on("change:center", (e) => {
  * pour mise à jour du zoom de la carte
  */
 view.on("change:resolution", (e) => {
-    store.zoom = view.getZoom()
+    store.zoom = view.getZoom();
 })
 
 onMounted(() => {
   if (map) {
-    map.setView(view)
+    // autoriser ?
+    // view.setConstrainResolution(true);
+    map.setView(view);
   }
 })
+
+// onUpdated(() => {
+//   // optimisé ?
+//   if (view.getZoom() !== props.zoom) {
+//     view.setZoom(props.zoom);
+//   }
+//   view.setCenter(fromLonLatProj(props.center));
+// })
 </script>
 
 <template></template>

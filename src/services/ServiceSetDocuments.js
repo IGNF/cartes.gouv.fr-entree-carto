@@ -76,7 +76,8 @@ var SetDocuments = {
    * -F 'file=@export-iso.gpx;type=application/gpx+xml' \
    * -F 'description=test' \
    * -F 'name=test' \
-   * -F 'labels=test'
+   * -F 'labels=test' \
+   * -F 'public_url=true'
    * 
    * @param {Object} obj 
    * @property {String} obj.content - export
@@ -84,6 +85,7 @@ var SetDocuments = {
    * @property {String} obj.description - description
    * @property {String} obj.format - format : kml, geojson, ...
    * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.target - internal, external
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   setDocument : async function (obj) {
@@ -91,19 +93,24 @@ var SetDocuments = {
     formData.append("name", obj.name);
     formData.append("description", obj.description);
 
-    const labels = [
-      this.tag, 
-      obj.type, 
-      this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e))
-    ];
-    formData.append("labels", labels.join(","));
-
     // FIXME
     // ça ne marche pas !?
     // formData.append("labels[]", this.tag);
     // formData.append("labels[]", obj.type);
     // formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
     
+    const labels = [
+      this.tag, 
+      obj.type, 
+      this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)),
+      this.labelsTarget.find((e) => obj.target.toLowerCase().includes(e))
+    ];
+    formData.append("labels", labels.join(","));
+
+    // INFO
+    // URL publique pour tous les documents !
+    formData.append("url_public", true);
+
     // FIXME 
     // le champ extra n'est pas pris en compte par l'API Entrepot !?
     formData.append("extra", JSON.stringify({
@@ -221,7 +228,7 @@ var SetDocuments = {
   },
 
   /**
-   * Mettre à jour un document (extra)
+   * Mettre à jour un document (extra, public_url, ...)
    * 
    * Appels de l'API Entrepôt :
    * - PATCH /users/me/documents/{document}
@@ -236,9 +243,6 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
-   * @property {String} obj.name - name
-   * @property {String} obj.description - description
-   * @property {String} obj.extra - { format : kml, geojson, ... }
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    * @param {*} obj 
    */
@@ -252,10 +256,12 @@ var SetDocuments = {
       throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
     }
     // construction du body
-    var body = this.documents[obj.type][idx];
-    body.extra = obj.extra;
+    var body = {};
+    body.extra = obj.extra; // FIXME à verifier !?
     body.name = obj.name;
     body.description = obj.description;
+
+    // TODO labels pour target et format !
 
     var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
       method: 'PATCH',
@@ -286,6 +292,67 @@ var SetDocuments = {
     return {
       uuid : uuid,
       action : "updated"
+    };
+  },
+
+  /**
+   * Mettre à jour un document (extra, public_url, ...)
+   * 
+   * Appels de l'API Entrepôt :
+   * - PATCH /users/me/documents/{document}
+   * 
+   * Actions :
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
+   * - retourner le UUID et le type d'action
+   * 
+   * @example
+   * ...
+   * 
+   * @param {*} obj
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.type - drawing, import, ...
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   * @param {*} obj 
+   */
+  sharingDocument : async function (obj) {
+    var uuid = obj.uuid;
+
+    // recherche du document
+    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+    if (idx === -1) {
+      // ERROR !
+      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    }
+
+    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        "X-Requested-With" : "XMLHttpRequest"
+      },
+      body: JSON.stringify({ public_url : true })
+    });
+
+    var data = await response.json();
+    
+    if (response.status !== 200) {
+      // ERROR !
+      throw data;
+    }
+
+    // enregistrer la réponse
+    this.documents[obj.type][idx] = data;
+
+    // uuid
+    var uuid = data._id;
+
+    // mise à jour du store
+    var store = useServiceStore();
+    store.setService(this);
+    
+    return {
+      uuid : uuid,
+      action : "shared"
     };
   },
 
