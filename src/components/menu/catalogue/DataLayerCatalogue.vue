@@ -58,11 +58,12 @@ const activeAccordion2 = ref(-1)
             :layers="producer[1]"/>
           </MenuCatalogueThematique>
           </div>
-        </template>
-      </DsfrAccordionsGroup>
+          
+      </template>
+    </DsfrAccordionsGroup>
     
       <DsfrAccordionsGroup 
-        v-model="activeAccordion2">
+      v-model="activeAccordion2">
         <template v-for="(thematic, idx) in thematics" :key="thematic[0]">
           <div v-show="currDataFilter === 'theme'" >
             <MenuCatalogueThematique v-show="thematic[1].length > 0"
