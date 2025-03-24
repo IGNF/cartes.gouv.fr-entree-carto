@@ -10,8 +10,7 @@ import {
  */
 export const useDataStore = defineStore('data', () => {
   const m_informations = ref({});
-  const m_thematics = ref([]);
-  const m_producers = ref([]);
+
   const m_layers = ref({});
   const m_generalOptions = ref({});
   const m_tileMatrixSets = ref({});
@@ -23,6 +22,38 @@ export const useDataStore = defineStore('data', () => {
   const filterServices = "WMTS,WMS,TMS";
   const filterProjections = "IGNF:LAMB93,EPSG:2154";
 
+  const themes = ref([])
+  const producers = ref([])
+
+  const m_thematics = computed(() => {
+    let ret = []
+    // Initialisation Objet thematiques 
+    // réduction à des valeurs uniques
+    ret = [...new Set(themes.value)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+    // Ajout catégorie Autres en fin de tableau
+    ret.push("Autres");
+    // Les layers sont des copies de m_layers
+    // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
+    ret = ret.map((thematic) => {
+      return [thematic, getLayersByThematic(thematic)]
+    })
+    return ret
+  });
+
+  const m_producers = computed(() => {
+    let ret = []
+    // Initialisation Objet producers
+    // réduction à des valeurs uniques
+    ret = [...new Set(producers.value)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
+    // Ajout catégorie Autres en fin de tableau
+    ret.push("Autres");
+    // Les layers sont des copies de m_layers
+    // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
+    return ret.map((producer) => {
+      return [producer, getLayersByProducer(producer)]
+    })
+  });
+
   /**
    * @todo utiliser l'implementation officielle @link{https://vueuse.org/core/useFetch/}
    */
@@ -30,10 +61,8 @@ export const useDataStore = defineStore('data', () => {
     try {
 
       const techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
-      const editoUrl =
-        import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
-      const privateUrl =
-        import.meta.env.VITE_GPF_CONF_PRIVATE_URL || "data/private.json";
+      const editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
+      const privateUrl = import.meta.env.VITE_GPF_CONF_PRIVATE_URL || "data/private.json";
 
       const editoRes = await fetch(editoUrl);
       const techRes = await fetch(techUrl);
@@ -43,35 +72,24 @@ export const useDataStore = defineStore('data', () => {
       const edito = await editoRes.json();
       const priv = await privateRes.json();
 
-      var themes = []
-      var producers = []
+      // on verifie que les couches de l'edito ont bien une correspondance
+      // dans les couches techniques
       const editoWithTech = Object.fromEntries(
         Object.keys(edito.layers).map(id => {
           // si l'id de la couche dans edito a bien une correspondance dans tech ou private
           if (tech.layers.hasOwnProperty(id) || priv.layers.hasOwnProperty(id)) {
             // gestion des thematiques si c'est une string on tranforme en tableau
             let ret = edito.layers[id];
-            if(edito.layers[id].hasOwnProperty("thematic") 
-              && edito.layers[id].thematic.length > 0) {
-                if (typeof edito.layers[id].thematic == 'string') {
-                  // this line convert the thematic in array donc passe aussi dans la condition suivante
-                  ret.thematic = [edito.layers[id].thematic];
-                }
-                if (Array.isArray(edito.layers[id].thematic)) {
-                  themes.push(...edito.layers[id].thematic)
-                }
-
+            if (ret.hasOwnProperty("thematic") && ret.thematic.length > 0) {
+              if (typeof ret.thematic === 'string') {
+                ret.thematic = [ret.thematic];
+              }
             }
             // gestion des producers si c'est une string on tranforme en tableau
-            if(edito.layers[id].hasOwnProperty("producer")
-              && edito.layers[id].producer.length > 0) {
-                if (typeof edito.layers[id].producer == 'string') {
-                  // this line convert the thematic in array donc passe aussi dans la condition suivante
-                  ret.producer = [edito.layers[id].producer];
-                }
-                if (Array.isArray(edito.layers[id].producer)) {
-                  producers.push(...edito.layers[id].producer)
-                }
+            if (ret.hasOwnProperty("producer") && ret.producer.length > 0) {
+              if (typeof ret.producer === 'string') {
+                ret.producer = [ret.producer];
+              }
             }
             // on rajoute les info edito à l'entrée
             return [id, {
@@ -79,11 +97,11 @@ export const useDataStore = defineStore('data', () => {
               ...priv.layers[id],
               ...ret
             }]
-          } else {
-            // sinon on supprime l'entrée edito avec le filter
-            return undefined;
           }
-      }).filter(entry => entry));
+          // sinon on supprime l'entrée edito avec le filter
+          return undefined;
+        }).filter(entry => entry)
+      );
 
       // on fusionne tech et priv avec l'objet edito nettoyé
       const res = {
@@ -92,22 +110,33 @@ export const useDataStore = defineStore('data', () => {
         ...editoWithTech
       };
 
-      // ajoute la clé aux propriétés
-      Object.keys(res).map((key) => { 
+      // on ajoute la clé (ID) aux propriétés
+      Object.keys(res).map((key) => {
         // On filtre les couches : 
         // - on garde celle qui correspondent à un des filterServices
         // - on supprime celles qui possèdent une des filterProjections
-        if(filterServices.split(",").some(service => res[key].serviceParams.id.includes(service))
-          && !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj)))
-        {
-          res[key].key = key;
+        if (filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) &&
+          !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj))) {
+          res[key].key = key; // ID
           let ret = {};
           ret[key] = res[key];
+          // Ajout des producteurs à la liste
+          if (Array.isArray(ret[key].producer)) {
+            producers.value.push(...ret[key].producer)
+          }
+          // Ajout des thématiques à la liste
+          if (Array.isArray(ret[key].thematic)) {
+            themes.value.push(...ret[key].thematic)
+          }
           // initialise les sans thématiques à Autres
-          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length == 0) { ret[key].thematic =  ["Autres"];}
-          if (!ret[key].hasOwnProperty("producer") || ret[key].producer.length == 0) { ret[key].producer =  ["Autres"];}
+          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length === 0) {
+            ret[key].thematic = ["Autres"];
+          }
+          if (!ret[key].hasOwnProperty("producer") || ret[key].producer.length === 0) {
+            ret[key].producer = ["Autres"];
+          }
           return ret;
-        } else  {
+        } else {
           delete res[key];
         }
       });
@@ -123,25 +152,6 @@ export const useDataStore = defineStore('data', () => {
       }
       m_tileMatrixSets.value = tech.tileMatrixSets;
 
-      // Initialisation Objet thematiques 
-      // réduction à des valeurs uniques
-      m_thematics.value = [...new Set(themes)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
-      m_thematics.value.push("Autres");
-      // Les layers sont des copies de m_layers
-      // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
-      m_thematics.value = m_thematics.value.map((thematic) => {
-        return [thematic, getLayersByThematic(m_layers.value, thematic)]
-      })
-      // Initialisation Objet producers
-      // réduction à des valeurs uniques
-      m_producers.value = [...new Set(producers)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
-      m_producers.value.push("Autres");
-      // Les layers sont des copies de m_layers
-      // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
-      m_producers.value = m_producers.value.map((producer) => {
-        return [producer, getLayersByProducer(m_layers.value, producer)]
-      })
-
       this.isLoaded = true;
       return res;
 
@@ -150,14 +160,13 @@ export const useDataStore = defineStore('data', () => {
       this.isLoaded = false;
       error.value = err.message;
     }
-
   }
 
-  function getTerritories () {
+  function getTerritories() {
     return m_territories.value;
   }
 
-  function getContacts () {
+  function getContacts() {
     return m_contacts.value;
   }
 
@@ -168,28 +177,20 @@ export const useDataStore = defineStore('data', () => {
   function getThematics() {
     return m_thematics.value;
   }
-  function getLayersByThematic(layers, thematic) {
-    return Object.keys(layers).filter(key => layers[key].thematic.includes(thematic))
-    .map(layerID => {
-        let layerObj = {}
-        layerObj[layerID] = layers[layerID]
-        return layers[layerID]
-    })
-    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
+  function getLayersByThematic(thematic) {
+    return Object.keys(m_layers.value)
+      .filter(key => m_layers.value[key].thematic.includes(thematic))
+      .map(layerID => { return layerID })
   }
 
   function getProducers() {
     return m_producers.value;
   }
 
-  function getLayersByProducer(layers, producer) {
-    return Object.keys(layers).filter(key => layers[key].producer.includes(producer))
-    .map(layerID => {
-        let layerObj = {}
-        layerObj[layerID] = layers[layerID]
-        return layers[layerID]
-    })
-    .sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
+  function getLayersByProducer(producer) {
+    return Object.keys(m_layers.value)
+      .filter(key => m_layers.value[key].producer.includes(producer))
+      .map(layerID => { return layerID })
   }
 
   function getFeatured() {
@@ -201,7 +202,10 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getLayersSignatures() {
-    return Object.fromEntries(Object.entries(m_layers.value).map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]]));
+    return Object.fromEntries(
+      Object.entries(m_layers.value)
+        .map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]])
+    );
   }
 
   function getLayerIdByName(name, service) {
@@ -327,13 +331,13 @@ export const useDataStore = defineStore('data', () => {
     var params = null;
 
     if (id) {
-        // get layer configuration object
-        var l = this.getLayerByID(id);
-        params = {};
-        params.projection = l.defaultProjection;
-        params.minScale = l.globalConstraint.minScaleDenominator;
-        params.maxScale = l.globalConstraint.maxScaleDenominator;
-        params.extent = l.globalConstraint.bbox;
+      // get layer configuration object
+      var l = this.getLayerByID(id);
+      params = {};
+      params.projection = l.defaultProjection;
+      params.minScale = l.globalConstraint.minScaleDenominator;
+      params.maxScale = l.globalConstraint.maxScaleDenominator;
+      params.extent = l.globalConstraint.bbox;
     }
 
     return params;
@@ -357,11 +361,15 @@ export const useDataStore = defineStore('data', () => {
     isLoaded,
     filterProjections,
     filterServices,
+    producers,
+    themes,
     fetchData,
     getTerritories,
     getContacts,
     getInformations,
+    getLayersByThematic,
     getThematics,
+    getLayersByProducer,
     getProducers,
     getFeatured,
     getLayers,

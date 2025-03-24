@@ -22,23 +22,17 @@ const props = defineProps({
 
 const dataStore = useDataStore();
 
-const thematics = dataStore.getThematics();
-// const thematics = computed(() => {
-//   return dataStore.getThematics().value.map(thematic => {
-//     const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
-//     const ret = [thematic[0], layerArr]
-//     return ret;
-//   })
-// })
+const thematics = computed(() => {
+  return dataStore.getThematics().map(thematic => {
+    return [thematic[0],   props.dataLayers.filter(layer => thematic[1].includes(layer.key))]
+  })
+})
 
-const producers = dataStore.getProducers();
-// const producers = computed(() => {
-//   return dataStore.getProducers().value.map(thematic => {
-//     const layerArr = thematic[1].filter(layer => props.dataLayers.map(layer => layer.key).includes(layer.key))
-//     const ret = [thematic[0], layerArr]
-//     return ret;
-//   })
-// });
+const producers = computed(() => {
+  return dataStore.getProducers().map(producer => {
+    return [producer[0],   props.dataLayers.filter(layer => producer[1].includes(layer.key))]
+  })
+});
 
 const activeAccordion1 = ref(-1)
 const activeAccordion2 = ref(-1)
@@ -50,18 +44,19 @@ const activeAccordion2 = ref(-1)
       <DsfrAccordionsGroup
         v-model="activeAccordion1">
         <template v-for="(producer, idx) in producers" :key="producer[0]">
-          <div>
-            <MenuCatalogueThematique v-show="currDataFilter === 'producteur'"  v-if="producer[1].length > 0"
-              :id="idx"
-              :thematic-label="producer[0]"
-              :layers-count="producer[1].length"
-              :key="producer[0] + '-menuCatalogueThematique'">
-              <LayerList
-                :key="producer[0]"
-                :list-name="producer[0]"
-                :selected-layers="selectedLayers"
-                :layers="producer[1]"/>
-            </MenuCatalogueThematique>
+          <div v-show="currDataFilter === 'producteur'" >
+            <MenuCatalogueThematique  v-show="producer[1].length > 0"
+          :id="idx"
+          :thematic-label="producer[0]"
+          :layers-count="producer[1].length"
+          :key="producer[0] + '-menuCatalogueThematique'">
+          <LayerList
+            v-if="idx == activeAccordion1"
+            :key="producer[0]"
+            :list-name="producer[0]"
+            :selected-layers="selectedLayers"
+            :layers="producer[1]"/>
+          </MenuCatalogueThematique>
           </div>
         </template>
       </DsfrAccordionsGroup>
@@ -69,17 +64,18 @@ const activeAccordion2 = ref(-1)
       <DsfrAccordionsGroup 
         v-model="activeAccordion2">
         <template v-for="(thematic, idx) in thematics" :key="thematic[0]">
-          <div>
-            <MenuCatalogueThematique v-show="currDataFilter === 'theme'" v-if="thematic[1].length > 0"
-              :id="idx"
-              :thematic-label="thematic[0]"
-              :layers-count="thematic[1].length"
-              :key="thematic[0] + '-menuCatalogueThematique'">
-              <LayerList
-                :key="thematic[0]"
-                :list-name="thematic[0]"
-                :selected-layers="selectedLayers"
-                :layers="thematic[1]"/>
+          <div v-show="currDataFilter === 'theme'" >
+            <MenuCatalogueThematique v-show="thematic[1].length > 0"
+            :id="idx"
+            :thematic-label="thematic[0]"
+            :layers-count="thematic[1].length"
+            :key="thematic[0] + '-menuCatalogueThematique'">
+            <LayerList
+              v-if="idx == activeAccordion2"
+              :key="thematic[0]"
+              :list-name="thematic[0]"
+              :selected-layers="selectedLayers"
+              :layers="thematic[1]"/>
             </MenuCatalogueThematique>
           </div>
         </template>
