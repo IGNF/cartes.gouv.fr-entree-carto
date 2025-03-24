@@ -17,7 +17,28 @@ const log = useLogger();
 
 const map = inject(props.mapId);
 const elevationPath = ref(new ElevationPath(props.elevationPathOptions));
-const button = ref(new ButtonExport({
+const btnExport = ref(new ButtonExport({
+  title : "Exporter",
+  kind : "secondary",
+  download : true,
+  name: "Mon profil",
+  description: "",
+  control: elevationPath.value,
+  menu : true,
+  menuOptions : {
+    outside: true,
+    above: true,
+    selectFormat: false,
+    labelDesc: false
+  },
+  direction : "column",
+  format : "geojson",
+  icons : {
+    menu : "",
+    button : "export"
+  }
+}));
+const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
   download : false,
@@ -33,7 +54,11 @@ const button = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(elevationPath.value);
-    map.addControl(button.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
+    map.addControl(btnExport.value);
+    map.addControl(btnSave.value);
     /* abonnement au widget 
     * @fires elevationpath:drawstart
     * @fires elevationpath:drawend
@@ -42,7 +67,8 @@ onMounted(() => {
     elevationPath.value.on("elevationpath:drawstart", onDrawStart);
     elevationPath.value.on("elevationpath:drawend", onDrawEnd);
     elevationPath.value.on("elevationpath:compute", onCompute);
-    button.value.on("button:clicked", onSaveElevationPath);
+    btnExport.value.on("button:clicked", onExportElevationPath);
+    btnSave.value.on("button:clicked", onSaveElevationPath);
     if (props.analytic) {
       var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
       useActionButtonEulerian(el);
@@ -53,14 +79,19 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (!props.visibility) {
     map.removeControl(elevationPath.value);
-    map.removeControl(button.value);
+    map.removeControl(btnSave.value);
+    map.removeControl(btnExport.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(elevationPath.value);
-    map.addControl(button.value);
+    map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
+    map.addControl(btnSave.value);
     if (props.analytic) {
       var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
       useActionButtonEulerian(el);
@@ -73,7 +104,8 @@ onUpdated(() => {
     elevationPath.value.on("elevationpath:drawstart", onDrawStart);
     elevationPath.value.on("elevationpath:drawend", onDrawEnd);
     elevationPath.value.on("elevationpath:compute", onCompute);
-    button.value.on("button:clicked", onSaveElevationPath);
+    btnExport.value.on("button:clicked", onExportElevationPath);
+    btnSave.value.on("button:clicked", onSaveElevationPath);
   }
 })
 
@@ -108,6 +140,23 @@ const onCompute = (e) => {
  * @property {Object} layer - layer
  */
 const onSaveElevationPath = (e) => {
+  log.debug(e);
+}
+/**
+ * Gestionnaire d'evenement 
+ * 
+ * Ecouteur pour l'export d'un calcul de profil altimétrique
+ * 
+ * @param {Object} e
+ * @property {Object} type - event
+ * @property {Object} target - instance Export
+ * @property {String} content - export data
+ * @property {String} name - name
+ * @property {String} description - description
+ * @property {String} format - format : kml, geojson, ...
+ * @property {Object} layer - layer
+ */
+const onExportElevationPath = (e) => {
   log.debug(e);
 }
 </script>
