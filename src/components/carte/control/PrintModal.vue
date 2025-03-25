@@ -42,12 +42,12 @@ const size = "xl";
   {
     "label": "Portrait",
     "value": "portrait",
-    "icon": "md-cropportrait-sharp"
+    "icon": "material-symbols:crop-portrait-outline-sharp"
   },
   {
     "label": "Paysage",
     "value": "landscape",
-    "icon": "md-croplandscape-sharp"
+    "icon": "material-symbols:crop-landscape-outline-sharp"
   }
 ];
 
