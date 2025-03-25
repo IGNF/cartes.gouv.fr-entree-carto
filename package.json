@@ -78,7 +78,7 @@
     "pinia-plugin-store": "^2.2.9",
     "rimraf": "^5.0.5",
     "sass": "^1.76.0",
-    "typescript": "~5.4.0",
+    "typescript": "~5.8.0",
     "universal-base64url": "^1.1.0",
     "unplugin-auto-import": "^0.18.0",
     "unplugin-vue-components": "^0.27.0",
