@@ -21,6 +21,7 @@
 #### 🐛 [Correction]
 
   - Cartalogue : correction de l'algorithme utilisé pour sa création qui ralentissait fortement le chargement de la page (#516)
+  - Composant Layers mise à jour dans PR (#515): update des props pour la page print (#521)
 
 #### 🔒 [Sécurité]
 

@@ -22,7 +22,8 @@ const eulerian = useEulerian();
 const mapStore = useMapStore();
 const props = defineProps({
   visibility: Boolean,
-  printOptions: Object
+  printOptions: Object,
+  selectedBookmarks : Array
 });
 const selectedLayers = inject('selectedLayers');
 
@@ -360,7 +361,8 @@ const scaleLineOptions = {
                   :zoom="mapStore.zoom"/>
                 <Layers
                   :map-Id="printMap"
-                  :selected-layers="selectedLayers"/>
+                  :selected-layers="selectedLayers"
+                  :selected-bookmarks="selectedBookmarks"/>
                   <ScaleLine
                   :visibility="hasScale"
                   :scale-line-options="scaleLineOptions"
