@@ -1,9 +1,9 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.5-1",
+  "version": "1.0.5-1-test-espace-perso",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "07/03/2025",
+  "date": "25/03/2025",
   "directories": {},
   "engines": {
     "node": ">=20"
@@ -42,7 +42,7 @@
     "@gouvfr/dsfr": "^1.13.0",
     "@gouvminint/vue-dsfr": "^8.1.1",
     "@iconify/vue": "^4.3.0",
-    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.3-363.tgz",
+    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.3-370.tgz",
     "jspdf": "^2.5.2",
     "ol": "^10.3.1",
     "serve": "^14.2.4",
