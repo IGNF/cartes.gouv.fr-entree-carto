@@ -16,7 +16,7 @@ import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
 import View from '../View.vue';
 import { printMap } from '@/composables/keys';
-import { getFakeMapCanvas, drawScale, drawTitle } from '@/composables/printUtils';
+import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
@@ -113,6 +113,31 @@ const dimension = computed(() => {
     height : dimension[paperFormat.value].height
   }
 })
+const paperDimension = computed(() => {
+  var dimension = { 
+    'A0': { width : 841, height: 1189 },
+    'A1' : { width : 594, height: 841 },
+    'A2' : { width : 420, height: 594 },
+    'A3' : { width : 297, height: 420 },
+    'A4' : { width : 210, height: 297 },
+    'A5' : { width : 148, height: 210 },
+    'B4' : { width : 250, height: 353 },
+    'B5' : { width : 176, height: 250 }
+  }
+  if (pageOrientation.value == "portrait") {
+      return {
+      width : dimension[paperFormat.value].width,
+      height : dimension[paperFormat.value].height
+    }
+  }
+  if (pageOrientation.value == "landscape") {
+      return {
+      width : dimension[paperFormat.value].height,
+      height : dimension[paperFormat.value].width
+    }
+  }
+
+})
 
 /**
  * Taille de la page print (DOM)
@@ -149,106 +174,233 @@ const titleSize = reactive(
 )
 
 /**
- * Rapport de conversion mm vers pixel selon l'espace disponible
+ * Dimensions du papier en pixel
  */
-const coeff = computed(() => {
-  if (pageOrientation.value == "portrait")
-    return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.height;
-  if (pageOrientation.value == "landscape") {
-    let coeff = Math.floor((printPageSize.width - printFormSize.width - parseInt(formMarginRight)) * coeffPX2MM) / dimension.value.height;
-    // cas ou la hauteur disponible n'est pas suffisante 
-    if (dimension.value.height * coeff + titleSize.height < printPageSize.height) {
-      return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.width; 
-    }
-    else {
-      return coeff
-    } 
+const pixelPaperDimension = computed(() => {
+  return {
+    width : paperDimension.value.width / coeffPX2MM,
+    height : paperDimension.value.height / coeffPX2MM
   }
 })
 
 /**
- * Hauteur et largeur en mm
- * du format papier
+ *  Coefficient de conversion dimension papier vers preview (EN PIXEL)
+ *  coeff * dimContenu = newDimensionFitContenant
  */
-const mapHeight = computed(() => {
-  if (pageOrientation.value == "portrait")
-    return dimension.value.height + "mm";
-    // return dimension.value.height - titleSize.height * coeffPX2MM + "mm";
-  if (pageOrientation.value == "landscape")
-    return dimension.value.width + "mm";
-    // return dimension.value.width  - titleSize.height * coeffPX2MM + "mm";
+const paper2PreviewScaleCoeff = computed(() => {
+  let containerHeight = printPageSize.height
+  let containerWidth = printPageSize.width - printFormSize.width
+  console.log("containerHeight : "  + containerHeight)
+  console.log("containerWidth : " + containerWidth)
+  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height)
 })
-const mapWidth = computed(() => {
-  if (pageOrientation.value == "portrait")
-    return dimension.value.width + "mm";
-  if (pageOrientation.value == "landscape")
-    return dimension.value.height + "mm";
+
+
+/**
+ *  Dimensions de la carte en mm
+ */
+const mapMMDimension = computed(() => {
+  var w = paperDimension.value.width - 2 * margin.value
+  var h = paperDimension.value.height - 2 *  margin.value
+  if (hasTitle) {
+    /**
+     * on utilise la part que représente le titre dans la preview car
+     * la conversion avec pixel2mm est trop approximative
+     * */
+    h -= (titleSize.height / previewPXDimension.value.height) * h
+  }
+  return {
+    width : w,
+    height : h
+  }
+})
+/**
+ *  Dimensions de la carte en mm 
+ * String pour CSS
+ */
+ const CSSMapMMDimension = computed(() => {
+  return {
+    width : mapMMDimension.value.width + "mm",
+    height : mapMMDimension.value.height + "mm"
+  }
 })
 
 /**
- * Hauteur et largeur en pixel
- * de la prévisualisation de la carte à imprimer
- */ 
-// TODO PROBLEME AVEC LA HAUTEUR COMPORTEMENT AVEC LE TITRE
-const previewHeight = computed(() => {
-  //   return printPageSize.height - titleSize.height + "px";
-    return printPageSize.height + "px";
-})
-const previewWidth = computed(() => {
-  if (pageOrientation.value == "portrait")
-    return (dimension.value.width * coeff.value ) / coeffPX2MM + "px";
-  if (pageOrientation.value == "landscape")
-    return ((dimension.value.height * coeff.value ) / coeffPX2MM) + "px";
+ *  Dimensions de la carte en px 
+ */
+ const mapPXDimension = computed(() => {
+  return {
+    width : mapMMDimension.value.width / coeffPX2MM,
+    height : mapMMDimension.value.height / coeffPX2MM
+  }
 })
 
 /**
- * Fonction d'export de la carte
+ * Dimensions du bloc de prévisualisation en px
  */
-const exportPDF = () => {
-  const opts = {
-    orientation : pageOrientation.value,
-    unit : "mm",
-    format : [parseInt(mapHeight.value), parseInt(mapWidth.value)],
-  } 
-  const doc = new jsPDF(opts)
-  const marge = parseInt(margin.value)
-  const canvasWidth = refMap.value.mapRef.getElementsByTagName('canvas')[0].width
-  const canvasHeight = refMap.value.mapRef.getElementsByTagName('canvas')[0].height
-  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
+ const previewPXDimension = computed(() => {
+  return {
+    width : pixelPaperDimension.value.width * paper2PreviewScaleCoeff.value,
+    height : pixelPaperDimension.value.height * paper2PreviewScaleCoeff.value
+  }
+})
+
+/**
+ * Dimensions du bloc de prévisualisation en px
+ */
+const cssPreviewPXDimension = computed(() => {
+  return {
+    width : previewPXDimension.value.width + "px",
+    height : previewPXDimension.value.height + "px"
+  }
+})
+
+/**
+ * Marge Gauche de la preview en pixel
+ */
+ const CSSPreviewPadding = computed(() => {
+  return {
+    left : (margin.value / paperDimension.value.width) * previewPXDimension.value.width + "px",
+    top : (margin.value / paperDimension.value.height) * previewPXDimension.value.height + "px",
+  }
+})
 
 
-  const img = canvas.toDataURL('image/png')
-  const imgWidth = (canvasWidth * coeffPX2MM) - (marge * 2)
-  const imgHeight = ((canvasHeight - titleSize.height) * coeffPX2MM) - (marge * 2)
-  const imgPosX = marge
-  const imgPosY = (titleSize.height * coeffPX2MM) + marge
-  doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /**
+//  * Rapport de conversion mm vers pixel selon l'espace disponible
+//  */
+// const coeff = computed(() => {
+//   if (pageOrientation.value == "portrait")
+//     return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.height;
+//   if (pageOrientation.value == "landscape") {
+//     let coeff = Math.floor((printPageSize.width - printFormSize.width - parseInt(formMarginRight)) * coeffPX2MM) / dimension.value.height;
+//     // cas ou la hauteur disponible n'est pas suffisante 
+//     if (dimension.value.height * coeff + titleSize.height < printPageSize.height) {
+//       return Math.floor((printPageSize.height - titleSize.height) * coeffPX2MM) / dimension.value.width; 
+//     }
+//     else {
+//       return coeff
+//     } 
+//   }
+// })
+
+// /**
+//  * Hauteur et largeur en mm
+//  * du format papier
+//  */
+// const mapHeight = computed(() => {
+//   if (pageOrientation.value == "portrait")
+//     return dimension.value.height + "mm";
+//     // return dimension.value.height - titleSize.height * coeffPX2MM + "mm";
+//   if (pageOrientation.value == "landscape")
+//     return dimension.value.width + "mm";
+//     // return dimension.value.width  - titleSize.height * coeffPX2MM + "mm";
+// })
+// const mapWidth = computed(() => {
+//   if (pageOrientation.value == "portrait")
+//     return dimension.value.width + "mm";
+//   if (pageOrientation.value == "landscape")
+//     return dimension.value.height + "mm";
+// })
+
+// /**
+//  * Hauteur et largeur en pixel
+//  * de la prévisualisation de la carte à imprimer
+//  */ 
+// // TODO PROBLEME AVEC LA HAUTEUR COMPORTEMENT AVEC LE TITRE
+// const previewHeight = computed(() => {
+//   //   return printPageSize.height - titleSize.height + "px";
+//     return printPageSize.height + "px";
+// })
+// const previewWidth = computed(() => {
+//   if (pageOrientation.value == "portrait")
+//     return (dimension.value.width * coeff.value ) / coeffPX2MM + "px";
+//   if (pageOrientation.value == "landscape")
+//     return ((dimension.value.height * coeff.value ) / coeffPX2MM) + "px";
+// })
+
+// /**
+//  * Fonction d'export de la carte
+//  */
+// const exportPDF = () => {
+//   const opts = {
+//     orientation : pageOrientation.value,
+//     unit : "mm",
+//     format : [parseInt(mapHeight.value), parseInt(mapWidth.value)],
+//   } 
+//   const doc = new jsPDF(opts)
+//   const marge = parseInt(margin.value)
+//   const canvasWidth = refMap.value.mapRef.getElementsByTagName('canvas')[0].width
+//   const canvasHeight = refMap.value.mapRef.getElementsByTagName('canvas')[0].height
+//   console.log(canvasWidth)
+//   console.log(canvasHeight)
+//   const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
+
+
+//   const img = canvas.toDataURL('image/png')
+//   const imgWidth = (canvasWidth * coeffPX2MM) - (marge * 2)
+//   const imgHeight = ((canvasHeight - titleSize.height) * coeffPX2MM) - (marge * 2)
+//   const imgPosX = marge
+//   const imgPosY = (titleSize.height * coeffPX2MM) + marge
+//   doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
   
 
-  if (hasScale.value) {
-    // Fake canvas
-    const fakeCanvas = getFakeMapCanvas(refMap.value.mapRef, canvasWidth, canvasHeight)
-    let ctx = fakeCanvas.getContext("2d");
-    ctx.reset()
-    // Dessine l'échelle
-    drawScale(ctx, refMap.value.mapRef, canvasHeight)
-    let imgOverlay = fakeCanvas.toDataURL('image/png')
-    doc.addImage(imgOverlay, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
-  }
-  if (hasTitle.value) {
-    // Dessine le titre
-    const titleCanvas = document.createElement('canvas');
-    titleCanvas.width = canvasWidth;
-    titleCanvas.height = titleSize.height;
-    let ctx = titleCanvas.getContext('2d');
-    drawTitle(ctx, titleCanvas.height, titleCanvas.width, printTitle.value)
-    let imgTitle = titleCanvas.toDataURL('image/png')
-    doc.addImage(imgTitle, 'PNG', marge, marge, imgWidth, titleCanvas.height * (coeff.value / coeffPX2MM) - (marge * 2))
-    titleCanvas.remove()
-  }
+//   if (hasScale.value) {
+//     // Fake canvas
+//     const fakeCanvas = getFakeMapCanvas(refMap.value.mapRef, canvasWidth, canvasHeight)
+//     let ctx = fakeCanvas.getContext("2d");
+//     ctx.reset()
+//     // Dessine l'échelle
+//     drawScale(ctx, refMap.value.mapRef, canvasHeight)
+//     let imgOverlay = fakeCanvas.toDataURL('image/png')
+//     doc.addImage(imgOverlay, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
+//   }
+//   if (hasTitle.value) {
+//     // Dessine le titre
+//     const titleCanvas = document.createElement('canvas');
+//     titleCanvas.width = canvasWidth;
+//     titleCanvas.height = titleSize.height;
+//     let ctx = titleCanvas.getContext('2d');
+//     drawTitle(ctx, titleCanvas.height, titleCanvas.width, printTitle.value)
+//     let imgTitle = titleCanvas.toDataURL('image/png')
+//     doc.addImage(imgTitle, 'PNG', marge, marge, imgWidth, titleCanvas.height * (coeff.value / coeffPX2MM) - (marge * 2))
+//     titleCanvas.remove()
+//   }
 
-  doc.save('carte.pdf')
-}
+//   doc.save('carte.pdf')
+// }
 
 const scaleLineOptions = {
   id: "4",
@@ -282,7 +434,7 @@ const scaleLineOptions = {
               label="Dimensions"
               :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
             />
-       <!--    <DsfrSelect
+            <DsfrSelect
               v-model="margin"
               label="Marge"
               :options="[
@@ -290,7 +442,7 @@ const scaleLineOptions = {
                 { value : 5, text : 'Petite marge - 5mm' },
                 { value : 10, text : 'Grosse marge - 10mm' }
               ]"
-            />-->
+            />
             <DsfrInput
                 v-model="printTitle"
                 :disabled="!hasTitle"
@@ -433,9 +585,11 @@ const scaleLineOptions = {
 
   }
   .print-preview {
-    width: v-bind(previewWidth);
-    height: v-bind(previewHeight);
+    width: v-bind("cssPreviewPXDimension.width");
+    height: v-bind("cssPreviewPXDimension.height");
     flex: 0 0;
+    padding-left : v-bind("CSSPreviewPadding.left");
+    padding-top : v-bind("CSSPreviewPadding.top");
   }
   .print-form {
     flex: 0 0 260px;
@@ -448,9 +602,9 @@ const scaleLineOptions = {
   }
 
   .map {
-    width: v-bind(mapWidth);
-    height: v-bind(mapHeight);
-    transform: scale(v-bind(coeff));
+    width: v-bind("CSSMapMMDimension.width");
+    height: v-bind("CSSMapMMDimension.height");
+    transform: scale(v-bind(paper2PreviewScaleCoeff));
     transform-origin: top left;
   }
 </style>

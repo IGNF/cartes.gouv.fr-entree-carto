@@ -1,4 +1,49 @@
 /**
+ * 
+ * 
+ * Fonctions liées aux conversions entre la preview et la page d'impression
+ * 
+ * 
+ */
+
+/**
+ * Retourne un coefficient d'échelle.
+ * Appliqué aux dimension d'un content,
+ * il l'ajuste aux dimensions d'un container en conservant les proportions
+ * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
+ * @param { Number } containerWidth Largeur du contenant
+ * @param { Number } containerHeight Hauteur du contenant
+ * @param { Number } contentWidth Largeur du contenu
+ * @param { Number } contentHeight Hauteur du contenu
+ * @returns
+ */
+export function computeScaleCoeff(containerWidth, containerHeight, contentWidth, contentHeight) {
+    // Calcul des ratios de chaque bloc
+    const ratioBloc1 = containerWidth / containerHeight;
+    const ratioBloc2 = contentWidth / contentHeight;
+
+    // Déterminer le coefficient de conversion pour remplir le container
+    let coefficient;
+    if (ratioBloc2 > ratioBloc1) {
+        // Le contenant est plus large que le container → ajuster par la largeur
+        coefficient = containerWidth / contentWidth;
+    } else {
+        // Le contenant est plus étroit ou carré → ajuster par la hauteur
+        coefficient = containerHeight / contentHeight;
+    }
+
+    return coefficient;
+}
+
+/**
+ * 
+ * 
+ * CANVAS METHOD TO DRAW ELEMENTS ON EXPORTED PDF
+ * 
+ * 
+ */
+
+/**
  * Crée une image de l'échelle 
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
  * @param { Number } canvasWidth Largeur du canvas
