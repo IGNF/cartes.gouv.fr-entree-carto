@@ -16,7 +16,7 @@ import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
 import View from '../View.vue';
 import { printMap } from '@/composables/keys';
-import { getFakeCanvas, drawScale } from '@/composables/printUtils';
+import { getFakeMapCanvas, drawScale, drawTitle } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
@@ -223,16 +223,30 @@ const exportPDF = () => {
   const imgPosX = marge
   const imgPosY = (titleSize.height * coeffPX2MM) + marge
   doc.addImage(img, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
+  
+
   if (hasScale.value) {
-      // Fake canvas
-    const fakeCanvas = getFakeCanvas(refMap.value.mapRef, canvasWidth, canvasHeight)
-    const ctx = fakeCanvas.getContext("2d");
+    // Fake canvas
+    const fakeCanvas = getFakeMapCanvas(refMap.value.mapRef, canvasWidth, canvasHeight)
+    let ctx = fakeCanvas.getContext("2d");
     ctx.reset()
     // Dessine l'échelle
     drawScale(ctx, refMap.value.mapRef, canvasHeight)
-    const imgOverlay = fakeCanvas.toDataURL('image/png')
+    let imgOverlay = fakeCanvas.toDataURL('image/png')
     doc.addImage(imgOverlay, 'PNG', imgPosX, imgPosY, imgWidth, imgHeight)
   }
+  if (hasTitle.value) {
+    // Dessine le titre
+    const titleCanvas = document.createElement('canvas');
+    titleCanvas.width = canvasWidth;
+    titleCanvas.height = titleSize.height;
+    let ctx = titleCanvas.getContext('2d');
+    drawTitle(ctx, titleCanvas.height, titleCanvas.width, printTitle.value)
+    let imgTitle = titleCanvas.toDataURL('image/png')
+    doc.addImage(imgTitle, 'PNG', marge, marge, imgWidth, titleCanvas.height * (coeff.value / coeffPX2MM) - (marge * 2))
+    titleCanvas.remove()
+  }
+
   doc.save('carte.pdf')
 }
 
@@ -268,7 +282,7 @@ const scaleLineOptions = {
               label="Dimensions"
               :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
             />
- <!--           <DsfrSelect
+       <!--    <DsfrSelect
               v-model="margin"
               label="Marge"
               :options="[
@@ -276,7 +290,7 @@ const scaleLineOptions = {
                 { value : 5, text : 'Petite marge - 5mm' },
                 { value : 10, text : 'Grosse marge - 10mm' }
               ]"
-            />
+            />-->
             <DsfrInput
                 v-model="printTitle"
                 :disabled="!hasTitle"
@@ -289,7 +303,7 @@ const scaleLineOptions = {
               v-model="hasTitle"
               name="checkbox-simple"
               :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
-            /></div>-->
+            /></div>
             <div class="mt-10">
               <DsfrCheckbox
               v-model="hasScale"

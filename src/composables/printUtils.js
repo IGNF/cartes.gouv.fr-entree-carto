@@ -5,7 +5,7 @@
  * @param { Number } canvasHeight Hauteur du canvas
  * @returns
  */
-export function getFakeCanvas(mapRef, canvasWidth, canvasHeight) {
+export function getFakeMapCanvas(mapRef, canvasWidth, canvasHeight) {
     if (mapRef.getElementsByTagName('canvas').length < 2) {
         var fakeCanvas = document.createElement('canvas')
         fakeCanvas.classList = ['fixedoverlay']
@@ -61,4 +61,23 @@ export function drawScale(ctx, mapRef, canvasHeight) {
     ctx.lineCap = "round";
     ctx.strokeStyle = "#666666"
     ctx.stroke();
+};
+
+/**
+ * Crée une image de l'échelle sur un canavs
+ * @param { * } ctx Context d'un canvas
+ * @param { Number } canvasHeight Hauteur du canvas
+ * @param { Number } canvasWidth Largeur du canvas
+ * @param { String } printTitle titre
+ * @returns
+ */
+export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle) {
+        // Définir les propriétés du texte (à personnaliser selon vos besoins)
+        ctx.font = 'bold 24px Arial';
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Dessiner le texte centré horizontalement et verticalement
+        ctx.fillText(printTitle, canvasWidth / 2, canvasHeight / 2);
 };
