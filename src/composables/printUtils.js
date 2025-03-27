@@ -1,12 +1,4 @@
 /**
- * 
- * 
- * Fonctions liées aux conversions entre la preview et la page d'impression
- * 
- * 
- */
-
-/**
  * Retourne un coefficient d'échelle.
  * Appliqué aux dimension d'un content,
  * il l'ajuste aux dimensions d'un container en conservant les proportions
@@ -42,6 +34,23 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
  * 
  * 
  */
+/**
+ * Initialise les options pour la fonction addImage de la librairie JSPDF
+ * @param {*} canvas canvas contenant la carte
+ * @returns
+ */
+export function getMapImgParams(canvas, marge, titleHeight, mapMMDimension) {
+    const img = canvas.toDataURL('image/png')
+    return {
+        img : img,
+        format: 'PNG',
+        imgPosX : marge,
+        imgPosY : titleHeight + marge,
+        imgWidth : mapMMDimension.width,
+        imgHeight : mapMMDimension.height
+    }
+}
+
 
 /**
  * Crée une image de l'échelle 
@@ -73,7 +82,11 @@ export function getFakeMapCanvas(mapRef, canvasWidth, canvasHeight) {
  * @param { Number } canvasHeight Hauteur du canvas
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasHeight) {
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
+    // DEBUG
+    // ctx.fillStyle = "rgb(0,255,0, 0.5)";
+    // ctx.fillRect(0, 0, canvasWidth,canvasHeight);   
+    
     const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]  
     const scaleLineInner = scaleLine.children[0]  
     const style = getComputedStyle(scaleLine)
@@ -116,13 +129,17 @@ export function drawScale(ctx, mapRef, canvasHeight) {
  * @param { String } printTitle titre
  * @returns
  */
-export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle) {
-        // Définir les propriétés du texte (à personnaliser selon vos besoins)
-        ctx.font = 'bold 24px Arial';
-        ctx.fillStyle = '#000000';
+export function drawTitle(ctx, canvasHeight, canvasWidth, maxWidth, printTitle) {
+    //DEBUG
+    // ctx.fillStyle = "rgb(0,0,255, 0.5)";
+    // ctx.fillRect(0, 0, canvasWidth,canvasHeight);   
+
+        ctx.font = '1.5rem Marianne';
+        ctx.fillStyle = '#3a3a3a';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+         
         
         // Dessiner le texte centré horizontalement et verticalement
-        ctx.fillText(printTitle, canvasWidth / 2, canvasHeight / 2);
+        ctx.fillText(printTitle, canvasWidth / 2, canvasHeight / 2, maxWidth);
 };
