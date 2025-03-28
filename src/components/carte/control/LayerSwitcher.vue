@@ -274,6 +274,9 @@ const onChangePositionLayer = (e) => {
 const onClickEditLayer = (e) => {
   log.debug("onClickEditLayer", e);
 
+  // on active le control de dessin automatiquement en cas d'édition
+  mapStore.addControl("Drawing");
+
   // INFO
   // selon le type de données, on envoie une demande au widget
   // ex. pour les croquis, on envoie : "vector:edit:clicked"
@@ -298,7 +301,10 @@ const onClickEditLayer = (e) => {
          * @event 
          * pour l'édition d'un drawing ou un import vecteur
          */
-        emitter.dispatchEvent("vector:edit:clicked", e);
+        // le setTimeout permet de s'assurer que le widget de dessin est bien ajouté avant d'envoyer l'event
+        setTimeout(function(){
+          emitter.dispatchEvent("vector:edit:clicked", e);
+        }, 0)
         return;
       }
     }
