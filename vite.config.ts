@@ -73,6 +73,7 @@ export default defineConfig({
     sourcemap: process.env.SOURCE_MAP === 'true',
   },
   server: {
+    allowedHosts: true,
     cors : true,
     headers : {
       "Access-Control-Allow-Credentials": "true",
@@ -82,8 +83,8 @@ export default defineConfig({
       "Access-Control-Expose-Headers": "*"
     },
     // proxy : {
-    //   '/': {
-    //     target: "http://localhost:5173",
+    //   '/api': {
+    //     target: "https://data.geopf.fr/api",
     //     changeOrigin: true,
     //     secure: false,
     //     ws: true,

@@ -67,6 +67,40 @@ const btnSave = ref(new ButtonExport({
   }
 }));
 
+/** 
+ * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
+ * 
+ * Reassocier la couche et l'outil de dessin
+ * via le bouton d'edition du gestionnaire de couche
+ * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @see LayerSwitcher
+ * @fixme l'outil de dessin doit être monté !
+ */
+ emitter.addEventListener("vector:edit:clicked", (e) => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(false);
+    drawing.value.setLayer(e.layer);
+    btnExport.value.inputName.value = e.options.title || "";
+  }
+  // INFO
+  // on sauvegarde / exporte au format natif
+  var gpId = e.layer.gpResultLayerId.toLowerCase();
+  if (gpId) {
+    var format;
+    if (gpId.includes("drawing") || gpId.includes("kml")) {
+      format = "kml";
+    } else if (gpId.includes("geojson")) {
+      format = "geojson";
+    } else if (gpId.includes("gpx")) {
+      format = "gpx";
+    } else {
+      format = "kml"; // par defaut ?
+    }
+    btnExport.value.setFormat(format);
+    btnSave.value.setFormat(format);
+  }
+});
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
@@ -110,38 +144,6 @@ onBeforeUpdate(() => {
   }
 })
 
-/** 
- * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
- * 
- * Reassocier la couche et l'outil de dessin
- * via le bouton d'edition du gestionnaire de couche
- * (un clic sur l'edition renvoie un event avec la couche associée)
- * @see LayerSwitcher
- */
-emitter.addEventListener("vector:edit:clicked", (e) => {
-  if (drawing.value) {
-    drawing.value.setCollapsed(false);
-    drawing.value.setLayer(e.layer);
-    btnExport.value.inputName.value = e.options.title || "";
-  }
-  // INFO
-  // on sauvegarde / exporte au format natif
-  var gpId = e.layer.gpResultLayerId.toLowerCase();
-  if (gpId) {
-    var format;
-    if (gpId.includes("drawing") || gpId.includes("kml")) {
-      format = "kml";
-    } else if (gpId.includes("geojson")) {
-      format = "geojson";
-    } else if (gpId.includes("gpx")) {
-      format = "gpx";
-    } else {
-      format = "kml"; // par defaut ?
-    }
-    btnExport.value.setFormat(format);
-    btnSave.value.setFormat(format);
-  }
-});
 
 /**
  * Gestionnaire d'evenement 

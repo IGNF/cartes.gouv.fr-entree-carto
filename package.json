@@ -36,7 +36,7 @@
     "lint": "eslint ./src",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
-    "serve": "BASE_URL=/ vite build --mode stage && serve -s dist/"
+    "serve": "BASE_URL=/ vite build && serve -s dist/"
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.0",

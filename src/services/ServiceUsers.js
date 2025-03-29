@@ -25,12 +25,29 @@ var Users = {
    * @property {String} user.last_name
    * @property {String} user.first_name
    * @property {String} user.email
-   * @property {Number} user.documents_quota
-   * @property {Number} user.documents_use
-   * @returns {Object} - informations utilisateur
+   * @property {String} user.user_identifier
+   * @property {String} user.user_name
+   * @returns {String} - informations utilisateur
    */
   getUser : function () {
-    return this.user;
+    if (!this.user) {
+      return;
+    }
+    var identification = null;
+
+    // on exploite toute les solutions possibles
+    var first_name = this.user.first_name;
+    var last_name = this.user.last_name;
+    if (first_name && last_name) {
+      identification = `${first_name} ${last_name}`;
+    } else if (this.user.user_name) {
+      identification = this.user.user_name;
+    } else if (this.user.email) {
+      identification = this.user.email;
+    } else {
+      identification = this.user.user_identifier;
+    }
+    return identification;
   },
 
   /**
