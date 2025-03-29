@@ -76,7 +76,7 @@ const btnSave = ref(new ButtonExport({
  * @see LayerSwitcher
  * @fixme l'outil de dessin doit être monté !
  */
-emitter.addEventListener("vector:edit:clicked", (e) => {
+ emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
@@ -105,6 +105,9 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
     map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
@@ -114,7 +117,6 @@ onMounted(() => {
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
     drawing.value.on("change:collapsed", onToggleShowVector);
-
   }
 })
 
@@ -122,6 +124,9 @@ onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
     map.addControl(btnSave.value);
     if (props.analytic) {
       var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
@@ -138,6 +143,7 @@ onBeforeUpdate(() => {
     map.removeControl(btnExport.value);
   }
 })
+
 
 /**
  * Gestionnaire d'evenement 

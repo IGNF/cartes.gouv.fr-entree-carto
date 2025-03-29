@@ -143,7 +143,8 @@ provide("selectedLayers", selectedLayers);
     <!-- Liste des modales -->
     <div class="modal-container">
       <ThemeModal ref="refModalTheme" />
-      <PrintModal ref="refModalPrint" />
+      <PrintModal ref="refModalPrint" 
+        :selected-bookmarks="selectedBookmarks"/>
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
     </div>

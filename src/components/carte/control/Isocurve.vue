@@ -22,7 +22,28 @@ const store = useDataStore();
 
 const map = inject(props.mapId)
 const isocurve = ref(new Isocurve(props.isocurveOptions))
-const button = ref(new ButtonExport({
+const btnExport = ref(new ButtonExport({
+  title : "Exporter",
+  kind : "secondary",
+  download : true,
+  name: "Mon iso",
+  description: "",
+  control: isocurve.value,
+  menu : true,
+  menuOptions : {
+    outside: true,
+    above: true,
+    selectFormat: false,
+    labelDesc: false
+  },
+  direction : "column",
+  format : "geojson",
+  icons : {
+    menu : "",
+    button : "export"
+  }
+}))
+const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
   download : false,
@@ -39,7 +60,11 @@ const button = ref(new ButtonExport({
 onMounted(() => {
   if (props.visibility) {
     map.addControl(isocurve.value);
-    map.addControl(button.value);
+    map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
+    map.addControl(btnSave.value);
     if (props.analytic) {
       var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
       useActionButtonEulerian(el);
@@ -52,21 +77,27 @@ onMounted(() => {
     isocurve.value.on("isocurve:drawstart", onDrawStart);
     isocurve.value.on("socurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
-    button.value.on("button:clicked", onSaveIsocurve);
+    btnExport.value.on("button:clicked", onExportIsocurve);
+    btnSave.value.on("button:clicked", onSaveIsocurve);
   }
 })
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
     map.removeControl(isocurve.value);
-    map.removeControl(button.value);
+    map.removeControl(btnSave.value);
+    map.removeControl(btnExport.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(isocurve.value);
-    map.addControl(button.value);
+    map.addControl(btnExport.value);
+    if (import.meta.env.IAM_DISABLE === '1') {
+      btnSave.value.getContainer().style.display = "none";
+    }
+    map.addControl(btnSave.value);
     if (props.analytic) {
       var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
       useActionButtonEulerian(el);
@@ -79,7 +110,8 @@ onUpdated(() => {
     isocurve.value.on("isocurve:drawstart", onDrawStart);
     isocurve.value.on("socurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
-    button.value.on("button:clicked", onSaveIsocurve);
+    btnExport.value.on("button:clicked", onExportIsocurve);
+    btnSave.value.on("button:clicked", onSaveIsocurve);
   }
 })
 
@@ -112,6 +144,24 @@ const onCompute = (e) => {
  * @property {Object} layer - layer
  */
 const onSaveIsocurve = (e) => {
+  log.debug(e);
+}
+
+/**
+ * Gestionnaire d'evenement 
+ * 
+ * Ecouteur pour l'export d'un calcul isochrone
+ * 
+ * @param {Object} e
+ * @property {Object} type - event
+ * @property {Object} target - instance Export
+ * @property {String} content - export data
+ * @property {String} name - name
+ * @property {String} description - description
+ * @property {String} format - format : kml, geojson, ...
+ * @property {Object} layer - layer
+ */
+ const onExportIsocurve = (e) => {
   log.debug(e);
 }
 </script>
