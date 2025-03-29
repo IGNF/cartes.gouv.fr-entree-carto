@@ -11,8 +11,6 @@ import {
 
 import { LayerSwitcher } from 'geopf-extensions-openlayers';
 
-import { toShare } from '@/features/share';
-
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
@@ -274,6 +272,9 @@ const onChangePositionLayer = (e) => {
 const onClickEditLayer = (e) => {
   log.debug("onClickEditLayer", e);
 
+  // on active le controle de dessin
+  mapStore.addControl("Drawing");
+  
   // INFO
   // selon le type de données, on envoie une demande au widget
   // ex. pour les croquis, on envoie : "vector:edit:clicked"
@@ -281,7 +282,7 @@ const onClickEditLayer = (e) => {
   //   ex. gpResultLayerId = drawing | layerimport:(KML|GEOJSON...)
   // mais, attention dès que le dessin est enregistré, l'id est modifié :
   //  ex. gpResultLayerId = bookmark:drawing-kml:UUID
-
+  
   if (e.layer.gpResultLayerId) {
     var gpId = e.layer.gpResultLayerId.toLowerCase();
     if (gpId) {
@@ -294,11 +295,15 @@ const onClickEditLayer = (e) => {
           gpId.toLowerCase().includes("bookmark:import-kml") ||
           gpId.toLowerCase().includes("bookmark:import-gpx") ||
           gpId.toLowerCase().includes("bookmark:import-geojson")) {
-        /**
-         * @event 
-         * pour l'édition d'un drawing ou un import vecteur
-         */
-        emitter.dispatchEvent("vector:edit:clicked", e);
+        
+        // FIXME solution de contournement...
+        setTimeout(function() {
+          /**
+           * @event 
+           * pour l'édition d'un drawing ou un import vecteur
+           */
+          emitter.dispatchEvent("vector:edit:clicked", e);
+        }, 0);
         return;
       }
     }
@@ -307,6 +312,7 @@ const onClickEditLayer = (e) => {
     title: t.layerswitcher.title,
     message: t.layerswitcher.failed_not_yet_implemented
   });
+  
 }
 </script>
 

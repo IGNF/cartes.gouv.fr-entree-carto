@@ -21,7 +21,7 @@ const buttons = [
   {
     label: 'Enregistrer une carte',
     icon: "fr-icon-save-line",
-    disabled: true,
+    disabled: false,
     iconOnly: false,
     iconRight: false,
     secondary: true,

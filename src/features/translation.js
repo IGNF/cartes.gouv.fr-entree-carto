@@ -28,6 +28,11 @@ export default {
     save_success: 'Le croquis est enregistré dans l\'espace personnel',
     save_failed: 'Une erreur est survenue sur l\'enregistrement du croquis'
   },
+  layerimport: {
+    title: 'Import de couche',
+    add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
+    add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` }
+  },
   layerswitcher: {
     title: 'Gestionnaire de couche',
     add_success: 'La couche est ajoutée à la carte',

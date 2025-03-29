@@ -1,14 +1,18 @@
 # Deploiement Docker avec Nginx
 
-Pour ce test d'authentification distante, on utilise les branches suivantes :
+Pour ce test d'authentification distante, on utilise les dépôts suivantes :
 
-* <https://github.com/IGNF/cartes.gouv.fr> : feat/login-entree-carto
-* <https://github.com/IGNF/cartes.gouv.fr-entree-carto> : feature/bookmarks
+* <https://github.com/IGNF/cartes.gouv.fr>
+* <https://github.com/IGNF/cartes.gouv.fr-entree-carto>
 
 Les 2 projets utilisent un fichier d'environnement (cf. rubrique Env):
 
 * cartes.gouv.fr : `.env.local`
-* cartes.gouv.fr-entree-carto : `env/.env.stage`
+* cartes.gouv.fr-entree-carto : `env/.env.docker-local` ou `env/.env.docker-dev-local`
+
+## Prerequis
+
+docker compose v2.22 pour avoir le mode watch
 
 ## Docker
 
@@ -21,12 +25,24 @@ Etapes
   > creation du container : `cartesgouvfr-app_dev-1:8000`
   > exposé sur <http://localhost:9092>
 
-* dans le dossier du projet **cartes.gouv.fr-entree-carto** : `docker-compose -f .docker/docker-compose.yml up --build -d`
+* dans le dossier du projet **cartes.gouv.fr-entree-carto** : `docker compose -f .docker/docker-compose.yml up --build -d`
   > creation du container : `cartesgouvfr-entree_carto:8082`
   > exposé sur <http://localhost:8082/cartes>
 
-* dans le dossier **/.reverse-proxy/nginx/** du projet **cartes.gouv.fr-entree-carto** : `docker-compose -f docker-compose.yml up --build`
+ou en mode dev
+
+`docker compose -f .docker-dev/docker-compose.yml watch`
+  > creation du container : `cartesgouvfr-entree_carto-dev:8083`
+  > exposé sur <http://localhost:8083/cartes>
+
+* dans le dossier **/.docker-reverse-proxy/nginx/** du projet **cartes.gouv.fr-entree-carto** : `docker compose -f docker-compose.yml up --build`
   > creation du container : `cartesgouvfr-nginx_proxy:80`
+
+ou en mode dev local
+
+dans le dossier **/.docker-reverse-proxy/nginx-dev/** :
+`docker compose -f docker-compose.yml up --build`
+  > creation du container : `cartesgouvfr-nginx_proxy-dev:80`
 
 ## Env
 
@@ -39,7 +55,7 @@ VITE_GPF_CONF_TECH_URL="data/layers.json"
 VITE_GPF_CONF_PRIVATE_URL="data/private.json"
 VITE_GPF_CONF_EDITO_URL="data/edito.json"
 
-VITE_GPF_BASE_URL_EXTERNAL="http://localhost:9092" # cartes.gouv.fr installé via docker
+VITE_GPF_BASE_URL_EXTERNAL="http://localhost:1234" # cartes.gouv.fr installé via docker
 
 VITE_HTTP_MOCK_REQUEST=0
 VITE_HTTP_MOCK_REQUEST_SCENARIO="success_data" # success_nodata|success_data|error
@@ -55,8 +71,8 @@ IAM_ENTREPOT_API_URL="https://data.geopf.fr/api"
 
 # Mode auth remote (proxifié en distant)
 IAM_AUTH_MODE="remote" # local|remote
-IAM_REDIRECT_REMOTE="http://localhost:9092"
-IAM_ENTREPOT_API_URL_REMOTE="http://localhost:9092/api" # proxifié via cartes.gouv.fr installé via docker
+IAM_REDIRECT_REMOTE="http://localhost:1234"
+IAM_ENTREPOT_API_URL_REMOTE="http://localhost:1234/api" # proxifié via cartes.gouv.fr installé via docker
 
 BASE_URL="/cartes"
 ```
@@ -131,3 +147,7 @@ SSL
 HowTo
 
 <https://pimylifeup.com/docker-nginx-reverse-proxy/#:~:text=In%20this%20tutorial%2C%20we%20will%20show%20you%20how,other%20web%20servers%20and%20handles%20requests%20from%20clients>
+
+Dev
+
+<https://docs.docker.com/compose/how-tos/file-watch/>

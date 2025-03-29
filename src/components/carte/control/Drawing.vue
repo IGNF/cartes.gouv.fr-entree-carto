@@ -67,43 +67,6 @@ const btnSave = ref(new ButtonExport({
   }
 }));
 
-onMounted(() => {
-  if (props.visibility) {
-    map.addControl(drawing.value);
-    map.addControl(btnExport.value);
-    map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
-    /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveVector);
-    btnExport.value.on("button:clicked", onExportVector);
-    drawing.value.on("change:collapsed", onToggleShowVector);
-  }
-})
-
-onBeforeUpdate(() => {
-  if (props.visibility) {
-    map.addControl(drawing.value);
-    map.addControl(btnExport.value);
-    map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
-    /** abonnement au widget */
-    btnSave.value.on("button:clicked", onSaveVector);
-    btnExport.value.on("button:clicked", onExportVector);
-    drawing.value.on("change:collapsed",onToggleShowVector);
-  }
-  else {
-    map.removeControl(btnSave.value);
-    map.removeControl(drawing.value);
-    map.removeControl(btnExport.value);
-  }
-})
-
 /** 
  * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
  * 
@@ -111,6 +74,7 @@ onBeforeUpdate(() => {
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
  * @see LayerSwitcher
+ * @fixme l'outil de dessin doit être monté !
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
@@ -136,6 +100,44 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
     btnSave.value.setFormat(format);
   }
 });
+
+onMounted(() => {
+  if (props.visibility) {
+    map.addControl(drawing.value);
+    map.addControl(btnExport.value);
+    map.addControl(btnSave.value);
+    if (props.analytic) {
+      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
+      useActionButtonEulerian(el);
+    }
+    /** abonnement au widget */
+    btnSave.value.on("button:clicked", onSaveVector);
+    btnExport.value.on("button:clicked", onExportVector);
+    drawing.value.on("change:collapsed", onToggleShowVector);
+
+  }
+})
+
+onBeforeUpdate(() => {
+  if (props.visibility) {
+    map.addControl(drawing.value);
+    map.addControl(btnExport.value);
+    map.addControl(btnSave.value);
+    if (props.analytic) {
+      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
+      useActionButtonEulerian(el);
+    }
+    /** abonnement au widget */
+    btnSave.value.on("button:clicked", onSaveVector);
+    btnExport.value.on("button:clicked", onExportVector);
+    drawing.value.on("change:collapsed",onToggleShowVector);
+  }
+  else {
+    map.removeControl(btnSave.value);
+    map.removeControl(drawing.value);
+    map.removeControl(btnExport.value);
+  }
+})
 
 /**
  * Gestionnaire d'evenement 

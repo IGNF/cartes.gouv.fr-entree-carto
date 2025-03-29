@@ -12,6 +12,7 @@ import { useServiceStore } from '@/stores/serviceStore';
  * - format
  * - type ex. import, service, mapbox...
  * - target ex. internal ou external
+ * - kind ex. wmts, wms, mapbox
  * 
  * ainsi que :
  * - opacity
@@ -44,6 +45,7 @@ export const toShare = (document, params) => {
     p.append("format", document.labels.find((e) => service.labelsFormats.includes(e)));
     p.append("type", document.labels.find((e) => service.labels.includes(e)));
     p.append("target", document.labels.find((e) => service.labelsTarget.includes(e)));
+    p.append("kind", document.labels.find((e) => service.labelsService.includes(e)));
     if (params) {
       Object.keys(params).forEach(key => p.append(key, params[key]));
     }

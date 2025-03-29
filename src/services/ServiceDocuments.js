@@ -44,7 +44,11 @@ var Documents = {
     "gpx",
     "kml",
     "mapbox",
-    "json",
+    "json"
+  ],
+
+  labelsService: [
+    "mapbox",
     "wms",
     "wmts"
   ],
@@ -194,6 +198,7 @@ var Documents = {
         format: this.labelsFormats.find((e) => labels.includes(e)),
         target: this.labelsTarget.find((e) => labels.includes(e)),
         compute: this.labelsCompute.find((e) => labels.includes(e)),
+        kind: this.labelsService.find((e) => labels.includes(e)),
         date: new Date().toLocaleDateString()
       }
     };

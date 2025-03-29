@@ -46,12 +46,11 @@ const mapStore = useMapStore();
 /**
  * Options :
  * - type : 'map' ou 'data'
- * - data : {id, name, ext, type, type_fr, icon, date}
+ * - data : {id, name, type, type_fr, icon, date}
  */
 const props = defineProps({
   type : String,
-  data : Object,
-  download : Boolean
+  data : Object
 });
 
 const service = inject('services');
@@ -60,7 +59,7 @@ const emitter = inject('emitter');
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
  * 
- * @param data - {id, name, format, type, ...}
+ * @param data - { id, name, type }
  */
 const onAddData = (data) => {
   service.getDocumentById(data.id)
@@ -119,9 +118,10 @@ const onAddData = (data) => {
           id : data.id,
           name : data.name,
           description : document.description,
-          format : document.extra.format // wms, wmts ou mapbox
+          format : document.extra.format, // json
+          kind : document.extra.kind // wms, wmts ou mapbox
         };
-        if (document.extra.format === "mapbox") {
+        if (document.extra.kind === "mapbox") {
           target = (document.extra.target && document.extra.target === "internal") ? { data : response } : { url : response };
           createMapBoxLayer({
             ...opts,
@@ -138,15 +138,20 @@ const onAddData = (data) => {
             throw t.ol.failed_mapbox(e);
           });
           return;
-        } else {
+        } else if (document.extra.kind === "wmts" || document.extra.kind === "wms") {
           target = { data : response };
           layer = createServiceLayer({
             ...opts,
             ...target
           });
+        } else {
+          throw new Error("Le service est inconnu !");
         }
       }
-      if (data.type === "drawing" || data.type === "import") {
+      if (data.type === "drawing") {
+        permalink = true;
+      }
+      if (data.type === "import") {
         opts = {
           id : data.id,
           extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)

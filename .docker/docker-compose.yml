@@ -11,7 +11,7 @@ services:
     # --build-arg HTTP_PROXY=http://proxy.ign.fr:3128 
     # --build-arg HTTPS_PROXY=http://proxy.ign.fr:3128 
     # surcharge des env :
-    # --build-arg MODE_ENV=stage
+    # --build-arg MODE_ENV=docker
     # --build-arg BASE_URL=/cartes
     entree_carto:
         build:
@@ -19,7 +19,7 @@ services:
             dockerfile: ./.docker/Dockerfile
             args:
               BASE_URL: "/cartes"
-              MODE_ENV: "stage"
+              MODE_ENV: "docker-local"
               SOURCE_MAP: "true"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"

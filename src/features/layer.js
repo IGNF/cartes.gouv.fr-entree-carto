@@ -155,13 +155,17 @@ const createVectorLayer = (options) => {
  * @property {*} options.name
  * @property {*} options.description
  * @property {*} options.format
+ * @property {*} options.kind
  * @property {*} options.data
  * @fixme extent à récuperer dans les getCapabilities ?
  */
 const createServiceLayer = (options) => {
   var tileLayer = null;
 
-  if (options.format === "wmts") {
+  if (typeof options.data === 'string') {
+    options.data = JSON.parse(options.data);
+  }
+  if (options.kind === "wmts") {
     const tileGrid = new WMTSTileGrid({
       origin: [
         options.data.topLeftCorner.x,
@@ -201,7 +205,7 @@ const createServiceLayer = (options) => {
       throw new Error(t.ol.failed_layer("service wmts"));
     }
   
-  } else {
+  } else if (options.kind === "wms") {
     var sourceTileWMS = new TileWMSSource({
       url : options.data.url,
       params: {
@@ -238,6 +242,8 @@ const createServiceLayer = (options) => {
         formats : options.data.gfiFormat
     };
     
+  } else {
+    throw new Error(t.ol.failed_source("service non reconnu"));
   }
 
   // extent par defaut
@@ -247,7 +253,7 @@ const createServiceLayer = (options) => {
   }
   // id
   if (tileLayer) {
-    tileLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
+    tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
   }
   
   return tileLayer;

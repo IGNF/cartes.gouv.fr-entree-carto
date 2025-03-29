@@ -85,11 +85,10 @@ service.isAccessValided()
 .then((status:any) => {
   if (status === "login") {
     // on met à jour le header en renseignant les informations utilisateurs
-    var last_name = service.user.last_name;
-    var first_name = service.user.first_name;
+    var name = service.getUser();
     headerParams.value.quickLinks.forEach((element:any) => {
       if (element.label === "...") {
-        element.label = `${first_name} ${last_name}`;
+        element.label = name;
       }
     });
   }
@@ -115,9 +114,8 @@ const quickLinks = computed(() => {
     // en cas de refresh de la page...
     if (service.authenticated && element.label === "...") {
       if (Object.keys(service.user).length) {
-        var last_name = service.user.last_name;
-        var first_name = service.user.first_name;
-        element.label = `${first_name} ${last_name}`;
+        var name = service.getUser();
+        element.label = name;
       } else {
         // si il y'a un souci pour récuperer des informations,
         // on n'affiche pas l'utilisateur...
