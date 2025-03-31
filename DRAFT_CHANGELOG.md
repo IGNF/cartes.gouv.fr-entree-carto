@@ -17,6 +17,7 @@
 #### 🔨 [Evolution]
 
   - LayerSwitcher : ajout d'un bouton pour passer les couches en noir et blanc
+  - Impression : possibilité d'ajouter un titre, de régler les marges, et d'afficher ou non la légende (#522)
 
 #### 🔥 [Obsolète]
 
