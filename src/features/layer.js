@@ -156,107 +156,221 @@ const createVectorLayer = (options) => {
  * @property {*} options.description
  * @property {*} options.format
  * @property {*} options.kind
- * @property {*} options.data
+ * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer dans les getCapabilities ?
  */
 const createServiceLayer = (options) => {
-  var tileLayer = null;
 
-  if (typeof options.data === 'string') {
-    options.data = JSON.parse(options.data);
-  }
-  if (options.kind === "wmts") {
-    const tileGrid = new WMTSTileGrid({
-      origin: [
-        options.data.topLeftCorner.x,
-        options.data.topLeftCorner.y
-      ],
-      resolutions: options.data.resolutions,
-      matrixIds: options.data.matrixIds,
-    });
-  
-    var sourceWMTS = new WMTS({
-      url: options.data.url,
-      version: options.data.version,
-      layer: options.data.layer,
-      matrixSet: options.data.tileMatrixSet,
-      format: options.data.outputFormat,
-      projection: 'EPSG:3857',
-      tileGrid: tileGrid,
-      style: options.data.styleName,
-      attributions: '',
-    });
+  var createLayer = (options) => {
+    var tileLayer = null;
 
-    if (!sourceWMTS) {
-      throw new Error(t.ol.failed_source("service wmts"));
+    if (typeof options.data === 'string') {
+      options.data = JSON.parse(options.data);
     }
+    if (options.kind === "wmts") {
+      const tileGrid = new WMTSTileGrid({
+        origin: [
+          options.data.topLeftCorner.x,
+          options.data.topLeftCorner.y
+        ],
+        resolutions: options.data.resolutions,
+        matrixIds: options.data.matrixIds,
+      });
+    
+      var sourceWMTS = new WMTS({
+        url: options.data.url,
+        version: options.data.version,
+        layer: options.data.layer,
+        matrixSet: options.data.tileMatrixSet,
+        format: options.data.outputFormat,
+        projection: 'EPSG:3857',
+        tileGrid: tileGrid,
+        style: options.data.styleName,
+        attributions: '',
+      }); var tileLayer = null;
 
-    sourceWMTS._title = options.data.name || options.name;
-    sourceWMTS._description = options.data.description || options.description;
+      if (typeof options.data === 'string') {
+        options.data = JSON.parse(options.data);
+      }
+      if (options.kind === "wmts") {
+        const tileGrid = new WMTSTileGrid({
+          origin: [
+            options.data.topLeftCorner.x,
+            options.data.topLeftCorner.y
+          ],
+          resolutions: options.data.resolutions,
+          matrixIds: options.data.matrixIds,
+        });
+      
+        var sourceWMTS = new WMTS({
+          url: options.data.url,
+          version: options.data.version,
+          layer: options.data.layer,
+          matrixSet: options.data.tileMatrixSet,
+          format: options.data.outputFormat,
+          projection: 'EPSG:3857',
+          tileGrid: tileGrid,
+          style: options.data.styleName,
+          attributions: '',
+        });
+    
+        if (!sourceWMTS) {
+          throw new Error(t.ol.failed_source("service wmts"));
+        }
+    
+        sourceWMTS._title = options.data.name || options.name;
+        sourceWMTS._description = options.data.description || options.description;
+      
+        tileLayer = new TileLayer({
+          // minResolution
+          // maxResolution
+          // extent
+          source: sourceWMTS,
+        });
+    
+        if (!tileLayer) {
+          throw new Error(t.ol.failed_layer("service wmts"));
+        }
+      
+      } else if (options.kind === "wms") {
+        var sourceTileWMS = new TileWMSSource({
+          url : options.data.url,
+          params: {
+            "LAYERS": options.data.layers,    // array ?
+            "SERVICE": options.data.format,
+            "VERSION": options.data.version,
+            "STYLES": options.data.stylesName // array ?
+          },
+          projection : options.data.projection || 'EPSG:3857',
+          attributions: ''
+        });
+    
+        if (!sourceTileWMS) {
+          throw new Error(t.ol.failed_source("service wms"));
+        }
+        
+        sourceTileWMS._title = options.data.name || options.name;
+        sourceTileWMS._description = options.data.description || options.description;
+        
+        tileLayer = new TileLayer({
+          // minResolution
+          // maxResolution
+          // extent
+          source: sourceTileWMS
+        });
+    
+        if (!tileLayer) {
+          throw new Error(t.ol.failed_layer("service wms"));
+        }
+    
+        // fonctionnalité pour la gpf ?
+        tileLayer.gpGFIparams = {
+            queryable : options.data.queryable,
+            formats : options.data.gfiFormat
+        };
+        
+      } else {
+        throw new Error(t.ol.failed_source("service non reconnu"));
+      }
+    
+      // extent par defaut
+      if (tileLayer && !tileLayer.getExtent()) {
+        const projection = getProjection('EPSG:3857');
+        tileLayer.setExtent(projection.getExtent());
+      }
+      // id
+      if (tileLayer) {
+        tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
+      }
+      
+      return tileLayer;
   
-    tileLayer = new TileLayer({
-      // minResolution
-      // maxResolution
-      // extent
-      source: sourceWMTS,
-    });
-
-    if (!tileLayer) {
-      throw new Error(t.ol.failed_layer("service wmts"));
+    
+    } else if (options.kind === "wms") {
+      var sourceTileWMS = new TileWMSSource({
+        url : options.data.url,
+        params: {
+          "LAYERS": options.data.layers,    // array ?
+          "SERVICE": options.data.format,
+          "VERSION": options.data.version,
+          "STYLES": options.data.stylesName // array ?
+        },
+        projection : options.data.projection || 'EPSG:3857',
+        attributions: ''
+      });
+  
+      if (!sourceTileWMS) {
+        throw new Error(t.ol.failed_source("service wms"));
+      }
+      
+      sourceTileWMS._title = options.data.name || options.name;
+      sourceTileWMS._description = options.data.description || options.description;
+      
+      tileLayer = new TileLayer({
+        // minResolution
+        // maxResolution
+        // extent
+        source: sourceTileWMS
+      });
+  
+      if (!tileLayer) {
+        throw new Error(t.ol.failed_layer("service wms"));
+      }
+  
+      // fonctionnalité pour la gpf ?
+      tileLayer.gpGFIparams = {
+          queryable : options.data.queryable,
+          formats : options.data.gfiFormat
+      };
+      
+    } else {
+      throw new Error(t.ol.failed_source("service non reconnu"));
     }
   
-  } else if (options.kind === "wms") {
-    var sourceTileWMS = new TileWMSSource({
-      url : options.data.url,
-      params: {
-        "LAYERS": options.data.layers,    // array ?
-        "SERVICE": options.data.format,
-        "VERSION": options.data.version,
-        "STYLES": options.data.stylesName // array ?
-      },
-      projection : options.data.projection || 'EPSG:3857',
-      attributions: ''
-    });
-
-    if (!sourceTileWMS) {
-      throw new Error(t.ol.failed_source("service wms"));
+    // extent par defaut
+    if (tileLayer && !tileLayer.getExtent()) {
+      const projection = getProjection('EPSG:3857');
+      tileLayer.setExtent(projection.getExtent());
+    }
+    // id
+    if (tileLayer) {
+      tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
     }
     
-    sourceTileWMS._title = options.data.name || options.name;
-    sourceTileWMS._description = options.data.description || options.description;
-    
-    tileLayer = new TileLayer({
-      // minResolution
-      // maxResolution
-      // extent
-      source: sourceTileWMS
+    return tileLayer;
+  }
+
+  if (options.url) {
+    return fetch(options.url)
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+          .then((data) => {
+            return createLayer({
+              ...options,
+              ...{
+                data : data
+              }
+            });
+          })
+          .catch((e) => {
+            throw e;
+          });
+      }
+    })
+    .catch((e) => {
+      throw e;
     });
+  }
 
-    if (!tileLayer) {
-      throw new Error(t.ol.failed_layer("service wms"));
+  if (options.data) {
+    try {
+      var layer = createLayer(options);
+      return Promise.resolve(layer);
+    } catch (e) {
+      return Promise.reject(e);
     }
-
-    // fonctionnalité pour la gpf ?
-    tileLayer.gpGFIparams = {
-        queryable : options.data.queryable,
-        formats : options.data.gfiFormat
-    };
-    
-  } else {
-    throw new Error(t.ol.failed_source("service non reconnu"));
   }
-
-  // extent par defaut
-  if (tileLayer && !tileLayer.getExtent()) {
-    const projection = getProjection('EPSG:3857');
-    tileLayer.setExtent(projection.getExtent());
-  }
-  // id
-  if (tileLayer) {
-    tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
-  }
-  
-  return tileLayer;
 };
 
 /**

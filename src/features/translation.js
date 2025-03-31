@@ -31,7 +31,9 @@ export default {
   layerimport: {
     title: 'Import de couche',
     add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
-    add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` }
+    add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` },
+    add_success_mapbox: 'La couche MapBox est ajoutée à la carte',
+    add_failed_mapbox: 'Une erreur est survenue dans l\'ajout de la couche MapBox !',
   },
   layerswitcher: {
     title: 'Gestionnaire de couche',

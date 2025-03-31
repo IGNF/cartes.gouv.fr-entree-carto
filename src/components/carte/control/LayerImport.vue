@@ -139,7 +139,7 @@ const onSaveImportService = (e) => {
 
   var data = {
     content : JSON.stringify(content),
-    name : content.title,
+    name : content.title || e.name,
     description : content.description,
     format : "json",
     type : "service",
@@ -175,6 +175,44 @@ const onSaveImportService = (e) => {
 };
 const onSaveImportMapbox = (e) => {
   log.debug(e);
+  // vérifier si l'utilisateur est authentifié
+  if (!service.authenticated) {
+    return;
+  }
+
+  var data = {
+    content : e.data,
+    name : e.name,
+    description : 'Import Mapbox',
+    format : "json",
+    type : "service",
+    kind : 'mapbox',
+    target : "internal",
+    layer : e.layer
+  };
+
+  createImportDocument(data)
+  .then((o) => {
+    var document = service.find(o.uuid); // un peu redondant...
+    if (document) {
+      var url = toShare(document, { stop : 1 });
+      mapStore.addBookmark(url);
+    }
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.layerimport.title,
+      message: t.layerimport.add_success_mapbox
+    });
+  })
+  .catch((e) => {
+    console.error(e);
+    push.warning({
+      title: t.layerimport.title,
+      message: t.layerimport.add_failed_mapbox
+    });
+  });
 };
 const onSaveImportCompute = (e) => {
   log.debug(e);

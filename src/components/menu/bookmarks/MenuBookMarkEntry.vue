@@ -98,10 +98,6 @@ const onAddData = (data) => {
     fct.call(service, data.id)
     .then((response) => {
       
-      var opts = {};
-      var target = {};
-      var layer = null;
-      
       if (data.type === "carte") {
         getLayersFromPermalink(response);
         push.success({
@@ -109,85 +105,17 @@ const onAddData = (data) => {
           message: t.bookmark.success_add_data("permalien")
         });
         return;
-      } 
+      }
       if (data.type === "service") {
-        // les reponses possibles :
-        // - style (json) ou url pour mapbox, 
-        // - liste de parametres (json) pour wms et wmts
-        opts = {
-          id : data.id,
-          name : data.name,
-          description : document.description,
-          format : document.extra.format, // json
-          kind : document.extra.kind // wms, wmts ou mapbox
-        };
-        if (document.extra.kind === "mapbox") {
-          target = (document.extra.target && document.extra.target === "internal") ? { data : response } : { url : response };
-          createMapBoxLayer({
-            ...opts,
-            ...target
-          })
-          .then((layer) => {
-            mapStore.getMap().addLayer(layer);
-            push.success({
-              title: t.bookmark.title,
-              message: t.bookmark.success_add_data("mapbox"),
-            });
-          })
-          .catch((e) => {
-            throw t.ol.failed_mapbox(e);
-          });
-          return;
-        } else if (document.extra.kind === "wmts" || document.extra.kind === "wms") {
-          target = { data : response };
-          layer = createServiceLayer({
-            ...opts,
-            ...target
-          });
-        } else {
-          throw new Error("Le service est inconnu !");
-        }
+        permalink = true;
       }
       if (data.type === "drawing") {
         permalink = true;
       }
       if (data.type === "import") {
-        opts = {
-          id : data.id,
-          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)
-          name : data.name,
-          description : document.description,
-          format : document.extra.format,
-          type : data.type
-        };
-        if (document.extra.format === "mapbox") {
-          target = { data : response };
-          createMapBoxLayer({
-            ...opts,
-            ...target
-          })
-          .then((layer) => {
-            mapStore.getMap().addLayer(layer);
-            push.success({
-              title: t.bookmark.title,
-              message: t.bookmark.success_add_data("mapbox"),
-            });
-          })
-          .catch((e) => {
-            throw t.ol.failed_mapbox(e);
-          });
-          return;
-        } else {
-          permalink = true;
-        }
+        permalink = true;
       }
-      // ajout de la couche sur la carte sauf si on passe par 
-      // le mécanisme de permalien / partage d'url
-      if (!permalink) {
-        mapStore.getMap().addLayer(layer);
-      }
-    })
-    .then(() => {
+      
       // ajout du document dans le permalien pour partage
       if (permalink) {
         var url = toShare(document, {});

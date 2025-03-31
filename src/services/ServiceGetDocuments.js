@@ -118,7 +118,9 @@ var GetDocuments = {
     var promise = null;
 
     var data = await this.getFileById(id);
-
+    if (typeof data === "string") {
+      data = JSON.parse(data);
+    }
     var store = useServiceStore();
     var storage = store.getService();
     var document = storage.documents.service.find((doc) => doc._id === id);
