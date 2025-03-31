@@ -130,7 +130,8 @@ const createVectorLayer = (options) => {
 
   vectorLayer = new VectorLayer({
     source : vectorSource,
-    visible : true
+    visible : getVisible(options.visible),
+    opacity : getOpacity(options.opacity)
   });
 
   if (!vectorLayer) {
@@ -283,6 +284,8 @@ const createServiceLayer = (options) => {
         tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
       }
       
+      tileLayer.setVisible(getVisible(options.visible));
+      tileLayer.setOpacity(getOpacity(options.opacity));
       return tileLayer;
   
     
@@ -430,8 +433,8 @@ const createMapBoxLayer = (options) => {
       var setStyle = () => {
         applyStyle(vectorLayer, _glStyle, { source : _glSourceId })
         .then(() => {
-          vectorLayer.setVisible(true);
-          vectorLayer.setOpacity(1);
+          vectorLayer.setVisible(getVisible(options.visible));
+          vectorLayer.setOpacity(getOpacity(options.opacity));
         })
         .catch((e) => {
           throw e;
@@ -480,6 +483,46 @@ const createMapBoxLayer = (options) => {
       return Promise.reject(e);
     }
   }
+};
+
+/**
+ * Fonction pour récupérer la visibilité de la couche
+ * @param {*} v 
+ * @returns boolean
+ */
+const getVisible = (v) => {
+  var visible = (v === undefined) ? true : v;
+  if (typeof visible === "string") {
+    if (visible === "true") {
+      visible = true;
+    } else if (visible === "false") {
+      visible = false;
+    } else {
+      visible = true;
+    }
+  }
+  return visible;
+};
+/**
+ * Fonction pour récupérer l'opacité de la couche
+ * @param {*} o 
+ * @returns float
+ */
+const getOpacity = (o) => {
+  var opacity = (o === undefined) ? 1 : o;
+  if (typeof opacity === "string") {
+    opacity = parseFloat(opacity);
+  }
+  if (isNaN(opacity)) {
+    opacity = 1;
+  }
+  if (opacity < 0) {
+    opacity = 0;
+  }
+  if (opacity > 1) {
+    opacity = 1;
+  }
+  return opacity;
 };
 
 export {

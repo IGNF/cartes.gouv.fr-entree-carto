@@ -231,7 +231,7 @@ const onSaveVector = (e) => {
     if (document) {
       var url = toShare(document, { 
         opacity: data.layer.get('opacity'), 
-        visible: +data.layer.get('visible'),
+        visible: data.layer.get('visible'),
         gray: 0,
         stop: 1 // HACK !
       });
