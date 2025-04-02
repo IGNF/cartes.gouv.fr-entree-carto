@@ -30,7 +30,7 @@
   "scripts": {
     "clean:dist": "rimraf dist",
     "build-only": "vite build",
-    "dev": "vite --force --host",
+    "dev": "vite --force --host --mode development-local",
     "build": "run-p type-check \"build-only {@}\" --",
     "format": "eslint ./src --fix",
     "lint": "eslint ./src",

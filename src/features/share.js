@@ -93,17 +93,20 @@ export const fromShare = (url) => {
   return _extend(params);
 };
 
-// pour les URL réduites, 
-// on utilise le ? pour séparateur d'url / kvp
+// EVOLUTION
+// pour les URL réduites, on peut la parametrer
+// par défaut, on utilise le ? pour séparateur d'url / kvp
 // et le & pour le séparateur des parametres
-// et on groupe les parametres entre parenthèses
 // ex. 
 // ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin?n=gris&f=mapbox&t=service&c=internal&k=mapbox&v=1&o=0.5&g=0
+// on peut aussi choisir de ne pas utiliser le ? et le &
+// et grouper les parametres entre parenthèses si besoin
+// ex.
 // ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin(n=gris,f=mapbox,t=service,c=internal,k=mapbox,v=1,o=0.5,g=0)
-const SEPARATOR_REDUCED_URL = '?';
-const SEPARATOR_REDUCED_PARAMS = '&';
-const SEPARATOR_REDUCED_GROUP = false; // true -> ()
-const REDUCED_URL = "https://data.geopf.fr/documents/";
+const SEPARATOR_REDUCED_URL = '?'; // TODO autre choix
+const SEPARATOR_REDUCED_PARAMS = '&'; // TODO autre choix 
+const SEPARATOR_REDUCED_GROUP = false; // TODO choix true -> ()
+const REDUCED_BASE_URL = import.meta.env.VITE_GPF_BASE_URL_DOCUMENT || 'https://data.geopf.fr/documents/'; 
 const REDUCED_KVP = {
   "url": {k:"u", opt:false},
   "id": {k:"i", opt:false},
@@ -152,7 +155,7 @@ const _reduce = (url) => {
     }
   });
   // on ajoute l'url de base
-  var reducedUrl = (p.origin + p.pathname).replace(REDUCED_URL, '') +
+  var reducedUrl = (p.origin + p.pathname).replace(REDUCED_BASE_URL, '') +
     (SEPARATOR_REDUCED_GROUP ? '' : SEPARATOR_REDUCED_URL) + 
     (SEPARATOR_REDUCED_GROUP ? '(' : '') +
     reduced.toString().replace('&', SEPARATOR_REDUCED_PARAMS) +
@@ -161,7 +164,7 @@ const _reduce = (url) => {
 };
 
 /**
- * Retourne les parametres d'une URL de partage réduite
+ * Retourne les parametres complets d'une URL de partage réduite
  * @param {*} params 
  * @returns {*} - parametres étendus
  */
@@ -214,6 +217,6 @@ const _extend = (params) => {
     }
   });
   // on complète l'url
-  newParams.url = REDUCED_URL + newParams.url;
+  newParams.url = REDUCED_BASE_URL + newParams.url;
   return newParams;
 };
