@@ -18,9 +18,7 @@ export const getLayersFromPermalink = (url) => {
       }
     }
   }
-  // HACK : on ne peut pas faire de setTimeout dans une fonction asynchrone
-  // sinon, la carte ne se met pas à jour
-  // on force un rafraichissement de la carte
+  // HACK : on force un rafraichissement de la carte
   setTimeout(() => {
     var map = store.map;
     map.getView().setZoom(store.zoom);

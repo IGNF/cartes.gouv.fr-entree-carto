@@ -133,7 +133,7 @@ export const useMapStore = defineStore('map', () => {
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
     return (bookmarks.value.length > 0) ? 
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26stop%3D1/g, "")}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}&permalink=yes` :
     `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
   });
 
@@ -144,7 +144,7 @@ export const useMapStore = defineStore('map', () => {
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
     return (bookmarks.value.length > 0) ? 
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&d=${bookmarks.value.replace(/%26stop%3D1/g, "")}&permalink=yes` :
+    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}&permalink=yes` :
     `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
   });
 
@@ -367,7 +367,12 @@ export const useMapStore = defineStore('map', () => {
     return bookmarks.value.split(",").map((b) => {
       var params = decodeURIComponent(b).split("?")[1];
       var p = new URLSearchParams(params);
-      var id = p.get("id");
+      var id = p.get("i"); // uuid reduit
+      if (!id) {
+        // on ne peut pas utiliser le uuid car on l'a rendu facultatif
+        // on utilise le nom du partage
+        id = decodeURIComponent(b).split("?")[0].split(".")[0]; // lien de partage si pas de uuid
+      }
       return id;
     }); // array
   }
@@ -375,7 +380,7 @@ export const useMapStore = defineStore('map', () => {
     if (!url) {
       return;
     }
-    var _url = url.split("?")[0];
+    var _url = decodeURIComponent(url).split("?")[0];
     if (getBookmarksByKey().includes(_url)) {
       return;
     }
@@ -386,7 +391,7 @@ export const useMapStore = defineStore('map', () => {
     bookmarks.value = b.toString(); // string
   }
   function removeBookmark (url) {
-    var _url = url.split("?")[0];
+    var _url = decodeURIComponent(url).split("?")[0];
     const index = getBookmarksByKey().indexOf(_url);
     if (index !== -1) {
       var b = bookmarks.value.split(",");

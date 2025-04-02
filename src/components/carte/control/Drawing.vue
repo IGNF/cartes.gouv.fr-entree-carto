@@ -31,6 +31,7 @@ const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
 // bouton d'enregistrement / export du croquis avec un menu
+const formatByDefault = "kml";
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
   kind : "secondary",
@@ -46,7 +47,7 @@ const btnExport = ref(new ButtonExport({
     labelDesc: false
   },
   direction : "column",
-  format : "kml",
+  format : formatByDefault,
   icons : {
     menu : "",
     button : "export"
@@ -60,7 +61,7 @@ const btnSave = ref(new ButtonExport({
   description: "",
   control: drawing.value,
   menu: false,
-  format : "kml",
+  format : formatByDefault,
   icons : {
     menu : "",
     button : "save"
@@ -159,6 +160,8 @@ const onToggleShowVector = (e) => {
     // une autre couche
     drawing.value.setLayer();
     btnExport.value.inputName.value = "";
+    btnExport.value.setFormat(formatByDefault);
+    btnSave.value.setFormat(formatByDefault);
   }
 }
 

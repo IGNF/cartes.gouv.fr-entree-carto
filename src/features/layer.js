@@ -503,6 +503,7 @@ const getVisible = (v) => {
   }
   return visible;
 };
+
 /**
  * Fonction pour récupérer l'opacité de la couche
  * @param {*} o 

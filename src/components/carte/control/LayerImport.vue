@@ -150,7 +150,6 @@ const onSaveImportService = (e) => {
 
   createImportDocument(data)
   .then((o) => {
-    // TODO permalien de service !
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, { stop : 1 });
