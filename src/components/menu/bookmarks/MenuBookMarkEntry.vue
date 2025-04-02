@@ -46,12 +46,11 @@ const mapStore = useMapStore();
 /**
  * Options :
  * - type : 'map' ou 'data'
- * - data : {id, name, ext, type, type_fr, icon, date}
+ * - data : {id, name, type, type_fr, icon, date}
  */
 const props = defineProps({
   type : String,
-  data : Object,
-  download : Boolean
+  data : Object
 });
 
 const service = inject('services');
@@ -60,7 +59,7 @@ const emitter = inject('emitter');
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
  * 
- * @param data - {id, name, format, type, ...}
+ * @param data - { id, name, type }
  */
 const onAddData = (data) => {
   service.getDocumentById(data.id)
@@ -99,10 +98,6 @@ const onAddData = (data) => {
     fct.call(service, data.id)
     .then((response) => {
       
-      var opts = {};
-      var target = {};
-      var layer = null;
-      
       if (data.type === "carte") {
         getLayersFromPermalink(response);
         push.success({
@@ -110,79 +105,17 @@ const onAddData = (data) => {
           message: t.bookmark.success_add_data("permalien")
         });
         return;
-      } 
+      }
       if (data.type === "service") {
-        // les reponses possibles :
-        // - style (json) ou url pour mapbox, 
-        // - liste de parametres (json) pour wms et wmts
-        opts = {
-          id : data.id,
-          name : data.name,
-          description : document.description,
-          format : document.extra.format // wms, wmts ou mapbox
-        };
-        if (document.extra.format === "mapbox") {
-          target = (document.extra.target && document.extra.target === "internal") ? { data : response } : { url : response };
-          createMapBoxLayer({
-            ...opts,
-            ...target
-          })
-          .then((layer) => {
-            mapStore.getMap().addLayer(layer);
-            push.success({
-              title: t.bookmark.title,
-              message: t.bookmark.success_add_data("mapbox"),
-            });
-          })
-          .catch((e) => {
-            throw t.ol.failed_mapbox(e);
-          });
-          return;
-        } else {
-          target = { data : response };
-          layer = createServiceLayer({
-            ...opts,
-            ...target
-          });
-        }
+        permalink = true;
       }
-      if (data.type === "drawing" || data.type === "import") {
-        opts = {
-          id : data.id,
-          extended : true, // on utilise le format étendu de GeoJSON, KML et GPX (sauf pour mapbox)
-          name : data.name,
-          description : document.description,
-          format : document.extra.format,
-          type : data.type
-        };
-        if (document.extra.format === "mapbox") {
-          target = { data : response };
-          createMapBoxLayer({
-            ...opts,
-            ...target
-          })
-          .then((layer) => {
-            mapStore.getMap().addLayer(layer);
-            push.success({
-              title: t.bookmark.title,
-              message: t.bookmark.success_add_data("mapbox"),
-            });
-          })
-          .catch((e) => {
-            throw t.ol.failed_mapbox(e);
-          });
-          return;
-        } else {
-          permalink = true;
-        }
+      if (data.type === "drawing") {
+        permalink = true;
       }
-      // ajout de la couche sur la carte sauf si on passe par 
-      // le mécanisme de permalien / partage d'url
-      if (!permalink) {
-        mapStore.getMap().addLayer(layer);
+      if (data.type === "import") {
+        permalink = true;
       }
-    })
-    .then(() => {
+      
       // ajout du document dans le permalien pour partage
       if (permalink) {
         var url = toShare(document, {});

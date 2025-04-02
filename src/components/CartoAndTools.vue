@@ -77,7 +77,7 @@ const selectedBookmarks = computed(() => {
     //  car le widget Drawing a son propre mécanisme
     //  d'ajout de couche sur la carte...
     if (!obj.stop) {
-      // on ajoute une clef unique... besoin interne
+      // on ajoute une clef unique... c'est un besoin interne
       obj.key = obj.id;
       /*
       * Liste des paramètres utiles (liste non exhaustive):

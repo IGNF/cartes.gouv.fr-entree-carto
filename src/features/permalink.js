@@ -3,8 +3,7 @@ import { useMapStore } from "@/stores/mapStore";
 
 /**
  * Lecture d'un permalien
- * 
- * @todo les autres parametres !
+ * Et, mise à jour du store de la carte !
  * @param {*} url - permalien
  */
 export const getLayersFromPermalink = (url) => {
@@ -19,4 +18,10 @@ export const getLayersFromPermalink = (url) => {
       }
     }
   }
+  // HACK : on force un rafraichissement de la carte
+  setTimeout(() => {
+    var map = store.map;
+    map.getView().setZoom(store.zoom);
+    map.getView().setCenter([store.x, store.y]);
+  },0);
 };

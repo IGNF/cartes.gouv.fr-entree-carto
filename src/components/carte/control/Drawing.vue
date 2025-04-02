@@ -31,6 +31,7 @@ const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
 // bouton d'enregistrement / export du croquis avec un menu
+const formatByDefault = "kml";
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
   kind : "secondary",
@@ -46,7 +47,7 @@ const btnExport = ref(new ButtonExport({
     labelDesc: false
   },
   direction : "column",
-  format : "kml",
+  format : formatByDefault,
   icons : {
     menu : "",
     button : "export"
@@ -60,12 +61,46 @@ const btnSave = ref(new ButtonExport({
   description: "",
   control: drawing.value,
   menu: false,
-  format : "kml",
+  format : formatByDefault,
   icons : {
     menu : "",
     button : "save"
   }
 }));
+
+/** 
+ * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
+ * 
+ * Reassocier la couche et l'outil de dessin
+ * via le bouton d'edition du gestionnaire de couche
+ * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @see LayerSwitcher
+ * @fixme l'outil de dessin doit être monté !
+ */
+ emitter.addEventListener("vector:edit:clicked", (e) => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(false);
+    drawing.value.setLayer(e.layer);
+    btnExport.value.inputName.value = e.options.title || "";
+  }
+  // INFO
+  // on sauvegarde / exporte au format natif
+  var gpId = e.layer.gpResultLayerId.toLowerCase();
+  if (gpId) {
+    var format;
+    if (gpId.includes("drawing") || gpId.includes("kml")) {
+      format = "kml";
+    } else if (gpId.includes("geojson")) {
+      format = "geojson";
+    } else if (gpId.includes("gpx")) {
+      format = "gpx";
+    } else {
+      format = "kml"; // par defaut ?
+    }
+    btnExport.value.setFormat(format);
+    btnSave.value.setFormat(format);
+  }
+});
 
 onMounted(() => {
   if (props.visibility) {
@@ -110,38 +145,6 @@ onBeforeUpdate(() => {
   }
 })
 
-/** 
- * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
- * 
- * Reassocier la couche et l'outil de dessin
- * via le bouton d'edition du gestionnaire de couche
- * (un clic sur l'edition renvoie un event avec la couche associée)
- * @see LayerSwitcher
- */
-emitter.addEventListener("vector:edit:clicked", (e) => {
-  if (drawing.value) {
-    drawing.value.setCollapsed(false);
-    drawing.value.setLayer(e.layer);
-    btnExport.value.inputName.value = e.options.title || "";
-  }
-  // INFO
-  // on sauvegarde / exporte au format natif
-  var gpId = e.layer.gpResultLayerId.toLowerCase();
-  if (gpId) {
-    var format;
-    if (gpId.includes("drawing") || gpId.includes("kml")) {
-      format = "kml";
-    } else if (gpId.includes("geojson")) {
-      format = "geojson";
-    } else if (gpId.includes("gpx")) {
-      format = "gpx";
-    } else {
-      format = "kml"; // par defaut ?
-    }
-    btnExport.value.setFormat(format);
-    btnSave.value.setFormat(format);
-  }
-});
 
 /**
  * Gestionnaire d'evenement 
@@ -157,6 +160,8 @@ const onToggleShowVector = (e) => {
     // une autre couche
     drawing.value.setLayer();
     btnExport.value.inputName.value = "";
+    btnExport.value.setFormat(formatByDefault);
+    btnSave.value.setFormat(formatByDefault);
   }
 }
 
@@ -229,7 +234,7 @@ const onSaveVector = (e) => {
     if (document) {
       var url = toShare(document, { 
         opacity: data.layer.get('opacity'), 
-        visible: +data.layer.get('visible'),
+        visible: data.layer.get('visible'),
         gray: 0,
         stop: 1 // HACK !
       });
