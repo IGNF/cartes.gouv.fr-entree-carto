@@ -13,6 +13,10 @@ services:
     # surcharge des env :
     # --build-arg MODE_ENV=docker
     # --build-arg BASE_URL=/cartes
+
+    # on utilise les 'args' pour construire une image dynamique
+    # et on utilise les 'environment' pour surcharger une image statique
+    # pour l'exemple, on utilise les 'env_file' pour surcharger une image statique
     entree_carto:
         build:
             context: ..
@@ -30,6 +34,8 @@ services:
             - HTTPS_PROXY=${HTTPS_PROXY}
             - http_proxy=${HTTP_PROXY}
             - https_proxy=${HTTPS_PROXY}
+        env_file:
+            - ../env/.env.docker-local
         ports:
         # - HOST:CONTAINER
           - 8082:8082
