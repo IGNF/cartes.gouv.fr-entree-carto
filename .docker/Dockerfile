@@ -49,8 +49,12 @@ USER root
 COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers-envsubst.sh
 RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 
+# environnement à surcharger avec docker-compose ou k8s
+RUN chmod -R 777 /usr/share/nginx/html/cartes/env
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
+USER nginx
 EXPOSE 8082
 
 CMD ["nginx", "-g", "daemon off;"]
