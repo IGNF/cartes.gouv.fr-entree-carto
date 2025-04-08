@@ -3,6 +3,7 @@ import { URL, fileURLToPath } from 'node:url'
 import { defineConfig, ProxyOptions, ViteDevServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import EnvRuntime from 'vite-plugin-env-runtime';
 
 // INFO 
 // mode https avec certificats unsecure (dev)
@@ -57,6 +58,10 @@ export default defineConfig({
         vueDsfrComponentResolver,
       ],
     }),
+    EnvRuntime({
+      name: '__ENV__',
+      filename: 'env.js'
+    }),
   ],
   // INFO
   // pour tester la collecte des statistiques en local, il faut modifier l'URL (filtre Eulerian) :
@@ -73,6 +78,7 @@ export default defineConfig({
     sourcemap: process.env.SOURCE_MAP === 'true',
   },
   server: {
+    allowedHosts: true,
     cors : true,
     headers : {
       "Access-Control-Allow-Credentials": "true",
@@ -82,8 +88,8 @@ export default defineConfig({
       "Access-Control-Expose-Headers": "*"
     },
     // proxy : {
-    //   '/': {
-    //     target: "http://localhost:5173",
+    //   '/api': {
+    //     target: "https://data.geopf.fr/api",
     //     changeOrigin: true,
     //     secure: false,
     //     ws: true,

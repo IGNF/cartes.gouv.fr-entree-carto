@@ -85,6 +85,7 @@ var SetDocuments = {
    * @property {String} obj.description - description
    * @property {String} obj.format - format : kml, geojson, ...
    * @property {String} obj.type - drawing, import, ...
+   * @property {String} obj.kind - wms, wmts, ...
    * @property {String} obj.target - internal, external
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
@@ -93,27 +94,28 @@ var SetDocuments = {
     formData.append("name", obj.name);
     formData.append("description", obj.description);
 
-    // FIXME
-    // ça ne marche pas !?
-    // formData.append("labels[]", this.tag);
-    // formData.append("labels[]", obj.type);
-    // formData.append("labels[]", this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)));
-    
     const labels = [
       this.tag, 
       obj.type, 
       this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)),
       this.labelsTarget.find((e) => obj.target.toLowerCase().includes(e))
     ];
+    if (obj.kind) {
+      var value = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
+      if (value) {
+        labels.push(value);
+      }
+    }
     formData.append("labels", labels.join(","));
 
-    // INFO
-    // URL publique pour tous les documents !
+    // FIXME
+    // URL publique pour tous les documents, mais pas possible dans le POST !
     formData.append("url_public", true);
 
     // FIXME 
     // le champ extra n'est pas pris en compte par l'API Entrepot !?
     formData.append("extra", JSON.stringify({
+      kind: (obj.kind) ? obj.kind.toLowerCase() : null,
       format: obj.format.toLowerCase(),
       target: "internal",
       date: new Date().toLocaleDateString()

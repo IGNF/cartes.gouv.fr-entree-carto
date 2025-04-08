@@ -60,7 +60,7 @@ view.on("change:center", (e) => {
  * pour mise à jour du zoom de la carte
  */
 view.on("change:resolution", (e) => {
-    store.zoom = view.getZoom();
+  store.zoom = view.getZoom();
 })
 
 onMounted(() => {
@@ -71,13 +71,6 @@ onMounted(() => {
   }
 })
 
-// onUpdated(() => {
-//   // optimisé ?
-//   if (view.getZoom() !== props.zoom) {
-//     view.setZoom(props.zoom);
-//   }
-//   view.setCenter(fromLonLatProj(props.center));
-// })
 </script>
 
 <template></template>

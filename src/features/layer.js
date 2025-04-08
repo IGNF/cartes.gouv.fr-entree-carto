@@ -130,7 +130,8 @@ const createVectorLayer = (options) => {
 
   vectorLayer = new VectorLayer({
     source : vectorSource,
-    visible : true
+    visible : getVisible(options.visible),
+    opacity : getOpacity(options.opacity)
   });
 
   if (!vectorLayer) {
@@ -155,102 +156,224 @@ const createVectorLayer = (options) => {
  * @property {*} options.name
  * @property {*} options.description
  * @property {*} options.format
- * @property {*} options.data
+ * @property {*} options.kind
+ * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer dans les getCapabilities ?
  */
 const createServiceLayer = (options) => {
-  var tileLayer = null;
 
-  if (options.format === "wmts") {
-    const tileGrid = new WMTSTileGrid({
-      origin: [
-        options.data.topLeftCorner.x,
-        options.data.topLeftCorner.y
-      ],
-      resolutions: options.data.resolutions,
-      matrixIds: options.data.matrixIds,
-    });
-  
-    var sourceWMTS = new WMTS({
-      url: options.data.url,
-      version: options.data.version,
-      layer: options.data.layer,
-      matrixSet: options.data.tileMatrixSet,
-      format: options.data.outputFormat,
-      projection: 'EPSG:3857',
-      tileGrid: tileGrid,
-      style: options.data.styleName,
-      attributions: '',
-    });
+  var createLayer = (options) => {
+    var tileLayer = null;
 
-    if (!sourceWMTS) {
-      throw new Error(t.ol.failed_source("service wmts"));
+    if (typeof options.data === 'string') {
+      options.data = JSON.parse(options.data);
     }
+    if (options.kind === "wmts") {
+      const tileGrid = new WMTSTileGrid({
+        origin: [
+          options.data.topLeftCorner.x,
+          options.data.topLeftCorner.y
+        ],
+        resolutions: options.data.resolutions,
+        matrixIds: options.data.matrixIds,
+      });
+    
+      var sourceWMTS = new WMTS({
+        url: options.data.url,
+        version: options.data.version,
+        layer: options.data.layer,
+        matrixSet: options.data.tileMatrixSet,
+        format: options.data.outputFormat,
+        projection: 'EPSG:3857',
+        tileGrid: tileGrid,
+        style: options.data.styleName,
+        attributions: '',
+      }); var tileLayer = null;
 
-    sourceWMTS._title = options.data.name || options.name;
-    sourceWMTS._description = options.data.description || options.description;
+      if (typeof options.data === 'string') {
+        options.data = JSON.parse(options.data);
+      }
+      if (options.kind === "wmts") {
+        const tileGrid = new WMTSTileGrid({
+          origin: [
+            options.data.topLeftCorner.x,
+            options.data.topLeftCorner.y
+          ],
+          resolutions: options.data.resolutions,
+          matrixIds: options.data.matrixIds,
+        });
+      
+        var sourceWMTS = new WMTS({
+          url: options.data.url,
+          version: options.data.version,
+          layer: options.data.layer,
+          matrixSet: options.data.tileMatrixSet,
+          format: options.data.outputFormat,
+          projection: 'EPSG:3857',
+          tileGrid: tileGrid,
+          style: options.data.styleName,
+          attributions: '',
+        });
+    
+        if (!sourceWMTS) {
+          throw new Error(t.ol.failed_source("service wmts"));
+        }
+    
+        sourceWMTS._title = options.data.name || options.name;
+        sourceWMTS._description = options.data.description || options.description;
+      
+        tileLayer = new TileLayer({
+          // minResolution
+          // maxResolution
+          // extent
+          source: sourceWMTS,
+        });
+    
+        if (!tileLayer) {
+          throw new Error(t.ol.failed_layer("service wmts"));
+        }
+      
+      } else if (options.kind === "wms") {
+        var sourceTileWMS = new TileWMSSource({
+          url : options.data.url,
+          params: {
+            "LAYERS": options.data.layers,    // array ?
+            "SERVICE": options.data.format,
+            "VERSION": options.data.version,
+            "STYLES": options.data.stylesName // array ?
+          },
+          projection : options.data.projection || 'EPSG:3857',
+          attributions: ''
+        });
+    
+        if (!sourceTileWMS) {
+          throw new Error(t.ol.failed_source("service wms"));
+        }
+        
+        sourceTileWMS._title = options.data.name || options.name;
+        sourceTileWMS._description = options.data.description || options.description;
+        
+        tileLayer = new TileLayer({
+          // minResolution
+          // maxResolution
+          // extent
+          source: sourceTileWMS
+        });
+    
+        if (!tileLayer) {
+          throw new Error(t.ol.failed_layer("service wms"));
+        }
+    
+        // fonctionnalité pour la gpf ?
+        tileLayer.gpGFIparams = {
+            queryable : options.data.queryable,
+            formats : options.data.gfiFormat
+        };
+        
+      } else {
+        throw new Error(t.ol.failed_source("service non reconnu"));
+      }
+    
+      // extent par defaut
+      if (tileLayer && !tileLayer.getExtent()) {
+        const projection = getProjection('EPSG:3857');
+        tileLayer.setExtent(projection.getExtent());
+      }
+      // id
+      if (tileLayer) {
+        tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
+      }
+      
+      tileLayer.setVisible(getVisible(options.visible));
+      tileLayer.setOpacity(getOpacity(options.opacity));
+      return tileLayer;
   
-    tileLayer = new TileLayer({
-      // minResolution
-      // maxResolution
-      // extent
-      source: sourceWMTS,
-    });
-
-    if (!tileLayer) {
-      throw new Error(t.ol.failed_layer("service wmts"));
+    
+    } else if (options.kind === "wms") {
+      var sourceTileWMS = new TileWMSSource({
+        url : options.data.url,
+        params: {
+          "LAYERS": options.data.layers,    // array ?
+          "SERVICE": options.data.format,
+          "VERSION": options.data.version,
+          "STYLES": options.data.stylesName // array ?
+        },
+        projection : options.data.projection || 'EPSG:3857',
+        attributions: ''
+      });
+  
+      if (!sourceTileWMS) {
+        throw new Error(t.ol.failed_source("service wms"));
+      }
+      
+      sourceTileWMS._title = options.data.name || options.name;
+      sourceTileWMS._description = options.data.description || options.description;
+      
+      tileLayer = new TileLayer({
+        // minResolution
+        // maxResolution
+        // extent
+        source: sourceTileWMS
+      });
+  
+      if (!tileLayer) {
+        throw new Error(t.ol.failed_layer("service wms"));
+      }
+  
+      // fonctionnalité pour la gpf ?
+      tileLayer.gpGFIparams = {
+          queryable : options.data.queryable,
+          formats : options.data.gfiFormat
+      };
+      
+    } else {
+      throw new Error(t.ol.failed_source("service non reconnu"));
     }
   
-  } else {
-    var sourceTileWMS = new TileWMSSource({
-      url : options.data.url,
-      params: {
-        "LAYERS": options.data.layers,    // array ?
-        "SERVICE": options.data.format,
-        "VERSION": options.data.version,
-        "STYLES": options.data.stylesName // array ?
-      },
-      projection : options.data.projection || 'EPSG:3857',
-      attributions: ''
-    });
-
-    if (!sourceTileWMS) {
-      throw new Error(t.ol.failed_source("service wms"));
+    // extent par defaut
+    if (tileLayer && !tileLayer.getExtent()) {
+      const projection = getProjection('EPSG:3857');
+      tileLayer.setExtent(projection.getExtent());
+    }
+    // id
+    if (tileLayer) {
+      tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
     }
     
-    sourceTileWMS._title = options.data.name || options.name;
-    sourceTileWMS._description = options.data.description || options.description;
-    
-    tileLayer = new TileLayer({
-      // minResolution
-      // maxResolution
-      // extent
-      source: sourceTileWMS
+    return tileLayer;
+  }
+
+  if (options.url) {
+    return fetch(options.url)
+    .then((response) => {
+      if (response.ok) {
+        return response.json()
+          .then((data) => {
+            return createLayer({
+              ...options,
+              ...{
+                data : data
+              }
+            });
+          })
+          .catch((e) => {
+            throw e;
+          });
+      }
+    })
+    .catch((e) => {
+      throw e;
     });
+  }
 
-    if (!tileLayer) {
-      throw new Error(t.ol.failed_layer("service wms"));
+  if (options.data) {
+    try {
+      var layer = createLayer(options);
+      return Promise.resolve(layer);
+    } catch (e) {
+      return Promise.reject(e);
     }
-
-    // fonctionnalité pour la gpf ?
-    tileLayer.gpGFIparams = {
-        queryable : options.data.queryable,
-        formats : options.data.gfiFormat
-    };
-    
   }
-
-  // extent par defaut
-  if (tileLayer && !tileLayer.getExtent()) {
-    const projection = getProjection('EPSG:3857');
-    tileLayer.setExtent(projection.getExtent());
-  }
-  // id
-  if (tileLayer) {
-    tileLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
-  }
-  
-  return tileLayer;
 };
 
 /**
@@ -310,8 +433,8 @@ const createMapBoxLayer = (options) => {
       var setStyle = () => {
         applyStyle(vectorLayer, _glStyle, { source : _glSourceId })
         .then(() => {
-          vectorLayer.setVisible(true);
-          vectorLayer.setOpacity(1);
+          vectorLayer.setVisible(getVisible(options.visible));
+          vectorLayer.setOpacity(getOpacity(options.opacity));
         })
         .catch((e) => {
           throw e;
@@ -360,6 +483,47 @@ const createMapBoxLayer = (options) => {
       return Promise.reject(e);
     }
   }
+};
+
+/**
+ * Fonction pour récupérer la visibilité de la couche
+ * @param {*} v 
+ * @returns boolean
+ */
+const getVisible = (v) => {
+  var visible = (v === undefined) ? true : v;
+  if (typeof visible === "string") {
+    if (visible === "true") {
+      visible = true;
+    } else if (visible === "false") {
+      visible = false;
+    } else {
+      visible = true;
+    }
+  }
+  return visible;
+};
+
+/**
+ * Fonction pour récupérer l'opacité de la couche
+ * @param {*} o 
+ * @returns float
+ */
+const getOpacity = (o) => {
+  var opacity = (o === undefined) ? 1 : o;
+  if (typeof opacity === "string") {
+    opacity = parseFloat(opacity);
+  }
+  if (isNaN(opacity)) {
+    opacity = 1;
+  }
+  if (opacity < 0) {
+    opacity = 0;
+  }
+  if (opacity > 1) {
+    opacity = 1;
+  }
+  return opacity;
 };
 
 export {

@@ -11,6 +11,7 @@ import {
 
 import { 
   createVectorLayer, 
+  createServiceLayer,
   createMapBoxLayer 
 } from '@/features/layer.js';
 
@@ -100,7 +101,29 @@ onMounted(() => {
     // liste des types de couches à traiter
     switch (type) {
       case "service":
-        throw "Not yet implemented !";
+        isAsync = true;
+        var kind = props.layerOptions.kind.toLowerCase();
+        if (kind === "mapbox") {
+          createMapBoxLayer(props.layerOptions)
+          .then((l) => {
+            layer = l;
+            map.addLayer(layer);
+          })
+          .catch((e) => {
+            throw e;
+          });
+        } else if (kind === "wmts" || kind === "wms") {
+          createServiceLayer(props.layerOptions)
+          .then((l) => {
+            layer = l;
+            map.addLayer(layer);
+          })
+          .catch((e) => {
+            throw e;
+          });
+        } else {
+          throw new Error("Le service est inconnu !");
+        }
         break;
       case "carte":
         throw "Not yet implemented !";

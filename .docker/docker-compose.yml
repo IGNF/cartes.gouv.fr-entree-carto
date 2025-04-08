@@ -11,25 +11,32 @@ services:
     # --build-arg HTTP_PROXY=http://proxy.ign.fr:3128 
     # --build-arg HTTPS_PROXY=http://proxy.ign.fr:3128 
     # surcharge des env :
-    # --build-arg MODE_ENV=stage
+    # --build-arg MODE_ENV=docker
     # --build-arg BASE_URL=/cartes
+
+    # on utilise les 'args' pour construire une image dynamique
+    # et on utilise les 'environment' pour surcharger une image statique
+    # pour l'exemple, on utilise les 'env_file' pour surcharger une image statique
     entree_carto:
         build:
             context: ..
             dockerfile: ./.docker/Dockerfile
             args:
-              BASE_URL: "/cartes"
-              MODE_ENV: "stage"
-              SOURCE_MAP: "true"
+              # BASE_URL: "/cartes"
+              # MODE_ENV: "docker-local"
+              # SOURCE_MAP: "true"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
         image: ignf/cartes.gouv.fr-carto:latest
         container_name: cartesgouvfr-entree_carto
         environment:
+            - VITE_GPF_CONTEXT=local
             - HTTP_PROXY=${HTTP_PROXY}
             - HTTPS_PROXY=${HTTPS_PROXY}
             - http_proxy=${HTTP_PROXY}
             - https_proxy=${HTTPS_PROXY}
+        env_file:
+            - ../env/.env.docker-local
         ports:
         # - HOST:CONTAINER
           - 8082:8082

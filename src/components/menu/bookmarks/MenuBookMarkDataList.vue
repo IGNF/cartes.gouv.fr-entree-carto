@@ -7,7 +7,7 @@
  * 
  * @fires emitter#layerimport:open:clicked
  * @todo gestion de l'accessibilité des onglets
- * @todo handler sur les boutons d'enregistrement de cartes ou de fichiers
+ * @todo obtenir plus d'informations complementaires sur les documents
  * @todo mécanisme de date (tag extra de l'API Entrepôt): creation et modification
  */
 export default {
@@ -33,10 +33,6 @@ const emitter = inject('emitter');
 const props = defineProps({
   title: String
 });
-
-// INFO
-// flag pour permettre l'ajout direct d'une couche ou via le mécanisme de permalien
-var download = false;
 
 // recherche de données
 const searchString = ref('');
@@ -98,30 +94,27 @@ const lstData = computed(() => {
     console.log("update data !");
   }
   var data = [];
-  for (const key in service.documents) {
-    if (Object.prototype.hasOwnProperty.call(service.documents, key)) {
-      if (key === "carte") {
+  for (const type in service.documents) {
+    if (Object.prototype.hasOwnProperty.call(service.documents, type)) {
+      if (type === "carte") {
         continue;
       }
-      var elements = service.documents[key];
-      if (!elements) {
+      var documents = service.documents[type];
+      if (!documents) {
         continue;
       } 
-      for (let i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        // FIXME 
-        // date : information non dispo
-        // format : information non dispo
+      for (let i = 0; i < documents.length; i++) {
+        var document = documents[i];
+        // INFO
+        // on a des informations partielles sur les documents...
         var extensions = [ ".geojson", ".gpx", ".kml", ".json"];
-        var ext = extensions.find((ext) => element.name.includes(ext));
+        var ext = extensions.find((ext) => document.name.includes(ext));
         data.push({
-          id : element._id,
-          name : (ext) ? element.name.replace(ext, "").slice(0, -1) : element.name,
-          format : ext || "",
-          type : key,
-          type_fr : i18n(key),
-          icon : icon(key),
-          date : ""
+          id : document._id,
+          name : (ext) ? document.name.replace(ext, "").slice(0, -1) : document.name,
+          type : type,
+          type_fr : i18n(type),
+          icon : icon(type)
         });
       }
     }
@@ -129,7 +122,7 @@ const lstData = computed(() => {
   return data.filter((el) => !searchString.value || el.name.includes(searchString.value) );
 });
 
-// liste des cartes avec filtre sur la recherche (sur le nom complet)
+//  liste des cartes avec filtre sur la recherche (sur le nom complet)
 const lstMap = computed(() => {
   if (update.value) {
     console.log("update map !");
@@ -137,15 +130,13 @@ const lstMap = computed(() => {
   var map = [];
   if (service.documents.carte) {
     for (let i = 0; i < service.documents.carte.length; i++) {
-      const element = service.documents.carte[i];
+      const document = service.documents.carte[i];
       map.push({
-        id : element._id,
-        name : element.name,
-        format : null,
+        id : document._id,
+        name : document.name,
         type : "carte",
         type_fr : "permalien",
         icon : "fr-icon-link", // icon de permalien
-        date : ""
       });
     }
   }
@@ -343,7 +334,7 @@ onMounted(() => {});
           </div>
           <!-- Affichage des cartes ou permaliens -->
           <div class="container-bookmark-map-item fr-p-1w" v-for="map in lstMap">
-            <MenuBookMarkEntry :data="map" type="map" :download="download"></MenuBookMarkEntry>
+            <MenuBookMarkEntry :data="map" type="map"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 
@@ -366,7 +357,7 @@ onMounted(() => {});
             - menu options : renommer, partager, supprimer
           -->
           <div class="container-bookmark-data-item fr-p-1w" v-for="data in lstData">
-            <MenuBookMarkEntry :data="data" type="data" :download="download"></MenuBookMarkEntry>
+            <MenuBookMarkEntry :data="data" type="data"></MenuBookMarkEntry>
           </div>
         </DsfrTabContent>
 
