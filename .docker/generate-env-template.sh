@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 echo "Génération du fichier env.js.template à partir de .env"
 
 # Créer ou vider le fichier env.js.template
@@ -26,3 +28,7 @@ echo "};" >> /app/dist/env/env.js.template
 # Ajouter un complement
 echo "Object.freeze(window.__ENV__);" >> /app/dist/env/env.js.template
 echo "Object.defineProperty(window,"__ENV__",{configurable:false,writable:false,});"  >> /app/dist/env/env.js.template
+
+set +x
+exit 0
+# Fin du script
