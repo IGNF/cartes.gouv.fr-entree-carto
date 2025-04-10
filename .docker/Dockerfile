@@ -60,9 +60,13 @@ USER root
 COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers-envsubst.sh
 RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 
-# On prevoit de monter un volume sous k8s pour écriture du fichier d'environnement de la webapp
+# On prevoit de monter un volume sous k8s 
+# pour écriture du fichier d'environnement de la webapp
 VOLUME ["/usr/share/nginx/html/cartes/env"]
-COPY --from=builder /app/dist/env /usr/share/nginx/html/cartes/env/
+
+# Copie vers /tmp/env au lieu de /usr/share/nginx/html/cartes/env
+RUN mkdir -p /tmp/env
+COPY --from=builder /app/dist/env /tmp/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
