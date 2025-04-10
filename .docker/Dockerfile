@@ -66,6 +66,8 @@ VOLUME ["/usr/share/nginx/html/cartes/env"]
 
 # Copie vers /tmp/env au lieu de /usr/share/nginx/html/cartes/env
 RUN mkdir -p /tmp/env
+RUN chown -R nginx:nginx /tmp/env
+# On copie le fichier de configuration de l'environnement
 COPY --from=builder /app/dist/env /tmp/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
