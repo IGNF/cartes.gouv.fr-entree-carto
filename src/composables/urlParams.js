@@ -63,6 +63,8 @@ export function useUrlParams(url) {
         case "z":
           params.zoom = parseInt(urlParams[key], 10);
           break;
+        case "p":
+          params.geolocation = urlParams[key];
         default:
           break;
       }

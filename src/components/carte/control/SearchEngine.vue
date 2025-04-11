@@ -5,8 +5,14 @@ import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
 
 import {
+  toLonLat as toLonLatProjj
+} from "ol/proj";
+
+import {
   SearchEngine
-} from 'geopf-extensions-openlayers'
+} from 'geopf-extensions-openlayers';
+
+const emitter = inject('emitter');
 
 // FIXME
 // choisir où placer le tracker Eulerian sur ce widget !
@@ -35,7 +41,8 @@ onMounted(() => {
     searchEngine.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
     searchEngine.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngine.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
-    searchEngine.value.on("searchengine:geolocation:click", onClickSearchGeolocation);
+    searchEngine.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
+    searchEngine.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
   }
 })
 
@@ -53,6 +60,15 @@ onUpdated(() => {
 
 onUnmounted(() => {})
 
+// abonnement
+emitter.addEventListener("searchengine:open:displayed", (e) => {
+  if (searchEngine.value) {
+    var coordinates = toLonLatProjj(e.position);
+    var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
+    searchEngine.value._setMarker(e.position, info);
+  }
+});
+
 /**
  * Gestionnaire d'evenement sur l'abonnement
  * à la recherche de couche
@@ -65,14 +81,19 @@ const onClickSearch = (e) => {
 const onClickAutocompletResult = (e) => {}
 const onClickGeocodeResult = (e) => {}
 const onClickSeachByCoordinates = (e) => {}
-const onClickSearchGeolocation = (e) => {
-  // TODO geolocalisation demandée :
-  // on enregistre les informations utiles dans une couche "geolocalisation" :
-  // > l'icone de geolocalisation est à afficher avec ses coordonnées
-  // > dans la popup d'information (+ adresse par geocodage ?)
-  // en mode connecté, elle est enregistrée afin d'être utilisé pour un partage (permalien),
-  // sinon, il n'est pas possible de l'ajouter dans le permalien...
+const onClickSearchGeolocationOpen = (e) => {
+  // geolocalisation demandée :
+  // on ajoute l'information dans le permalien...
+  // on passe par le mapStore
+  mapStore.geolocation = e.coordinates.toString();
 }
+const onClickSearchGeolocationRemove = (e) => {
+  // geolocalisation demandée :
+  // on enlève l'information dans le permalien...
+  // on passe par le mapStore
+  mapStore.geolocation = "";
+}
+
 
 </script>
 
