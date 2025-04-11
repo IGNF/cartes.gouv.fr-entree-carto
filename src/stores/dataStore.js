@@ -64,19 +64,14 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
       const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
-
       const entreeCartoRes = await fetch(entreeCartoConfURL)
-      const editoRes = await fetch(editoUrl);
-
-      const edito = await editoRes.json();
       const conf = await entreeCartoRes.json();
 
-      m_territories.value = edito.territories;
-      m_contacts.value = edito.contacts;
-      m_informations.value = edito.informations;
-      m_featured.value = edito.featured || [];
+      m_territories.value = conf.territories;
+      m_contacts.value = conf.contacts;
+      m_informations.value = conf.informations;
+      m_featured.value = conf.featured || [];
       m_layers.value = conf.layers;
       m_generalOptions.value.apiKeys = {
         ...conf.generalOptions.apiKeys
