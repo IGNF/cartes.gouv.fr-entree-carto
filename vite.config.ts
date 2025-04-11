@@ -60,7 +60,7 @@ export default defineConfig({
     }),
     EnvRuntime({
       name: '__ENV__',
-      filename: 'env.js'
+      filename: 'env/env.js'
     }),
   ],
   // INFO
