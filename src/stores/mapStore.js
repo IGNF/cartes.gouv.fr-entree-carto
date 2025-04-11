@@ -1,3 +1,4 @@
+import { inject } from 'vue';
 import {
   defineStore
 } from 'pinia';
@@ -59,6 +60,7 @@ const ns = ((value) => {
  * - cartes.gouv.fr.lat --> geographic
  * - cartes.gouv.fr.controls
  * - cartes.gouv.fr.noInformation
+ * - cartes.gouv.fr.location
  *
  * Construction du permalien :
  * 
@@ -87,6 +89,8 @@ const ns = ((value) => {
  * 
  */
 export const useMapStore = defineStore('map', () => {
+  const emitter = inject('emitter');
+
   /////////////
   // objet map
   /////////////
@@ -110,6 +114,19 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  // HACK
+  // gestion de la geolocalisation à la lecture du permalien
+  setTimeout(() => {
+    if (localStorage.getItem(ns('geolocation')) !== "") {
+      var coordinates = localStorage.getItem(ns('geolocation')).split(",");
+      // envoi d'un evenement pour afficher la geolocalisation
+      emitter.dispatchEvent("searchengine:open:displayed", {
+        position : coordinates
+      });
+    }
+  }
+  , 100);
+
   //////////////////
   // objets simples
   //////////////////
@@ -121,6 +138,7 @@ export const useMapStore = defineStore('map', () => {
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
+  var geolocation = useStorage(ns('geolocation'), "");
 
   //////////////////
   // objets calculés
@@ -129,23 +147,35 @@ export const useMapStore = defineStore('map', () => {
   var permalink = computed(() => {
     // INFO
     // on exclue la route /embed
+    var permalinkUrl = "";
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
-    return (bookmarks.value.length > 0) ? 
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}&permalink=yes` :
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&w=${controls.value}&permalink=yes`;
+    permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
+    if (geolocation.value !== "") {
+      permalinkUrl += `&p=${geolocation.value}`;
+    }
+    permalinkUrl += (bookmarks.value.length > 0) ? 
+    `&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}&w=${controls.value}`;
+    return permalinkUrl + "&permalink=yes";
   });
 
   var permalinkShare = computed(() => {
     // INFO
     // on ajoute la route /embed
+    var permalinkShareUrl = "";
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
-    return (bookmarks.value.length > 0) ? 
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}&permalink=yes` :
-    `${url}?c=${center.value}&z=${Math.round(zoom.value)}&l=${layers.value}&permalink=yes`;
+    permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
+    if (geolocation.value !== "") {
+      permalinkShareUrl += `&p=${geolocation.value}`;
+    }
+    permalinkShareUrl += (bookmarks.value.length > 0) ? 
+    `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}`;
+    return permalinkShareUrl + "&permalinkShare=yes";
   });
 
   var center = computed(() => {
@@ -254,6 +284,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(bookmarks, () => {
     localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
+  })
+  watch(geolocation, () => {
+    localStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
   })
 
   //////////////////
@@ -471,6 +504,7 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+
   return {
     map,
     layers,
@@ -486,6 +520,7 @@ export const useMapStore = defineStore('map', () => {
     noInformation,
     permalink,
     permalinkShare,
+    geolocation,
     getMap,
     setMap,
     getLayers,
