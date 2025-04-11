@@ -5,7 +5,8 @@ import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
 
 import {
-  toLonLat as toLonLatProjj
+  toLonLat as toLonLatProj,
+  fromLonLat as fromLonLatProj
 } from "ol/proj";
 
 import {
@@ -63,9 +64,9 @@ onUnmounted(() => {})
 // abonnement
 emitter.addEventListener("searchengine:open:displayed", (e) => {
   if (searchEngine.value) {
-    var coordinates = toLonLatProjj(e.position);
+    var coordinates = e.position;
     var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
-    searchEngine.value._setMarker(e.position, info);
+    searchEngine.value._setMarker(fromLonLatProj(e.position), info);
   }
 });
 
@@ -85,7 +86,8 @@ const onClickSearchGeolocationOpen = (e) => {
   // geolocalisation demandée :
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
-  mapStore.geolocation = e.coordinates.toString();
+  // on passe en geographique
+  mapStore.geolocation = toLonLatProj(e.coordinates).toString();
 }
 const onClickSearchGeolocationRemove = (e) => {
   // geolocalisation demandée :
