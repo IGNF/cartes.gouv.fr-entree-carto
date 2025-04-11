@@ -27,12 +27,14 @@ export const useDataStore = defineStore('data', () => {
 
   const m_thematics = computed(() => {
     let ret = []
-    // Initialisation Objet thematiques 
-    // réduction à des valeurs uniques
-    ret = [...new Set(themes.value)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
-    // Ajout catégorie Autres en fin de tableau
-    ret.push("Autres");
-    // Les layers sont des copies de m_layers
+    ret = [...new Set(Object.values(m_layers.value)
+                .flatMap(layer => layer?.thematic || [])
+                .filter(thematic => typeof thematic === 'string'))
+          ].sort((a, b) => {
+            if (a === 'Autres') return 1; // 'Autres' vient après b
+            if (b === 'Autres') return -1; // a vient avant 'Autres'
+            return a.localeCompare(b, 'fr', { sensitivity: 'base' })
+          });
     // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
     ret = ret.map((thematic) => {
       return [thematic, getLayersByThematic(thematic)]
@@ -42,12 +44,14 @@ export const useDataStore = defineStore('data', () => {
 
   const m_producers = computed(() => {
     let ret = []
-    // Initialisation Objet producers
-    // réduction à des valeurs uniques
-    ret = [...new Set(producers.value)].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }));
-    // Ajout catégorie Autres en fin de tableau
-    ret.push("Autres");
-    // Les layers sont des copies de m_layers
+    ret = [...new Set(Object.values(m_layers.value)
+                    .flatMap(layer => layer?.producer || [])
+                    .filter(producer => typeof producer === 'string'))
+          ].sort((a, b) => {
+            if (a === 'Autres') return 1; // 'Autres' vient après b
+            if (b === 'Autres') return -1; // a vient avant 'Autres'
+            return a.localeCompare(b, 'fr', { sensitivity: 'base' })
+          });
     // Structure : [["thematic1", [{layer1}, {layer2}, ...]], ...]
     return ret.map((producer) => {
       return [producer, getLayersByProducer(producer)]
@@ -60,100 +64,27 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const techUrl = import.meta.env.VITE_GPF_CONF_TECH_URL || "data/layers.json";
       const editoUrl = import.meta.env.VITE_GPF_CONF_EDITO_URL || "data/edito.json";
-      const privateUrl = import.meta.env.VITE_GPF_CONF_PRIVATE_URL || "data/private.json";
+      const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
 
+      const entreeCartoRes = await fetch(entreeCartoConfURL)
       const editoRes = await fetch(editoUrl);
-      const techRes = await fetch(techUrl);
-      const privateRes = await fetch(privateUrl);
 
-      const tech = await techRes.json();
       const edito = await editoRes.json();
-      const priv = await privateRes.json();
-
-      // on verifie que les couches de l'edito ont bien une correspondance
-      // dans les couches techniques
-      const editoWithTech = Object.fromEntries(
-        Object.keys(edito.layers).map(id => {
-          // si l'id de la couche dans edito a bien une correspondance dans tech ou private
-          if (tech.layers.hasOwnProperty(id) || priv.layers.hasOwnProperty(id)) {
-            // gestion des thematiques si c'est une string on tranforme en tableau
-            let ret = edito.layers[id];
-            if (ret.hasOwnProperty("thematic") && ret.thematic.length > 0) {
-              if (typeof ret.thematic === 'string') {
-                ret.thematic = [ret.thematic];
-              }
-            }
-            // gestion des producers si c'est une string on tranforme en tableau
-            if (ret.hasOwnProperty("producer") && ret.producer.length > 0) {
-              if (typeof ret.producer === 'string') {
-                ret.producer = [ret.producer];
-              }
-            }
-            // on rajoute les info edito à l'entrée
-            return [id, {
-              ...tech.layers[id],
-              ...priv.layers[id],
-              ...ret
-            }]
-          }
-          // sinon on supprime l'entrée edito avec le filter
-          return undefined;
-        }).filter(entry => entry)
-      );
-
-      // on fusionne tech et priv avec l'objet edito nettoyé
-      const res = {
-        ...tech.layers,
-        ...priv.layers,
-        ...editoWithTech
-      };
-
-      // on ajoute la clé (ID) aux propriétés
-      Object.keys(res).map((key) => {
-        // On filtre les couches : 
-        // - on garde celle qui correspondent à un des filterServices
-        // - on supprime celles qui possèdent une des filterProjections
-        if (filterServices.split(",").some(service => res[key].serviceParams.id.includes(service)) &&
-          !filterProjections.split(",").some(proj => res[key].defaultProjection.includes(proj))) {
-          res[key].key = key; // ID
-          let ret = {};
-          ret[key] = res[key];
-          // Ajout des producteurs à la liste
-          if (Array.isArray(ret[key].producer)) {
-            producers.value.push(...ret[key].producer)
-          }
-          // Ajout des thématiques à la liste
-          if (Array.isArray(ret[key].thematic)) {
-            themes.value.push(...ret[key].thematic)
-          }
-          // initialise les sans thématiques à Autres
-          if (!ret[key].hasOwnProperty("thematic") || ret[key].thematic.length === 0) {
-            ret[key].thematic = ["Autres"];
-          }
-          if (!ret[key].hasOwnProperty("producer") || ret[key].producer.length === 0) {
-            ret[key].producer = ["Autres"];
-          }
-          return ret;
-        } else {
-          delete res[key];
-        }
-      });
+      const conf = await entreeCartoRes.json();
 
       m_territories.value = edito.territories;
       m_contacts.value = edito.contacts;
       m_informations.value = edito.informations;
       m_featured.value = edito.featured || [];
-      m_layers.value = res;
+      m_layers.value = conf.layers;
       m_generalOptions.value.apiKeys = {
-        ...tech.generalOptions.apiKeys,
-        ...priv.generalOptions.apiKeys
+        ...conf.generalOptions.apiKeys
       }
-      m_tileMatrixSets.value = tech.tileMatrixSets;
+      m_tileMatrixSets.value = conf.tileMatrixSets;
 
       this.isLoaded = true;
-      return res;
+      return conf.layers;
 
     } catch (err) {
       console.log(err);
