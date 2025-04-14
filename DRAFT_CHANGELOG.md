@@ -13,6 +13,7 @@
 #### ✨ [Ajout]
 
   - Espace Personnel : ajout d'une première version de l'espace personnel permettant d'accéder à ses données (#515)
+  - Performance : utilisation d'un fichier de configuration unique (#529)
 
 #### 🔨 [Evolution]
 
