@@ -16,8 +16,10 @@
 
 #### 🔨 [Evolution]
 
-  - LayerSwitcher : ajout d'un bouton pour passer les couches en noir et blanc
+  - LayerSwitcher : ajout d'un bouton pour passer les couches en noir et blanc (24ba88876e8dda0dcf536721ccab99d0ee260a0d)
   - Impression : possibilité d'ajouter un titre, de régler les marges, et d'afficher ou non la légende (#522)
+  - Partage : Ajout d'un marker permettant de partager sa position (#530)
+  - Partage : possibilité de partager ses croquis et imports de données via un lien de partage (#519)
 
 #### 🔥 [Obsolète]
 
@@ -27,7 +29,7 @@
 
   - Cartalogue : correction de l'algorithme utilisé pour sa création qui ralentissait fortement le chargement de la page (#516)
   - Impression : Mise à jour de certaines propriétés de la page print suite à regressions introduites par #515 (#521)
-  - Itinéraire / Isochrone : Les boutons d'enregistrement et d'export n'aparaissent que sur la fenêtre de résultats du calcul
+  - Itinéraire / Isochrone : Les boutons d'enregistrement et d'export n'aparaissent que sur la fenêtre de résultats du calcul (24ba88876e8dda0dcf536721ccab99d0ee260a0d)
 
 #### 🔒 [Sécurité]
 
