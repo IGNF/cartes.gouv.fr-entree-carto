@@ -1,37 +1,20 @@
-import antfu from '@antfu/eslint-config'
+import pluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
 
-export default antfu({
-  vue: true,
-}, {
-  rules: {
-    // 'style/comma-dangle': ['error', 'always-multiline'],
-    'no-irregular-whitespace': 'warn',
-    'vue/no-irregular-whitespace': 'warn',
-    'style/space-before-function-paren': ['error', 'always'],
-    'curly': ['error', 'all'],
-    'ts/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
-    'vue/max-attributes-per-line': [
-      'error',
-      {
-        singleline: {
-          max: 1,
-        },
-        multiline: {
-          max: 1,
-        },
-      },
-    ],
-    'style/spaced-comment': [
-      'error',
-      'always',
-      {
-        markers: [
-          '#region',
-          '#endregion',
-          '/',
-        ],
-      },
-    ],
-    'style/comma-dangle': 'off',
-  },
-})
+export default [
+  ...pluginVue.configs['flat/recommended'],
+  {
+    rules: {
+      // override/add rules settings here, such as:
+      // 'vue/no-unused-vars': 'error'
+      "vue/multi-word-component-names": 'off'
+
+    },
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        ...globals.browser
+      }
+    }
+  }
+]
