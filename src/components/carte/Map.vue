@@ -49,7 +49,7 @@ provide(props.mapId, map)
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
   
-  CRS.load();
+  CRS.loadByDefault();
   map.setTarget(mapRef.value)
   
   // On ajoute une option d'accessibilité
