@@ -35,7 +35,10 @@ onUpdated(() => {
 </script>
 
 <template>
-  <div ref="modal" id="print-container">
+  <div
+    id="print-container"
+    ref="modal"
+  >
     <DsfrButton
       v-if="props.visibility"
       id="print-button-position"
@@ -46,8 +49,10 @@ onUpdated(() => {
       no-outline
       @click="onModalPrintOpen"
     />
-    <printModal ref="printModal"
-      :print-options="printOptions"/>
+    <printModal
+      ref="printModal"
+      :print-options="printOptions"
+    />
   </div>
 </template>
 <style>

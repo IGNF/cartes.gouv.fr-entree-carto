@@ -75,7 +75,8 @@ onMounted(() => {
   <div v-else>
     <!-- Mode connecté avec des documents disponible -->
     <MenuBookMarkDataList
-      title="Mes enregistrements" />
+      title="Mes enregistrements"
+    />
   </div>
 </template>
 

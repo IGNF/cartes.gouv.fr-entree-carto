@@ -1,4 +1,4 @@
-export let customIcons = {
+export const customIcons = {
   catalogIcon: {
     name: "catalogIcon",
     width: 24,

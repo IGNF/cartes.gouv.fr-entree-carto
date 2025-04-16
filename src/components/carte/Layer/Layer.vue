@@ -174,6 +174,6 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <slot></slot>
+    <slot />
   </div>
 </template>

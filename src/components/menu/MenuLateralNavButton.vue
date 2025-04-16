@@ -96,11 +96,10 @@ onMounted(() => {
       :aria-label="title"
       :class="`${active ? 'active': ''}  navBarIcon ${visibility ? '' : 'invisibleNavButton'} navButton` "
       :icon="icon"
-      :iconOnly="true"
-      @click="tabClicked">
-    </DsfrButton>
+      :icon-only="true"
+      @click="tabClicked"
+    />
   </div>
-
 </template>
 
 <style scoped lang="scss">

@@ -46,7 +46,10 @@ const onModalShareOpen = () => {
 </script>
 
 <template>
-  <div id="share-container" ref="target">
+  <div
+    id="share-container"
+    ref="target"
+  >
     <DsfrButton
       v-if="props.visibility"
       id="share-button-position"
@@ -58,7 +61,7 @@ const onModalShareOpen = () => {
       no-outline
       @click="onModalShareOpen"
     />
-    <ShareModal ref="refModalShare"/>
+    <ShareModal ref="refModalShare" />
   </div>
 </template>
 

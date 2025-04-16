@@ -74,11 +74,12 @@ const buttons = [
         Enregsitrer vos cartes et données créées sur votre espace afin de les retrouver
         et de les utiliser à tout moment.
       </div>
-      <div id="location-france"></div>
+      <div id="location-france" />
     </div>
     <div class="bookmark-buttons-container">
       <DsfrButtonGroup
-        :buttons="buttons" />
+        :buttons="buttons"
+      />
     </div>
   </div>
 </template>

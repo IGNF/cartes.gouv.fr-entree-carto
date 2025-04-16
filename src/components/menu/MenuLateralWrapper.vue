@@ -63,30 +63,36 @@ defineExpose({
 
 <template>
   <div
-    class="menu-toggle-wrap"
-    :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
     v-if="visibility"
+    class="menu-toggle-wrap"
+    :class="`${is_expanded && 'is_expanded'} ${props.side}`"
   >
-    <div ref="menuTabs" class="menu-logo-list">
-      <slot name="navButtons"></slot>
+    <div
+      ref="menuTabs"
+      class="menu-logo-list"
+    >
+      <slot name="navButtons" />
     </div>
 
-    <div class="menu-content-list"
-    v-show="is_expanded">
+    <div
+      v-show="is_expanded"
+      class="menu-content-list"
+    >
       <div class="menu-collapse-icon-wrapper">
         <DsfrButton
           :id="props.id"
           tertiary
           no-outline
           class="menu-collapse-icon"
-          @click="closeMenu">
+          @click="closeMenu"
+        >
           Fermer
-          <VIcon v-bind="iconProps"/>
+          <VIcon v-bind="iconProps" />
         </DsfrButton>
       </div>
 
       <div class="menu-content">
-        <slot name="content"></slot>
+        <slot name="content" />
       </div>
     </div>
   </div>

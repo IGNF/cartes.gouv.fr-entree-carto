@@ -25,7 +25,7 @@ var authenticated = computed(() => service.authenticated);
       Sinon, une modale de connexion est proposée 
       (cf. src/components/menu/LeftMenuTool.vue ~ onBookMarksOpen())
     -->
-    <MenuBookMarkLoggued v-if="authenticated"/>
+    <MenuBookMarkLoggued v-if="authenticated" />
   </div>
 </template>
 

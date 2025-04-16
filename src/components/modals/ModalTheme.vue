@@ -79,14 +79,14 @@ defineExpose({
     :opened="themeModalOpened" 
     :title="title"
     :size="size" 
-    @close="onModalThemeClose">
-  
+    @close="onModalThemeClose"
+  >
     <DsfrRadioButtonSet 
       v-model="modelValue" 
       :legend="legend" 
       name="fr-radios-theme"
       :options="themeOptions" 
-      @update:model-value="changeTheme" />
-  
+      @update:model-value="changeTheme"
+    />
   </DsfrModal>
 </template>

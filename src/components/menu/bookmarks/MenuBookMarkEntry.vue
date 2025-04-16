@@ -321,8 +321,9 @@ const buttonsData = [
       tertiary
       no-outline
       :icon="data.icon"
-      @click="onAddData(data)">
-        {{ data.name }}
+      @click="onAddData(data)"
+    >
+      {{ data.name }}
     </DsfrButton>
     <!-- Groupe d'action : 
      - renommer
@@ -330,14 +331,18 @@ const buttonsData = [
      - supprimer
     -->
     <div class="container-bookmark-entry-advanced-options">
-      <DsfrButtonGroup v-if="data.type === 'carte'"
+      <DsfrButtonGroup
+        v-if="data.type === 'carte'"
         :buttons="buttonsMap"
-        inlineLayoutWhen
-        size="sm" />
-      <DsfrButtonGroup v-else
+        inline-layout-when
+        size="sm"
+      />
+      <DsfrButtonGroup
+        v-else
         :buttons="buttonsData"
-        inlineLayoutWhen
-        size="sm" />
+        inline-layout-when
+        size="sm"
+      />
     </div>
   </div>
   <!-- Informations :
@@ -351,7 +356,10 @@ const buttonsData = [
     <span v-if="data.date"> - {{ data.date }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
-  <div ref="div-rename" class="container-bookmark-entry-rename fr-hidden">
+  <div
+    ref="div-rename"
+    class="container-bookmark-entry-rename fr-hidden"
+  >
     <DsfrInput
       v-model="rename"
       label="Renommer"
@@ -364,17 +372,19 @@ const buttonsData = [
         tertiary
         no-outline
         class="fr-p-1w"
-        @click="onClickButtonCancelRename" />
+        @click="onClickButtonCancelRename"
+      />
       <DsfrButton
         size="sm"
         icon="ri:check-line"
         tertiary
         no-outline
         class="fr-p-1w"
-        @click="onClickButtonValidateRename" />
+        @click="onClickButtonValidateRename"
+      />
     </div>
   </div>
-  <slot></slot>
+  <slot />
 </template>
 
 <style>

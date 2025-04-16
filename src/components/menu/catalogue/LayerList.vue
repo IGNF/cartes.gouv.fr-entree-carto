@@ -31,14 +31,16 @@ function getUniqueKey(layer) {
 
 <template>
   <div>
-    <template v-for="layer in layers" :key="getUniqueKey(layer)">
+    <template
+      v-for="layer in layers"
+      :key="getUniqueKey(layer)"
+    >
       <div>
         <LayerCatalogue
-            :active="(selectedLayers) ? selectedLayers.filter(l => l.key == layer.key).length > 0 : false"    
-            :layer="layer"    
+          :active="(selectedLayers) ? selectedLayers.filter(l => l.key == layer.key).length > 0 : false"    
+          :layer="layer"    
         />
       </div>
-
     </template>
   </div>
 </template>

@@ -113,7 +113,6 @@ provide("selectedLayers", selectedLayers);
 
 <template>
   <div id="map-and-tools-container">
-
     <!-- Le menu de gauche : le menu tierce (et les favoris)
      il y figure la liste des abonnements aux evenements sur le clic
      d'un élement du menu tierce
@@ -133,7 +132,8 @@ provide("selectedLayers", selectedLayers);
       ref="cartoRef"
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
-      :selected-bookmarks="selectedBookmarks"/>
+      :selected-bookmarks="selectedBookmarks"
+    />
 
     <!-- Le menu des contrôles et le catalogue -->
     <RightMenuTool
@@ -143,8 +143,10 @@ provide("selectedLayers", selectedLayers);
     <!-- Liste des modales -->
     <div class="modal-container">
       <ThemeModal ref="refModalTheme" />
-      <PrintModal ref="refModalPrint" 
-        :selected-bookmarks="selectedBookmarks"/>
+      <PrintModal
+        ref="refModalPrint" 
+        :selected-bookmarks="selectedBookmarks"
+      />
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
     </div>
