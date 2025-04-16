@@ -56,20 +56,23 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
-        <div class="title-copy">
-            <div>{{ label }}</div>            
-            <DsfrButton
-                secondary
-                iconRight
-                :iconOnly="isSmallScreen"
-                :icon="iconProps"
-                @click="copyAction()">
-                {{ BtnLabel }}
-            </DsfrButton>
-            </div>
-        <p class="fr-hint-text hint-class">{{ description }}</p>            
-    </div>    
+  <div>
+    <div class="title-copy">
+      <div>{{ label }}</div>            
+      <DsfrButton
+        secondary
+        icon-right
+        :icon-only="isSmallScreen"
+        :icon="iconProps"
+        @click="copyAction()"
+      >
+        {{ BtnLabel }}
+      </DsfrButton>
+    </div>
+    <p class="fr-hint-text hint-class">
+      {{ description }}
+    </p>            
+  </div>    
 </template>
 
 <style scoped>

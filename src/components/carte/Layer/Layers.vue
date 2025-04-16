@@ -44,9 +44,10 @@ var bookmarks = computed(() => {
 </script>
 
 <template>
-    <Layer
-      v-for="layer in [...layers, ...bookmarks]"
-      :key="layer.key"
-      :layer-options="layer"
-      :map-id="mapId" />
+  <Layer
+    v-for="layer in [...layers, ...bookmarks]"
+    :key="layer.key"
+    :layer-options="layer"
+    :map-id="mapId"
+  />
 </template>

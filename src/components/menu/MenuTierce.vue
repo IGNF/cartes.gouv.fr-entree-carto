@@ -60,51 +60,51 @@ const authenticatedClass = ref({
 </script>
 
 <template>
-<div class="container">
-  <DsfrButton
-    tertiary
-    no-outline
-    :class="authenticatedClass"
-    @click="$emit('onBookMarksOpen')"
-    icon="ri-bookmark-line"
+  <div class="container">
+    <DsfrButton
+      tertiary
+      no-outline
+      :class="authenticatedClass"
+      icon="ri-bookmark-line"
+      @click="$emit('onBookMarksOpen')"
     >
-    Mes enregistrements
-  </DsfrButton>
-  <hr/>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="mingcute:file-import-line"
-    @click="openControl('LayerImport')"
+      Mes enregistrements
+    </DsfrButton>
+    <hr>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="mingcute:file-import-line"
+      @click="openControl('LayerImport')"
     >
-    Importer des données
-  </DsfrButton>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="ant-design:link-outlined"
-    @click="$emit('onModalShareOpen')"
+      Importer des données
+    </DsfrButton>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="ant-design:link-outlined"
+      @click="$emit('onModalShareOpen')"
     >
-    Partager, intégrer la carte
-  </DsfrButton>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="material-symbols:print-outline"
-    @click="$emit('onModalPrintOpen')"
-    class="tierce-print"
+      Partager, intégrer la carte
+    </DsfrButton>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="material-symbols:print-outline"
+      class="tierce-print"
+      @click="$emit('onModalPrintOpen')"
     >
-    Imprimer
-  </DsfrButton>
-  <hr/>
-  <DsfrButton
-    tertiary
-    no-outline
-    @click="$emit('onModalThemeOpen')"
+      Imprimer
+    </DsfrButton>
+    <hr>
+    <DsfrButton
+      tertiary
+      no-outline
+      @click="$emit('onModalThemeOpen')"
     >
-    <span class="fr-icon-theme-fill fr-link--icon-left"></span>  Paramètres d'affichage
-  </DsfrButton>
-</div>
+      <span class="fr-icon-theme-fill fr-link--icon-left" />  Paramètres d'affichage
+    </DsfrButton>
+  </div>
 </template>
 
 <style scoped>

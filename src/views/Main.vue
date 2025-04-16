@@ -245,7 +245,8 @@ const myNotificationsTheme: NotivueTheme = {
     <Notification 
       :item="item" 
       :icons="myNotificationsIcons"
-      :theme="myNotificationsTheme" />
+      :theme="myNotificationsTheme"
+    />
   </Notivue>
 
   <div>

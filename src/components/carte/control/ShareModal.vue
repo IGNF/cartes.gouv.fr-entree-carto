@@ -105,62 +105,63 @@ defineExpose({
 </script>
 
 <template>
-    <DsfrModal
-      :opened="shareModalOpened"
-      :title="title"
-      :size="size"
-      @close="onModalShareClose">
-      <!-- slot : c'est ici que l'on customise le contenu ! -->
-      <div>
-        <p>
-          <DsfrShare
-            copyLabel="Copier dans le presse-papier"
-            :mail="shareMail"
-            :networks="shareNetworks"
-            title="Partages"
-          />
-        </p>
-      </div>
-      <div>
-        <p>
-          <DsfrInput
-            v-model="mapStore.permalink"
-            label="Lien permanent vers la carte"
-            placeholder=""
-            label-visible
-            readonly
-            descriptionId=""
-          >
+  <DsfrModal
+    :opened="shareModalOpened"
+    :title="title"
+    :size="size"
+    @close="onModalShareClose"
+  >
+    <!-- slot : c'est ici que l'on customise le contenu ! -->
+    <div>
+      <p>
+        <DsfrShare
+          copy-label="Copier dans le presse-papier"
+          :mail="shareMail"
+          :networks="shareNetworks"
+          title="Partages"
+        />
+      </p>
+    </div>
+    <div>
+      <p>
+        <DsfrInput
+          v-model="mapStore.permalink"
+          label="Lien permanent vers la carte"
+          placeholder=""
+          label-visible
+          readonly
+          description-id=""
+        >
           <template #label>
             <TextCopyToClipboard
-              :copiedText="mapStore.permalink"
+              :copied-text="mapStore.permalink"
               label="Lien permanent"
               description="Toute personne ayant ce lien peut visualiser votre carte sans avoir à se créer de compte."
             />
           </template>
-          </DsfrInput>
-        </p>
-        <p>
-          <DsfrInput
-            v-model="iframe"
-            placeholder=""
-            isTextarea
-            label-visible
-            readonly
-            descriptionId=""
-            style="height: 200px;"
-          >
+        </DsfrInput>
+      </p>
+      <p>
+        <DsfrInput
+          v-model="iframe"
+          placeholder=""
+          is-textarea
+          label-visible
+          readonly
+          description-id=""
+          style="height: 200px;"
+        >
           <template #label>
             <TextCopyToClipboard
-              :copiedText="iframe"
+              :copied-text="iframe"
               label="Iframe"
               description="Insérer directement dans vos mails,  Réseaux sociaux ..."
             />
           </template>
-          </DsfrInput>
-        </p>
-      </div>
-    </DsfrModal>
+        </DsfrInput>
+      </p>
+    </div>
+  </DsfrModal>
 </template>
 
 <style>

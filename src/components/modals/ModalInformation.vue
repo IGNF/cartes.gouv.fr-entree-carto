@@ -65,8 +65,8 @@ const onModalNoInformationClose = () => {
     :opened="opened" 
     :title="title"
     size="md" 
-    @close="onModalInformationClose">
-
+    @close="onModalInformationClose"
+  >
     <!-- slot : c'est ici que l'on customise le contenu ! -->
     <DsfrAlert
       :description="description"
@@ -77,10 +77,10 @@ const onModalNoInformationClose = () => {
       class="fr-btn--tertiary-no-outline" 
       title="ne plus afficher ce message"
       type="button"
-      @click="onModalNoInformationClose">
+      @click="onModalNoInformationClose"
+    >
       <span>Ne plus afficher ce message</span>
     </button>
-  
   </DsfrModal>
 </template>
 

@@ -30,13 +30,13 @@ onMounted(() => {
 <template>
   <div class="fr-container fr-p-2w">
     <h2>{{ title }}</h2>
-      <DsfrAlert
-        type="info"
-        title="Information"
-        :description="description"
-        :closed="false"
-        :closeable="false"
-      />
+    <DsfrAlert
+      type="info"
+      title="Information"
+      :description="description"
+      :closed="false"
+      :closeable="false"
+    />
   </div>
-  <slot></slot>
+  <slot />
 </template>

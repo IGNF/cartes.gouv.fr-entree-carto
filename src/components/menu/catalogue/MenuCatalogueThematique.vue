@@ -25,9 +25,10 @@ const title = computed(() => {
 </script>
 
 <template>
-    <DsfrAccordion
-      :id="'accordion-' + id"
-      :title="title">
-        <slot></slot>
-    </DsfrAccordion>
+  <DsfrAccordion
+    :id="'accordion-' + id"
+    :title="title"
+  >
+    <slot />
+  </DsfrAccordion>
 </template>

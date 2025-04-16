@@ -88,7 +88,8 @@ defineExpose({
     :id="mapId"
     ref="mapRef"
     tabindex="0"
-    @mouseover="onFocusOnMap">
+    @mouseover="onFocusOnMap"
+  >
     <slot />
   </div>
 </template>
