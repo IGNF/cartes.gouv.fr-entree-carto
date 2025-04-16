@@ -12,7 +12,8 @@ export default [
     rules: {
       // override/add rules settings here, such as:
       // 'vue/no-unused-vars': 'error'
-      "vue/multi-word-component-names": 'off'
+      "vue/multi-word-component-names": 'off',
+      'no-undef': 'warn'
     },
     files: ['**/*.{js,ts,vue}'],
     languageOptions: {
