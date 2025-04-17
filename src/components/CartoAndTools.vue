@@ -15,7 +15,7 @@ import { fromShare } from '@/features/share';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
- 
+
 const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})
 const refModalShare: ShareModal = ref({})
@@ -39,11 +39,11 @@ const onModalLoginOpen = () => {
 }
 
 // INFO
-// Les listes sont initialisées via le mapStore, et 
+// Les listes sont initialisées via le mapStore, et
 // elles sont transmises à la cartographie à chaque fois
 // que le mapStore est modifié.
-// Chaque fois que des  modules modifient le mapStore en 
-// ajoutant des couches (ex. LayerSwitcher), on repasse 
+// Chaque fois que des  modules modifient le mapStore en
+// ajoutant des couches (ex. LayerSwitcher), on repasse
 // via la reactivité dans ce cycle.
 
 // liste des couches utilisateurs disponibles
@@ -68,12 +68,12 @@ const selectedLayers = computed(() => {
 const selectedBookmarks = computed(() => {
   var bookmarks: any = [];
   mapStore.getBookmarks().forEach( (bookmark: string) => {
-    // transformer un partage d'URL en un objet 
+    // transformer un partage d'URL en un objet
     var obj = fromShare(decodeURIComponent(bookmark));
     // INFO
-    // on a une condition spéciale pour écarter les documents 
+    // on a une condition spéciale pour écarter les documents
     // que l'on ne souhaite pas intégrer dans le mécanisme de reactivité
-    //  ex. les favoris issus de l'outil de dessin 
+    //  ex. les favoris issus de l'outil de dessin
     //  car le widget Drawing a son propre mécanisme
     //  d'ajout de couche sur la carte...
     if (!obj.stop) {
@@ -124,7 +124,7 @@ provide("selectedLayers", selectedLayers);
       @on-modal-login-open="onModalLoginOpen"
     />
 
-    <!-- Module cartographique : 
+    <!-- Module cartographique :
      - liste des couches selectionnées
      - liste des controles selectionnés
     -->
@@ -144,7 +144,7 @@ provide("selectedLayers", selectedLayers);
     <div class="modal-container">
       <ThemeModal ref="refModalTheme" />
       <PrintModal
-        ref="refModalPrint" 
+        ref="refModalPrint"
         :selected-bookmarks="selectedBookmarks"
       />
       <ShareModal ref="refModalShare" />
@@ -177,5 +177,15 @@ provide("selectedLayers", selectedLayers);
   #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) #share-button-position {
     display: none;
   }
+}
+
+/* FIXME
+Cache le menu latéral si widget ouvert...
+*/
+#map-and-tools-container:has(#position-container-top-right > div > button[aria-pressed="true"]) .menu-toggle-wrap.right .menu-content-list  {
+  display: none;
+}
+#map-and-tools-container:has(#position-container-bottom-left > div > button[aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
+  display: none;
 }
 </style>
