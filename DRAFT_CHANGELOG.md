@@ -31,6 +31,8 @@
   - Cartalogue : correction de l'algorithme utilisé pour sa création qui ralentissait fortement le chargement de la page (#516)
   - Impression : Mise à jour de certaines propriétés de la page print suite à regressions introduites par #515 (#521)
   - Itinéraire / Isochrone : Les boutons d'enregistrement et d'export n'aparaissent que sur la fenêtre de résultats du calcul (24ba88876e8dda0dcf536721ccab99d0ee260a0d)
+  - Menus cartographiques : Les menus de gestion des widgets, cartalogue, et de fonctions liées à la carte ne se superposent plus avec ceux des autres outils (#535)
+  - Performance : amélioration du temps de chargement de l'entrée cartographique (#529, #532)
 
 #### 🔒 [Sécurité]
 
