@@ -249,7 +249,7 @@ const myNotificationsTheme: NotivueTheme = {
     />
   </Notivue>
 
-  <div>
+  <div class="futur-map-container">
     <router-view />
   </div>
 
@@ -298,6 +298,12 @@ const myNotificationsTheme: NotivueTheme = {
 </template>
 
 <style>
+  .futur-map-container{
+    margin-left: 0;
+    width: inherit;
+    height: 70vh;
+    display: flex;
+  }
   /* surcharge des popups de notifications : 
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
