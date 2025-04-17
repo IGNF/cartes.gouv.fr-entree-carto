@@ -157,7 +157,7 @@ provide("selectedLayers", selectedLayers);
   #map-and-tools-container{
     margin-left: 0;
     width: inherit;
-    height: 70vh;
+    height: inherit;
     display: flex;
   }
 
