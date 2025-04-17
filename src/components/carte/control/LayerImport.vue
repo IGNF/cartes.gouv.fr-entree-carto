@@ -163,8 +163,8 @@ const onSaveImportService = (e) => {
       message: t.layerimport.add_success_service(e.format.toUpperCase())
     });
   })
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     push.warning({
       title: t.layerimport.title,
       message: t.layerimport.add_failed_service(e.format.toUpperCase())
@@ -205,8 +205,8 @@ const onSaveImportMapbox = (e) => {
       message: t.layerimport.add_success_mapbox
     });
   })
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     push.warning({
       title: t.layerimport.title,
       message: t.layerimport.add_failed_mapbox
