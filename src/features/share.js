@@ -56,6 +56,7 @@ export const toShare = (document, params) => {
   }
   if (!url) {
     console.debug("toShare: URL publique non définie !");
+    return;
   }
   return _reduce(url);
 };
@@ -87,6 +88,7 @@ export const fromShare = (url) => {
   });
   if (Object.keys(params).length === 0) {
     console.debug("fromShare: Params non défini !");
+    return;
   }
   params.u = _url.split('?')[0];
   params.i = params.i || params.u.split('.')[0];
