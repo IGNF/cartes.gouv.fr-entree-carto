@@ -50,7 +50,7 @@ export function useHeaderParams() {
       });
       headerParams.value.quickLinks.push({
         label: "...", 
-        to: '/bookmarks',
+        // to: '/bookmarks',
         href: useBaseUrl() + '/tableau-de-bord',
         class: 'fr-icon-account-fill',
         authenticated: true, // information pour l'authentification
