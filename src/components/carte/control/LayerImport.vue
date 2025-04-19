@@ -304,6 +304,12 @@ const getDataServiceWMTS = (data) => {
     });
     console.debug(s);
 
+    // mise à jour de l'id interne de la couche
+    // au cas où le widget LayerImport ne fait pas...
+    if (data.layer.gpResultLayerId) {
+      data.layer.gpResultLayerId = `bookmark:${data.kind}:${uuid}`;
+    }
+
     // emettre un event pour prévenir l'ajout d'un service
     // au composant des favoris
     emitter.dispatchEvent("document:saved", {
