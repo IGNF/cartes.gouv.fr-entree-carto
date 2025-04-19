@@ -18,8 +18,10 @@ export default {
   bookmark: {
     title: 'Espace personnel',
     failed: (value) => { return `Exception sur l'espace personnel : ${value}` },
-    failed_add_data: (value) => { return `Erreur sur l'ajout de la donnée : ${value}` },
     success_add_data: (value) => { return `Ajout sur la carte de la donnée de type ${value}` },
+    failed_add_data: (value) => { return `Erreur sur l'ajout de la donnée : ${value}` },
+    success_save_map: 'La carte est enregistrée dans l\'espace personnel',
+    failed_save_map: 'Une erreur est survenue sur l\'enregistrement de la carte',
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
   },

@@ -14,21 +14,84 @@ export default {
 </script>
 
 <script setup lang="js">
+import { useMapStore } from '@/stores/mapStore';
 import { inject } from 'vue';
+
+// lib notification
+import { push } from 'notivue'
+import t from '@/features/translation';
+
+const mapStore = useMapStore();
+const service = inject('services');
 const emitter = inject('emitter');
+
+const createTempCarteDocument = async (data) => {
+  // enregistrement du permalien dans un document temporaire
+  try {
+    const o = await service.setDocument(data)
+    var uuid = o.uuid;
+    var action = o.action;
+
+    // emettre un event pour prévenir l'ajout d'un document
+    // au composant des favoris
+    emitter.dispatchEvent("document:saved", {
+      uuid : uuid,
+      action : action // added, updated, deleted
+    });
+
+    return o;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
 
 const buttons = [
   {
     label: 'Enregistrer une carte',
     icon: "fr-icon-save-line",
-    disabled: false,
     iconOnly: false,
     iconRight: false,
     secondary: true,
     class: 'bookmark-button-container',
     onclick: () => {
-      // TODO realiser un enregistrement du permalien
+      // realiser un enregistrement du permalien
       // dans l'espace personnel
+      // - creer un document generique afin d'ouvrir le menu
+      // - proposer de renommer l'enregistrement
+      const name = "Ma carte";
+
+      // recupèrer le permalien
+      var permalink = mapStore.permalink;
+      
+      const data = {
+        name : name,
+        description : "permalien",
+        format : "json",
+        target : "internal",
+        type : "carte",
+        content : JSON.stringify({
+          name : name,
+          date : new Date().toISOString(),
+          permalink : permalink
+        })
+      };
+
+      createTempCarteDocument(data)
+      .then(() => {
+        // notification
+        push.success({
+          title: t.bookmark.title,
+          message: t.bookmark.success_save_map
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_save_map
+        });
+      });
     }
   },
   {
