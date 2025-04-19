@@ -389,12 +389,12 @@ export const useMapStore = defineStore('map', () => {
 
   // Gestion des données utilisateurs : url de partage des favoris
   function getBookmarks () {
-    return bookmarks.value.split(",");
+    return bookmarks.value.split(",").filter(name => name != '');
   }
   function getBookmarksByKey () {
     return bookmarks.value.split(",").map((b) => {
       return decodeURIComponent(b).split("?")[0];
-    }); // array
+    }).filter(name => name != ''); // array
   }
   function getBookmarksByID () {
     return bookmarks.value.split(",").map((b) => {
@@ -407,7 +407,7 @@ export const useMapStore = defineStore('map', () => {
         id = decodeURIComponent(b).split("?")[0].split(".")[0]; // lien de partage si pas de uuid
       }
       return id;
-    }); // array
+    }).filter(name => name != ''); // array
   }
   function addBookmark (url) {
     if (!url) {

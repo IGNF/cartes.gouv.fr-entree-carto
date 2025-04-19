@@ -13,6 +13,10 @@ import { useMapStore } from "@/stores/mapStore"
 
 import { fromShare } from '@/features/share';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
@@ -49,27 +53,46 @@ const onModalLoginOpen = () => {
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
-  // ajouter les options des couches
-  // ex. l'opacité et la visibilité
-  let layers = mapStore.getLayers();
-  return layers.map((layerId: string) => {
+  var layersValided: any = [];
+  mapStore.getLayers().forEach((layerId: string) => {
     var layer = dataStore.getLayerByID(layerId);
+    if (!layer) {
+      // on ne peut pas la trouver, on ne l'ajoute pas
+      mapStore.removeLayer(layerId);
+      push.warning({
+        title: "Exception",
+        message: "La couche " + layerId + " n'existe pas !"
+      });
+      return;
+    }
     // les options de la couche sont récuperées dans le mapStore (permalink)
     var props = mapStore.getLayerProperty(layerId);
+    // ajouter les options des couches
+    // ex. l'opacité et la visibilité
     layer.opacity = props.opacity;
     layer.visible = props.visible;
     layer.gray = props.gray;
-    return layer;
+    layersValided.push(layer);
   });
+  return layersValided;
 });
 
 // liste des favoris selectionnés par l'utilisateur, donc disponibles dans le permalien
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedBookmarks = computed(() => {
-  var bookmarks: any = [];
+  var bookmarksValided: any = [];
   mapStore.getBookmarks().forEach( (bookmark: string) => {
     // transformer un partage d'URL en un objet
     var obj = fromShare(decodeURIComponent(bookmark));
+    if (!obj) {
+      // on ne peut pas le transformer, on ne l'ajoute pas
+      mapStore.removeBookmark(bookmark);
+      push.warning({
+        title: "Exception",
+        message: "Le bookmark " + bookmark + " n'existe pas !"
+      });
+      return;
+    }
     // INFO
     // on a une condition spéciale pour écarter les documents
     // que l'on ne souhaite pas intégrer dans le mécanisme de reactivité
@@ -93,10 +116,10 @@ const selectedBookmarks = computed(() => {
       * - stop
       * - ...
       */
-      bookmarks.push(obj);
+      bookmarksValided.push(obj);
     }
   });
-  return bookmarks;
+  return bookmarksValided;
 });
 
 // liste des contrôles utilisateurs disponibles
