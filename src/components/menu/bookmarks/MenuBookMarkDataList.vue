@@ -213,14 +213,14 @@ const onClickMapButtonValidateName = (e) => {
     // notification
     push.success({
       title: t.bookmark.title,
-      message: t.bookmark.save_map_success
+      message: t.bookmark.success_save_map
     });
   })
   .catch((e) => {
     console.error(e);
     push.error({
       title: t.bookmark.title,
-      message: t.bookmark.save_failed
+      message: t.bookmark.failed_save_map
     });
   });
   
