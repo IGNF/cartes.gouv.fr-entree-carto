@@ -115,6 +115,14 @@ const onAddData = (data) => {
       if (data.type === "import") {
         permalink = true;
       }
+      if (data.type === "compute") {
+        // TODO
+        // On emet un event vers le controle, et on lui passe le
+        // informations du calcul du document
+        // ex. emitter.dispatch('route:compute:called', {...});
+        // Le controle va se charger de l'initialisation via l'abonnement
+        // à l'evenement
+      }
       
       // ajout du document dans le permalien pour partage
       if (permalink) {
@@ -169,9 +177,10 @@ const onClickButtonDelete = (e) => {
       });
     })
     .then(() => {
-      // FIXME
-      // doit on modifier le statut de la couche dans le gestionnaire de couche ?
-      // ex. modifier gpResultLayerId avec le type (drawing, layerimport, compute, ...)
+      // TODO
+      // prevenir l'utilisateur que le document supprimé
+      // ne sera plus disponible sur les cartes enregistrées
+      // et donc sur le permalien !
     });
 };
 const onClickButtonExport = (e) => {

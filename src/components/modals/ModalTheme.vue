@@ -4,7 +4,7 @@ import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
 import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg";
 
 // plugin local
-import { useEulerian } from '@/plugins/Eulerian.js';
+import { useEulerian } from '@/plugins/Eulerian';
 const eulerian = useEulerian();
 
 // gestion de la modale de changement de thème d'affichage

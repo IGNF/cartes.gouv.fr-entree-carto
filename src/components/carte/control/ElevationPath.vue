@@ -51,6 +51,10 @@ const btnSave = ref(new ButtonExport({
   }
 }));
 
+// TODO
+// abonnement à l'evenement sur la gestion d'une couche compute
+// ex. Route.addEventListener('route:compute:called', (e) => { this.setData(e.data); });
+
 onMounted(() => {
   if (props.visibility) {
     map.addControl(elevationPath.value);

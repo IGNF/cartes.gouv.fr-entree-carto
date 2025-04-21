@@ -40,7 +40,7 @@ const headerParams = useHeaderParams()
 const footerParams = useFooterParams()
 
 // ref sur le component ModalTheme
-const refModalTheme = ref(null)
+const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null)
 
 // INFO
 // on met à jour les afterMandatoryLinks pour y ajouter des
@@ -58,7 +58,7 @@ const afterMandatoryLinks = computed(() => {
 })
 
 // ref sur le component ModalConsent
-const refModalConsent = ref(null)
+const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
 
 // INFO
 // on met à jour les mandatoryLinks pour y ajouter des

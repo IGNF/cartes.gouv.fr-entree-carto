@@ -114,6 +114,10 @@ const onAddLayer = (e) => {
       }
     }
   }
+
+  // TODO
+  // on ajoute la position de la couche dans le store
+
   log.debug("onAddLayer", id);
   if (id) {
     // notification
@@ -151,6 +155,10 @@ const onRemoveLayer = (e) => {
       }
     }
   }
+
+  // TODO
+  // on met à jour la position des couches dans le store
+  
   log.debug("onRemoveLayer", id);
   if (id) {
     // notification
