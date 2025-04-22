@@ -215,4 +215,7 @@ Cache le menu latéral si widget ouvert...
 #map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
     display: none;
 }
+#map-and-tools-container:has(.gp-styling-div) .menu-toggle-wrap.left .menu-content-list  {
+    display: none;
+}
 </style>
