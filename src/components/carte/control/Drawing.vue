@@ -77,7 +77,7 @@ const btnSave = ref(new ButtonExport({
  * @see LayerSwitcher
  * @fixme l'outil de dessin doit être monté !
  */
- emitter.addEventListener("vector:edit:clicked", (e) => {
+emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
@@ -235,7 +235,7 @@ const onSaveVector = (e) => {
       var url = toShare(document, { 
         opacity: data.layer.get('opacity'), 
         visible: data.layer.get('visible'),
-        gray: 0,
+        grayscale: data.layer.get('grayscale'),
         stop: 1 // HACK !
       });
       // nouvelle donnée à ajouter ou mise à jour au permalien

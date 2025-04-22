@@ -21,9 +21,10 @@ var layers = computed(() => {
       name : layer.name,
       service : layer.service || layer.serviceParams.id.split(":")[1], // HACK !
       key : layer.key,
+      position : layer.hasOwnProperty("position") ? layer.position : -1,
       opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
       visible : layer.hasOwnProperty("visible") ? layer.visible : true,
-      gray : layer.hasOwnProperty("gray") ? layer.gray : false
+      grayscale : layer.hasOwnProperty("grayscale") ? layer.grayscale : false
     }
   })
 });
@@ -35,7 +36,7 @@ var bookmarks = computed(() => {
     return {
       opacity : 1,
       visible : true,
-      gray : false,
+      grayscale : false,
       ...bookmark
     };
   })

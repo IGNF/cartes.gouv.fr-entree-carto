@@ -20,7 +20,7 @@ import { useDefaultControls } from '@/composables/controls';
 var defaultControls = useDefaultControls();
 
 const DEFAULT = {
-  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;0)",
+  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(-1;1;1;0)",
   CONTROLS: defaultControls.toString(),
   X: 283734.248995,
   Y:  5655117.100650,
@@ -65,8 +65,8 @@ const ns = ((value) => {
  * Construction du permalien :
  * 
  * - La structure des couches
- *   LAYERID(opacity<number>;visible<boolean>;gray<boolean>)<Array>
- *   ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
+ *   LAYERID(position<number>;opacity<number>;visible<boolean>;grayscale<boolean>)<Array>
+ *   ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(4;1;1;0)
  *    avec caractére de séparation des options de la liste : ';'
  *    et ',' pour chaque couches
  * 
@@ -83,9 +83,10 @@ const ns = ((value) => {
  *    name=Mon+croquis&
  *    description=export&
  *    format=kml&
+ *    position=0&
  *    opacity=1&
  *    visible=1&
- *    gray=0
+ *    grayscale=0
  * 
  */
 export const useMapStore = defineStore('map', () => {
@@ -231,7 +232,7 @@ export const useMapStore = defineStore('map', () => {
    *    format=kml&
    *    opacity=1&
    *    visible=1&
-   *    gray=0
+   *    grayscale=0
    */
   var bookmarks = useStorage(ns('bookmarks'), "");
   if (!bookmarks.value) {
@@ -320,7 +321,7 @@ export const useMapStore = defineStore('map', () => {
       return;
     }
     var l = (layers.value === "") ? [] : layers.value.split(",");
-    l.push(id + "(1;1;0)"); // options par defaut
+    l.push(id + "(-1;1;1;0)"); // options par defaut
     layers.value = l.toString(); // string
   }
   function removeLayer (id) {
@@ -342,14 +343,17 @@ export const useMapStore = defineStore('map', () => {
       for (const key in props) {
         if (Object.prototype.hasOwnProperty.call(props, key)) {
           const value = props[key];
-          if (key === "opacity") {
+          if (key === "position") {
             values[0] = value;
           }
-          if (key === "visible") {
-            values[1] = +value; // cast true -> 1 | false -> 0
+          if (key === "opacity") {
+            values[1] = value;
           }
-          if (key === "gray") {
+          if (key === "visible") {
             values[2] = +value; // cast true -> 1 | false -> 0
+          }
+          if (key === "grayscale") {
+            values[3] = +value; // cast true -> 1 | false -> 0
           }
         }
       }
@@ -380,9 +384,10 @@ export const useMapStore = defineStore('map', () => {
       var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
       var values = strValues.split(";");
       return {
-        opacity : Number(values[0]), // cast 
-        visible : !!Number(values[1]), // cast 1 -> true | 0 -> false
-        gray : !!Number(values[2]) // cast 
+        position : Number(values[0]), // cast
+        opacity : Number(values[1]), // cast 
+        visible : !!Number(values[2]), // cast 1 -> true | 0 -> false
+        grayscale : !!Number(values[3]) // cast 
       }
     }
   }
