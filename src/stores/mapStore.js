@@ -98,21 +98,29 @@ export const useMapStore = defineStore('map', () => {
   const map = ref({});
 
   // gestion des KVP dans l'URL (permalink)
-  var params = useUrlParams();
-  var defaultControls = DEFAULT.CONTROLS.split(",");
-  for (const key in params) {
-    if (Object.prototype.hasOwnProperty.call(params, key)) {
-      if (key === "controls") {
-        var myControls = params[key].split(",");
-        defaultControls.forEach(function(defaultControl) {
-          if (!myControls.includes(defaultControl)) {
-            params[key] = params[key] + "," + defaultControl;
-          }
-        })
+  try {
+    var params = useUrlParams();
+    var defaultControls = DEFAULT.CONTROLS.split(",");
+    for (const key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        if (key === "controls") {
+          var myControls = params[key].split(",");
+          defaultControls.forEach(function(defaultControl) {
+            if (!myControls.includes(defaultControl)) {
+              params[key] = params[key] + "," + defaultControl;
+            }
+          })
+        }
+        const value = params[key];
+        localStorage.setItem(ns(key), value);
       }
-      const value = params[key];
-      localStorage.setItem(ns(key), value);
     }
+  } catch (error) {
+    // INFO
+    // si le permalien est mal formaté, une exception est renvoyée
+    // et on ne le prend pas en compte afin de ne pas casser le localStorage
+    // le message reste en mode silencieux, pas de notfication...
+    console.error(error);
   }
 
   // HACK

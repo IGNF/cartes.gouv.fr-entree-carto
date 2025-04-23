@@ -38,36 +38,40 @@ export function useUrlParams(url) {
     urlParams = useUrlSearchParams("history");
   }
   if (urlParams) {
-    const keys = Object.keys(urlParams);
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      switch (key) {
-        case "c":
-          var lonlat = urlParams[key].split(",");
-          params.lon = lonlat[0];
-          params.lat = lonlat[1];
-          var xy = fromLonLatProj(lonlat);
-          params.x = xy[0];
-          params.y = xy[1];
-          params.center = [params.lon, params.lat];
-          break;
-        case "l":
-          params.layers = urlParams[key];
-          break;
-        case "w":
-          params.controls = urlParams[key];
-          break;
-        case "d":
-          params.bookmarks = urlParams[key];
-          break;
-        case "z":
-          params.zoom = parseInt(urlParams[key], 10);
-          break;
-        case "p":
-          params.geolocation = urlParams[key];
-        default:
-          break;
+    try {
+      const keys = Object.keys(urlParams);
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        switch (key) {
+          case "c":
+            var lonlat = urlParams[key].split(",");
+            params.lon = lonlat[0];
+            params.lat = lonlat[1];
+            var xy = fromLonLatProj(lonlat);
+            params.x = xy[0];
+            params.y = xy[1];
+            params.center = [params.lon, params.lat];
+            break;
+          case "l":
+            params.layers = urlParams[key];
+            break;
+          case "w":
+            params.controls = urlParams[key];
+            break;
+          case "d":
+            params.bookmarks = urlParams[key];
+            break;
+          case "z":
+            params.zoom = parseInt(urlParams[key], 10);
+            break;
+          case "p":
+            params.geolocation = urlParams[key];
+          default:
+            break;
+        }
       }
+    } catch (error) {
+      throw error;
     }
   }
   return params;
