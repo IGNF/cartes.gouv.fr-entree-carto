@@ -47,6 +47,7 @@ onMounted(() => {
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
     layerSwitcher.value.on("layerswitcher:change:position", onChangePositionLayer);
+    layerSwitcher.value.on("layerswitcher:change:grayscale", onChangeGrayScaleLayer);
   }
 })
 
@@ -266,6 +267,32 @@ const onChangePositionLayer = (e) => {
       return dataStore.getLayerIdByName(layer.name, layer.service);
     } 
   }));
+}
+const onChangeGrayScaleLayer = (e) => {
+  log.debug("onChangeGrayScaleLayer", e);
+  var lyr = e.layer;
+  var id = null;
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
+    if (id) {
+      mapStore.updateLayerProperty(id, {
+        grayscale : e.grayscale
+      });
+    }
+  } else {
+    var gpId = lyr.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.updateBookmarkPropertyByID(id, {
+            grayscale : e.grayscale
+          });
+        }
+      }
+    }
+  }
 }
 
 /**

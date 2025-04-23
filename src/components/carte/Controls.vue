@@ -119,7 +119,8 @@ const layerSwitcherOptions = {
     collapsed: true,
     panel: true,
     counter: true,
-    allowEdit: true
+    allowEdit: true,
+    allowGrayScale: true
   }
 };
 

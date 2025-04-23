@@ -28,7 +28,7 @@ const selectedLayers = computed(() => {
     var props = mapStore.getLayerProperty(layerId);
     layer.opacity = props.opacity;
     layer.visible = props.visible;
-    layer.gray = props.gray;
+    layer.grayscale = props.grayscale;
     return layer;
   });
 });

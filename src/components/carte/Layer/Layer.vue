@@ -47,9 +47,10 @@ onMounted(() => {
     var service = props.layerOptions.service;
     var name = props.layerOptions.name;
     var options = {
+      position : props.layerOptions.position,
       visible : props.layerOptions.visible,
       opacity : props.layerOptions.opacity,
-      gray : props.layerOptions.gray,
+      grayscale : props.layerOptions.grayscale,
       sourceParams : {crossOrigin : 'anonymous'}
     };
     // ajout des options de preload par defaut
