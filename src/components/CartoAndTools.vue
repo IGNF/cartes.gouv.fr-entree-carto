@@ -69,9 +69,10 @@ const selectedLayers = computed(() => {
     var props = mapStore.getLayerProperty(layerId);
     // ajouter les options des couches
     // ex. l'opacité et la visibilité
+    layer.position = props.position;
     layer.opacity = props.opacity;
     layer.visible = props.visible;
-    layer.gray = props.gray;
+    layer.grayscale = props.grayscale;
     layersValided.push(layer);
   });
   return layersValided;
@@ -111,7 +112,7 @@ const selectedBookmarks = computed(() => {
       * - format
       * - opacity
       * - visible
-      * - gray
+      * - grayscale
       * - type (ex. drawing, import, service...)
       * - stop
       * - ...
@@ -213,6 +214,9 @@ Cache le menu latéral si widget ouvert...
 }
 
 #map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
+    display: none;
+}
+#map-and-tools-container:has(.gp-styling-div) .menu-toggle-wrap.left .menu-content-list  {
     display: none;
 }
 </style>

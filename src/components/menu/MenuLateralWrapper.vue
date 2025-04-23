@@ -15,6 +15,7 @@
 
 <script setup lang="js">
 import { VIcon } from '@gouvminint/vue-dsfr'
+import { useDocumentVisibility } from '@vueuse/core';
 
 const props = defineProps({
   side: String,
@@ -51,6 +52,15 @@ function closeMenu() {
   is_expanded.value = false
 }
 function openMenu() {
+  // cas particulier des fenêtres d'annotation
+    const closeButton1 = document.querySelector('.gp-label-div button.GPpanelClose');
+    if (closeButton1) {
+      closeButton1.click();
+    }
+    const closeButton2 = document.querySelector('.gp-styling-div button.GPpanelClose');
+    if (closeButton2) {
+      closeButton2.click();
+    }
   is_expanded.value = true
 }
 
