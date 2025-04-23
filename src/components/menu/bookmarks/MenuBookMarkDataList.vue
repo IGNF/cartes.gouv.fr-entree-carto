@@ -403,7 +403,7 @@ onMounted(() => {});
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 270px);
+  max-height: calc(76.8vh - 270px);
   padding: 1em;
 }
 .button-action {

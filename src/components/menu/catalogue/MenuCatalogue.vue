@@ -192,7 +192,7 @@ const currDataFilter = ref('producteur');
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 180px);
+  max-height: calc(76.8vh - 180px);
 }
 
 .catalogue-container {
@@ -200,6 +200,6 @@ const currDataFilter = ref('producteur');
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
-  max-height: calc(70vh - 96px);
+  max-height: calc(76.8vh - 96px);
 }
 </style>

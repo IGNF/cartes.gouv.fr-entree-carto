@@ -134,7 +134,7 @@ const onClickSearchGeolocationRemove = (e) => {
     }
 
     [id^="GPautocompleteResults-"] {
-      height: 70vh;
+      height: 76.8vh;
     }
   }
 
