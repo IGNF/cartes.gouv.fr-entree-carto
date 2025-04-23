@@ -71,7 +71,7 @@ export function useUrlParams(url) {
         }
       }
     } catch (error) {
-      throw error;
+      throw new Error(`Erreur de parsing du permalien : ${error.message} !`);
     }
   }
   return params;
