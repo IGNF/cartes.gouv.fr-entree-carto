@@ -110,6 +110,6 @@ const activeAccordion2 = ref(-1)
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 327px);
+  max-height: calc(76.8vh - 327px);
 }
 </style>

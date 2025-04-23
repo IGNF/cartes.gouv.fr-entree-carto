@@ -300,7 +300,7 @@ const myNotificationsTheme: NotivueTheme = {
 <style>
   .futur-map-container{
     width: 100%;
-    height: 70vh;
+    height: 76.8vh;
   }
   /* surcharge des popups de notifications : 
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
@@ -331,6 +331,17 @@ const myNotificationsTheme: NotivueTheme = {
   }
   [data-notivue='warning'] .Notivue__icon {
     background-color: #b34000;
+  }
+
+  .fr-footer__body, .fr-footer__partners, .fr-footer__bottom-copy{
+    display: none;
+  }
+  #footer {
+    padding-top: 0;
+    margin-top: -10px;
+  }
+  .fr-footer__bottom {
+    margin-top: 0;
   }
 
   #fr-footer-toggle {
@@ -415,4 +426,6 @@ const myNotificationsTheme: NotivueTheme = {
       box-shadow: inset 0 1px 0 0 var(--border-default-grey);
     }
   }
+
+
 </style>
