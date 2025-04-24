@@ -22,11 +22,11 @@ var defaultControls = useDefaultControls();
 const DEFAULT = {
   LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(-1;1;1;0)",
   CONTROLS: defaultControls.toString(),
-  X: 283734.248995,
-  Y:  5655117.100650,
-  LON: 2.5479878714752027, // informatif
-  LAT: 50.800781249995744, // informatif
-  ZOOM: 12,
+  X: 289739.8968702704,
+  Y: 5859851.607344459,
+  LON: 2.602777, // informatif
+  LAT: 46.493888, // informatif
+  ZOOM: 6,
   FIRSTVISIT: false,
   NOINFORMATION: null
 }
