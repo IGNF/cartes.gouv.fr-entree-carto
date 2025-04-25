@@ -394,6 +394,9 @@ const myNotificationsTheme: NotivueTheme = {
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
       display: none;
     }
+    #footer, .fr-footer-toggle, .fr-footer-toggle-label{
+      display: none;
+    }
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
       display: none;
     }
