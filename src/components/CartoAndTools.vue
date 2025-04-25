@@ -188,7 +188,8 @@ provide("selectedLayers", selectedLayers);
   @media (max-width: 576px) {
     #map-and-tools-container {
       /* FIXME : la hauteur de la carto dépend de la hauteur du footer et du header, ici en dur */
-      height: calc(100vh - 92.5px - 56px);
+      height: calc(100vh - 92.5px);
+      /* height: calc(100vh - 92.5px - 56px); */
     }
   }
 </style>
