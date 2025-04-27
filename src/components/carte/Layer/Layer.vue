@@ -34,18 +34,19 @@ onMounted(() => {
     return;
   }
   
+  const service = props.layerOptions.service;
+  const name = props.layerOptions.name;
+  const position = props.layerOptions.position;
+
   // INFO
   // ajout du traitement des couches issues du catalogue
   // liste des informations utiles pour recuperer tous les paramètres de la couche
   // Array(Object) : [{name, service}]
-  if (props.layerOptions.name && props.layerOptions.service) {
+  if (name && service) {
     var value  = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
     var params = store.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
     value.params = params; // fusion
-    log.debug("layer to add", value);
     
-    var service = props.layerOptions.service;
-    var name = props.layerOptions.name;
     var options = {
       position : props.layerOptions.position,
       visible : props.layerOptions.visible,
@@ -58,6 +59,8 @@ onMounted(() => {
       preload : Infinity,
       cacheSize : 1024
     };
+
+    log.debug("layer to add (catalog)", name, service, options, value);
     switch (service) {
       case "WMS":
         layer = new GeoportalWMS({
@@ -86,42 +89,37 @@ onMounted(() => {
         break;
       default:
     }
+
+    if (layer) {
+      log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+      if (position !== layer.getZIndex()) {
+        layer.setZIndex(Number(position));
+      }
+      map.addLayer(layer);
+    }
   }
   
+  const url = props.layerOptions.url;
+  const format = props.layerOptions.format;
+
   // INFO
   // ajout du traitement des couches de type "vecteur" pour les 
   // données personnelles
   // liste des informations utiles pour recuperer tous les paramètres de la couche
   // Array(Object) : [{url, format, type, opacity, visibility, ...}]
-  if (props.layerOptions.url && props.layerOptions.format) {
-    var isAsync = false;
+  if (url && format) {
+    var promise = null;
     const type = props.layerOptions.type.toLowerCase();
-    const format = props.layerOptions.format.toLowerCase();
-    log.debug("layer to add", type);
 
+    log.debug("layer to add (bookmark)", name, type, format);
     // liste des types de couches à traiter
     switch (type) {
       case "service":
-        isAsync = true;
         var kind = props.layerOptions.kind.toLowerCase();
         if (kind === "mapbox") {
-          createMapBoxLayer(props.layerOptions)
-          .then((l) => {
-            layer = l;
-            map.addLayer(layer);
-          })
-          .catch((e) => {
-            throw e;
-          });
+          promise = createMapBoxLayer(props.layerOptions);
         } else if (kind === "wmts" || kind === "wms") {
-          createServiceLayer(props.layerOptions)
-          .then((l) => {
-            layer = l;
-            map.addLayer(layer);
-          })
-          .catch((e) => {
-            throw e;
-          });
+          promise = createServiceLayer(props.layerOptions);
         } else {
           throw new Error("Le service est inconnu !");
         }
@@ -136,32 +134,41 @@ onMounted(() => {
         // url de partage contient toujours un contenu
         // - soit pour un import ou croquis passant par l'outil d'édition
         // - soit pour un fichier de style mapbox par l'outil d'édition
-        if (format === "mapbox") {
-          isAsync = true;
-          createMapBoxLayer(props.layerOptions)
-          .then((l) => {
-            layer = l;
-            map.addLayer(layer);
-          })
-          .catch((e) => {
-            throw e;
-          });
+        if (format.toLowerCase() === "mapbox") {
+          promise = createMapBoxLayer(props.layerOptions);
         } else {
-          layer = createVectorLayer(props.layerOptions);  
+          promise = createVectorLayer(props.layerOptions);  
         }
         break;
       case "drawing":
         // url de partage contient toujours un contenu du croquis
-        layer = createVectorLayer(props.layerOptions);
+        promise = createVectorLayer(props.layerOptions);
         break;
       default:
         break;
     }
-  }
 
-  // ajout de la couche
-  if (layer && !isAsync) {
-    map.addLayer(layer);
+    // ajout de la couche
+    if (promise) {
+      promise
+      .then((l) => {
+        map.addLayer(l);
+        return l;
+      })
+      .then((l) => {
+        log.debug(name, "| position (props - zindex)", position, l.getZIndex());
+        if (position !== l.getZIndex()) {
+          l.setZIndex(Number(position));
+        }
+        return l;
+      })
+      .then((l) => {
+        layer = l;
+      })
+      .catch((e) => {
+        throw e;
+      });
+    }
   }
 })
 

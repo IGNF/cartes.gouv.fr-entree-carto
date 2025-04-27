@@ -20,7 +20,7 @@ import { useDefaultControls } from '@/composables/controls';
 var defaultControls = useDefaultControls();
 
 const DEFAULT = {
-  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(-1;1;1;0)",
+  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)",
   CONTROLS: defaultControls.toString(),
   X: 283734.248995,
   Y:  5655117.100650,
@@ -207,10 +207,11 @@ export const useMapStore = defineStore('map', () => {
       return !!l;
     });
     for (let i = 0; i < l.length; i++) {
-      var id = l[i].replace(/\(.*\)/, "");
+      const regex = /\(.*\)/gm;
+      var id = l[i].replace(regex, "");
+      var props = l[i].match(regex) || null;
       if (id) {
-        addLayer(id); // on veut juste l'ID sans les options !
-        // mais, du coup, on perd les options...
+        addLayer(id, props);
       }
     }
   }
@@ -321,7 +322,7 @@ export const useMapStore = defineStore('map', () => {
   function cleanLayers() {
     layers.value = "";
   }
-  function addLayer (id) {
+  function addLayer (id, props) {
     if (!id) {
       return;
     }
@@ -329,7 +330,7 @@ export const useMapStore = defineStore('map', () => {
       return;
     }
     var l = (layers.value === "") ? [] : layers.value.split(",");
-    l.push(id + "(-1;1;1;0)"); // options par defaut
+    l.push((props) ? id + props : id + "(-1;1;1;0)"); // options par defaut
     layers.value = l.toString(); // string
   }
   function removeLayer (id) {

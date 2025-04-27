@@ -17,6 +17,7 @@ const log = useLogger()
 // Array(Object) : [{name, service, opacity, visible, ...}]
 var layers = computed(() => {
   return toRaw(props.selectedLayers).map(layer => {
+    log.debug(layer.name, layer.position);
     return {
       name : layer.name,
       service : layer.service || layer.serviceParams.id.split(":")[1], // HACK !
@@ -33,10 +34,12 @@ var layers = computed(() => {
 // Array(Object) : [{url, format, opacity, visibility, ...}]
 var bookmarks = computed(() => {
   return toRaw(props.selectedBookmarks).map(bookmark => {
+    log.debug(bookmark.name, bookmark.position);
     return {
-      opacity : 1,
-      visible : true,
-      grayscale : false,
+      position : bookmark.hasOwnProperty("position") ? bookmark.position : -1,
+      opacity : bookmark.hasOwnProperty("opacity") ? bookmark.opacity : 1,
+      visible : bookmark.hasOwnProperty("visible") ? bookmark.visible : true,
+      grayscale : bookmark.hasOwnProperty("grayscale") ? bookmark.grayscale : false,
       ...bookmark
     };
   })

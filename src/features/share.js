@@ -17,6 +17,7 @@ import { useServiceStore } from '@/stores/serviceStore';
  * ainsi que :
  * - opacity
  * - visible
+ * - position
  * - grayscale
  * 
  * Paramètre spécial :
@@ -118,6 +119,7 @@ const REDUCED_KVP = {
   "type": {k:"t", opt:false}, 
   "target": {k:"c", opt:false},
   "kind": {k:"k", opt:false},
+  "position": {k:"p", opt:false},
   "opacity": {k:"o", opt:false},
   "visible": {k:"v", opt:false},
   "grayscale": {k:"g", opt:false},
@@ -172,7 +174,8 @@ const _reduce = (url) => {
  */
 const _extend = (params) => {
   // Etendre les paramètres
-  // ex. ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin?n=gris&f=mapbox&t=service&c=internal&k=mapbox&v=1&o=0.5&g=0
+  // ex. ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin?n=gris&f=mapbox&t=service&c=internal&k=mapbox&v=1&o=0.5&g=0&p=5
+  // ou ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin(n=gris,f=mapbox,t=service,c=internal,k=mapbox,v=1,o=0.5,g=0,p=5)
   // {
   //  u : ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin
   //  i : b95feb80-da74-451f-a0e5-cc6dc3c4acb4 ou ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk
@@ -182,6 +185,7 @@ const _extend = (params) => {
   //  t : service
   //  c : internal
   //  k : mapbox
+  //  p : 5
   //  v : 1
   //  o : 0.5
   //  g : 0
@@ -196,6 +200,7 @@ const _extend = (params) => {
   //  type : service
   //  target : internal
   //  kind : mapbox
+  //  position : 5
   //  visible : true
   //  opacity : 0.5
   //  grayscale : false
