@@ -102,6 +102,7 @@ const onAddLayer = (e) => {
   if (lyr.name && lyr.service) {
     id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     // on ajoute la position de la couche dans le store
+    log.debug(lyr.name, "| position", lyr.layer.getZIndex());
     mapStore.updateLayerProperty(id, {
       position : lyr.layer.getZIndex()
     });
@@ -117,6 +118,7 @@ const onAddLayer = (e) => {
         // on utilise le uuid pour les données utilisateurs !
         // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         id = gpId.split(':').pop();
+        log.debug(id, "| position", lyr.layer.getZIndex());
         mapStore.updateBookmarkPropertyByID(id, {
           p : lyr.layer.getZIndex() // position
         });

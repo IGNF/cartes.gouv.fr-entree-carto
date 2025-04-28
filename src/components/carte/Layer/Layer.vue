@@ -93,7 +93,12 @@ onMounted(() => {
     if (layer) {
       log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
       if (position !== layer.getZIndex()) {
-        layer.setZIndex(Number(position));
+        if (position === -1) {
+            log.debug(name, "| position auto");
+          } else {
+            log.debug(name, "| change position", position);
+            layer.setZIndex(Number(position));
+          }
       }
       map.addLayer(layer);
     }
@@ -158,7 +163,12 @@ onMounted(() => {
       .then((l) => {
         log.debug(name, "| position (props - zindex)", position, l.getZIndex());
         if (position !== l.getZIndex()) {
-          l.setZIndex(Number(position));
+          if (position === -1) {
+            log.debug(name, "| position auto");
+          } else {
+            log.debug(name, "| change position", position);
+            l.setZIndex(Number(position));
+          }
         }
         return l;
       })
