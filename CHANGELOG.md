@@ -6,6 +6,87 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 
 ---
 
+## 🔖 version 1.0.6 - 28/04/2025
+
+### 🎉 Résumé
+
+Amélioration du temps de chargement du site et des performances de rendu.
+Amélioration du lien de partage qui permet d'intégrer sa géolocalisation.
+Amélioration de la fonctionnalité d'impression de la carte : possibilité de régler les marges, de donner un titre, et d'afficher ou non l'echelle.
+Correction de diverses erreurs d'interface.
+
+### 💥 Breaking changes
+
+Version du localStorage incrémentée : perte des données de session.
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - **Performance :** utilisation d'un fichier de configuration unique (#529)
+
+#### 🔨 [Evolution]
+
+  - **LayerSwitcher :** ajout d'un bouton pour passer les couches en noir et blanc (24ba88876e8dda0dcf536721ccab99d0ee260a0d)
+  - **Impression :** possibilité d'ajouter un titre, de régler les marges, et d'afficher ou non la légende (#522)
+  - **Partage :** Ajout d'un marker permettant de partager sa position (#530)
+  - **Extensions :** mise à jour de la version des extensions Géoplateforme pour OpenLayers en dépendance du projet en version 1.0.0-beta.4
+  - **Interface :** réduction de la hauteur du footer (#572)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - **Cartalogue :** correction de l'algorithme utilisé pour sa création qui ralentissait fortement le chargement de la page (#516)
+  - **Impression :** Mise à jour de certaines propriétés de la page print suite à regressions introduites par #515 (#521)
+  - **Itinéraire / Isochrone :** Les boutons d'enregistrement et d'export n'apparaissent que sur la fenêtre de résultats du calcul (24ba88876e8dda0dcf536721ccab99d0ee260a0d)
+  - **Menus cartographiques :** Les menus de gestion des widgets, cartalogue, et de fonctions liées à la carte ne se superposent plus avec ceux des autres outils (#535)
+  - **Performance :** amélioration du temps de chargement de l'entrée cartographique (#529, #532, #537)
+  - **Croquis :** correction de la visibilité des pop-up permettant de rajouter des éléments attributaires aux éléments de dessin (#560)
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.5 - 10/03/2025
+
+### 🎉 Résumé
+
+Ajout d'une fonctionnalité pour exporter sur son ordinateur au format souhaité ses dessins, itinéraires, isochrones, profils altimétriques.
+La recherche par coordonnées est désormais accessible via la recherche avancée.
+Le widget Catalogue ("Cartalogue") tri désormais les sections et le titre des couches par ordre alphabétique. La description des couches peut être rendue visible en cliquant sur un bouton "Afficher plus".
+Les résultats de calcul d'itinéraire sont affichés de manière plus lisible.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - Croquis et calculs : Ajout d'un bouton pour exporter ses créations de type croquis ou calcul (#509)
+
+#### 🔨 [Evolution]
+
+  - Partage : Mise en conformité avec la maquette du bouton copier-coller (#479)
+  - Cartalogue : tri par ordre alphabétique des couches selon le thème et le producteur (#503)
+  - Cartalogue : description des couches cachée, ajout d'un bouton "Afficher plus" pour la voir (#507)
+  - Recherche : la recherche par coordonnées est intégrée à la recherche avancée (#508)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - Itinéraire : correction de l'affichage des résultats d'itinéraire (#508)
+  - Catalogue : correction en cas de couche sans configuration chargée (#503)
+
+#### 🔒 [Sécurité]
+
+---
+
 ## 🔖 version 1.0.4 - 17/02/2025
 
 ### 🎉 Résumé

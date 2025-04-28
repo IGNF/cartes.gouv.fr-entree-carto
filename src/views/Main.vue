@@ -316,7 +316,7 @@ const notificationsTheme = computed(() => {
 <style>
   .futur-map-container{
     width: 100%;
-    height: 70vh;
+    height: 76.8vh;
   }
   /* TODO :
   surcharge des popups de notifications : 
@@ -358,6 +358,17 @@ const notificationsTheme = computed(() => {
     color: #070707;
   }
   */
+
+  .fr-footer__body, .fr-footer__partners, .fr-footer__bottom-copy{
+    display: none;
+  }
+  #footer {
+    padding-top: 0;
+    margin-top: -10px;
+  }
+  .fr-footer__bottom {
+    margin-top: 0;
+  }
 
   #fr-footer-toggle {
     display: none;
@@ -409,6 +420,9 @@ const notificationsTheme = computed(() => {
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
       display: none;
     }
+    #footer, .fr-footer-toggle, .fr-footer-toggle-label{
+      display: none;
+    }
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
       display: none;
     }
@@ -441,4 +455,6 @@ const notificationsTheme = computed(() => {
       box-shadow: inset 0 1px 0 0 var(--border-default-grey);
     }
   }
+
+
 </style>

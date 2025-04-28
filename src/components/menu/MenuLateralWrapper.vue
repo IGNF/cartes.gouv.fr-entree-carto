@@ -162,7 +162,7 @@ defineExpose({
 }
 
 .menu-toggle-wrap {
-    height: calc(70vh - 24px);
+    height: calc(76.8vh - 24px);
     z-index: 1;
     &.is_expanded {
       .menu-content-list {

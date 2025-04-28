@@ -123,7 +123,7 @@ a {
   display: flex;
   flex-direction: column;
   width: calc(100% - 32px);
-  max-height: calc(70vh - 70px);
+  max-height: calc(76.8vh - 70px);
   overflow-y: auto;
   scrollbar-width: thin;
 }

@@ -31,7 +31,7 @@ import ModalInformation from '@/components/modals/ModalInformation.vue'
   .patience-container{
     margin-left: 0;
     width: inherit;
-    height: 70vh;
+    height: 76.8vh;
     display: flex;
   }
 </style>

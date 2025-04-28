@@ -95,6 +95,10 @@ defineExpose({
 </template>
 
 <style>
+#mainMap {
+  outline : none;
+}
+
 @keyframes spinner {
   to {
     transform: rotate(360deg);
