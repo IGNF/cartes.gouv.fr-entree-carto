@@ -312,7 +312,7 @@ const onChangeGrayScaleLayer = (e) => {
     id = dataStore.getLayerIdByName(lyr.name, lyr.service);
     if (id) {
       mapStore.updateLayerProperty(id, {
-        grayscale : e.grayscale
+        grayscale : e.grayscale || false
       });
     }
   } else {
@@ -323,7 +323,7 @@ const onChangeGrayScaleLayer = (e) => {
         id = gpId.split(':').pop();
         if (id) {
           mapStore.updateBookmarkPropertyByID(id, {
-            g : e.grayscale // grayscale
+            g : e.grayscale || false // grayscale
           });
         }
       }
