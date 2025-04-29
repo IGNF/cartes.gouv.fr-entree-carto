@@ -300,7 +300,7 @@ const myNotificationsTheme: NotivueTheme = {
 <style>
   .futur-map-container{
     width: 100%;
-    height: 76.8vh;
+    height: calc(100vh - 220.5px);
   }
   /* surcharge des popups de notifications : 
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
