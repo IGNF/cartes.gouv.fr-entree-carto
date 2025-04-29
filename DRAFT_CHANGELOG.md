@@ -13,7 +13,7 @@ Divers corrections sur l'espace personnel (favoris)
 ### 📖 Changelog
 
 #### ✨ [Ajout]
-
+* ajout des enregistrements au menu contextuel (#579)
 * Affichage des notifications dans le thème sélectionné
 * Gestion des boutons edition / N&B dans le gestionnaire de couches en fonction du type de données
 

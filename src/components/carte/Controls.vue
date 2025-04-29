@@ -411,6 +411,12 @@ const contextMenuOptions = computed(() => {
         callback : () => {
           domStore.getmenuCatalogueButton().firstChild.click()
         }
+      },
+      {
+        text : "Mes enregistrements",
+        callback : () => {
+          domStore.getBookmarksButton().firstChild.click()
+        }
       }
     ]
   }
