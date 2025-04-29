@@ -7,6 +7,7 @@ import NotificationInfo from '@/icons/NotificationInfo.vue';
 import NotificationSuccess from '@/icons/NotificationSuccess.vue';
 import NotificationError from '@/icons/NotificationError.vue';
 import NotificationWarning from '@/icons/NotificationWarning.vue';
+import NotificationClose from '@/icons/NotificationClose.vue';
 // composables
 import { useRoute, useRouter } from 'vue-router'
 import { useLogger } from 'vue-logger-plugin'
@@ -196,18 +197,17 @@ const navItems: DsfrNavigationProps['navItems'] = [
   }
 ]
 
-// icons dsfr pour les notifications
+// customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
   warning : markRaw(NotificationWarning),
   success : markRaw(NotificationSuccess),
   info : markRaw(NotificationInfo),
-  error : markRaw(NotificationError)
+  error : markRaw(NotificationError),
+  close : markRaw(NotificationClose)
 }
 
-// TODO 
-// choix du theme en fonction du theme dark ou light
+// theme à customiser 
 const myNotificationsTheme: NotivueTheme = {
-  ...lightTheme,
   '--nv-radius': '0',
   '--nv-width': '350px',
   '--nv-border-width': '1px',
@@ -222,6 +222,21 @@ const myNotificationsTheme: NotivueTheme = {
   '--nv-info-border': '#0063cb'
 }
 
+// choix du theme en fonction du theme dark ou light
+const notificationsTheme = computed(() => {
+  if (refModalTheme.value) {
+    if (refModalTheme.value.modelValue === 'dark') {
+      return {
+        ...darkTheme,
+        ...myNotificationsTheme
+      };
+    }
+  }
+  return {
+    ...lightTheme,
+    ...myNotificationsTheme
+  };
+});
 </script>
 
 <template>
@@ -240,12 +255,13 @@ const myNotificationsTheme: NotivueTheme = {
     </template>
   </DsfrHeader>
 
-  <!-- Notifications -->
+  <!-- Notifications 
+  -->
   <Notivue v-slot="item">
     <Notification 
-      :item="item" 
-      :icons="myNotificationsIcons"
-      :theme="myNotificationsTheme"
+    :item="item"
+    :icons="myNotificationsIcons"
+    :theme="notificationsTheme" 
     />
   </Notivue>
 
@@ -303,21 +319,18 @@ const myNotificationsTheme: NotivueTheme = {
     height: calc(100vh - 222.5px);
     margin-bottom: -10px;
   }
-
-  @media (max-width: 576px) {
-    .futur-map-container{
-    height: calc(100vh - 131px);
-    margin-bottom: 0px;
-  }
-}
-  /* surcharge des popups de notifications : 
+  /* TODO :
+  surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /* .Notivue__content-message {
+  /* 
+  .Notivue__content-message {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: wrap;
-  } */
+  } 
+  */
+  /*   
   .Notivue__icon {
     color: white;
     display: flex;
@@ -326,8 +339,10 @@ const myNotificationsTheme: NotivueTheme = {
     overflow: visible;
     min-width: var(--nv-icon-size);
     width: var(--nv-icon-size);
-    margin: 0; /* haut | droit | bas | gauche */
-  }
+    margin: 0;
+  } 
+  */
+ /*   
   [data-notivue='error'] .Notivue__icon {
     background-color: #ce0500;
   }
@@ -340,6 +355,10 @@ const myNotificationsTheme: NotivueTheme = {
   [data-notivue='warning'] .Notivue__icon {
     background-color: #b34000;
   }
+  [data-notivue='close'] .Notivue__icon {
+    color: #070707;
+  }
+  */
 
   .fr-footer__body, .fr-footer__partners, .fr-footer__bottom-copy{
     display: none;
