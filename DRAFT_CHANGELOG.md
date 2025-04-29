@@ -11,7 +11,7 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
-
+- ajout des enregistrements au menu contextuel (#579)
 #### 🔨 [Evolution]
 
 #### 🔥 [Obsolète]
