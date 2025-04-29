@@ -316,10 +316,18 @@ const notificationsTheme = computed(() => {
 <style>
   .futur-map-container{
     width: 100%;
-    height: 76.8vh;
+    height: calc(100vh - 222.5px);
+    margin-bottom: -10px;
+  }
+
+  @media (max-width: 576px) {
+    .futur-map-container{
+    height: calc(100vh - 131px);
+    margin-bottom: 0px;
+  }
   }
   /* TODO :
-  surcharge des popups de notifications : 
+  surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
   /* 
@@ -364,7 +372,6 @@ const notificationsTheme = computed(() => {
   }
   #footer {
     padding-top: 0;
-    margin-top: -10px;
   }
   .fr-footer__bottom {
     margin-top: 0;
@@ -420,7 +427,7 @@ const notificationsTheme = computed(() => {
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
       display: none;
     }
-    #footer, .fr-footer-toggle, .fr-footer-toggle-label{
+    .fr-footer-toggle, .fr-footer-toggle-label{
       display: none;
     }
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {

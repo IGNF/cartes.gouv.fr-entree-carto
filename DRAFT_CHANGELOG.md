@@ -31,6 +31,7 @@ Divers corrections sur l'espace personnel (favoris)
 * Fix pour la redirection vers le tableau de bord (#562)
 * Fix sur l'enregistrement des services de type WMS, WMTS ou MapBox dans les favoris (#563)
 * Fix sur les couches inconnues (#534)
+* Fix footer (#580)
 
 #### 🔒 [Sécurité]
 
