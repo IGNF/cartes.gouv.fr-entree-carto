@@ -16,6 +16,9 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
+import { useDomStore } from "@/stores/domStore"
+
+const domStore = useDomStore();
 const mapStore = useMapStore();
 
 const emit = defineEmits([
@@ -57,11 +60,17 @@ var authenticatedValue = computed(() => service.authenticated);
 const authenticatedClass = ref({
   authenticatedProperty: !authenticatedValue.value
 });
+
+const BookmarksButton = ref(null)
+onMounted(() => {
+    domStore.setBookmarksButton(BookmarksButton.value)
+})
 </script>
 
 <template>
   <div class="container">
-    <DsfrButton
+    <div ref="BookmarksButton">
+      <DsfrButton
       tertiary
       no-outline
       :class="authenticatedClass"
@@ -70,6 +79,7 @@ const authenticatedClass = ref({
     >
       Mes enregistrements
     </DsfrButton>
+    </div>
     <hr>
     <DsfrButton
       tertiary
