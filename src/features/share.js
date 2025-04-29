@@ -39,6 +39,11 @@ export const toShare = (document, params) => {
   var store = useServiceStore();
   var service = store.getService();
 
+  if (!document) {
+    console.debug("toShare: Document non défini !");
+    return;
+  }
+
   var url = null;
   if (document.public_url) {
     var url = document.public_url;
@@ -73,6 +78,11 @@ export const fromShare = (url) => {
   // ou ZSqrOC52yNfWvvJF4sUMz6FLjX4ZQPsMYAIPz1A0UDHoOk.bin(n=gris,f=mapbox,t=service,c=internal,k=mapbox,v=1,o=0.5,g=0)
   var params = {};
   
+  if (!url) {
+    console.debug("toShare: URL publique non définie !");
+    return;
+  }
+
   var _url;
   var _params;
   if (SEPARATOR_REDUCED_GROUP) {
@@ -88,7 +98,7 @@ export const fromShare = (url) => {
     params[key] = value;
   });
   if (Object.keys(params).length === 0) {
-    console.debug("fromShare: Params non défini !");
+    console.debug("fromShare: Document non défini !");
     return;
   }
   params.u = _url.split('?')[0];
