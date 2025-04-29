@@ -152,7 +152,12 @@ const onSaveImportService = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { stop : 1 });
+      var url = toShare(document, {
+        opacity: 1, 
+        visible: true,
+        grayscale: false,
+        stop : 1
+      });
       mapStore.addBookmark(url);
     }
   })
@@ -194,7 +199,12 @@ const onSaveImportMapbox = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { stop : 1 });
+      var url = toShare(document, {
+        opacity: 1, 
+        visible: true,
+        grayscale: false,
+        stop : 1
+      });
       mapStore.addBookmark(url);
     }
   })

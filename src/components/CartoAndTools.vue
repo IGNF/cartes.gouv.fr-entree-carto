@@ -113,6 +113,7 @@ const selectedBookmarks = computed(() => {
       * - opacity
       * - visible
       * - grayscale
+      * - position
       * - type (ex. drawing, import, service...)
       * - stop
       * - ...

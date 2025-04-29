@@ -34,6 +34,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "format": "eslint ./src --fix",
     "lint": "eslint ./src",
+    "test": "npx vitest",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
     "serve": "BASE_URL=/ vite build && serve -s dist/"
@@ -69,6 +70,7 @@
     "focus-trap": "^7.6.4",
     "focus-trap-vue": "^4.0.3",
     "globals": "^16.0.0",
+    "jsdom": "^26.1.0",
     "mitt": "^3.0.1",
     "msw": "2.7.5",
     "notivue": "^2.4.5",
