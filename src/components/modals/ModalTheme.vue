@@ -67,7 +67,8 @@ const onModalThemeClose = () => {
 
 defineExpose({
   openModalTheme,
-  onModalThemeClose
+  onModalThemeClose,
+  modelValue
 });
 
 </script>

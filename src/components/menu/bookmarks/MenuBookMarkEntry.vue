@@ -26,12 +26,6 @@ export default {
 
 <script setup lang="js">
 
-import { 
-  createVectorLayer, 
-  createServiceLayer,
-  createMapBoxLayer 
-} from '@/features/layer.js';
-
 import { getLayersFromPermalink } from '@/features/permalink.js';
 
 import { toShare } from '@/features/share.js';
@@ -126,7 +120,11 @@ const onAddData = (data) => {
       
       // ajout du document dans le permalien pour partage
       if (permalink) {
-        var url = toShare(document, {});
+        var url = toShare(document, {
+          opacity: 1, 
+          visible: true,
+          grayscale: false
+        });
         mapStore.addBookmark(url);
       }
     })

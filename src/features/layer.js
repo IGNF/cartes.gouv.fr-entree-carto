@@ -57,90 +57,94 @@ import t from './translation';
  * @fixme hack sur le format GPX à reporter sur les extensions !
  */
 const createVectorLayer = (options) => {
-  var vectorFormat = null;
-  var vectorSource = null;
-  var vectorLayer = null;
-
-  var extended = (options.extended === undefined) ? true : options.extended;
-  switch (options.format.toLowerCase()) {
-    case "geojson":
-      vectorFormat = new GeoJSON(); 
-      // Extended
-      if (extended) {
-        vectorFormat = new GeoJSONExtended({
-          defaultStyle : DEFAULT_STYLE
-        }); 
-      }
-      break;
-    case "kml":
-      vectorFormat = new KML();
-      // Extended
-      if (extended) {
-        vectorFormat = new KMLExtended({
-          defaultStyle : DEFAULT_STYLE
-        }); 
-      }
-      break;
-    case "gpx":
-      vectorFormat = new GPX();
-      // Extended
-      if (extended) {
-        // HACK
-        // modifier la classe GPXExtended dans les extensions !
-        // > gestion de la callback interne readExtensions()
-        vectorFormat = new GPXExtended({
-          defaultStyle : DEFAULT_STYLE,
-          readExtensions : function (feature, node) {
-            this.readExtensions(feature, node);
-          }
-        }); 
-      }
-      break;
-    default:
-      break;
-  }
-
-  if (!vectorFormat) {
-    throw new Error(t.ol.failed_format(options.format));
-  }
-
-  if (options.data) {
-    const proj = vectorFormat.readProjection(options.data);
-    vectorSource = new VectorSource({
-      features: vectorFormat.readFeatures(options.data, {
-        dataProjection : proj,
-        featureProjection : "EPSG:3857"
-      }),
+  try {
+    var vectorFormat = null;
+    var vectorSource = null;
+    var vectorLayer = null;
+  
+    var extended = (options.extended === undefined) ? true : options.extended;
+    switch (options.format.toLowerCase()) {
+      case "geojson":
+        vectorFormat = new GeoJSON(); 
+        // Extended
+        if (extended) {
+          vectorFormat = new GeoJSONExtended({
+            defaultStyle : DEFAULT_STYLE
+          }); 
+        }
+        break;
+      case "kml":
+        vectorFormat = new KML();
+        // Extended
+        if (extended) {
+          vectorFormat = new KMLExtended({
+            defaultStyle : DEFAULT_STYLE
+          }); 
+        }
+        break;
+      case "gpx":
+        vectorFormat = new GPX();
+        // Extended
+        if (extended) {
+          // HACK
+          // modifier la classe GPXExtended dans les extensions !
+          // > gestion de la callback interne readExtensions()
+          vectorFormat = new GPXExtended({
+            defaultStyle : DEFAULT_STYLE,
+            readExtensions : function (feature, node) {
+              this.readExtensions(feature, node);
+            }
+          }); 
+        }
+        break;
+      default:
+        break;
+    }
+  
+    if (!vectorFormat) {
+      throw new Error(t.ol.failed_format(options.format));
+    }
+  
+    if (options.data) {
+      const proj = vectorFormat.readProjection(options.data);
+      vectorSource = new VectorSource({
+        features: vectorFormat.readFeatures(options.data, {
+          dataProjection : proj,
+          featureProjection : "EPSG:3857"
+        }),
+      });
+    }
+  
+    if (options.url) {
+      vectorSource = new VectorSource({
+        format: vectorFormat,
+        url: options.url
+      });
+    }
+  
+    if (!vectorSource) {
+      throw new Error(t.ol.failed_source("vecteur"));
+    }
+  
+    vectorSource._title = options.name;
+    vectorSource._description = options.description;
+  
+    vectorLayer = new VectorLayer({
+      source : vectorSource,
+      visible : getVisible(options.visible),
+      opacity : getOpacity(options.opacity)
     });
+  
+    if (!vectorLayer) {
+      throw new Error(t.ol.failed_layer("vecteur"));
+    }
+  
+    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
+  
+    return Promise.resolve(vectorLayer);
+  } catch (error) {
+    return Promise.reject(error);
   }
-
-  if (options.url) {
-    vectorSource = new VectorSource({
-      format: vectorFormat,
-      url: options.url
-    });
-  }
-
-  if (!vectorSource) {
-    throw new Error(t.ol.failed_source("vecteur"));
-  }
-
-  vectorSource._title = options.name;
-  vectorSource._description = options.description;
-
-  vectorLayer = new VectorLayer({
-    source : vectorSource,
-    visible : getVisible(options.visible),
-    opacity : getOpacity(options.opacity)
-  });
-
-  if (!vectorLayer) {
-    throw new Error(t.ol.failed_layer("vecteur"));
-  }
-
-  vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
-
-  return vectorLayer;
 };
 
 /**
@@ -414,6 +418,7 @@ const createMapBoxLayer = (options) => {
       });
 
       var vectorSource = new VectorTileSource({
+        state : "loading", // statut
         attributions : "",
         format : vectorFormat,
         urls : _glTiles
@@ -429,9 +434,14 @@ const createMapBoxLayer = (options) => {
       });
 
       vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
+      vectorLayer.styleUrl = options.url; // HACK pour le N&B !
 
       var setStyle = () => {
         applyStyle(vectorLayer, _glStyle, { source : _glSourceId })
+        .then(() => {
+          vectorLayer.getSource().setState("ready");
+          vectorLayer.set("mapbox-styles", _glStyle);
+        })
         .then(() => {
           vectorLayer.setVisible(getVisible(options.visible));
           vectorLayer.setOpacity(getOpacity(options.opacity));
