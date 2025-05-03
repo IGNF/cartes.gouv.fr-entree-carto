@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { URL, fileURLToPath } from 'node:url'
 
 import { defineConfig, ProxyOptions, ViteDevServer } from 'vite'
@@ -114,5 +115,15 @@ export default defineConfig({
         api: 'modern-compiler'
       }
     }
-  }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ["tests/test/vitest.setup.js"],
+    include: ["./tests/test/**/*.{test,spec}.{ts,js}"],
+    coverage: {
+      reporter: ['text', 'json', 'html'], // Génération des rapports de couverture
+      exclude: ['node_modules/', 'tests/'], // Exclure certains dossiers
+    },
+  },
 })

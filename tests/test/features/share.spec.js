@@ -7,16 +7,7 @@ import { setActivePinia, createPinia } from 'pinia';
 // https://vitest.dev/api/
 // https://vitest.dev/api/expect.html
 
-// FIXME
-// comment monter un store avec une connexion au service ?
-// https://pinia.vuejs.org/cookbook/testing.html#Unit-testing-a-store
-
 beforeAll(() => {
-  // global
-  vi.stubGlobal('location', {
-    origin: "http://localhost"
-  })
-  vi.stubGlobal('window', {})
   // pinia
   setActivePinia(createPinia())
   var store = useServiceStore()
@@ -34,7 +25,7 @@ describe('toShare', () => {
     expect(url).toBeUndefined()
   })
 
-  it('document', () => {
+  it('document de type : vecteur', () => {
     const expected = "MbJm2TiNss64KS0kcTyh8F3NBslCr3L3lB1TlBxulLs3E6.bin?i=ac16ac4a-1acd-465c-9003-b33c64ccc705&n=Mes+regions&f=geojson&t=import&c=internal"
     var url = toShare({
       "name": "Mes regions",
@@ -55,7 +46,11 @@ describe('toShare', () => {
     console.log(url)
   })
 
-  it('document with params', () => {
+  it.skip('document de type : service')
+  it.skip('document de type : mapbox')
+  it.skip('document de type : compute')
+
+  it('document avec des params supplementaires', () => {
     const expected = "MbJm2TiNss64KS0kcTyh8F3NBslCr3L3lB1TlBxulLs3E6.bin?i=ac16ac4a-1acd-465c-9003-b33c64ccc705&n=Mes+regions&f=geojson&t=import&c=internal&o=0.5&v=true&g=true"
     var url = toShare({
       "name": "Mes regions",
@@ -91,7 +86,7 @@ describe('fromShare', () => {
     expect(document).toBeUndefined()
   })
 
-  it('url', () => {
+  it('url de partage de type : vecteur', () => {
     const expected = {
       name: "Mes regions",
       id: "ac16ac4a-1acd-465c-9003-b33c64ccc705",
@@ -113,7 +108,11 @@ describe('fromShare', () => {
     console.log(document)
   })
 
-  it('url with params', () => {
+  it.todo('url de partage de type : mapbox')
+  it.todo('url de partage de type : service')
+  it.todo('url de partage de type : compute')
+
+  it('url avec des params supplementaires', () => {
     const expected = {
       name: "Mes regions",
       id: "ac16ac4a-1acd-465c-9003-b33c64ccc705",
