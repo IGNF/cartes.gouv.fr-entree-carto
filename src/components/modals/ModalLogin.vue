@@ -65,11 +65,12 @@ defineExpose({
     :icon="icon"
     :is-alert="true"
     :actions="actions"
-    @close="onModalLoginClose">
-
+    @close="onModalLoginClose"
+  >
     <!-- slot : c'est ici que l'on customise le contenu ! -->
     <template #default>
-      <p>Pour enregistrer vos données, vous devez vous identifier 
+      <p>
+        Pour enregistrer vos données, vous devez vous identifier 
         ou créer un compte sur cartes.gouv.fr
       </p>
     </template>

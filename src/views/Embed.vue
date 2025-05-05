@@ -28,7 +28,7 @@ const selectedLayers = computed(() => {
     var props = mapStore.getLayerProperty(layerId);
     layer.opacity = props.opacity;
     layer.visible = props.visible;
-    layer.gray = props.gray;
+    layer.grayscale = props.grayscale;
     return layer;
   });
 });
@@ -59,24 +59,22 @@ onMounted(() => {
 
 <template>
   <Suspense>
-      <!-- Chargement du dataStore avec une patience 
-          avant affichage de la cartographie 
-      -->
-      <StoreData>
-        <div class="map-container">
-          <Carto 
-            :selected-layers="selectedLayers"
-            :selected-controls="selectedControls">
-          </Carto>
-        </div>
-      </StoreData>
+    <!-- Chargement du dataStore avec une patience avant affichage de la cartographie -->
+    <StoreData>
+      <div class="map-container">
+        <Carto 
+          :selected-layers="selectedLayers"
+          :selected-controls="selectedControls"
+        />
+      </div>
+    </StoreData>
 
-      <!-- loading state via #fallback slot -->
-      <template #fallback>
-        <div class="patience-container">
-          <Patience/>
-        </div>
-      </template>
+    <!-- loading state via #fallback slot -->
+    <template #fallback>
+      <div class="patience-container">
+        <Patience />
+      </div>
+    </template>
   </Suspense>
 </template>
 

@@ -16,6 +16,9 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
+import { useDomStore } from "@/stores/domStore"
+
+const domStore = useDomStore();
 const mapStore = useMapStore();
 
 const emit = defineEmits([
@@ -57,54 +60,61 @@ var authenticatedValue = computed(() => service.authenticated);
 const authenticatedClass = ref({
   authenticatedProperty: !authenticatedValue.value
 });
+
+const BookmarksButton = ref(null)
+onMounted(() => {
+    domStore.setBookmarksButton(BookmarksButton.value)
+})
 </script>
 
 <template>
-<div class="container">
-  <DsfrButton
-    tertiary
-    no-outline
-    :class="authenticatedClass"
-    @click="$emit('onBookMarksOpen')"
-    icon="ri-bookmark-line"
+  <div class="container">
+    <div ref="BookmarksButton">
+      <DsfrButton
+      tertiary
+      no-outline
+      :class="authenticatedClass"
+      icon="ri-bookmark-line"
+      @click="$emit('onBookMarksOpen')"
     >
-    Mes enregistrements
-  </DsfrButton>
-  <hr/>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="mingcute:file-import-line"
-    @click="openControl('LayerImport')"
+      Mes enregistrements
+    </DsfrButton>
+    </div>
+    <hr>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="mingcute:file-import-line"
+      @click="openControl('LayerImport')"
     >
-    Importer des données
-  </DsfrButton>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="ant-design:link-outlined"
-    @click="$emit('onModalShareOpen')"
+      Importer des données
+    </DsfrButton>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="ant-design:link-outlined"
+      @click="$emit('onModalShareOpen')"
     >
-    Partager, intégrer la carte
-  </DsfrButton>
-  <DsfrButton
-    tertiary
-    no-outline
-    icon="material-symbols:print-outline"
-    @click="$emit('onModalPrintOpen')"
-    class="tierce-print"
+      Partager, intégrer la carte
+    </DsfrButton>
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="material-symbols:print-outline"
+      class="tierce-print"
+      @click="$emit('onModalPrintOpen')"
     >
-    Imprimer
-  </DsfrButton>
-  <hr/>
-  <DsfrButton
-    tertiary
-    no-outline
-    @click="$emit('onModalThemeOpen')"
+      Imprimer
+    </DsfrButton>
+    <hr>
+    <DsfrButton
+      tertiary
+      no-outline
+      @click="$emit('onModalThemeOpen')"
     >
-    <span class="fr-icon-theme-fill fr-link--icon-left"></span>  Paramètres d'affichage
-  </DsfrButton>
-</div>
+      <span class="fr-icon-theme-fill fr-link--icon-left" />  Paramètres d'affichage
+    </DsfrButton>
+  </div>
 </template>
 
 <style scoped>
@@ -123,7 +133,7 @@ a {
   display: flex;
   flex-direction: column;
   width: calc(100% - 32px);
-  max-height: calc(70vh - 70px);
+  max-height: calc(76.8vh - 70px);
   overflow-y: auto;
   scrollbar-width: thin;
 }

@@ -15,6 +15,7 @@
 
 <script setup lang="js">
 import { VIcon } from '@gouvminint/vue-dsfr'
+import { useDocumentVisibility } from '@vueuse/core';
 
 const props = defineProps({
   side: String,
@@ -51,6 +52,15 @@ function closeMenu() {
   is_expanded.value = false
 }
 function openMenu() {
+  // cas particulier des fenêtres d'annotation
+    const closeButton1 = document.querySelector('.gp-label-div button.GPpanelClose');
+    if (closeButton1) {
+      closeButton1.click();
+    }
+    const closeButton2 = document.querySelector('.gp-styling-div button.GPpanelClose');
+    if (closeButton2) {
+      closeButton2.click();
+    }
   is_expanded.value = true
 }
 
@@ -63,30 +73,36 @@ defineExpose({
 
 <template>
   <div
-    class="menu-toggle-wrap"
-    :class="`${is_expanded  && 'is_expanded'} ${props.side}`"
     v-if="visibility"
+    class="menu-toggle-wrap"
+    :class="`${is_expanded && 'is_expanded'} ${props.side}`"
   >
-    <div ref="menuTabs" class="menu-logo-list">
-      <slot name="navButtons"></slot>
+    <div
+      ref="menuTabs"
+      class="menu-logo-list"
+    >
+      <slot name="navButtons" />
     </div>
 
-    <div class="menu-content-list"
-    v-show="is_expanded">
+    <div
+      v-show="is_expanded"
+      class="menu-content-list"
+    >
       <div class="menu-collapse-icon-wrapper">
         <DsfrButton
           :id="props.id"
           tertiary
           no-outline
           class="menu-collapse-icon"
-          @click="closeMenu">
+          @click="closeMenu"
+        >
           Fermer
-          <VIcon v-bind="iconProps"/>
+          <VIcon v-bind="iconProps" />
         </DsfrButton>
       </div>
 
       <div class="menu-content">
-        <slot name="content"></slot>
+        <slot name="content" />
       </div>
     </div>
   </div>
@@ -146,7 +162,7 @@ defineExpose({
 }
 
 .menu-toggle-wrap {
-    height: calc(70vh - 24px);
+    height: calc(76.8vh - 24px);
     z-index: 1;
     &.is_expanded {
       .menu-content-list {

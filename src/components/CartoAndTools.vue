@@ -13,9 +13,13 @@ import { useMapStore } from "@/stores/mapStore"
 
 import { fromShare } from '@/features/share';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+
 const mapStore = useMapStore();
 const dataStore = useDataStore();
- 
+
 const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})
 const refModalShare: ShareModal = ref({})
@@ -39,41 +43,61 @@ const onModalLoginOpen = () => {
 }
 
 // INFO
-// Les listes sont initialisées via le mapStore, et 
+// Les listes sont initialisées via le mapStore, et
 // elles sont transmises à la cartographie à chaque fois
 // que le mapStore est modifié.
-// Chaque fois que des  modules modifient le mapStore en 
-// ajoutant des couches (ex. LayerSwitcher), on repasse 
+// Chaque fois que des  modules modifient le mapStore en
+// ajoutant des couches (ex. LayerSwitcher), on repasse
 // via la reactivité dans ce cycle.
 
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
-  // ajouter les options des couches
-  // ex. l'opacité et la visibilité
-  let layers = mapStore.getLayers();
-  return layers.map((layerId: string) => {
+  var layersValided: any = [];
+  mapStore.getLayers().forEach((layerId: string) => {
     var layer = dataStore.getLayerByID(layerId);
+    if (!layer) {
+      // on ne peut pas la trouver, on ne l'ajoute pas
+      mapStore.removeLayer(layerId);
+      push.warning({
+        title: "Exception",
+        message: "La couche " + layerId + " n'existe pas !"
+      });
+      return;
+    }
     // les options de la couche sont récuperées dans le mapStore (permalink)
     var props = mapStore.getLayerProperty(layerId);
+    // ajouter les options des couches
+    // ex. l'opacité et la visibilité
+    layer.position = props.position;
     layer.opacity = props.opacity;
     layer.visible = props.visible;
-    layer.gray = props.gray;
-    return layer;
+    layer.grayscale = props.grayscale;
+    layersValided.push(layer);
   });
+  return layersValided;
 });
 
 // liste des favoris selectionnés par l'utilisateur, donc disponibles dans le permalien
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedBookmarks = computed(() => {
-  var bookmarks: any = [];
+  var bookmarksValided: any = [];
   mapStore.getBookmarks().forEach( (bookmark: string) => {
-    // transformer un partage d'URL en un objet 
+    // transformer un partage d'URL en un objet
     var obj = fromShare(decodeURIComponent(bookmark));
+    if (!obj) {
+      // on ne peut pas le transformer, on ne l'ajoute pas
+      mapStore.removeBookmark(bookmark);
+      push.warning({
+        title: "Exception",
+        message: "Le bookmark " + bookmark + " n'existe pas !"
+      });
+      return;
+    }
     // INFO
-    // on a une condition spéciale pour écarter les documents 
+    // on a une condition spéciale pour écarter les documents
     // que l'on ne souhaite pas intégrer dans le mécanisme de reactivité
-    //  ex. les favoris issus de l'outil de dessin 
+    //  ex. les favoris issus de l'outil de dessin
     //  car le widget Drawing a son propre mécanisme
     //  d'ajout de couche sur la carte...
     if (!obj.stop) {
@@ -88,15 +112,16 @@ const selectedBookmarks = computed(() => {
       * - format
       * - opacity
       * - visible
-      * - gray
+      * - grayscale
+      * - position
       * - type (ex. drawing, import, service...)
       * - stop
       * - ...
       */
-      bookmarks.push(obj);
+      bookmarksValided.push(obj);
     }
   });
-  return bookmarks;
+  return bookmarksValided;
 });
 
 // liste des contrôles utilisateurs disponibles
@@ -113,7 +138,6 @@ provide("selectedLayers", selectedLayers);
 
 <template>
   <div id="map-and-tools-container">
-
     <!-- Le menu de gauche : le menu tierce (et les favoris)
      il y figure la liste des abonnements aux evenements sur le clic
      d'un élement du menu tierce
@@ -125,7 +149,7 @@ provide("selectedLayers", selectedLayers);
       @on-modal-login-open="onModalLoginOpen"
     />
 
-    <!-- Module cartographique : 
+    <!-- Module cartographique :
      - liste des couches selectionnées
      - liste des controles selectionnés
     -->
@@ -133,7 +157,8 @@ provide("selectedLayers", selectedLayers);
       ref="cartoRef"
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
-      :selected-bookmarks="selectedBookmarks"/>
+      :selected-bookmarks="selectedBookmarks"
+    />
 
     <!-- Le menu des contrôles et le catalogue -->
     <RightMenuTool
@@ -143,8 +168,10 @@ provide("selectedLayers", selectedLayers);
     <!-- Liste des modales -->
     <div class="modal-container">
       <ThemeModal ref="refModalTheme" />
-      <PrintModal ref="refModalPrint" 
-        :selected-bookmarks="selectedBookmarks"/>
+      <PrintModal
+        ref="refModalPrint"
+        :selected-bookmarks="selectedBookmarks"
+      />
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
     </div>
@@ -155,15 +182,8 @@ provide("selectedLayers", selectedLayers);
   #map-and-tools-container{
     margin-left: 0;
     width: inherit;
-    height: 70vh;
+    height: inherit;
     display: flex;
-  }
-
-  @media (max-width: 576px) {
-    #map-and-tools-container {
-      /* FIXME : la hauteur de la carto dépend de la hauteur du footer et du header, ici en dur */
-      height: calc(100vh - 92.5px - 56px);
-    }
   }
 </style>
 
@@ -175,5 +195,22 @@ provide("selectedLayers", selectedLayers);
   #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) #share-button-position {
     display: none;
   }
+}
+
+/* FIXME
+Cache le menu latéral si widget ouvert...
+*/
+#map-and-tools-container:has(#position-container-top-right > div > button[aria-pressed="true"]) .menu-toggle-wrap.right .menu-content-list  {
+  display: none;
+}
+#map-and-tools-container:has(#position-container-bottom-left > div > button[aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
+  display: none;
+}
+
+#map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
+    display: none;
+}
+#map-and-tools-container:has(.gp-styling-div) .menu-toggle-wrap.left .menu-content-list  {
+    display: none;
 }
 </style>

@@ -213,14 +213,14 @@ const onClickMapButtonValidateName = (e) => {
     // notification
     push.success({
       title: t.bookmark.title,
-      message: t.bookmark.save_map_success
+      message: t.bookmark.success_save_map
     });
   })
   .catch((e) => {
     console.error(e);
     push.error({
       title: t.bookmark.title,
-      message: t.bookmark.save_failed
+      message: t.bookmark.failed_save_map
     });
   });
   
@@ -259,7 +259,9 @@ onMounted(() => {});
 
 <template>
   <div class="fr-container fr-p-1w">
-    <h4 v-if="title">{{ title }}</h4>
+    <h4 v-if="title">
+      {{ title }}
+    </h4>
     <!-- Module de recherche des données utilisateur -->
     <div class="search-bookmark fr-p-1w">
       <DsfrSearchBar
@@ -276,10 +278,10 @@ onMounted(() => {});
     <div class="tabs-bookmark fr-p-1w">
       <DsfrTabs
         id="tabs-bookmark"
+        v-model="selectedIndex"
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
-        v-model="selectedIndex">
-
+      >
         <!-- TODO Ajouter l'accessibilité avec l'update vers la v6 ou sup
         <template #tab-items>
           <DsfrTabItem
@@ -299,7 +301,8 @@ onMounted(() => {});
 
         <DsfrTabContent
           panel-id="tab-content-bookmark-maps"
-          tab-id="tab-bookmark-maps">
+          tab-id="tab-bookmark-maps"
+        >
           <!-- Bouton pour enregistrer la carte -->
           <DsfrButton
             label="Enregistrer la carte"
@@ -307,9 +310,13 @@ onMounted(() => {});
             size="sm"
             class="button-action"
             icon="fr-icon-save-line"
-            @click="addMap()"/>
+            @click="addMap()"
+          />
           <!-- Affichage du menu pour nommer le permalien dans les favoris -->
-          <div ref="div-map-name" class="container-bookmark-map-name fr-hidden">
+          <div
+            ref="div-map-name"
+            class="container-bookmark-map-name fr-hidden"
+          >
             <DsfrInput
               v-model="name"
               label="Nommer"
@@ -322,25 +329,34 @@ onMounted(() => {});
                 tertiary
                 no-outline
                 class="fr-p-1w"
-                @click="onClickMapButtonCancelName" />
+                @click="onClickMapButtonCancelName"
+              />
               <DsfrButton
                 size="sm"
                 icon="ri:check-line"
                 tertiary
                 no-outline
                 class="fr-p-1w"
-                @click="onClickMapButtonValidateName" />
+                @click="onClickMapButtonValidateName"
+              />
             </div>
           </div>
           <!-- Affichage des cartes ou permaliens -->
-          <div class="container-bookmark-map-item fr-p-1w" v-for="map in lstMap">
-            <MenuBookMarkEntry :data="map" type="map"></MenuBookMarkEntry>
+          <div
+            v-for="map in lstMap"
+            class="container-bookmark-map-item fr-p-1w"
+          >
+            <MenuBookMarkEntry
+              :data="map"
+              type="map"
+            />
           </div>
         </DsfrTabContent>
 
         <DsfrTabContent
           panel-id="tab-content-bookmark-data"
-          tab-id="tab-bookmark-data">
+          tab-id="tab-bookmark-data"
+        >
           <!-- Bouton pour importer un fichier -->
           <DsfrButton
             label="Ajouter une donnée"
@@ -348,7 +364,8 @@ onMounted(() => {});
             size="sm"
             class="button-action"
             icon="fr-icon-upload-line"
-            @click="addData()"/>
+            @click="addData()"
+          />
           <!-- Affichage des données :
             - nom
             - icone en fonction du type de données
@@ -356,11 +373,16 @@ onMounted(() => {});
             - date
             - menu options : renommer, partager, supprimer
           -->
-          <div class="container-bookmark-data-item fr-p-1w" v-for="data in lstData">
-            <MenuBookMarkEntry :data="data" type="data"></MenuBookMarkEntry>
+          <div
+            v-for="data in lstData"
+            class="container-bookmark-data-item fr-p-1w"
+          >
+            <MenuBookMarkEntry
+              :data="data"
+              type="data"
+            />
           </div>
         </DsfrTabContent>
-
       </DsfrTabs>
     </div>
   </div>
@@ -381,7 +403,7 @@ onMounted(() => {});
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 270px);
+  max-height: calc(76.8vh - 270px);
   padding: 1em;
 }
 .button-action {

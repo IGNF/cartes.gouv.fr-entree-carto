@@ -58,6 +58,19 @@ var SetDocuments = {
   },
 
   /**
+   * Limiter le nombre de caractères d'un texte
+   * @param {*} text 
+   * @param {*} maxLength 
+   * @returns 
+   */
+  sliceText : (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  },
+
+  /**
    * Enregistrer un document
    * 
    * Appels de l'API Entrepôt :
@@ -92,7 +105,7 @@ var SetDocuments = {
   setDocument : async function (obj) {
     const formData = new FormData();
     formData.append("name", obj.name);
-    formData.append("description", obj.description);
+    formData.append("description", this.sliceText(obj.description, 255));
 
     const labels = [
       this.tag, 

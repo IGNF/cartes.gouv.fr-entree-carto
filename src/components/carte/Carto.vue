@@ -53,22 +53,29 @@ const mapIsReady = computed(() => {
 </script>
 
 <template>
-  <Map class="map" ref="refMap" :mapId="mainMap">
+  <Map
+    ref="refMap"
+    class="map"
+    :map-id="mainMap"
+  >
     <!-- Initialisation de la vue -->
     <View
-      :map-Id="mainMap"
+      :map-id="mainMap"
       :center="mapStore.center"
-      :zoom="mapStore.zoom"/>
+      :zoom="mapStore.zoom"
+    />
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
       v-if="mapIsReady"
       :control-options="props.selectedControls"
-      :map-id="mainMap"/>
+      :map-id="mainMap"
+    />
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
-      :map-Id="mainMap"
+      :map-id="mainMap"
       :selected-layers="props.selectedLayers"
-      :selected-bookmarks="props.selectedBookmarks"/>
+      :selected-bookmarks="props.selectedBookmarks"
+    />
   </Map>
 </template>
 

@@ -26,12 +26,6 @@ export default {
 
 <script setup lang="js">
 
-import { 
-  createVectorLayer, 
-  createServiceLayer,
-  createMapBoxLayer 
-} from '@/features/layer.js';
-
 import { getLayersFromPermalink } from '@/features/permalink.js';
 
 import { toShare } from '@/features/share.js';
@@ -115,10 +109,22 @@ const onAddData = (data) => {
       if (data.type === "import") {
         permalink = true;
       }
+      if (data.type === "compute") {
+        // TODO
+        // On emet un event vers le controle, et on lui passe le
+        // informations du calcul du document
+        // ex. emitter.dispatch('route:compute:called', {...});
+        // Le controle va se charger de l'initialisation via l'abonnement
+        // à l'evenement
+      }
       
       // ajout du document dans le permalien pour partage
       if (permalink) {
-        var url = toShare(document, {});
+        var url = toShare(document, {
+          opacity: 1, 
+          visible: true,
+          grayscale: false
+        });
         mapStore.addBookmark(url);
       }
     })
@@ -169,9 +175,10 @@ const onClickButtonDelete = (e) => {
       });
     })
     .then(() => {
-      // FIXME
-      // doit on modifier le statut de la couche dans le gestionnaire de couche ?
-      // ex. modifier gpResultLayerId avec le type (drawing, layerimport, compute, ...)
+      // TODO
+      // prevenir l'utilisateur que le document supprimé
+      // ne sera plus disponible sur les cartes enregistrées
+      // et donc sur le permalien !
     });
 };
 const onClickButtonExport = (e) => {
@@ -321,8 +328,9 @@ const buttonsData = [
       tertiary
       no-outline
       :icon="data.icon"
-      @click="onAddData(data)">
-        {{ data.name }}
+      @click="onAddData(data)"
+    >
+      {{ data.name }}
     </DsfrButton>
     <!-- Groupe d'action : 
      - renommer
@@ -330,14 +338,18 @@ const buttonsData = [
      - supprimer
     -->
     <div class="container-bookmark-entry-advanced-options">
-      <DsfrButtonGroup v-if="data.type === 'carte'"
+      <DsfrButtonGroup
+        v-if="data.type === 'carte'"
         :buttons="buttonsMap"
-        inlineLayoutWhen
-        size="sm" />
-      <DsfrButtonGroup v-else
+        inline-layout-when
+        size="sm"
+      />
+      <DsfrButtonGroup
+        v-else
         :buttons="buttonsData"
-        inlineLayoutWhen
-        size="sm" />
+        inline-layout-when
+        size="sm"
+      />
     </div>
   </div>
   <!-- Informations :
@@ -351,7 +363,10 @@ const buttonsData = [
     <span v-if="data.date"> - {{ data.date }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
-  <div ref="div-rename" class="container-bookmark-entry-rename fr-hidden">
+  <div
+    ref="div-rename"
+    class="container-bookmark-entry-rename fr-hidden"
+  >
     <DsfrInput
       v-model="rename"
       label="Renommer"
@@ -364,17 +379,19 @@ const buttonsData = [
         tertiary
         no-outline
         class="fr-p-1w"
-        @click="onClickButtonCancelRename" />
+        @click="onClickButtonCancelRename"
+      />
       <DsfrButton
         size="sm"
         icon="ri:check-line"
         tertiary
         no-outline
         class="fr-p-1w"
-        @click="onClickButtonValidateRename" />
+        @click="onClickButtonValidateRename"
+      />
     </div>
   </div>
-  <slot></slot>
+  <slot />
 </template>
 
 <style>

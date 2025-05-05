@@ -47,6 +47,7 @@ onMounted(() => {
     layerSwitcher.value.on("layerswitcher:change:opacity", onChangeOpacityLayer);
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
     layerSwitcher.value.on("layerswitcher:change:position", onChangePositionLayer);
+    layerSwitcher.value.on("layerswitcher:change:grayscale", onChangeGrayScaleLayer);
   }
 })
 
@@ -76,7 +77,8 @@ onUpdated(() => {
  * 
  * Une couche est issue soit 
  * - du catalogue
- * - d'une donnée utilisateur
+ * - d'une donnée de l'espace personnel
+ * - d'une donnée quelconque
  * 
  * Les données utilisateur doivent être enregistrées sur l'espace personnel
  * pour figurer dans le permalien, donc de type 'bookmark' !
@@ -99,6 +101,11 @@ const onAddLayer = (e) => {
   // Données issues du catalogue
   if (lyr.name && lyr.service) {
     id = dataStore.getLayerIdByName(lyr.name, lyr.service);
+    // on ajoute la position de la couche dans le store
+    log.debug(lyr.name, "| position", lyr.layer.getZIndex());
+    mapStore.updateLayerProperty(id, {
+      position : lyr.layer.getZIndex()
+    });
   } else {
     // Données issues d'un widget
     // ex. drawing, layerimport, ...
@@ -111,9 +118,14 @@ const onAddLayer = (e) => {
         // on utilise le uuid pour les données utilisateurs !
         // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
         id = gpId.split(':').pop();
+        log.debug(id, "| position", lyr.layer.getZIndex());
+        mapStore.updateBookmarkPropertyByID(id, {
+          p : lyr.layer.getZIndex() // position
+        });
       }
     }
   }
+
   log.debug("onAddLayer", id);
   if (id) {
     // notification
@@ -147,6 +159,41 @@ const onRemoveLayer = (e) => {
         if (id) {
           // on supprime le lien dans le store
           mapStore.removeBookmarkByID(id);
+        }
+      }
+    }
+  }
+
+  // INFO
+  // on met à jour la position des couches dans le store
+  // on a la liste des couches natives restantes
+  // on ne traite que les couches du catalogue (name & service properties) 
+  // et les données personnelles (determiner bookmark id)
+  var layers = e.target._layersOrder;
+  if (layers) {
+    for (const index in layers) {
+      if (Object.prototype.hasOwnProperty.call(layers, index)) {
+        const l = layers[index];
+        if (l.layer.name && l.layer.service) {
+          id = dataStore.getLayerIdByName(l.layer.name, l.layer.service);
+          if (id) {
+            mapStore.updateLayerProperty(id, {
+              position : l.layer.getZIndex()
+            });
+          }
+        } else {
+          var gpId = l.layer.gpResultLayerId;
+          if (gpId) {
+            // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+            if (gpId.startsWith('bookmark')) {
+              id = gpId.split(':').pop();
+              if (id) {
+                mapStore.updateBookmarkPropertyByID(id, {
+                  p : l.layer.getZIndex() // position
+                });
+              }
+            }
+          }
         }
       }
     }
@@ -215,7 +262,7 @@ const onChangeOpacityLayer = (e) => {
         id = gpId.split(':').pop();
         if (id) {
           mapStore.updateBookmarkPropertyByID(id, {
-            opacity : e.opacity
+            o : e.opacity // opacity
           });
         }
       }
@@ -241,7 +288,7 @@ const onChangeVisibilityLayer = (e) => {
         id = gpId.split(':').pop();
         if (id) {
           mapStore.updateBookmarkPropertyByID(id, {
-            visible : e.visibility
+            v : e.visibility // visible
           });
         }
       }
@@ -258,6 +305,32 @@ const onChangePositionLayer = (e) => {
       return dataStore.getLayerIdByName(layer.name, layer.service);
     } 
   }));
+}
+const onChangeGrayScaleLayer = (e) => {
+  log.debug("onChangeGrayScaleLayer", e);
+  var lyr = e.layer;
+  var id = null;
+  if (lyr.name && lyr.service) {
+    id = dataStore.getLayerIdByName(lyr.name, lyr.service);
+    if (id) {
+      mapStore.updateLayerProperty(id, {
+        grayscale : e.grayscale || false
+      });
+    }
+  } else {
+    var gpId = lyr.layer.gpResultLayerId;
+    if (gpId) {
+      // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+      if (gpId.startsWith('bookmark')) {
+        id = gpId.split(':').pop();
+        if (id) {
+          mapStore.updateBookmarkPropertyByID(id, {
+            g : e.grayscale || false // grayscale
+          });
+        }
+      }
+    }
+  }
 }
 
 /**

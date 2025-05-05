@@ -39,15 +39,15 @@ onUpdated(() => {
 </script>
 
 <template>
-    <DsfrCheckbox
-        :model-value="active"
-        :label="layer.title"
-        @update:modelValue="layerInteraction($event, layer)"
-    />
-    <CustomAccordeon
-        class="layer-description"
-        :description="layer.description"
-    />
+  <DsfrCheckbox
+    :model-value="active"
+    :label="layer.title"
+    @update:model-value="layerInteraction($event, layer)"
+  />
+  <CustomAccordeon
+    class="layer-description"
+    :description="layer.description"
+  />
 </template>
 
 <style>

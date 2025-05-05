@@ -32,20 +32,26 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
-        <div class="title-Expand">
-            <p class="fr-hint-text hint-class" v-show="isExpanded">{{ description }}</p>            
-            <DsfrButton
-                tertiary
-                iconRight
-                noOutline
-                size="sm"
-                :icon="isExpanded ? iconAfterExpand : iconBeforeExpand"
-                @click="ExpandAction()">
-                {{ BtnLabel }}
-            </DsfrButton>
-        </div>
-    </div>    
+  <div>
+    <div class="title-Expand">
+      <p
+        v-show="isExpanded"
+        class="fr-hint-text hint-class"
+      >
+        {{ description }}
+      </p>            
+      <DsfrButton
+        tertiary
+        icon-right
+        no-outline
+        size="sm"
+        :icon="isExpanded ? iconAfterExpand : iconBeforeExpand"
+        @click="ExpandAction()"
+      >
+        {{ BtnLabel }}
+      </DsfrButton>
+    </div>
+  </div>    
 </template>
 
 <style scoped>

@@ -4,7 +4,7 @@ import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg"
 import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg";
 
 // plugin local
-import { useEulerian } from '@/plugins/Eulerian.js';
+import { useEulerian } from '@/plugins/Eulerian';
 const eulerian = useEulerian();
 
 // gestion de la modale de changement de thème d'affichage
@@ -67,7 +67,8 @@ const onModalThemeClose = () => {
 
 defineExpose({
   openModalTheme,
-  onModalThemeClose
+  onModalThemeClose,
+  modelValue
 });
 
 </script>
@@ -79,14 +80,14 @@ defineExpose({
     :opened="themeModalOpened" 
     :title="title"
     :size="size" 
-    @close="onModalThemeClose">
-  
+    @close="onModalThemeClose"
+  >
     <DsfrRadioButtonSet 
       v-model="modelValue" 
       :legend="legend" 
       name="fr-radios-theme"
       :options="themeOptions" 
-      @update:model-value="changeTheme" />
-  
+      @update:model-value="changeTheme"
+    />
   </DsfrModal>
 </template>

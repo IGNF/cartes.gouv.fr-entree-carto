@@ -133,50 +133,51 @@ const currDataFilter = ref('producteur');
         v-model="searchStringModelValue"
       />
     </div>
-      <!-- Liste des onglets -->
-      <DsfrTabs
-        :tab-list-name="tabListName"
-        :tab-titles="tabTitles"
-        v-model="selectedIndex"
+    <!-- Liste des onglets -->
+    <DsfrTabs
+      v-model="selectedIndex"
+      :tab-list-name="tabListName"
+      :tab-titles="tabTitles"
+    >
+      <!-- Contenu de l'onglet sélectionné par defaut : les fonds de cartes -->
+      <DsfrTabContent
+        class="catalogue-content"
+        panel-id="tab-content-0"
+        tab-id="tab-0"
+        :asc="asc"
       >
-        <!-- Contenu de l'onglet sélectionné par defaut : les fonds de cartes -->
-        <DsfrTabContent
-          class="catalogue-content"
-          panel-id="tab-content-0"
-          tab-id="tab-0"
-          :asc="asc"
-        >
-          <!-- Liste des fonds de carte et celles selectionnées
+        <!-- Liste des fonds de carte et celles selectionnées
            >>> on transmet aussi la liste des couches issues de la recherche
           -->
-          <LayerList
-            list-name="baseLayer"
-            :selected-layers="selectedLayers"
-            :layers="baseLayers"/>
-        </DsfrTabContent>
+        <LayerList
+          list-name="baseLayer"
+          :selected-layers="selectedLayers"
+          :layers="baseLayers"
+        />
+      </DsfrTabContent>
 
-        <!-- Contenu d'un autre onglet : les données catégorisées -->
-        <DsfrTabContent
-          panel-id="tab-content-1"
-          tab-id="tab-1"
-          :asc="asc"
-        >
-          <!-- Les sous categories -->
-          <DsfrRadioButtonSet
-            :inline="true"
-            :model-value="currDataFilter"
-            :small="true"
-            :name="'filtre'"
-            :options="dataFilters"
-            @update:model-value="currDataFilter = $event"
-          />
-          <DataLayerCatalogue
-            :data-layers="dataLayers"
-            :curr-data-filter="currDataFilter"
-            :selected-layers="selectedLayers"
-          />
-        </DsfrTabContent>
-      </DsfrTabs>
+      <!-- Contenu d'un autre onglet : les données catégorisées -->
+      <DsfrTabContent
+        panel-id="tab-content-1"
+        tab-id="tab-1"
+        :asc="asc"
+      >
+        <!-- Les sous categories -->
+        <DsfrRadioButtonSet
+          :inline="true"
+          :model-value="currDataFilter"
+          :small="true"
+          :name="'filtre'"
+          :options="dataFilters"
+          @update:model-value="currDataFilter = $event"
+        />
+        <DataLayerCatalogue
+          :data-layers="dataLayers"
+          :curr-data-filter="currDataFilter"
+          :selected-layers="selectedLayers"
+        />
+      </DsfrTabContent>
+    </DsfrTabs>
   </div>
 </template>
 
@@ -191,7 +192,7 @@ const currDataFilter = ref('producteur');
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(70vh - 180px);
+  max-height: calc(76.8vh - 180px);
 }
 
 .catalogue-container {
@@ -199,6 +200,6 @@ const currDataFilter = ref('producteur');
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
-  max-height: calc(70vh - 96px);
+  max-height: calc(76.8vh - 96px);
 }
 </style>

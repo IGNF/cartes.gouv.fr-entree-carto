@@ -17,7 +17,7 @@ log.debug(res);
 </script>
 
 <template>
-  <slot v-if="storeData.isLoaded && !storeData.error"></slot>
+  <slot v-if="storeData.isLoaded && !storeData.error" />
 </template>
 
 <style scoped></style>

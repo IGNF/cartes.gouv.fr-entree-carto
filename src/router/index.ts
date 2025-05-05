@@ -4,12 +4,6 @@ import {
   createWebHistory } 
 from 'vue-router'
 
-import Load from '../views/Load.vue'
-import Embed from '../views/Embed.vue'
-import Login from '../views/Login.vue'
-import Logout from '../views/Logout.vue'
-import Bookmarks from '../views/Bookmarks.vue'
-
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
 // liste des routes disponibles
@@ -17,27 +11,27 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Carte',
-    component: Load,
+    component: () => import('../views/Load.vue'), // Lazy loading
   },
   {
     path: '/embed',
     name: 'Carte embarquée',
-    component: Embed,
+    component: () => import('../views/Embed.vue'), // Lazy loading
   },
   {
     path: '/login',
     name: 'Se connecter',
-    component: Login
+    component: () => import('../views/Login.vue'), // Lazy loading
   },
   {
     path: '/logout',
     name: 'Se deconnecter',
-    component: Logout
+    component: () => import('../views/Logout.vue'), // Lazy loading
   },
   {
     path: '/bookmarks',
     name: 'Favoris',
-    component: Bookmarks
+    component: () => import('../views/Bookmarks.vue'), // Lazy loading
   }
 ]
 
@@ -46,13 +40,33 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to) => { // Cf. https://github.com/vueuse/head pour des transformations avancées de Head
-  if (to.fullPath === '/accueil' && !window.location.href.includes('/accueil')) {
+router.beforeEach((to) => {
+  // Utilisation de requestIdleCallback pour les tâches non critiques
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(() => {
+      updateTitle(to)
+    })
+  } else {
+    updateTitle(to)
+  }
+  
+  if (to.fullPath === '/accueil') {
+    return handleAccueilRedirect(to)
+  }
+  
+  return true
+})
+function updateTitle(to: RouteLocationNormalized) {
+  const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
+  document.title = `${specificTitle}${MAIN_TITLE}`
+}
+
+function handleAccueilRedirect(to: RouteLocationNormalized) {
+  if (!window.location.href.includes('/accueil')) {
     window.open(to.href)
     return false
   }
-  const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
-  document.title = `${specificTitle}${MAIN_TITLE}`
-})
+  return true
+}
 
 export default router

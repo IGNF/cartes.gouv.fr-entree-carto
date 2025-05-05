@@ -303,95 +303,119 @@ const scaleLineOptions = {
 </script>
 
 <template>
-    <DsfrModal
-      :opened="printModalOpened"
-      :title="title"
-      :size="size"
-      @close="onModalPrintClose">
-      <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <div ref="printPage" class="print-page">
+  <DsfrModal
+    :opened="printModalOpened"
+    :title="title"
+    :size="size"
+    @close="onModalPrintClose"
+  >
+    <!-- slot : c'est ici que l'on customise le contenu ! -->
+    <div
+      ref="printPage"
+      class="print-page"
+    >
       <!-- Formulaire d'impression -->
-        <div ref="printForm" class="print-form">
-            <DsfrSegmentedSet
-              :inline="false"
-              v-model="pageOrientation"
-              :options="pageOrientationOptions"
-              :small="false"
-              legend="Mise en Page"
-              class="mb-20"
-            >
-              <template #legend>Mise en Page</template>
-            </DsfrSegmentedSet>
-            <DsfrSelect
-              v-model="paperFormat"
-              label="Dimensions"
-              :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
-            />
-            <DsfrSelect
-              v-model.number="margin"
-              label="Marge"
-              :options="[
-                { value : 0, text : 'Pas de marge - 0mm' },
-                { value : 5, text : 'Petite marge - 5mm' },
-                { value : 10, text : 'Grosse marge - 10mm' }
-              ]"
-            />
-            <DsfrInput
-                v-model="printTitle"
-                :disabled="!hasTitle"
-                label="Titre de la carte"
-                label-visible
-                name="titre"
-                class="mb-10"
-            />
-            <div class="mt-10"><DsfrCheckbox
-              v-model="hasTitle"
-              name="checkbox-simple"
-              :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
-            /></div>
-            <div class="mt-10">
-              <DsfrCheckbox
-              v-model="hasScale"
-              name="checkbox-simple"
-              :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
-            /></div>
-            <DsfrButton
-              id="print-page-export"
-              label="Export PDF"
-              title="Export PDF"
-              icon=""
-              no-outline
-              @click="exportPDF"
-            />
-         </div>
-        <!-- Dom de la prévisualisation de l'impression -->
-        <div  class="print-preview-container">
-          <div ref="printPreview" class="print-preview">
-            <div id="map-title" ref="mapTitle" class="map-title" v-if="hasTitle">{{ printTitle }}</div>
-            <Map
-              v-if="printModalOpened" 
-              class="map" 
-              ref="refMap"
-              :map-Id="printMap"
-            >
-                <View
-                  :map-Id="printMap"
-                  :center="mapStore.center"
-                  :zoom="mapStore.zoom"/>
-                <Layers
-                  :map-Id="printMap"
-                  :selected-layers="selectedLayers"
-                  :selected-bookmarks="selectedBookmarks"/>
-                  <ScaleLine
-                  :visibility="hasScale"
-                  :scale-line-options="scaleLineOptions"
-                  :map-id="printMap"
-                />
-            </Map>
+      <div
+        ref="printForm"
+        class="print-form"
+      >
+        <DsfrSegmentedSet
+          v-model="pageOrientation"
+          :inline="false"
+          :options="pageOrientationOptions"
+          :small="false"
+          legend="Mise en Page"
+          class="mb-20"
+        >
+          <template #legend>
+            Mise en Page
+          </template>
+        </DsfrSegmentedSet>
+        <DsfrSelect
+          v-model="paperFormat"
+          label="Dimensions"
+          :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
+        />
+        <DsfrSelect
+          v-model.number="margin"
+          label="Marge"
+          :options="[
+            { value : 0, text : 'Pas de marge - 0mm' },
+            { value : 5, text : 'Petite marge - 5mm' },
+            { value : 10, text : 'Grosse marge - 10mm' }
+          ]"
+        />
+        <DsfrInput
+          v-model="printTitle"
+          :disabled="!hasTitle"
+          label="Titre de la carte"
+          label-visible
+          name="titre"
+          class="mb-10"
+        />
+        <div class="mt-10">
+          <DsfrCheckbox
+            v-model="hasTitle"
+            name="checkbox-simple"
+            :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
+          />
         </div>
-        </div>    
+        <div class="mt-10">
+          <DsfrCheckbox
+            v-model="hasScale"
+            name="checkbox-simple"
+            :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
+          />
+        </div>
+        <DsfrButton
+          id="print-page-export"
+          label="Export PDF"
+          title="Export PDF"
+          icon=""
+          no-outline
+          @click="exportPDF"
+        />
+      </div>
+      <!-- Dom de la prévisualisation de l'impression -->
+      <div class="print-preview-container">
+        <div
+          ref="printPreview"
+          class="print-preview"
+        >
+          <div
+            v-if="hasTitle"
+            id="map-title"
+            ref="mapTitle"
+            class="map-title"
+          >
+            {{ printTitle }}
+          </div>
+          <Map
+            v-if="printModalOpened" 
+            ref="refMap" 
+            class="map"
+            :map-id="printMap"
+          >
+            <View
+              :map-id="printMap"
+              :center="mapStore.center"
+              :zoom="mapStore.zoom"
+            />
+            <Layers
+              :map-id="printMap"
+              :selected-layers="selectedLayers"
+              :selected-bookmarks="selectedBookmarks"
+            />
+            <ScaleLine
+              :visibility="hasScale"
+              :scale-line-options="scaleLineOptions"
+              :map-id="printMap"
+            />
+          </Map>
+        </div>
+      </div>    
     </div>
-    </DsfrModal>
+  </DsfrModal>
 </template>
 
 <style scoped>

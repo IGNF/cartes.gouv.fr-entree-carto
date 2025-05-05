@@ -49,7 +49,7 @@ provide(props.mapId, map)
 onMounted(() => {
   // On déclenche l'ecriture dans le dom
   
-  CRS.load();
+  CRS.loadByDefault();
   map.setTarget(mapRef.value)
   
   // On ajoute une option d'accessibilité
@@ -88,12 +88,17 @@ defineExpose({
     :id="mapId"
     ref="mapRef"
     tabindex="0"
-    @mouseover="onFocusOnMap">
+    @mouseover="onFocusOnMap"
+  >
     <slot />
   </div>
 </template>
 
 <style>
+#mainMap {
+  outline : none;
+}
+
 @keyframes spinner {
   to {
     transform: rotate(360deg);

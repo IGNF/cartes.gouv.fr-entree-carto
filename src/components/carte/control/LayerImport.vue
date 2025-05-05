@@ -152,7 +152,12 @@ const onSaveImportService = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { stop : 1 });
+      var url = toShare(document, {
+        opacity: 1, 
+        visible: true,
+        grayscale: false,
+        stop : 1
+      });
       mapStore.addBookmark(url);
     }
   })
@@ -163,8 +168,8 @@ const onSaveImportService = (e) => {
       message: t.layerimport.add_success_service(e.format.toUpperCase())
     });
   })
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     push.warning({
       title: t.layerimport.title,
       message: t.layerimport.add_failed_service(e.format.toUpperCase())
@@ -194,7 +199,12 @@ const onSaveImportMapbox = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { stop : 1 });
+      var url = toShare(document, {
+        opacity: 1, 
+        visible: true,
+        grayscale: false,
+        stop : 1
+      });
       mapStore.addBookmark(url);
     }
   })
@@ -205,8 +215,8 @@ const onSaveImportMapbox = (e) => {
       message: t.layerimport.add_success_mapbox
     });
   })
-  .catch((e) => {
-    console.error(e);
+  .catch((error) => {
+    console.error(error);
     push.warning({
       title: t.layerimport.title,
       message: t.layerimport.add_failed_mapbox
@@ -303,6 +313,12 @@ const getDataServiceWMTS = (data) => {
       type : data.type
     });
     console.debug(s);
+
+    // mise à jour de l'id interne de la couche
+    // au cas où le widget LayerImport ne fait pas...
+    if (data.layer.gpResultLayerId) {
+      data.layer.gpResultLayerId = `bookmark:${data.kind}:${uuid}`;
+    }
 
     // emettre un event pour prévenir l'ajout d'un service
     // au composant des favoris

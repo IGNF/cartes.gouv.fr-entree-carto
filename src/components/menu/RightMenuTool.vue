@@ -70,36 +70,43 @@ function tabIsActive(componentName) {
 
 <template>
   <MenuLateralWrapper
+    :id="activeTab"
+    ref="wrapper"
+    v-model="is_expanded"
     :side="side"
     :visibility="true"
-    :width=500
-    :id="activeTab"
-    v-model="is_expanded"
-    ref="wrapper">
+    :width="500"
+  >
     <template #content>
-      <div id="MenuCatalogueContent"
-        :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']" >
+      <div
+        id="MenuCatalogueContent"
+        :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']"
+      >
         <MenuCatalogue
-        :selected-layers="selectedLayers"
-        :layers="dataStore.getLayers()"/>
+          :selected-layers="selectedLayers"
+          :layers="dataStore.getLayers()"
+        />
       </div>
-      <div id="MenuControlContent"
-        :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']" >
+      <div
+        id="MenuControlContent"
+        :class="[activeTab === 'MenuControlContent' ? 'activeTab' : 'inactiveTab']"
+      >
         <MenuControl 
-          :selected-controls="selectedControls"/>
+          :selected-controls="selectedControls"
+        />
       </div>
     </template>
     <template #navButtons>
       <MenuLateralNavButton
         v-for="tab in tabArray"
+        :id="tab.componentName"
         :visibility="tab.visibility"
         :side="side"
         :icon="tab.icon"
-        :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
         @tab-clicked="tabClicked"
-        />
+      />
     </template>
   </MenuLateralWrapper>
 </template>

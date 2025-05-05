@@ -6,32 +6,32 @@ import ModalInformation from '@/components/modals/ModalInformation.vue'
 </script>
 
 <template>
-    <Suspense>
-      <!-- Chargement du dataStore avec une patience 
+  <Suspense>
+    <!-- Chargement du dataStore avec une patience 
           avant afficahge de la cartographie 
       -->
-      <StoreData>
-        <!-- Modale : Informations -->
-        <div class="fr-container fr-container--fluid fr-container-md">
-          <ModalInformation />
-        </div>
-        <CartoAndTools/>
-      </StoreData>
+    <StoreData>
+      <!-- Modale : Informations -->
+      <div class="fr-container fr-container--fluid fr-container-md">
+        <ModalInformation />
+      </div>
+      <CartoAndTools />
+    </StoreData>
 
-      <!-- loading state via #fallback slot -->
-      <template #fallback>
-        <div class="patience-container">
-          <Patience/>
-        </div>
-      </template>
-    </Suspense>
+    <!-- loading state via #fallback slot -->
+    <template #fallback>
+      <div class="patience-container">
+        <Patience />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <style>
   .patience-container{
     margin-left: 0;
     width: inherit;
-    height: 70vh;
+    height: 76.8vh;
     display: flex;
   }
 </style>

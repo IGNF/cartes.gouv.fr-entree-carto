@@ -37,22 +37,21 @@ onUpdated(() => {
 </script>
 
 <template>
- <tr class="control-list-element">
-    <td class="control-list-element-img">
-    </td>
+  <tr class="control-list-element">
+    <td class="control-list-element-img" />
     <td>
-        <DsfrToggleSwitch
-            :disabled="controlListElementOptions.disabled"
-            :hint="controlListElementOptions.hint"
-            :inputId="controlListElementOptions.id"
-            :label="controlListElementOptions.label"
-            labelLeft
-            :modelValue="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
-            v-model="isActive"
-            v-bind="$attrs"
-        />
+      <DsfrToggleSwitch
+        v-model="isActive"
+        :disabled="controlListElementOptions.disabled"
+        :hint="controlListElementOptions.hint"
+        :input-id="controlListElementOptions.id"
+        :label="controlListElementOptions.label"
+        label-left
+        :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
+        v-bind="$attrs"
+      />
     </td>
-</tr>
+  </tr>
 </template>
 
 <style scoped>

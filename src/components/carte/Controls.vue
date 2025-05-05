@@ -119,7 +119,8 @@ const layerSwitcherOptions = {
     collapsed: true,
     panel: true,
     counter: true,
-    allowEdit: true
+    allowEdit: true,
+    allowGrayScale: true
   }
 };
 
@@ -409,6 +410,12 @@ const contextMenuOptions = computed(() => {
         text : "Ajouter des données",
         callback : () => {
           domStore.getmenuCatalogueButton().firstChild.click()
+        }
+      },
+      {
+        text : "Mes enregistrements",
+        callback : () => {
+          domStore.getBookmarksButton().firstChild.click()
         }
       }
     ]

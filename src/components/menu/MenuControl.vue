@@ -94,7 +94,8 @@ onUpdated(() => {})
     <div class="control-search-bar">
       <DsfrSearchBar
         :model-value="searchString"
-        @update:model-value="updateSearch"/>
+        @update:model-value="updateSearch"
+      />
     </div>
 
 
@@ -102,13 +103,13 @@ onUpdated(() => {})
     <div class="control-content">
       <table>
         <ControlListElement
-      v-for="(opt, idx) in allOptions"
-      :key="idx"
-      v-model="selectedControls"
-      :model-value="props.selectedControls"
-      :control-list-element-options="opt"
-      />
-    </table>
+          v-for="(opt, idx) in allOptions"
+          :key="idx"
+          v-model="selectedControls"
+          :model-value="props.selectedControls"
+          :control-list-element-options="opt"
+        />
+      </table>
       <!-- <DsfrTabs
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
@@ -170,6 +171,6 @@ table {
   display: flex;
   flex-direction: column;
   width: calc(100% - 60px);
-  max-height: calc(70vh - 96px);
+  max-height: calc(76.8vh - 96px);
 }
 </style>

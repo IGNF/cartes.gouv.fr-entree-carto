@@ -111,16 +111,19 @@ const emit = defineEmits([
 
 <template>
   <MenuLateralWrapper
+    id="MenuCatalogueContentClose"
     ref="wrapper"
+    v-model="is_expanded"
     :side="side"
     :visibility="true"
     :width="width"
-    :padding=16
-    id="MenuCatalogueContentClose"
-    v-model="is_expanded">
+    :padding="16"
+  >
     <template #content>
-      <div id="MenuTierceContent"
-        :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']" >
+      <div
+        id="MenuTierceContent"
+        :class="[activeTab === 'MenuTierceContent' ? 'activeTab' : 'inactiveTab']"
+      >
         <MenuTierce
           @on-modal-share-open="$emit('onModalShareOpen')"
           @on-modal-print-open="$emit('onModalPrintOpen')"
@@ -128,21 +131,25 @@ const emit = defineEmits([
           @on-book-marks-open="onBookMarksOpen"
         />
       </div>
-      <div id="MenuBookMarksContent"
-        :class="[activeTab === 'MenuBookMarksContent' ? 'activeTab' : 'inactiveTab']" >
-        <MenuBookMarks></MenuBookMarks>
+      <div
+        id="MenuBookMarksContent"
+        :class="[activeTab === 'MenuBookMarksContent' ? 'activeTab' : 'inactiveTab']"
+      >
+        <MenuBookMarks />
       </div>
     </template>
     <template #navButtons>
       <MenuLateralNavButton
-        v-for="tab in tabArray" ref="tabs"
+        v-for="tab in tabArray"
+        :id="tab.componentName"
+        ref="tabs"
         :side="side"
         :icon="tab.icon"
         :visibility="tab.visibility"
-        :id="tab.componentName"
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
-        @tab-clicked="tabClicked"/>
+        @tab-clicked="tabClicked"
+      />
     </template>
   </MenuLateralWrapper>
 </template>
