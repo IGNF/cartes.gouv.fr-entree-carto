@@ -73,6 +73,12 @@ npm run test:unit
 
 ### Lancer les tests de End-to-End avec [playwright](https://playwright.dev/)
 
+```bash
+npm install -D @playwright/test@latest
+# Also download new browser binaries and their dependencies:
+npx playwright install --with-deps
+```
+
 #### Avec une interface graphique
 
 ```sh
@@ -85,7 +91,7 @@ npm run test:e2e:ui
 npm run test:e2e
 ```
 
-### En mode debug
+#### En mode debug
 
 ```sh
 npm run test:e2e:debug
@@ -93,6 +99,12 @@ npm run test:e2e:debug
 
 Pour information,
 > On lance les tests end-to-end avec le code de production et on utilise un serveur externe (serve) autre que le serveur interne de Vite.
+
+Le rapport
+
+```bash
+npx playwright show-report
+```
 
 ### Analyse statique du code avec [ESLint](https://eslint.org/)
 
