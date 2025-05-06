@@ -75,7 +75,6 @@ const btnSave = ref(new ButtonExport({
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
  * @see LayerSwitcher
- * @fixme l'outil de dessin doit être monté !
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
@@ -332,8 +331,10 @@ const createVectorDocument = async (data) => {
     throw error;
   }
 }
+
 /**
  * Mettre à jour un document pour un vecteur
+ * 
  * @param data 
  * @property {String} data.content - export data
  * @property {String} data.name - name

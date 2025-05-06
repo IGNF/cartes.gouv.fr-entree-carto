@@ -12,7 +12,8 @@ import {
 import { 
   createVectorLayer, 
   createServiceLayer,
-  createMapBoxLayer 
+  createMapBoxLayer,
+  createComputeLayer
 } from '@/features/layer.js';
 
 const props = defineProps({
@@ -133,7 +134,7 @@ onMounted(() => {
         throw "Not yet implemented !";
         break;
       case "compute":
-        throw "Not yet implemented !";
+        promise = createComputeLayer(props.layerOptions);  
         break;
       case "import":
         // url de partage contient toujours un contenu

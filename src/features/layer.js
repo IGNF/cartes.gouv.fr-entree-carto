@@ -26,8 +26,6 @@ import {
 
 import { DEFAULT_STYLE } from './style';
 
-import t from './translation';
-
 /**
  * INFO
  * Toutes les couches ajoutées sur la carte ont un ID interne
@@ -146,6 +144,135 @@ const createVectorLayer = (options) => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * Creation d'une couche de type vecteur pour les calculs suivants :
+ * - Route
+ * - Isocurve
+ * - Profil (?)
+ * 
+ * On transmet le fichier GeoJSON avec le type internal
+ * 
+ * Les options
+ * @param {*} options 
+ * @property {*} options.id - uuid de l'API Entrepôt
+ * @property {*} options.name
+ * @property {*} options.description
+ * @property {*} options.format
+ * @property {*} options.compute
+ * @property {*} options.data | @property {*} options.url
+ */
+const createComputeLayer = (options) => {
+  try {
+    var vectorFormat = null;
+    var vectorSource = null;
+    var vectorLayer = null;
+  
+    vectorFormat = new GeoJSON(); 
+    // Extended
+    var extended = (options.extended === undefined) ? true : options.extended;
+    if (extended) {
+      vectorFormat = new GeoJSONExtended({
+        defaultStyle : DEFAULT_STYLE
+      }); 
+    }
+  
+    if (!vectorFormat) {
+      throw new Error(t.ol.failed_format(options.format));
+    }
+  
+    if (options.data) {
+      const proj = vectorFormat.readProjection(options.data);
+      vectorSource = new VectorSource({
+        features: vectorFormat.readFeatures(options.data, {
+          dataProjection : proj,
+          featureProjection : "EPSG:3857"
+        }),
+      });
+    }
+  
+    if (options.url) {
+      vectorSource = new VectorSource({
+        format: vectorFormat,
+        // url: options.url
+        loader : function (extent, resolution, projection, success, failure) {
+          const mapProj = projection.getCode();
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', options.url);
+          const onError = function() {
+            vectorSource.removeLoadedExtent(extent);
+            failure();
+          }
+          xhr.onerror = onError;
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              var fileProj = vectorFormat.readProjection(xhr.responseText);
+              const features = vectorFormat.readFeatures(xhr.responseText, {
+                dataProjection : fileProj,
+                featureProjection : mapProj
+              });
+              vectorSource.addFeatures(features);
+              success(features);
+            } else {
+              onError();
+            }
+          }
+          xhr.send();
+        }
+      });
+    }
+  
+    if (!vectorSource) {
+      throw new Error(t.ol.failed_source("compute"));
+    }
+  
+    vectorSource._title = options.name;
+    vectorSource._description = options.description;
+  
+    vectorLayer = new VectorLayer({
+      source : vectorSource,
+      visible : getVisible(options.visible),
+      opacity : getOpacity(options.opacity)
+    });
+  
+    if (!vectorLayer) {
+      throw new Error(t.ol.failed_layer("compute"));
+    }
+  
+    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
+    
+    const failedLoadData = () => {
+      throw new Error(t.ol.failed_layer("compute"));
+    }
+    const successLoadData = (e) => {
+      // cette couche est elle une couche de calcul ?
+      var config = vectorFormat.readRootExtensions("geoportail:compute");
+      if (!config || Object.keys(config).length === 0) {
+        throw new Error(t.ol.failed_layer("compute"));
+      }
+      // type de controle
+      vectorLayer.set("control", options.compute); // ex. route ou isocurve
+      // on enregistre la configuration
+      vectorLayer.set("data", config);
+      // on reecrit un geojson proprement sans la configuration
+      var format = new GeoJSONExtended({
+        defaultStyle : DEFAULT_STYLE
+      });
+      var geojson = format.writeFeatures(e.features, {
+          dataProjection : "EPSG:4326",
+          featureProjection : "EPSG:3857"
+      });
+      vectorLayer.set("geojson", geojson);
+    };
+
+    vectorLayer.getSource().once("featuresloadend", successLoadData);
+    vectorLayer.getSource().once("featuresloaderror", failedLoadData);
+
+    return Promise.resolve(vectorLayer);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
 
 /**
  * Creation d'un couche de service :
@@ -538,6 +665,7 @@ const getOpacity = (o) => {
 
 export {
   createVectorLayer,
+  createComputeLayer,
   createServiceLayer,
   createMapBoxLayer
 }

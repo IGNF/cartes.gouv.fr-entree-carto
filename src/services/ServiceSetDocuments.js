@@ -99,6 +99,7 @@ var SetDocuments = {
    * @property {String} obj.format - format : kml, geojson, ...
    * @property {String} obj.type - drawing, import, ...
    * @property {String} obj.kind - wms, wmts, ...
+   * @property {String} obj.compute - isocurve, route, ...
    * @property {String} obj.target - internal, external
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
@@ -115,6 +116,12 @@ var SetDocuments = {
     ];
     if (obj.kind) {
       var value = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
+      if (value) {
+        labels.push(value);
+      }
+    }
+    if (obj.compute) {
+      var value = this.labelsCompute.find((e) => obj.compute.toLowerCase().includes(e));
       if (value) {
         labels.push(value);
       }

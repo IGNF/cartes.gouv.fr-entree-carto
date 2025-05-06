@@ -45,6 +45,13 @@ export default {
     remove_failed: 'Une erreur est survenue dans la suppression de la couche',
     failed_not_yet_implemented: 'L\'édition de ce type de données n\'est pas encore gérée !',
   },
+  route: {
+    title: 'Itinéraire',
+    failed_import: "La couche importée ne semble pas être un calcul !",
+    save_already: 'Le calcul d\'itinéraire a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul d\'itinéraire est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul'
+  },
   searchengine: {
     title: 'Recherche de couche'
   },
