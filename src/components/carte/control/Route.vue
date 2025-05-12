@@ -3,7 +3,9 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useActionButtonEulerian } from '@/composables/actionEulerian';
+import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
+import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
 import { 
   Route,
@@ -78,24 +80,8 @@ const btnSave = ref(new ButtonExport({
  */
 emitter.addEventListener("compute-route:edit:clicked", (e) => {
   log.debug(e);
-  if (route.value) {
-    route.value.setCollapsed(false);
-    btnExport.value.inputName.value = e.options.title || "";
-    // setGeoJSON
-    if (e.layer.get("geojson")) {
-      route.value.setGeoJSON(e.layer.get("geojson"));
-    }
-    // setData
-    if (e.layer.get("data")) {
-      route.value.setData(e.layer.get("data"));
-    }
-    // init
-    if (e.layer.get("control") === "route") {
-      // setLayer
-      route.value.setLayer(e.layer);
-      route.value.init();
-    }
-  }
+  btnExport.value.inputName.value = e.options.title || "";
+  useActionEdit(route.value, e.layer);
 });
 
 onMounted(() => {
@@ -180,6 +166,7 @@ const onDrawEnd = (e) => {
 const onCompute = (e) => {
   log.debug(e);
 }
+
 /**
  * Gestionnaire d'evenement 
  * 
@@ -243,7 +230,7 @@ const onSaveRoute = (e) => {
 
   var promise;
   if (type !== "bookmark") {
-    promise = createComputeDocument(data);
+    promise = useCreateDocument(data, emitter, service);
   } else {
     // INFO
     // Il n'y a pas de mise à jour d'un calcul d'itineraire.
@@ -304,76 +291,6 @@ const onSaveRoute = (e) => {
  */
 const onExportRoute = (e) => {
   log.debug(e);
-}
-
-/**
- * Créer un document pour un vecteur de type compute
- * 
- * @param data 
- * @property {String} data.content - export data
- * @property {String} data.name - name
- * @property {String} data.description - description
- * @property {String} data.format - format : kml, geojson, ...
- * @property {String} data.target - internal, external
- * @property {String} data.compute - route
- * @property {String} data.type - drawing, import, bookmark
- * @property {Object} data.layer - layer
- */
-const createComputeDocument = async (data) => {
-  try {
-    const o = await service.setDocument(data)
-    var uuid = o.uuid;
-    var action = o.action;
-    
-    // mise à jour de l'id interne de la couche
-    if (data.layer.gpResultLayerId) {
-      data.layer.gpResultLayerId = `bookmark:${data.type}-route:${uuid}`;
-    }
-    
-    // mise à jour de l'entrée du gestionnaire de couche
-    if (data.layer.gpResultLayerDiv) {
-      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
-      if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
-      }  
-    }
-
-    // rendre public le document
-    const s = await service.sharingDocument({
-      uuid : uuid,
-      type : data.type
-    });
-    console.debug(s);
-
-    // mise à jour des extras du document
-    const x = await service.updateMetadataDocument({
-      uuid : uuid,
-      type : data.type,
-      name : data.name,
-      description : data.description,
-      // FIXME extra !? sinon, labels !
-      extra : {
-        format: data.format.toLowerCase(),
-        target: "internal",
-        date: new Date().toLocaleDateString()
-      }
-    });
-    console.debug(x);
-
-    // emettre un event pour prévenir l'ajout d'un croquis
-    // au composant des favoris
-    emitter.dispatchEvent("document:saved", {
-      uuid : uuid,
-      action : action // added, updated, deleted
-    });
-
-    return o;
-
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 }
 
 </script>
