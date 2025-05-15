@@ -64,11 +64,11 @@ RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 # pour écriture du fichier d'environnement de la webapp
 VOLUME ["/usr/share/nginx/html/cartes/env"]
 
-# Copie vers /tmp/env au lieu de /usr/share/nginx/html/cartes/env
-RUN mkdir -p /tmp/env
-RUN chown -R nginx:root /tmp/env
+# Copie vers /app/env au lieu de /usr/share/nginx/html/cartes/env
+RUN mkdir -p /app/env
+# RUN chown -R nginx:root /app/env
 # On copie le fichier de configuration de l'environnement
-COPY --from=builder /app/dist/env /tmp/env
+COPY --from=builder /app/dist/env /app/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
