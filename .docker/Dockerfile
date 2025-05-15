@@ -66,6 +66,7 @@ VOLUME ["/usr/share/nginx/html/cartes/env"]
 
 # Copie vers /app/env au lieu de /usr/share/nginx/html/cartes/env
 RUN mkdir -p /app/env
+RUN mkdir -p /tmp/env
 # RUN chown -R nginx:root /app/env
 # On copie le fichier de configuration de l'environnement
 COPY --from=builder /app/dist/env /app/env
