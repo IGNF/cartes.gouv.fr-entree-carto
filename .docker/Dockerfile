@@ -66,13 +66,13 @@ VOLUME ["/usr/share/nginx/html/cartes/env"]
 
 # Copie vers /tmp/env au lieu de /usr/share/nginx/html/cartes/env
 RUN mkdir -p /tmp/env
-RUN chown -R nginx:nginx /tmp/env
+RUN chown -R nginx:root /tmp/env
 # On copie le fichier de configuration de l'environnement
 COPY --from=builder /app/dist/env /tmp/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-USER nginx
+# USER nginx
 EXPOSE 8082
 
 CMD ["nginx", "-g", "daemon off;"]
