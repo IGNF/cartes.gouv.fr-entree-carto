@@ -135,3 +135,37 @@ spec:
           - name: VITE_API_URL
             value: "https://api.example.com"
 ```
+
+---
+
+Le container de nginx est en lecture seule !
+Il faut donc monter un volume temporaire pour l'écriture des fichiers d'env.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-vite-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-vite-app
+  template:
+    metadata:
+      labels:
+        app: my-vite-app
+    spec:
+      containers:
+        - name: my-vite-app
+          image: nginx:latest
+          volumeMounts:
+            - name: env-volume
+              mountPath: /usr/share/nginx/html/cartes/env
+              readOnly: false  # Montage en lecture-écriture du répertoire "env/"
+      volumes:
+        - name: env-volume
+          emptyDir: {}  # Répertoire temporaire et modifiable
+```
+
+Et, une gestion des droits sur le montage du volume avec `securityContext` pour les fichiers copiés ou créés dans ce volume ?

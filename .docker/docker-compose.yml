@@ -30,19 +30,24 @@ services:
         image: ignf/cartes.gouv.fr-carto:latest
         container_name: cartesgouvfr-entree_carto
         environment:
-            - VITE_GPF_CONTEXT=local
             - HTTP_PROXY=${HTTP_PROXY}
             - HTTPS_PROXY=${HTTPS_PROXY}
             - http_proxy=${HTTP_PROXY}
             - https_proxy=${HTTPS_PROXY}
         env_file:
             - ../env/.env.docker-local
+        volumes:
+          - envdata:/usr/share/nginx/html/cartes/env:rw
         ports:
         # - HOST:CONTAINER
           - 8082:8082
         networks:
           - web_dev
 
+volumes:
+  envdata:
+    driver: local
+  
 networks:
-    web_dev:
-        external: true
+  web_dev:
+    external: true
