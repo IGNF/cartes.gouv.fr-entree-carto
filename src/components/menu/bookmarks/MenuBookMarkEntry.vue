@@ -67,13 +67,11 @@ const onAddData = (data) => {
         fct = service.getImport;
         break;
       case "compute":
-        // TODO
         // Ce type de données doit initialisé un contrôle : 
         // - isochrone
         // - profil altimétrique
         // - itineraire
         fct = service.getCompute;
-        throw new Error(t.bookmark.failed_not_yet_implemented(data.type));
         break;
       case "service":
         fct = service.getService;
@@ -110,12 +108,13 @@ const onAddData = (data) => {
         permalink = true;
       }
       if (data.type === "compute") {
-        // TODO
+        // INFO
         // On emet un event vers le controle, et on lui passe le
         // informations du calcul du document
         // ex. emitter.dispatch('route:compute:called', {...});
         // Le controle va se charger de l'initialisation via l'abonnement
         // à l'evenement
+        permalink = true;
       }
       
       // ajout du document dans le permalien pour partage

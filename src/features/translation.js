@@ -45,6 +45,20 @@ export default {
     remove_failed: 'Une erreur est survenue dans la suppression de la couche',
     failed_not_yet_implemented: 'L\'édition de ce type de données n\'est pas encore gérée !',
   },
+  route: {
+    title: 'Itinéraire',
+    failed_import: "La couche importée ne semble pas être un calcul d`itinéraire !",
+    save_already: 'Le calcul d\'itinéraire a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul d\'itinéraire est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d`itinéraire'
+  },
+  iso: {
+    title: 'Isochrone',
+    failed_import: "La couche importée ne semble pas être un calcul d\'isochrone !",
+    save_already: 'Le calcul d\'isochrone a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul d\'isochrone est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d\'isochrone'
+  },
   searchengine: {
     title: 'Recherche de couche'
   },

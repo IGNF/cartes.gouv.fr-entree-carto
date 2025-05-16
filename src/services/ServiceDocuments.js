@@ -59,7 +59,7 @@ var Documents = {
   ],
 
   labelsCompute: [
-    "isochron",
+    "isocurve",
     "route",
     "profil"
   ],
