@@ -387,8 +387,8 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-route") || 
-          gpId.toLowerCase().includes("compute:Pieton$OGC:OPENLS;Itineraire") ||
-          gpId.toLowerCase().includes("compute:Voiture$OGC:OPENLS;Itineraire") ||
+          gpId.toLowerCase().includes("compute:pieton$ogc:openls;itineraire") ||
+          gpId.toLowerCase().includes("compute:voiture$ogc:openls;itineraire") ||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "route")
         ) {
 
@@ -406,8 +406,8 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-isocurve") || 
-          gpId.toLowerCase().includes("compute:Pieton$GEOPORTAIL:GPP:Isocurve") ||
-          gpId.toLowerCase().includes("compute:Voiture$GEOPORTAIL:GPP:Isocurve")||
+          gpId.toLowerCase().includes("compute:pieton$geoportail:gpp:isocurve") ||
+          gpId.toLowerCase().includes("compute:voiture$geoportail:gpp:isocurve")||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "isocurve")) {
 
         // on active le controle

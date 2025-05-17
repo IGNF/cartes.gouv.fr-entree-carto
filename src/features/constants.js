@@ -1,5 +1,9 @@
 /**
- * Gestion des noms de couches internes (...)
+ * Gestion des noms de couches internes issus des 
+ * - widgets
+ * - favoris
+ * pour les données de type vecteurs ou computes
+ * 
  * @todo à mettre en place
  */
 var InternalName = {
@@ -7,12 +11,12 @@ var InternalName = {
   names : [
     // computes-isocurve
     "bookmark:compute-isocurve",
-    "compute:Pieton$GEOPORTAIL:GPP:Isocurve",
-    "compute:Voiture$GEOPORTAIL:GPP:Isocurve",
+    "compute:pieton$geoportail:gpp:isocurve",
+    "compute:voiture$geoportail:gpp:isocurve",
     // compute-route
     "bookmark:compute-route",
-    "compute:Pieton$OGC:OPENLS;Itineraire",
-    "compute:Voiture$OGC:OPENLS;Itineraire",
+    "compute:pieton$ogc:openls;itineraire",
+    "compute:voiture$ogc:openls;itineraire",
     // croquis
     "drawing",
     "bookmark:drawing-kml",

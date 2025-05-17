@@ -541,12 +541,11 @@ var SetDocuments = {
       // ERROR !
       throw new Error(`Le document ${uuid} n'a pas été téléchargé !`);
     }
-    var json = (infos.extra.format === 'json' || infos.extra.format === 'geojson');
     return {
       uuid : uuid,
       action : "exported",
       extra : {
-        content : (json) ? JSON.stringify(content) : content,
+        content : content,
         mimeType : this.getMimeType(infos.extra.format),
         name : infos.name,
         ext : infos.extra.format

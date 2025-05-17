@@ -10,7 +10,8 @@ export function useActionEdit (Widget, Layer) {
       Widget.setData(Layer.get("data"));
     }
     // init
-    if (Layer.get("control") === "route" || Layer.get("control") === "isocurve") {
+    if (Layer.get("control") === "route" || Layer.get("control") === "isocurve" || 
+        Widget.CLASSNAME === "Isocurve" || Widget.CLASSNAME === "Route") {
       // setLayer
       Widget.setLayer(Layer);
       Widget.init();

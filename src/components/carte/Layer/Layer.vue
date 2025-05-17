@@ -183,6 +183,9 @@ onMounted(() => {
   }
 })
 
+/**
+ * @fixme un update sur un import ou drawing supprime le layer !?
+ */
 onUnmounted(() => {
   if (map && layer) {
     map.removeLayer(layer)

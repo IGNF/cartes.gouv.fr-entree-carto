@@ -165,6 +165,11 @@ const onDrawEnd = (e) => {
 }
 const onCompute = (e) => {
   log.debug(e);
+  var widget = e.target;
+  var layer = widget.getLayer();
+  layer.set("control", widget.CLASSNAME.toLowerCase());
+  layer.set("data", widget.getData());
+  layer.set("geojson", widget.getGeoJSON());
 }
 
 /**
