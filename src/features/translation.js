@@ -59,6 +59,13 @@ export default {
     save_success: 'Le calcul d\'isochrone est enregistré dans l\'espace personnel',
     save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d\'isochrone'
   },
+  profil: {
+    title: 'Profil altimétrique',
+    failed_import: "La couche importée ne semble pas être un calcul de profil !",
+    save_already: 'Le calcul de profil a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul de profil est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul de profil'
+  },
   searchengine: {
     title: 'Recherche de couche'
   },

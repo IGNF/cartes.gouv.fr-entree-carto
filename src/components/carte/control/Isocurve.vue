@@ -294,6 +294,8 @@ const onSaveIsocurve = (e) => {
  */
  const onExportIsocurve = (e) => {
   log.debug(e);
+  // on reprend le nom de l'export saisie par l'utilisateur
+  btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
 </script>
 

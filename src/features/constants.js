@@ -28,6 +28,8 @@ var InternalName = {
     "bookmark:import-gpx",
     "bookmark:import-geojson",
     // compute-profil
+    "measure:profil",
+    "bookmark:compute-profil"
     // import services
     // mapbox
   ],

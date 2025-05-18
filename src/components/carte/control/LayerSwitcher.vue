@@ -342,6 +342,7 @@ const onChangeGrayScaleLayer = (e) => {
  * @fires emitter#vector:edit:clicked
  * @fires emitter#compute-route:edit:clicked
  * @fires emitter#compute-iso:edit:clicked
+ * @fires emitter#compute-profil:edit:clicked
  * @todo Edition des styles mapbox
  */
 const onClickEditLayer = (e) => {
@@ -419,6 +420,23 @@ const onClickEditLayer = (e) => {
            * pour l'édition d'un calcul isochrone
            */
           emitter.dispatchEvent("compute-isocurve:edit:clicked", e);
+        }, 0);
+        return;
+      }
+      // on liste tous les cas de figures possibles pour un compute à éditer
+      if (gpId.toLowerCase().includes("bookmark:compute-profil") || 
+          gpId.toLowerCase().includes("measure:profil") ||
+          (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "elevationpath")) {
+
+        // on active le controle
+        mapStore.addControl("ElevationPath");
+
+        setTimeout(function() {
+          /**
+           * @event 
+           * pour l'édition d'un calcul de profil
+           */
+          emitter.dispatchEvent("compute-profil:edit:clicked", e);
         }, 0);
         return;
       }
