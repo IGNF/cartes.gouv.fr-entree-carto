@@ -174,7 +174,29 @@ onMounted(() => {
         return l;
       })
       .then((l) => {
+        // sauvegarde de la couche
         layer = l;
+      })
+      .then(() => {
+        // zoom sur la couche
+        var source = layer.getSource();
+        if (map.getView() && map.getSize()) {
+          var sourceExtent = null;
+          if (source && source.getExtent) {
+            sourceExtent = source.getExtent();
+          } else {
+            sourceExtent = source.getTileGrid().getExtent();
+          }
+          if (sourceExtent && sourceExtent[0] !== Infinity) {
+            map.getView().fit(sourceExtent, map.getSize());
+          } else {
+            layer.once('change', () => {
+              if (layer.getSource().getExtent()) {
+                map.getView().fit(layer.getSource().getExtent(), map.getSize());
+              }
+            });
+          }
+        }
       })
       .catch((e) => {
         throw e;
