@@ -6,6 +6,7 @@
 
 ### 🎉 Résumé
 
+Publication de l'espace personnel et des fonctionnalités qui y sont liées.
 Diverses corrections sur l'espace personnel (favoris), amélioration du gestionnaire de couches, et de l'affichage du footer.
 
 ### 💥 Breaking changes
@@ -13,7 +14,8 @@ Diverses corrections sur l'espace personnel (favoris), amélioration du gestionn
 ### 📖 Changelog
 
 #### ✨ [Ajout]
-
+    
+    - Espace Personnel : ajout des fonctionnalités de l'espace personnel : enregistrement, import, modification de données (#439,#564,#585) 
     - Menu Contextuel : ajout des enregistrements au menu contextuel (#579)
     - Theme sombre : affichage des notifications dans le thème sombre (#576)
     - Gestionnaire de couches : gestion de l'affichage des boutons edition / N&B en fonction du type de données
@@ -32,7 +34,7 @@ Diverses corrections sur l'espace personnel (favoris), amélioration du gestionn
     - Lien de partage : Gestion correcte de l'ordre des couches dans le permalien (#559)
     - Noir et Blanc : N&B correctement géré pour des couches de type mapbox issues des favoris
     - Espace Personnel : correction de l'activation du bouton 'Enregistrer une carte' dans le menu des favoris (#561)
-    - Header : en mode connecté, le clic sur son nom de profil redirige vers le tableau de bord (#562)
+    - Header : en mode connecté, le clic sur son nom de profil redirige vers le tableau de bord (#566)
     - Espace Personnel : correction de l'enregistrement des services de type WMS, WMTS ou MapBox dans les favoris (#563)
     - Partage : Gestion de l'erreur au chargement d'un lien de partage avec une couche inconnue (#534)
     - Footer : Correction du footer en cas de zoom ou dézoom sur la fenêtre du navigateur (#580)
