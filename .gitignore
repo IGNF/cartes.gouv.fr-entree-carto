@@ -357,3 +357,9 @@ package-lock.json
 
 # trace / debug
 Trace-*.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

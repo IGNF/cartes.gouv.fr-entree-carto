@@ -2,23 +2,35 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from '@/stores/dataStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useMapStore } from '@/stores/mapStore';
+import { useActionButtonEulerian } from '@/composables/actionEulerian';
+import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
+import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
 import { 
   Isocurve,
   ButtonExport 
-} from 'geopf-extensions-openlayers'
+} from 'geopf-extensions-openlayers';
+
+import { toShare } from '@/features/share';
+
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+ 
+const emitter = inject('emitter');
+var service = inject('services');
 
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
   analytic: Boolean,
   isocurveOptions: Object
-})
+});
 
 const log = useLogger()
 const store = useDataStore();
-
+const mapStore = useMapStore();
 
 const map = inject(props.mapId)
 const isocurve = ref(new Isocurve(props.isocurveOptions))
@@ -57,9 +69,19 @@ const btnSave = ref(new ButtonExport({
   }
 }));
 
-// TODO
-// abonnement à l'evenement sur la gestion d'une couche compute
-// ex. Route.addEventListener('route:compute:called', (e) => { this.setData(e.data); });
+/** 
+ * Gestionnaire d'evenement : abonnement sur "compute-isocurve:edit:clicked"
+ * 
+ * Reassocier la donnée et l'outil de calcul
+ * via le bouton d'edition du gestionnaire de couche
+ * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @see LayerSwitcher
+ */
+ emitter.addEventListener("compute-isocurve:edit:clicked", (e) => {
+  log.debug(e);
+  btnExport.value.inputName.value = e.options.title || "";
+  useActionEdit(isocurve.value, e.layer);
+});
 
 onMounted(() => {
   if (props.visibility) {
@@ -81,6 +103,7 @@ onMounted(() => {
     isocurve.value.on("isocurve:drawstart", onDrawStart);
     isocurve.value.on("socurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
+    isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
     btnSave.value.on("button:clicked", onSaveIsocurve);
   }
@@ -114,10 +137,25 @@ onUpdated(() => {
     isocurve.value.on("isocurve:drawstart", onDrawStart);
     isocurve.value.on("socurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
+    isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
     btnSave.value.on("button:clicked", onSaveIsocurve);
   }
 })
+
+/** 
+ * gestionnaire d'evenement sur les abonnements du widget
+ * @description
+ * ...
+ */
+ const onToggleShowCompute = (e) => {
+  log.debug(e);
+  if (e.target.collapsed) {
+    // dissociation de la couche du widget 
+    // pour permettre une autre saisie
+    isocurve.value.clean();
+  }
+}
 
 /** 
  * gestionnaire d'evenement sur les abonnements du widget
@@ -132,12 +170,19 @@ const onDrawEnd = (e) => {
 }
 const onCompute = (e) => {
   log.debug(e);
+  var widget = e.target;
+  var layer = widget.getLayer();
+  layer.set("control", widget.CLASSNAME.toLowerCase());
+  layer.set("data", widget.getData());
+  layer.set("geojson", widget.getGeoJSON());
 }
 /**
  * Gestionnaire d'evenement 
  * 
  * Ecouteur pour la sauvegarde d'un calcul isochrone
  * 
+ * @fires emitter#document:saved
+ * @fires emitter#document:updated
  * @param {Object} e
  * @property {Object} type - event
  * @property {Object} target - instance Export
@@ -149,6 +194,88 @@ const onCompute = (e) => {
  */
 const onSaveIsocurve = (e) => {
   log.debug(e);
+  if (!service.authenticated) {
+    push.warning({
+      title: t.auth.title,
+      message: t.auth.not_authentificated
+    });
+    return; // pas plus loin...
+  }
+
+  // ID pour un nouveau calcul
+  // "compute:Pieton$GEOPORTAIL:GPP:Isocurve",
+  // "compute:Voiture$GEOPORTAIL:GPP:Isocurve",
+  // ID pour un import de calcul : layerimport:compute
+  var gpID = e.layer.gpResultLayerId.toLowerCase();
+  var type = gpID.split(':')[0];
+  if (type === "layerimport") {
+    type = gpID.split(':')[1];
+    if (type !== "compute") {
+      push.error({
+        title: t.iso.title,
+        message: t.iso.failed_import
+      });
+      return; // pas plus loin...
+    }
+  }
+
+  var data = {
+    layer : e.layer,
+    content : e.content,
+    name : btnExport.value.inputName.value || e.name,
+    description : e.description,
+    format : e.format.toLowerCase(),
+    compute : "isocurve",
+    target : "internal",
+    type : type // ex. drawing, import, bookmark, compute...
+  };
+
+  var promise;
+  if (type !== "bookmark") {
+    promise = useCreateDocument(data, emitter, service);
+  } else {
+    // INFO
+    // Il n'y a pas de mise à jour d'un calcul.
+    // Le widget procède à une suppression / creation de la couche à chaque calcul...
+    push.info({
+      title: t.iso.title,
+      message: t.iso.save_already
+    });
+    return; // pas plus loin...
+  }
+
+  promise
+  .then((o) => {
+    var document = service.find(o.uuid); // un peu redondant...
+    if (document) {
+      var url = toShare(document, { 
+        opacity: data.layer.get('opacity'), 
+        visible: data.layer.get('visible'),
+        grayscale: data.layer.get('grayscale'),
+        stop: 1 // HACK !
+      });
+      // nouvelle donnée à ajouter ou mise à jour au permalien
+      if (o.action === "added") {
+        mapStore.addBookmark(url);
+      } else {
+        throw new Error("Action not yet implemented !");
+      }
+    }
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.iso.title,
+      message: t.iso.save_success
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.iso.title,
+      message: t.iso.save_failed
+    });
+  });
 }
 
 /**
@@ -167,6 +294,8 @@ const onSaveIsocurve = (e) => {
  */
  const onExportIsocurve = (e) => {
   log.debug(e);
+  // on reprend le nom de l'export saisie par l'utilisateur
+  btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
 </script>
 
