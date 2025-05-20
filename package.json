@@ -1,7 +1,7 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.7-test-espace-perso-6",
+  "version": "1.0.7-test-espace-perso",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
   "date": "19/05/2025",
   "directories": {},
