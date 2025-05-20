@@ -153,6 +153,10 @@ export const useMapStore = defineStore('map', () => {
   // objets calculés
   //////////////////
 
+  var isPermalink = computed(() => {
+    return (location.search.includes("permalink=yes"));
+  });
+  
   var permalink = computed(() => {
     // INFO
     // on exclue la route /embed
@@ -535,6 +539,7 @@ export const useMapStore = defineStore('map', () => {
     permalink,
     permalinkShare,
     geolocation,
+    isPermalink,
     getMap,
     setMap,
     getLayers,

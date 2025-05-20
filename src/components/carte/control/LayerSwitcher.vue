@@ -27,7 +27,6 @@ const mapStore = useMapStore();
 const dataStore = useDataStore();
 
 const emitter = inject('emitter');
-const service = inject('services');
 const map = inject(props.mapId);
 
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
