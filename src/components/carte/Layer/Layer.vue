@@ -12,7 +12,8 @@ import {
 import { 
   createVectorLayer, 
   createServiceLayer,
-  createMapBoxLayer 
+  createMapBoxLayer,
+  createComputeLayer
 } from '@/features/layer.js';
 
 const props = defineProps({
@@ -133,7 +134,7 @@ onMounted(() => {
         throw "Not yet implemented !";
         break;
       case "compute":
-        throw "Not yet implemented !";
+        promise = createComputeLayer(props.layerOptions);  
         break;
       case "import":
         // url de partage contient toujours un contenu
@@ -182,6 +183,9 @@ onMounted(() => {
   }
 })
 
+/**
+ * @fixme un update sur un import ou drawing supprime le layer !?
+ */
 onUnmounted(() => {
   if (map && layer) {
     map.removeLayer(layer)

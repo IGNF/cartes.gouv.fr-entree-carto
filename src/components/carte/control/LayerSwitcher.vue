@@ -340,14 +340,14 @@ const onChangeGrayScaleLayer = (e) => {
  * quand l'on clique sur le bouton d'édition
  * @see Drawing
  * @fires emitter#vector:edit:clicked
+ * @fires emitter#compute-route:edit:clicked
+ * @fires emitter#compute-iso:edit:clicked
+ * @fires emitter#compute-profil:edit:clicked
  * @todo Edition des styles mapbox
  */
 const onClickEditLayer = (e) => {
   log.debug("onClickEditLayer", e);
 
-  // on active le controle de dessin
-  mapStore.addControl("Drawing");
-  
   // INFO
   // selon le type de données, on envoie une demande au widget
   // ex. pour les croquis, on envoie : "vector:edit:clicked"
@@ -359,23 +359,84 @@ const onClickEditLayer = (e) => {
   if (e.layer.gpResultLayerId) {
     var gpId = e.layer.gpResultLayerId.toLowerCase();
     if (gpId) {
-      // on liste tous les cas de figures possibles pour un vecteur à éditer
+      // on liste tous les cas de figures possibles :
+      // - vecteur --> widget Drawing
+      // - compute --> widget Isocurve ou Route
+      // - mapbox  --> TODO
+      // - service --> TODO
       if (gpId.toLowerCase().includes("drawing") || 
-          gpId.toLowerCase().includes("layerimport:kml") ||
-          gpId.toLowerCase().includes("layerimport:gpx") ||
-          gpId.toLowerCase().includes("layerimport:geojson") || 
-          gpId.toLowerCase().includes("bookmark:drawing-kml") || 
-          gpId.toLowerCase().includes("bookmark:import-kml") ||
-          gpId.toLowerCase().includes("bookmark:import-gpx") ||
-          gpId.toLowerCase().includes("bookmark:import-geojson")) {
+        gpId.toLowerCase().includes("layerimport:kml") ||
+        gpId.toLowerCase().includes("layerimport:gpx") ||
+        gpId.toLowerCase().includes("layerimport:geojson") || 
+        gpId.toLowerCase().includes("bookmark:drawing-kml") || 
+        gpId.toLowerCase().includes("bookmark:import-kml") ||
+        gpId.toLowerCase().includes("bookmark:import-gpx") ||
+        gpId.toLowerCase().includes("bookmark:import-geojson")) {
         
-        // FIXME solution de contournement...
+        // on active le controle
+        mapStore.addControl("Drawing");
+
+        // solution de contournement...
         setTimeout(function() {
           /**
            * @event 
            * pour l'édition d'un drawing ou un import vecteur
            */
           emitter.dispatchEvent("vector:edit:clicked", e);
+        }, 0);
+        return;
+      }
+      // on liste tous les cas de figures possibles pour un compute à éditer
+      if (gpId.toLowerCase().includes("bookmark:compute-route") || 
+          gpId.toLowerCase().includes("compute:pieton$ogc:openls;itineraire") ||
+          gpId.toLowerCase().includes("compute:voiture$ogc:openls;itineraire") ||
+          (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "route")
+        ) {
+
+        // on active le controle
+        mapStore.addControl("Route");
+
+        setTimeout(function() {
+          /**
+           * @event 
+           * pour l'édition d'un calcul d'itineraire
+           */
+          emitter.dispatchEvent("compute-route:edit:clicked", e);
+        }, 0);
+        return;
+      }
+      // on liste tous les cas de figures possibles pour un compute à éditer
+      if (gpId.toLowerCase().includes("bookmark:compute-isocurve") || 
+          gpId.toLowerCase().includes("compute:pieton$geoportail:gpp:isocurve") ||
+          gpId.toLowerCase().includes("compute:voiture$geoportail:gpp:isocurve")||
+          (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "isocurve")) {
+
+        // on active le controle
+        mapStore.addControl("Isocurve");
+
+        setTimeout(function() {
+          /**
+           * @event 
+           * pour l'édition d'un calcul isochrone
+           */
+          emitter.dispatchEvent("compute-isocurve:edit:clicked", e);
+        }, 0);
+        return;
+      }
+      // on liste tous les cas de figures possibles pour un compute à éditer
+      if (gpId.toLowerCase().includes("bookmark:compute-profil") || 
+          gpId.toLowerCase().includes("measure:profil") ||
+          (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "elevationpath")) {
+
+        // on active le controle
+        mapStore.addControl("ElevationPath");
+
+        setTimeout(function() {
+          /**
+           * @event 
+           * pour l'édition d'un calcul de profil
+           */
+          emitter.dispatchEvent("compute-profil:edit:clicked", e);
         }, 0);
         return;
       }

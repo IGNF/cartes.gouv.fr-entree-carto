@@ -13,6 +13,7 @@ import { useServiceStore } from '@/stores/serviceStore';
  * - type ex. import, service, mapbox...
  * - target ex. internal ou external
  * - kind ex. wmts, wms, mapbox
+ * - compute ex. isocurve
  * 
  * ainsi que :
  * - opacity
@@ -55,6 +56,7 @@ export const toShare = (document, params) => {
     p.append("type", document.labels.find((e) => service.labels.includes(e)));
     p.append("target", document.labels.find((e) => service.labelsTarget.includes(e)));
     p.append("kind", document.labels.find((e) => service.labelsService.includes(e)));
+    p.append("compute", document.labels.find((e) => service.labelsCompute.includes(e)));
     if (params) {
       Object.keys(params).forEach(key => p.append(key, params[key]));
     }
@@ -129,6 +131,7 @@ const REDUCED_KVP = {
   "type": {k:"t", opt:false}, 
   "target": {k:"c", opt:false},
   "kind": {k:"k", opt:false},
+  "compute": {k:"w", opt:false},
   "position": {k:"p", opt:false},
   "opacity": {k:"o", opt:false},
   "visible": {k:"v", opt:false},
@@ -195,6 +198,7 @@ const _extend = (params) => {
   //  t : service
   //  c : internal
   //  k : mapbox
+  //  w : route
   //  p : 5
   //  v : 1
   //  o : 0.5
@@ -210,6 +214,7 @@ const _extend = (params) => {
   //  type : service
   //  target : internal
   //  kind : mapbox
+  //  compute : route
   //  position : 5
   //  visible : true
   //  opacity : 0.5
