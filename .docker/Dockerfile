@@ -54,26 +54,22 @@ FROM nginxinc/nginx-unprivileged:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html/cartes/
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 
-USER root
+# USER root
 
 # On copie le script d'entrée qui va realiser le envsubst au demarrage du container nginx
 COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers-envsubst.sh
-RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
+# RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 
 # On prevoit de monter un volume sous k8s 
 # pour écriture du fichier d'environnement de la webapp
 VOLUME ["/usr/share/nginx/html/cartes/env"]
 
-# Copie vers /app/env au lieu de /usr/share/nginx/html/cartes/env
-RUN mkdir -p /app/env
-RUN mkdir -p /tmp/env
-# RUN chown -R nginx:root /app/env
 # On copie le fichier de configuration de l'environnement
-COPY --from=builder /app/dist/env /app/env
+COPY --from=builder /app/dist/env /app/dist/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-# USER nginx
+USER nginx
 EXPOSE 8082
 
 CMD ["nginx", "-g", "daemon off;"]
