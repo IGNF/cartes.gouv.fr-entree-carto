@@ -1,13 +1,14 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin'
-import { useDataStore } from "@/stores/dataStore"
+import { useLogger } from 'vue-logger-plugin';
+import { useDataStore } from "@/stores/dataStore";
+import { useMapStore } from "@/stores/mapStore";
 
 import { 
   LayerMapBox as GeoportalMapBox,
   LayerWMS as GeoportalWMS,
   LayerWMTS as GeoportalWMTS
-} from 'geopf-extensions-openlayers'
+} from 'geopf-extensions-openlayers';
 
 import { 
   createVectorLayer, 
@@ -16,18 +17,20 @@ import {
   createComputeLayer
 } from '@/features/layer.js';
 
+
 const props = defineProps({
   layerOptions: Object,
   mapId : String
-})
+});
 
-const log = useLogger()
+const log = useLogger();
 log.debug(props.layerOptions);
 
-const store = useDataStore()
+const dataStore = useDataStore();
+const mapStore = useMapStore();
 
-const map = inject(props.mapId)
-var layer = null
+const map = inject(props.mapId);
+var layer = null;
 
 onMounted(() => {
   // les options sont obligatoires pour configurer une couche
@@ -44,8 +47,8 @@ onMounted(() => {
   // liste des informations utiles pour recuperer tous les paramètres de la couche
   // Array(Object) : [{name, service}]
   if (name && service) {
-    var value  = store.getLayerByName(props.layerOptions.name, props.layerOptions.service);
-    var params = store.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
+    var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
+    var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
     value.params = params; // fusion
     
     var options = {
@@ -174,7 +177,36 @@ onMounted(() => {
         return l;
       })
       .then((l) => {
+        // sauvegarde de la couche
         layer = l;
+      })
+      .then(() => {
+        // zoom sur la couche
+        // sauf si la couche vient du permalien !
+        if (mapStore.isPermalink) {
+          return;
+        }
+        var source = layer.getSource();
+        if (map.getView() && map.getSize()) {
+          var sourceExtent = null;
+          if (source && source.getExtent) {
+            sourceExtent = source.getExtent();
+          } else {
+            if (source && source.getTileGrid) {
+              // INFO : pour les couches mapbox
+              sourceExtent = source.getTileGrid().getExtent();
+            }
+          }
+          if (sourceExtent && sourceExtent[0] !== Infinity) {
+            map.getView().fit(sourceExtent, map.getSize());
+          } else {
+            layer.once('change', () => {
+              if (layer.getSource().getExtent()) {
+                map.getView().fit(layer.getSource().getExtent(), map.getSize());
+              }
+            });
+          }
+        }
       })
       .catch((e) => {
         throw e;

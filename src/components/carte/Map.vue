@@ -36,12 +36,60 @@ const map = new Map({
   controls: [] // on supprime les contrôles par defaut !
 })
 
-map.on('loadstart', function () {
-  map.getTargetElement().classList.add('spinner');
-});
+/**
+ * Gestion de l'affichage du spinner
+ * 
+ * On utilise le loadstart et loadend de la carte
+ * pour afficher un spinner de chargement
+ * On utilise un timeout pour gérer le cas où le loadend ne se déclenche pas
+ */
+let loadCount = 0;
+const fallbackTimeouts = new Set();
+const fallbackDelay = 5000; // délai maximum pour un "loadend" naturel
+const url = location.origin + location.pathname;
 
-map.on('loadend', function () {
-  map.getTargetElement().classList.remove('spinner');
+function startLoading() {
+    const target = map.getTargetElement();
+    if (loadCount === 0) {
+      target.classList.add('spinner');
+    }
+  
+    loadCount++;
+  
+    // Démarre un fallback timeout au cas où `loadend` ne survient pas
+    const timeoutId = setTimeout(() => {
+      console.warn('Fallback loadend déclenché');
+      endLoading();
+      fallbackTimeouts.delete(timeoutId);
+    }, fallbackDelay);
+  
+    fallbackTimeouts.add(timeoutId);
+}
+function endLoading() {
+    const target = map.getTargetElement();
+  
+    loadCount = Math.max(0, loadCount - 1);
+    if (loadCount === 0) {
+      target.classList.remove('spinner');
+    }
+    // HACK
+    // Pour les couches issues des favoris, on impose un "zoom to extent".
+    // Mais, on ne souhaite pas l'appliquer sur des données issues d'un permalien.
+    // cf. mapStore.isPermalink
+    // cf. Layer.vue
+    history.pushState(null, '', url);
+}
+
+map.on('loadstart', startLoading);
+map.on('loadend', () => {
+  // Lors d’un vrai loadend, on supprime un timeout s’il en reste
+  const timeoutId = fallbackTimeouts.values().next().value;
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    fallbackTimeouts.delete(timeoutId);
+  }
+  
+  endLoading();
 });
 
 provide(props.mapId, map)
