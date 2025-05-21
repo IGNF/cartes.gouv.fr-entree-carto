@@ -37,9 +37,8 @@ const map = new Map({
 })
 
 /**
- * Gestion de l'affichage du spinner
- * 
- * On utilise le loadstart et loadend de la carte pour faire un reet de l'url (en cas de load Permalink)
+ * INFO
+ * On utilise le loadstart et loadend de la carte pour faire un reset de l'url (en cas de load Permalink)
  * On utilise un timeout pour gérer le cas où le loadend ne se déclenche pas
  */
 const fallbackTimeouts = new Set();
@@ -60,6 +59,8 @@ function endLoading() {
     // HACK
     // Pour les couches issues des favoris, on impose un "zoom to extent".
     // Mais, on ne souhaite pas l'appliquer sur des données issues d'un permalien.
+    // En reinitialisant l'url du permalien, on interdit le "zoom to extent" des données issues 
+    // du permalien.
     // cf. mapStore.isPermalink
     // cf. Layer.vue
     history.pushState(null, '', url);
@@ -130,26 +131,5 @@ defineExpose({
 <style>
 #mainMap {
   outline : none;
-}
-
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.spinner:after {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 40px;
-  height: 40px;
-  margin-top: -20px;
-  margin-left: -20px;
-  border-radius: 50%;
-  border: 5px solid rgba(180, 180, 180, 0.6);
-  border-top-color: rgba(0, 0, 0, 0.6);
-  animation: spinner 0.6s linear infinite;
 }
 </style>
