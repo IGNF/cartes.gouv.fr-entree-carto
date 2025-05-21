@@ -115,7 +115,6 @@ defineExpose({
     <div>
       <p>
         <DsfrShare
-          copy-label="Copier dans le presse-papier"
           :mail="shareMail"
           :networks="shareNetworks"
           title="Partages"
@@ -168,6 +167,11 @@ defineExpose({
   .fr-btn--instagram::before {
     -webkit-mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
     mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
+  }
+
+  /* le composant share de vue dsfr ne permet pas de retirer le bouton de partage par défaut. On le cache en css */
+  ul.fr-btns-group button.fr-btn--copy {
+    display: none;
   }
 </style>
 
