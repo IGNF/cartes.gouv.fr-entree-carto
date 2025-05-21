@@ -39,23 +39,14 @@ const map = new Map({
 /**
  * Gestion de l'affichage du spinner
  * 
- * On utilise le loadstart et loadend de la carte
- * pour afficher un spinner de chargement
+ * On utilise le loadstart et loadend de la carte pour faire un reet de l'url (en cas de load Permalink)
  * On utilise un timeout pour gérer le cas où le loadend ne se déclenche pas
  */
-let loadCount = 0;
 const fallbackTimeouts = new Set();
 const fallbackDelay = 5000; // délai maximum pour un "loadend" naturel
 const url = location.origin + location.pathname;
 
 function startLoading() {
-    const target = map.getTargetElement();
-    if (loadCount === 0) {
-      target.classList.add('spinner');
-    }
-  
-    loadCount++;
-  
     // Démarre un fallback timeout au cas où `loadend` ne survient pas
     const timeoutId = setTimeout(() => {
       console.warn('Fallback loadend déclenché');
@@ -66,12 +57,6 @@ function startLoading() {
     fallbackTimeouts.add(timeoutId);
 }
 function endLoading() {
-    const target = map.getTargetElement();
-  
-    loadCount = Math.max(0, loadCount - 1);
-    if (loadCount === 0) {
-      target.classList.remove('spinner');
-    }
     // HACK
     // Pour les couches issues des favoris, on impose un "zoom to extent".
     // Mais, on ne souhaite pas l'appliquer sur des données issues d'un permalien.
