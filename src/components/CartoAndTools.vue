@@ -16,6 +16,7 @@ import { fromShare } from '@/features/share';
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
+import { set } from 'ol/transform';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
@@ -61,10 +62,12 @@ const selectedLayers = computed(() => {
     if (!layer) {
       // on ne peut pas la trouver, on ne l'ajoute pas
       mapStore.removeLayer(layerId);
-      push.warning({
-        title: "Exception",
-        message: "La couche " + layerId + " n'existe pas !"
-      });
+      setTimeout(() => {
+        push.warning({
+          title: "Exception",
+          message: "La couche " + layerId + " n'existe pas !"
+        });
+      }, 0);
       continue;
     }
     // les options de la couche sont récuperées dans le mapStore (permalink)
