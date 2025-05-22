@@ -42,6 +42,24 @@ const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin()
 }
 
+const notifyAndCleanLayer = (id: string) => {
+  // on ne peut pas la trouver, on ne l'ajoute pas
+  mapStore.removeLayer(id);
+  push.warning({
+    title: "Exception",
+    message: "La couche " + id + " n'existe pas !"
+  });
+};
+
+const notifyAndCleanBookmark = (id: string) => {
+  // on ne peut pas la trouver, on ne l'ajoute pas
+  mapStore.removeBookmark(id);
+  push.warning({
+    title: "Exception",
+    message: "Le bookmark " + id + " n'existe pas !"
+  });
+};
+
 // INFO
 // Les listes sont initialisées via le mapStore, et
 // elles sont transmises à la cartographie à chaque fois
@@ -54,16 +72,13 @@ const onModalLoginOpen = () => {
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
   var layersValided: any = [];
-  mapStore.getLayers().forEach((layerId: string) => {
+  var layers = mapStore.getLayers();
+  for (let i = 0; i < layers.length; i++) {
+    var layerId = layers[i];
     var layer = dataStore.getLayerByID(layerId);
     if (!layer) {
-      // on ne peut pas la trouver, on ne l'ajoute pas
-      mapStore.removeLayer(layerId);
-      push.warning({
-        title: "Exception",
-        message: "La couche " + layerId + " n'existe pas !"
-      });
-      return;
+      notifyAndCleanLayer(layerId);
+      continue;
     }
     // les options de la couche sont récuperées dans le mapStore (permalink)
     var props = mapStore.getLayerProperty(layerId);
@@ -74,7 +89,7 @@ const selectedLayers = computed(() => {
     layer.visible = props.visible;
     layer.grayscale = props.grayscale;
     layersValided.push(layer);
-  });
+  }
   return layersValided;
 });
 
@@ -82,17 +97,15 @@ const selectedLayers = computed(() => {
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedBookmarks = computed(() => {
   var bookmarksValided: any = [];
-  mapStore.getBookmarks().forEach( (bookmark: string) => {
+  var bookmarks = mapStore.getBookmarks();
+  for (let i = 0; i < bookmarks.length; i++) {
+    var bookmark = bookmarks[i];
     // transformer un partage d'URL en un objet
     var obj = fromShare(decodeURIComponent(bookmark));
     if (!obj) {
       // on ne peut pas le transformer, on ne l'ajoute pas
-      mapStore.removeBookmark(bookmark);
-      push.warning({
-        title: "Exception",
-        message: "Le bookmark " + bookmark + " n'existe pas !"
-      });
-      return;
+      notifyAndCleanBookmark(bookmark);
+      continue;
     }
     // INFO
     // on a une condition spéciale pour écarter les documents
@@ -120,7 +133,7 @@ const selectedBookmarks = computed(() => {
       */
       bookmarksValided.push(obj);
     }
-  });
+  }
   return bookmarksValided;
 });
 
