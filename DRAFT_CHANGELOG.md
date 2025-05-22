@@ -11,6 +11,8 @@ Diverses corrections sur l'espace personnel (favoris), amélioration du gestionn
 
 ### 💥 Breaking changes
 
+Mise à jour de la version du localStorage : perte des données de session.
+
 ### 📖 Changelog
 
 #### ✨ [Ajout]
