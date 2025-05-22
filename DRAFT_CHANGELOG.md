@@ -29,6 +29,9 @@ Diverses corrections sur l'espace personnel (favoris), amélioration du gestionn
 
 #### 🔥 [Suppression]
 
+    - Carte : suppression de la patience affichée sur la carte (#590)
+    - Partage : suppression du petit de bouton de partage situé après ceux des réseaux sociaux (#591)
+
 #### 🐛 [Correction]
 
     - Lien de partage : Gestion correcte de l'ordre des couches dans le permalien (#559)
