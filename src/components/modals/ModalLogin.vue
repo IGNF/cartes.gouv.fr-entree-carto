@@ -11,9 +11,11 @@ export default {
 <script setup lang="js">
 import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
+import { useMapStore } from "@/stores/mapStore";
 
 const eulerian = useEulerian();
 const router = useRouter();
+const store = useMapStore();
 
 const title = "Se connecter à cartes.gouv.fr";
 const icon = 'fr-icon-account-fill';
@@ -36,11 +38,15 @@ const actions = [
 ];
 
 const opened = ref(false);
+const style = ref({ display: "none" });
+const active = ref(false);
 
 if (opened.value) {
   eulerian.pause();
 }
-const openModalLogin = () => {
+
+const openModalLogin = (active) => {
+  style.value = (active) ? { display: "block" } : { display: "none" };
   opened.value = true;
   eulerian.pause();
 };
@@ -48,6 +54,12 @@ const openModalLogin = () => {
 const onModalLoginClose = () => {
   opened.value = false;
   eulerian.resume();
+};
+
+const onModalLoginNoInformation = (status) => {
+  console.log(status);
+  // enregistrer l'information dans le localStorage
+  store.noLoginInformation = status;
 };
 
 defineExpose({
@@ -73,10 +85,19 @@ defineExpose({
         Pour enregistrer vos données, vous devez vous identifier 
         ou créer un compte sur cartes.gouv.fr
       </p>
+      <div :style="style">
+        <DsfrCheckbox
+          :model-value="active"
+          label="Ne plus afficher ce message"
+          @update:model-value="onModalLoginNoInformation"
+        />
+      </div>
     </template>
   </DsfrModal>
 </template>
 
 <style>
-
+button[title="ne plus afficher ce message"] {
+  margin-top: 16px;
+}
 </style>

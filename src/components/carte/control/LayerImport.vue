@@ -13,7 +13,7 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
-import { useServiceStore } from '@/stores/serviceStore';
+
 import {
   LayerImport
 } from 'geopf-extensions-openlayers'
@@ -26,6 +26,9 @@ import t from '@/features/translation';
 
 const emitter = inject('emitter');
 const service = inject('services');
+
+const refModalLogin = inject("refModalLogin");
+const refModalSave = inject("refModalSave");
 
 const props = defineProps({
   mapId: String,
@@ -83,6 +86,28 @@ onUpdated(() => {
   }
 })
 
+/**
+ * @description
+ * ouverture de la modale de connexion pour proposer à l'utilisateur
+ * de se connecter à son espace personnel
+ */
+const onOpenModalLogin = () => {
+  if (refModalLogin) {
+    refModalLogin.value.openModalLogin(true);
+  }
+}
+
+/**
+ * @description
+ * ouverture de la modale de sauvegarde pour proposer à l'utilisateur
+ * de sauvegarder son import
+ */
+const onOpenModalSave = () => {
+  if (refModalSave) {
+    refModalSave.value.openModalSave();
+  }
+}
+
 /** 
  * Gestionnaires d'evenement
  * 
@@ -108,6 +133,33 @@ onUpdated(() => {
  */
 const onSaveImportVector = (e) => {
   log.debug(e);
+
+  // FIXME
+  // si je decide de me connecter, je perds mon import
+  // car il n'est pas enregistré !
+  // > il faudrait deleguer une action de sauvegarde
+  // aprés la validation de la connexion
+  // > voir si il est possible de stocker dans le localStorage 
+  // l'import temporaire (objet complexe !)
+
+  // on n'est pas connecté, on propose le choix de se connecter ou pas
+  if (!service.authenticated) {
+    // si la case 'Ne plus afficher ce message' est cochée,
+    // on n'affiche la boite de dialogue de connexion
+    if (!mapStore.noLoginInformation) {
+      onOpenModalLogin();
+    }
+  } else {
+    // on initie la méthode de delegation de la sauvegarde
+    refModalSave.value.onDelegateCbk(() => {
+      console.log("save", e);
+    });
+  
+    // si on est authentifié, on propose la possibilité de sauvegarder ou pas
+    if (service.authenticated) {
+      onOpenModalSave();
+    }
+  }
 };
 const onSaveImportService = (e) => {
   log.debug(e);
