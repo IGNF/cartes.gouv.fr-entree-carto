@@ -50,7 +50,14 @@ const onModalLoginOpen = () => {
 // Chaque fois que des  modules modifient le mapStore en
 // ajoutant des couches (ex. LayerSwitcher), on repasse
 // via la reactivité dans ce cycle.
-
+const notify = (id: string) => {
+  // on ne peut pas la trouver, on ne l'ajoute pas
+  mapStore.removeLayer(id);
+  push.warning({
+    title: "Exception",
+    message: "La couche " + id + " n'existe pas !"
+  });
+};
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
@@ -60,14 +67,7 @@ const selectedLayers = computed(() => {
     var layerId = layers[i];
     var layer = dataStore.getLayerByID(layerId);
     if (!layer) {
-      // on ne peut pas la trouver, on ne l'ajoute pas
-      mapStore.removeLayer(layerId);
-      setTimeout(() => {
-        push.warning({
-          title: "Exception",
-          message: "La couche " + layerId + " n'existe pas !"
-        });
-      }, 0);
+      notify(layerId);
       continue;
     }
     // les options de la couche sont récuperées dans le mapStore (permalink)
