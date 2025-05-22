@@ -54,7 +54,9 @@ const onModalLoginOpen = () => {
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
   var layersValided: any = [];
-  mapStore.getLayers().forEach((layerId: string) => {
+  var layers = mapStore.getLayers();
+  for (let i = 0; i < layers.length; i++) {
+    var layerId = layers[i];
     var layer = dataStore.getLayerByID(layerId);
     if (!layer) {
       // on ne peut pas la trouver, on ne l'ajoute pas
@@ -63,7 +65,7 @@ const selectedLayers = computed(() => {
         title: "Exception",
         message: "La couche " + layerId + " n'existe pas !"
       });
-      return;
+      continue;
     }
     // les options de la couche sont récuperées dans le mapStore (permalink)
     var props = mapStore.getLayerProperty(layerId);
@@ -74,7 +76,28 @@ const selectedLayers = computed(() => {
     layer.visible = props.visible;
     layer.grayscale = props.grayscale;
     layersValided.push(layer);
-  });
+  }
+  // mapStore.getLayers().forEach((layerId: string) => {
+  //   var layer = dataStore.getLayerByID(layerId);
+  //   if (!layer) {
+  //     // on ne peut pas la trouver, on ne l'ajoute pas
+  //     mapStore.removeLayer(layerId);
+  //     push.warning({
+  //       title: "Exception",
+  //       message: "La couche " + layerId + " n'existe pas !"
+  //     });
+  //     return;
+  //   }
+  //   // les options de la couche sont récuperées dans le mapStore (permalink)
+  //   var props = mapStore.getLayerProperty(layerId);
+  //   // ajouter les options des couches
+  //   // ex. l'opacité et la visibilité
+  //   layer.position = props.position;
+  //   layer.opacity = props.opacity;
+  //   layer.visible = props.visible;
+  //   layer.grayscale = props.grayscale;
+  //   layersValided.push(layer);
+  // });
   return layersValided;
 });
 
