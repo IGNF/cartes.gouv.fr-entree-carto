@@ -143,7 +143,8 @@ var SetDocuments = {
 
     const content = obj.content;
     const blob = new Blob([content], { type: this.getMimeType(obj.format) });
-    formData.append("file", blob); // FIXME blob ou text ?
+    const file = new File([blob], `${obj.name}.${obj.format}`, { type: this.getMimeType(obj.format) });
+    formData.append("file", file);
 
     // Débogage du contenu de formData
     for (let pair of formData.entries()) {
