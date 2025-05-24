@@ -14,6 +14,10 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
+import { 
+  useCreateDocument
+} from '@/components/carte/control/actions/actionSaveButton';
+
 import {
   LayerImport
 } from 'geopf-extensions-openlayers'
@@ -87,7 +91,6 @@ onUpdated(() => {
 })
 
 /**
- * @description
  * ouverture de la modale de connexion pour proposer à l'utilisateur
  * de se connecter à son espace personnel
  */
@@ -98,7 +101,6 @@ const onOpenModalLogin = () => {
 }
 
 /**
- * @description
  * ouverture de la modale de sauvegarde pour proposer à l'utilisateur
  * de sauvegarder son import
  */
@@ -106,6 +108,58 @@ const onOpenModalSave = () => {
   if (refModalSave) {
     refModalSave.value.openModalSave();
   }
+}
+
+const saveImportVector = (e) => {
+  console.log("saveImportVector", e);
+  
+  var data = {
+    layer : e.layer,
+    content : e.data,
+    name : e.name,
+    description : "", // pas de description dans la réponse
+    format : e.format.toLowerCase(),
+    target : "internal",
+    type : "import"
+  };
+
+  var promise = useCreateDocument(data, emitter, service);
+  
+  promise
+  .then((o) => {
+    var document = service.find(o.uuid); // un peu redondant...
+    if (document) {
+      var url = toShare(document, { 
+        opacity: data.layer.get('opacity'), 
+        visible: data.layer.get('visible'),
+        grayscale: data.layer.get('grayscale'),
+        stop: 1 // HACK !
+      });
+      // nouvelle donnée à ajouter
+      if (o.action === "added") {
+        mapStore.addBookmark(url);
+      } else {
+        throw new Error("Action not yet implemented !");
+      }
+    }
+  })
+  .then(() => {
+    layerImport.value.setCollapsed(true);
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.layerimport.title,
+      message: t.layerimport.save_success
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.layerimport.title,
+      message: t.layerimport.save_failed
+    });
+  });
 }
 
 /** 
@@ -145,14 +199,14 @@ const onSaveImportVector = (e) => {
   // on n'est pas connecté, on propose le choix de se connecter ou pas
   if (!service.authenticated) {
     // si la case 'Ne plus afficher ce message' est cochée,
-    // on n'affiche la boite de dialogue de connexion
+    // on n'affiche plus la boite de dialogue de connexion
     if (!mapStore.noLoginInformation) {
       onOpenModalLogin();
     }
   } else {
     // on initie la méthode de delegation de la sauvegarde
     refModalSave.value.onDelegateCbk(() => {
-      console.log("save", e);
+      saveImportVector(e);
     });
   
     // si on est authentifié, on propose la possibilité de sauvegarder ou pas
