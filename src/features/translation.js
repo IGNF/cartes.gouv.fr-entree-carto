@@ -32,6 +32,8 @@ export default {
   },
   layerimport: {
     title: 'Import de couche',
+    save_success: 'L\'import est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement de l\'import',
     add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
     add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` },
     add_success_mapbox: 'La couche MapBox est ajoutée à la carte',
