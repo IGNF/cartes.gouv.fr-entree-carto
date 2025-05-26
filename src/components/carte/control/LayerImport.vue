@@ -93,10 +93,20 @@ onUpdated(() => {
 /**
  * ouverture de la modale de connexion pour proposer à l'utilisateur
  * de se connecter à son espace personnel
+ * @param e - donnée de sauvegarde de l'import
  */
-const onOpenModalLogin = () => {
+const onOpenModalLogin = (e) => {
+  // FIXME
+  // Si je decide de me connecter, je perds mon import
+  // car il n'est pas enregistré !
+  // On peut deleguer une action de sauvegarde ou emettre un evenement
+  // aprés la validation de la connexion
+  // Pour garder les informations de sauvegarde temporaire, 
+  // on les stocke dans le localStorage
+  log.debug(e);
   if (refModalLogin) {
-    refModalLogin.value.openModalLogin(true);
+    // true pour proposer le message 'Ne plus afficher le message'
+    refModalLogin.value.openModalLogin(true); 
   }
 }
 
@@ -110,6 +120,10 @@ const onOpenModalSave = () => {
   }
 }
 
+/**
+ * 
+ * @param e - donnée de sauvegarde de l'import
+ */
 const saveImportVector = (e) => {
   console.log("saveImportVector", e);
   
@@ -188,20 +202,12 @@ const saveImportVector = (e) => {
 const onSaveImportVector = (e) => {
   log.debug(e);
 
-  // FIXME
-  // si je decide de me connecter, je perds mon import
-  // car il n'est pas enregistré !
-  // > il faudrait deleguer une action de sauvegarde
-  // aprés la validation de la connexion
-  // > voir si il est possible de stocker dans le localStorage 
-  // l'import temporaire (objet complexe !)
-
   // on n'est pas connecté, on propose le choix de se connecter ou pas
   if (!service.authenticated) {
     // si la case 'Ne plus afficher ce message' est cochée,
     // on n'affiche plus la boite de dialogue de connexion
     if (!mapStore.noLoginInformation) {
-      onOpenModalLogin();
+      onOpenModalLogin(e);
     }
   } else {
     // on initie la méthode de delegation de la sauvegarde
