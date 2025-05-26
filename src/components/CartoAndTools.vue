@@ -7,6 +7,7 @@ import ThemeModal from '@/components/modals/ModalTheme.vue'
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from '@/components/carte/control/ShareModal.vue'
 import PrintModal from "@/components/carte/control/PrintModal.vue";
+import SaveModal from "@/components/modals/ModalSave.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
@@ -24,9 +25,13 @@ const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})
 const refModalShare: ShareModal = ref({})
 const refModalPrint: PrintModal = ref({})
+const refModalSave: SaveModal = ref({})
 
 provide("refModalPrint", refModalPrint)
 provide("refModalShare", refModalShare)
+provide("refModalTheme", refModalTheme)
+provide("refModalLogin", refModalLogin)
+provide("refModalSave", refModalSave)
 
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
@@ -39,7 +44,7 @@ const onModalPrintOpen = () => {
   refModalPrint.value.onModalPrintOpen()
 }
 const onModalLoginOpen = () => {
-  refModalLogin.value.openModalLogin()
+  refModalLogin.value.openModalLogin(false)
 }
 
 const notifyAndCleanLayer = (id: string) => {
@@ -187,6 +192,7 @@ provide("selectedLayers", selectedLayers);
       />
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
+      <SaveModal ref="refModalSave" />
     </div>
   </div>
 </template>

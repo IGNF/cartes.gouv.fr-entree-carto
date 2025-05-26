@@ -148,6 +148,11 @@ export const useMapStore = defineStore('map', () => {
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
   var geolocation = useStorage(ns('geolocation'), "");
+  
+  // INFO
+  // cette valeur devrait toujours être reinitilisée à false
+  localStorage.setItem(ns('noLoginInformation'), false);
+  var noLoginInformation = useStorage(ns('noLoginInformation'), false);
 
   //////////////////
   // objets calculés
@@ -301,6 +306,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(geolocation, () => {
     localStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
+  })
+  watch(noLoginInformation, () => {
+    localStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
   })
 
   //////////////////
@@ -522,7 +530,6 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
-
   return {
     map,
     layers,
@@ -540,6 +547,7 @@ export const useMapStore = defineStore('map', () => {
     permalinkShare,
     geolocation,
     isPermalink,
+    noLoginInformation,
     getMap,
     setMap,
     getLayers,
