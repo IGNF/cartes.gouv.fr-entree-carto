@@ -376,6 +376,12 @@ export const useMapStore = defineStore('map', () => {
           if (key === "grayscale") {
             values[3] = +value; // cast true -> 1 | false -> 0
           }
+          // INFO
+          // property facultative
+          // uniquement pour le TMS
+          if (key === "style") {
+            values[4] = value;
+          }
         }
       }
       layers.value = layers.value.replace(l[index], id + "(" + values.join(";") + ")"); // string
@@ -408,8 +414,9 @@ export const useMapStore = defineStore('map', () => {
         position : Number(values[0]), // cast
         opacity : Number(values[1]), // cast 
         visible : !!Number(values[2]), // cast 1 -> true | 0 -> false
-        grayscale : !!Number(values[3]) // cast 
-      }
+        grayscale : !!Number(values[3]), // cast 
+        style : values[4] // facultatif
+      };
     }
   }
 
