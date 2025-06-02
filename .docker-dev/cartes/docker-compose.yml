@@ -1,0 +1,27 @@
+version: '3.8'
+
+networks:
+    web_dev:
+        external: true
+
+services:
+    app_dev:
+        image: ghcr.io/ignf/cartes.gouv.fr:latest
+        container_name: cartesgouvfr-dev
+        env_file:
+            - .env.local
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+            - APP_ROOT_URL=https://cartesgouvfr-dev.docker.localhost
+            - XDEBUG_MODE=debug
+            - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        ports:
+            - "9092:8000"
+            - "5173:5173"
+        networks:
+            - web_dev
