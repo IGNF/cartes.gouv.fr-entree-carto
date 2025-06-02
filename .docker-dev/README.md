@@ -9,12 +9,15 @@ docker compose v2.22 pour avoir le mode **watch**
 Lancer la commande du répertoire `root`:
 `docker compose -f .docker-dev/docker-compose.yml watch`
 
-Naviguer sur <http://localhost:1234>
+Naviguer sur <http://localhost:1235>
 
 A chaque modification du code, avec le mode **watch**, le container est reconstruit.
 
-**NOTE :**
+**NOTE1 :**
 > utiliser Firefox pour l'authentification à cause des exceptions SSL !
+
+**NOTE2 :**
+> installation de docker compose 2.22 : <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
 
 ## Fonctionnement
 
@@ -33,7 +36,7 @@ Etapes par étapes :
 
 * dans le dossier **reverse-proxy-nginx** du projet **cartes.gouv.fr-entree-carto** : `docker compose -f docker-compose.yml up --build`
   > creation du container : `cartesgouvfr-nginx_proxy:80`
-  > exposé sur <http://localhost:1234>
+  > exposé sur <http://localhost:1235>
 
 ## Env
 
