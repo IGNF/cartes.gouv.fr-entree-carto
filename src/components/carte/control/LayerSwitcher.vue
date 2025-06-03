@@ -47,6 +47,7 @@ onMounted(() => {
     layerSwitcher.value.on("layerswitcher:change:visibility", onChangeVisibilityLayer);
     layerSwitcher.value.on("layerswitcher:change:position", onChangePositionLayer);
     layerSwitcher.value.on("layerswitcher:change:grayscale", onChangeGrayScaleLayer);
+    layerSwitcher.value.on("layerswitcher:change:style", onChangeStyleMapboxLayer);
   }
 })
 
@@ -105,6 +106,19 @@ const onAddLayer = (e) => {
     mapStore.updateLayerProperty(id, {
       position : lyr.layer.getZIndex()
     });
+    // cas du TMS
+    if (lyr.service === "TMS") {
+      // TODO
+      // on ajoute le style de la couche par défaut
+      var name = lyr.layer.styleName;
+      var url = lyr.layer.styleUrl;
+      log.debug("TMS", name, url);
+      if (name && url) {
+        mapStore.updateLayerProperty(id, {
+          style : name
+        });
+      }
+    }
   } else {
     // Données issues d'un widget
     // ex. drawing, layerimport, ...
@@ -328,6 +342,22 @@ const onChangeGrayScaleLayer = (e) => {
           });
         }
       }
+    }
+  }
+}
+const onChangeStyleMapboxLayer = (e) => {
+  log.debug("onChangeStyleMapboxLayer", e);
+  if (e.layer.name && e.layer.service) {
+    var id = dataStore.getLayerIdByName(e.layer.name, e.layer.service);
+    var name = e.name;
+    var url = e.url;
+    log.debug("TMS", name, url);
+    if (name && url) {
+      // TODO
+      // on ajoute le style de la couche par défaut
+      mapStore.updateLayerProperty(id, {
+        style : name
+      });
     }
   }
 }
