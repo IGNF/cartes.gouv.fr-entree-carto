@@ -162,7 +162,8 @@ const overviewMapOptions = {
 
 const fullscreenOptions = {
   id: "8",
-  position: useControlsExtensionPosition().fullscreenOptions
+  position: useControlsExtensionPosition().fullscreenOptions,
+  source : "map-and-tools-container" // ID du container CartoAndTools
 };
 
 const zoomOptions = {
