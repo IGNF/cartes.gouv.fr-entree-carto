@@ -255,6 +255,12 @@ export const useMapStore = defineStore('map', () => {
   var bookmarks = useStorage(ns('bookmarks'), "");
   if (!bookmarks.value) {
     bookmarks.value = "";
+  } else {
+    // HACK
+    // on supprime les paramètres s=1
+    // car ils sont devenus obsolètes à ce niveau là
+    // et on ne les utilise plus dans l'url de partage
+    bookmarks.value = bookmarks.value.replace(/%26s%3D1/g, "");
   }
 
   ///////////
