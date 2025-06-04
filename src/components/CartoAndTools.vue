@@ -93,6 +93,12 @@ const selectedLayers = computed(() => {
     layer.opacity = props.opacity;
     layer.visible = props.visible;
     layer.grayscale = props.grayscale;
+    if (props.style) {
+      // INFO
+      // on ajoute le style de la couche si il est défini
+      // ex. pour les couches de type TMS / MapBox
+      layer.style = props.style;
+    }
     layersValided.push(layer);
   }
   return layersValided;

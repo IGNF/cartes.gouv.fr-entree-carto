@@ -84,9 +84,10 @@ onMounted(() => {
         break;
       case "TMS":
         options.declutter = true;
-        // INFO le style par defaut est utilisé !
+        options.styleName = props.layerOptions.style || "default";
         layer = new GeoportalMapBox({
           layer : name,
+          style : props.layerOptions.style,
           configuration : value,
           apiKey : "ign_scan_ws",
         }, options);
