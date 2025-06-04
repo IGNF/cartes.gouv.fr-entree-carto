@@ -1,4 +1,3 @@
-import { useServiceStore } from '@/stores/serviceStore';
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
@@ -145,26 +144,30 @@ var Documents = {
       return Promise.reject("Label filter not allowed !");
     }
 
-    var params = [
-      "owned=true",
-      "shared=false",
-      "page=1",
-      "limit=100"
-    ];
-    var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
-    var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
-      method: 'GET',
-      headers: {
-        "X-Requested-With" : "XMLHttpRequest"
-      }
-    });
-    var data = await response.json();
-    this.documents[label] = data;
-
-    var store = useServiceStore();
-    store.setService(this);
-
-    return data;
+    try {
+      var params = [
+        "owned=true",
+        "shared=false",
+        "page=1",
+        "limit=100"
+      ];
+      var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
+      var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
+        method: 'GET',
+        headers: {
+          "X-Requested-With" : "XMLHttpRequest"
+        }
+      });
+      var data = await response.json();
+      this.documents[label] = data;
+  
+      this.saveStore();
+  
+      return data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
+      this.throwError(error);
+    }
   },
 
   /**
@@ -182,59 +185,63 @@ var Documents = {
    * @returns {Promise} - Information du document
    */
   getDocumentById: async function (id) {
-    var response = await this.getFetch()(`${this.api}/users/me/documents/${id}`, {
-      method: 'GET',
-      headers: {
-        "X-Requested-With" : "XMLHttpRequest"
-      }
-    });
-    var data = await response.json();
-
-    // on ajoute des informations utiles sous forme de key/value
-    // à partir des labels
-    const extra = (labels) => {
-      return {
-        id: id.split('-').slice(-1)[0], // short id
-        format: this.labelsFormats.find((e) => labels.includes(e)),
-        target: this.labelsTarget.find((e) => labels.includes(e)),
-        compute: this.labelsCompute.find((e) => labels.includes(e)),
-        kind: this.labelsService.find((e) => labels.includes(e)),
-        date: new Date().toLocaleDateString()
-      }
-    };
-
-    var document = {};
-    var founded = false;
-    for (let i = 0; i < this.labels.length; i++) {
-      if (founded) {
-        break;
-      }
-      const label = this.labels[i];
-      for (let j = 0; j < this.documents[label].length; j++) {
-        document = this.documents[label][j];
-        if (document._id === data._id) {
-          document.labels = data.labels;
-          document.description = data.description;
-          document.mime_type = data.mime_type;
-          document.public_url = data.public_url;
-          document.extra = {
-            ...extra(data.labels), // FIXME les extras additionnels ne sont pas enregistrés sur l'entrepot !
-            ...data.extra
-          };
-          founded = true;
+    try {
+      var response = await this.getFetch()(`${this.api}/users/me/documents/${id}`, {
+        method: 'GET',
+        headers: {
+          "X-Requested-With" : "XMLHttpRequest"
+        }
+      });
+      var data = await response.json();
+  
+      // on ajoute des informations utiles sous forme de key/value
+      // à partir des labels
+      const extra = (labels) => {
+        return {
+          id: id.split('-').slice(-1)[0], // short id
+          format: this.labelsFormats.find((e) => labels.includes(e)),
+          target: this.labelsTarget.find((e) => labels.includes(e)),
+          compute: this.labelsCompute.find((e) => labels.includes(e)),
+          kind: this.labelsService.find((e) => labels.includes(e)),
+          date: new Date().toLocaleDateString()
+        }
+      };
+  
+      var document = {};
+      var founded = false;
+      for (let i = 0; i < this.labels.length; i++) {
+        if (founded) {
           break;
         }
+        const label = this.labels[i];
+        for (let j = 0; j < this.documents[label].length; j++) {
+          document = this.documents[label][j];
+          if (document._id === data._id) {
+            document.labels = data.labels;
+            document.description = data.description;
+            document.mime_type = data.mime_type;
+            document.public_url = data.public_url;
+            document.extra = {
+              ...extra(data.labels), // FIXME les extras additionnels ne sont pas enregistrés sur l'entrepot !
+              ...data.extra
+            };
+            founded = true;
+            break;
+          }
+        }
       }
+  
+      if (!founded) {
+        return Promise.reject(`Le document (${id}) n'a pas été trouvé !`);
+      }
+  
+      this.saveStore();
+  
+      return document;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération du document avec l'id ${id} :`, error);
+      this.throwError(error);
     }
-
-    if (!founded) {
-      return Promise.reject(`Le document (${id}) n'a pas été trouvé !`);
-    }
-
-    var store = useServiceStore();
-    store.setService(this);
-
-    return document;
   },
 
   /**
@@ -247,20 +254,25 @@ var Documents = {
    * @returns {Promise} - Le contenu du fichier
    */
   getFileById: async function (id) {
-    var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
-      method: 'GET',
-      headers: {
-        "X-Requested-With" : "XMLHttpRequest"
+    try {
+      var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
+        method: 'GET',
+        headers: {
+          "X-Requested-With" : "XMLHttpRequest"
+        }
+      });
+      var type = response.headers.get("content-type");
+      var data = null;
+      if (type === "application/json") {
+        data = await response.json();
+      } else {
+        data = await response.text();
       }
-    });
-    var type = response.headers.get("content-type");
-    var data = null;
-    if (type === "application/json") {
-      data = await response.json();
-    } else {
-      data = await response.text();
+      return data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération du fichier avec l'id ${id} :`, error);
+      this.throwError(error);
     }
-    return data;
   }
 };
 

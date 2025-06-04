@@ -1,6 +1,3 @@
-import { inject } from 'vue';
-import { useServiceStore } from '@/stores/serviceStore';
-
 /**
  * @description 
  * Classe de service de gestion des utilisateurs
@@ -58,19 +55,24 @@ var Users = {
    * @returns {Promise} - ...
    */
   getUserMe : async function () {
-    var response = await this.getFetch()(`${this.api}/users/me`, {
-      method: 'GET',
-      headers: {
-        "X-Requested-With" : "XMLHttpRequest"
-      }
-    });
-    var data = await response.json();
-    this.user = data;
-    
-    var store = useServiceStore();
-    store.setService(this);
+    try {
 
-    return data;
+      var response = await this.getFetch()(`${this.api}/users/me`, {
+        method: 'GET',
+        headers: {
+          "X-Requested-With" : "XMLHttpRequest"
+        }
+      });
+      var data = await response.json();
+      this.user = data;
+      
+      this.saveStore();
+  
+      return data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des informations de l'utilisateur :", error);
+      this.throwError(error);
+    }
   },
 
   /**
