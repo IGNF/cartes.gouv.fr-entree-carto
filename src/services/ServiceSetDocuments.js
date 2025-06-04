@@ -106,6 +106,10 @@ var SetDocuments = {
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   setDocument : async function (obj) {
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
     try {
       const formData = new FormData();
       formData.append("name", obj.name);
@@ -212,47 +216,57 @@ var SetDocuments = {
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   updateGeometryDocument : async function (obj) {
-    // uuid
-    var uuid = obj.uuid;
-
-    // recherche du document
-    var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
-    if (idx === -1) {
-      // ERROR !
-      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
     }
 
-    const formData = new FormData();
-    const blob = new Blob([obj.content], { type: this.getMimeType(obj.format) });
-    formData.append("file", blob); // FIXME blob ou text ?
-
-    var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
-      method: (this.mode === 'local') ? 'PUT' : 'POST', // HACK : PUT ou POST
-      headers: {
-        'Accept': 'application/json',
-        "X-Requested-With" : "XMLHttpRequest",
-        // 'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: formData
-    });
-
-    var data = await response.json();
-    
-    if (response.status !== 200) {
-      // ERROR !
-      throw data;
+    try {
+      // uuid
+      var uuid = obj.uuid;
+  
+      // recherche du document
+      var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+      if (idx === -1) {
+        // ERROR !
+        throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+      }
+  
+      const formData = new FormData();
+      const blob = new Blob([obj.content], { type: this.getMimeType(obj.format) });
+      formData.append("file", blob); // FIXME blob ou text ?
+  
+      var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+        method: (this.mode === 'local') ? 'PUT' : 'POST', // HACK : PUT ou POST
+        headers: {
+          'Accept': 'application/json',
+          "X-Requested-With" : "XMLHttpRequest",
+          // 'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
+      });
+  
+      var data = await response.json();
+      
+      if (response.status !== 200) {
+        // ERROR !
+        throw data;
+      }
+  
+      // enregistrer la réponse
+      this.documents[obj.type][idx] = data;
+  
+      // mise à jour du store
+      this.saveStore();
+      
+      return {
+        uuid : uuid,
+        action : "updated"
+      };
+    } catch (error) {
+      console.error("Erreur dans la mise à jour de la géométrie du document :", error);
+      this.throwError(error);
     }
-
-    // enregistrer la réponse
-    this.documents[obj.type][idx] = data;
-
-    // mise à jour du store
-    this.saveStore();
-    
-    return {
-      uuid : uuid,
-      action : "updated"
-    };
   },
 
   /**
@@ -275,8 +289,12 @@ var SetDocuments = {
    * @param {*} obj 
    */
   updateMetadataDocument : async function (obj) {
-    try {
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
 
+    try {
       var uuid = obj.uuid;
   
       // recherche du document
@@ -348,8 +366,12 @@ var SetDocuments = {
    * @param {*} obj 
    */
   sharingDocument : async function (obj) {
-    try {
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
 
+    try {
       var uuid = obj.uuid;
   
       // recherche du document
@@ -422,8 +444,12 @@ var SetDocuments = {
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   renameDocument : async function (obj) {
-    try {
+    if (this.isPending()) {
+      // éviter les appels concurrents
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
 
+    try {
       var uuid = obj.uuid;
   
       // recherche du document
@@ -494,6 +520,11 @@ var SetDocuments = {
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   deleteDocument : async function (obj) {
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
+
     try {
       var uuid = obj.uuid;
       var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {

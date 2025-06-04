@@ -103,6 +103,18 @@ class ServiceBase {
   }
   
   /**
+   * Stop the pending state
+   * @description
+   * This method sets the pending state of the service to false,
+   * indicating that the service is no longer in a pending state.
+   * It is typically called when an operation is completed or cancelled.
+   * @returns {void}
+   */
+  stopPending () {
+    this.#pending = false;
+  }
+
+  /**
    * Check if the access is valid
    * @returns {Promise} - Promise that resolves if access is valid, rejects otherwise
    */

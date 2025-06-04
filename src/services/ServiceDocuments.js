@@ -272,6 +272,8 @@ var Documents = {
     } catch (error) {
       console.error(`Erreur lors de la récupération du fichier avec l'id ${id} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   }
 };
