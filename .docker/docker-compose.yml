@@ -22,9 +22,10 @@ services:
             context: ..
             dockerfile: ./.docker/Dockerfile
             args:
-              # BASE_URL: "/cartes"
               # MODE_ENV: "docker-local"
-              # SOURCE_MAP: "true"
+              BASE_URL: "/cartes"
+              SOURCE_MAP: "true"
+              USER_ENV: "root"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
         image: ignf/cartes.gouv.fr-carto:latest
