@@ -197,7 +197,7 @@ export const useMapStore = defineStore('map', () => {
   });
 
   var center = computed(() => {
-    return [lon.value, lat.value];
+    return [lon.value.toFixed(6), lat.value.toFixed(6)];
   });
 
   ////////////////////
