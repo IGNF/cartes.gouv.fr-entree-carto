@@ -15,6 +15,7 @@
 #### 🔨 [Evolution]
 
 - Espace Personnel : en mode connecté, enregistrement automatique des imports de données vectorielles (#603)
+- Partage : réduction du nombre de chiffres après la virgule des coordonnées (#617)
 
 #### 🔥 [Obsolète]
 
