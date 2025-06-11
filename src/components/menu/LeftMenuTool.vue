@@ -27,7 +27,7 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuTierce",
-            icon : "ri-menu-fill",
+            icon : "ri-menu-add-fill",
             title : "Menu carte",
             visibility: true,
             secondary: true
