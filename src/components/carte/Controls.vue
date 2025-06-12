@@ -394,7 +394,7 @@ const refModalShare = inject("refModalShare")
 
 const contextMenuOptions = computed(() => {
   return {
-    contextMenuItemsOptions : [            
+    contextMenuItemsOptions : [
       {
         text : "Imprimer la carte",
         callback : function() {
@@ -621,6 +621,17 @@ const contextMenuOptions = computed(() => {
 
 .position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
   padding: 2px;
+}
+
+/* Cas particuliers pour éviter les coins non arrondis autour de l'import qui est caché (uniquement sur l'entree carto) */
+.gpf-button-no-gutter:has(+ .gpf-button-no-gutter:not([id^="GPimport-"])) > .gpf-btn-icon {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.gpf-button-no-gutter[id^="GPimport-"] + .gpf-button-no-gutter:not([id^="GPimport-"]) > .gpf-btn-icon {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */

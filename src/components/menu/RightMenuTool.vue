@@ -30,13 +30,15 @@ const tabArray = computed(() => {
             componentName : "MenuCatalogue",
             icon : "octicon:book-24",
             title : "Catalogue de données",
-            visibility : true
+            visibility : true,
+            secondary : false
         },
         {
             componentName : "MenuControl",
             icon : "ri:tools-line",
             title : "Catalogue d'outils",
-            visibility : true
+            visibility : true,
+            secondary : true
         }
     ];
 
@@ -105,6 +107,7 @@ function tabIsActive(componentName) {
         :icon="tab.icon"
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
+        :secondary="tab.secondary"
         @tab-clicked="tabClicked"
       />
     </template>

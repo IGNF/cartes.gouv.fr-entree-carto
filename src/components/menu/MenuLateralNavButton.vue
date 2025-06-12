@@ -27,7 +27,8 @@ const props = defineProps({
     active: Boolean,
     title: String,
     side: String,
-    visibility: Boolean
+    visibility: Boolean,
+    secondary: Boolean
 })
 
 const icon = props.icon
@@ -92,7 +93,7 @@ onMounted(() => {
   <div ref="button">
     <DsfrButton
       :id="id"
-      secondary
+      :secondary="secondary"
       :aria-label="title"
       :class="`${active ? 'active': ''}  navBarIcon ${visibility ? '' : 'invisibleNavButton'} navButton` "
       :icon="icon"
@@ -110,6 +111,11 @@ onMounted(() => {
 .navButton {
   width: 40px;
   height: 40px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 15px var(--grey-975-75);
+}
+
+.navButton.fr-btn--secondary {
   background-color: var(--background-default-grey);
 }
 

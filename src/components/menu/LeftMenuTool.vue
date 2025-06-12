@@ -27,16 +27,18 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuTierce",
-            icon : "ri-menu-fill",
+            icon : "ri-menu-add-fill",
             title : "Menu carte",
-            visibility: true
+            visibility: true,
+            secondary: true
         },
         {
             componentName : "MenuBookMarks",
             icon : "ri-bookmark-line",
             title : "Mes Enregistrements",
-            visibility: false // bouton invisible
-        }
+            visibility : false, // bouton invisible
+            secondary : true 
+          }
     ];
 
     return arr
@@ -148,6 +150,7 @@ const emit = defineEmits([
         :visibility="tab.visibility"
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
+        :secondary="tab.secondary"
         @tab-clicked="tabClicked"
       />
     </template>
