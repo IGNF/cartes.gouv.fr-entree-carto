@@ -634,6 +634,11 @@ const contextMenuOptions = computed(() => {
   border-top-right-radius: 4px;
 }
 
+.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
+.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPcontrolList-"]) > .gpf-btn-icon {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
