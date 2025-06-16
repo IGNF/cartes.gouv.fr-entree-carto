@@ -51,14 +51,16 @@ RUN /app/generate-env-template.sh
 #----------------------------------------------------------------------
 FROM nginxinc/nginx-unprivileged:alpine
 
+# Utilisateur par défaut pour nginx
+ARG USER_ENV=nginx
+
 COPY --from=builder /app/dist /usr/share/nginx/html/cartes/
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 
-# USER root
+USER ${USER_ENV}
 
 # On copie le script d'entrée qui va realiser le envsubst au demarrage du container nginx
 COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers-envsubst.sh
-# RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 
 # On prevoit de monter un volume sous k8s 
 # pour écriture du fichier d'environnement de la webapp
@@ -69,7 +71,7 @@ COPY --from=builder /app/dist/env /app/dist/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-USER nginx
+# USER nginx
 EXPOSE 8082
 
 CMD ["nginx", "-g", "daemon off;"]

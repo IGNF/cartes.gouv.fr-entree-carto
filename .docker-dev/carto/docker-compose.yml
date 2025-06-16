@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+    entree_carto_dev:
+        build:
+            context: ../../
+            dockerfile: ./.docker-dev/carto/Dockerfile
+            args:
+              HTTP_PROXY: "http://proxy.ign.fr:3128"
+              HTTPS_PROXY: "http://proxy.ign.fr:3128"
+        image: cartes.gouv.fr-entree-carto-dev:latest
+        container_name: cartesgouvfr-entree_carto-dev
+        tty: true
+        environment:
+            - BASE_URL=/cartes
+            - SOURCE_MAP=true
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        develop:
+          watch:
+            - path: ../../src/
+              target: /app/src
+              x-initialSync: true
+              action: sync+restart
+        ports:
+        # - HOST:CONTAINER
+          - 8083:5173
+        networks:
+          - web_dev
+
+networks:
+    web_dev:
+        external: true
