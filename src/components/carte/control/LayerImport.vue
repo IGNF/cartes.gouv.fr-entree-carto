@@ -13,7 +13,11 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
-import { useServiceStore } from '@/stores/serviceStore';
+
+import { 
+  useCreateDocument
+} from '@/components/carte/control/actions/actionSaveButton';
+
 import {
   LayerImport
 } from 'geopf-extensions-openlayers'
@@ -26,6 +30,9 @@ import t from '@/features/translation';
 
 const emitter = inject('emitter');
 const service = inject('services');
+
+const refModalLogin = inject("refModalLogin");
+const refModalSave = inject("refModalSave");
 
 const props = defineProps({
   mapId: String,
@@ -83,6 +90,92 @@ onUpdated(() => {
   }
 })
 
+/**
+ * ouverture de la modale de connexion pour proposer à l'utilisateur
+ * de se connecter à son espace personnel
+ * @param e - donnée de sauvegarde de l'import
+ */
+const onOpenModalLogin = (e) => {
+  // FIXME
+  // Si je decide de me connecter, je perds mon import
+  // car il n'est pas enregistré !
+  // On peut deleguer une action de sauvegarde ou emettre un evenement
+  // aprés la validation de la connexion
+  // Pour garder les informations de sauvegarde temporaire, 
+  // on les stocke dans le localStorage
+  log.debug(e);
+  if (refModalLogin) {
+    // true pour proposer le message 'Ne plus afficher le message'
+    refModalLogin.value.openModalLogin(true); 
+  }
+}
+
+/**
+ * ouverture de la modale de sauvegarde pour proposer à l'utilisateur
+ * de sauvegarder son import
+ */
+const onOpenModalSave = () => {
+  if (refModalSave) {
+    refModalSave.value.openModalSave();
+  }
+}
+
+/**
+ * 
+ * @param e - donnée de sauvegarde de l'import
+ */
+const saveImportVector = (e) => {
+  console.log("saveImportVector", e);
+  
+  var data = {
+    layer : e.layer,
+    content : e.data,
+    name : e.name,
+    description : "", // pas de description dans la réponse
+    format : e.format.toLowerCase(),
+    target : "internal",
+    type : "import"
+  };
+
+  var promise = useCreateDocument(data, emitter, service);
+  
+  promise
+  .then((o) => {
+    var document = service.find(o.uuid); // un peu redondant...
+    if (document) {
+      var url = toShare(document, { 
+        opacity: data.layer.get('opacity'), 
+        visible: data.layer.get('visible'),
+        grayscale: data.layer.get('grayscale'),
+        stop: 1 // HACK !
+      });
+      // nouvelle donnée à ajouter
+      if (o.action === "added") {
+        mapStore.addBookmark(url);
+      } else {
+        throw new Error("Action not yet implemented !");
+      }
+    }
+  })
+  .then(() => {
+    layerImport.value.setCollapsed(true);
+  })
+  .then(() => {
+    // notification
+    push.success({
+      title: t.layerimport.title,
+      message: t.layerimport.save_success
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.layerimport.title,
+      message: t.layerimport.save_failed
+    });
+  });
+}
+
 /** 
  * Gestionnaires d'evenement
  * 
@@ -108,6 +201,25 @@ onUpdated(() => {
  */
 const onSaveImportVector = (e) => {
   log.debug(e);
+
+  // on n'est pas connecté, on propose le choix de se connecter ou pas
+  if (!service.authenticated) {
+    // si la case 'Ne plus afficher ce message' est cochée,
+    // on n'affiche plus la boite de dialogue de connexion
+    if (!mapStore.noLoginInformation) {
+      onOpenModalLogin(e);
+    }
+  } else {
+    // on initie la méthode de delegation de la sauvegarde
+    refModalSave.value.onDelegateCbk(() => {
+      saveImportVector(e);
+    });
+  
+    // si on est authentifié, on propose la possibilité de sauvegarder ou pas
+    if (service.authenticated) {
+      onOpenModalSave();
+    }
+  }
 };
 const onSaveImportService = (e) => {
   log.debug(e);

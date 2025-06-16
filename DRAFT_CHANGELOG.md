@@ -6,18 +6,16 @@
 
 ### 🎉 Résumé
 
-Divers corrections sur l'espace personnel (favoris)
-
 ### 💥 Breaking changes
 
 ### 📖 Changelog
 
 #### ✨ [Ajout]
-* ajout des enregistrements au menu contextuel (#579)
-* Affichage des notifications dans le thème sélectionné
-* Gestion des boutons edition / N&B dans le gestionnaire de couches en fonction du type de données
 
 #### 🔨 [Evolution]
+
+- Espace Personnel : en mode connecté, enregistrement automatique des imports de données vectorielles (#603)
+- Partage : réduction du nombre de chiffres après la virgule des coordonnées (#617)
 
 #### 🔥 [Obsolète]
 
@@ -25,13 +23,9 @@ Divers corrections sur l'espace personnel (favoris)
 
 #### 🐛 [Correction]
 
-* Gestion de l'ordre des couches dans le permalien (#559)
-* Fix sur le N&B pour des couches de type mapbox issues des favoris
-* Fix pour l'activation du bouton 'Enregistrer une carte' dans le menu des favoris (#561)
-* Fix pour la redirection vers le tableau de bord (#562)
-* Fix sur l'enregistrement des services de type WMS, WMTS ou MapBox dans les favoris (#563)
-* Fix sur les couches inconnues (#534)
-* Fix footer (#580)
+- Partage : prise en compte du style pour les couches TMS dans le lien de partage (#610)
+- Notifications : correction de l'affichage de notifications intempestives en cas de donnée inexistante au chargement (e8e2131e32ba264b6fe15e91c7966f5d3e3007e1)
+- Pleine Écran : correctif pour garder tous les boutons de la carte en pleine écran
 
 #### 🔒 [Sécurité]
 

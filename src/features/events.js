@@ -40,7 +40,10 @@ var EVENTS = {
     // edition
     "vector:edit:clicked",
     "mapbox:edit:clicked",
-    "service:edit:clicked"
+    "service:edit:clicked",
+    "compute-route:edit:clicked",
+    "compute-isocurve:edit:clicked",
+    "compute-profil:edit:clicked"
   ]
 };
 

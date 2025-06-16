@@ -4,6 +4,11 @@ import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
 import { 
+  useCreateDocument, 
+  useUpdateDocument 
+} from '@/components/carte/control/actions/actionSaveButton';
+
+import { 
   Drawing,
   ButtonExport
 } from 'geopf-extensions-openlayers';
@@ -75,7 +80,6 @@ const btnSave = ref(new ButtonExport({
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
  * @see LayerSwitcher
- * @fixme l'outil de dessin doit être monté !
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
@@ -215,7 +219,7 @@ const onSaveVector = (e) => {
 
   var promise;
   if (type !== "bookmark") {
-    promise = createVectorDocument(data);
+    promise = useCreateDocument(data, emitter, service);
   } else {
     // INFO
     // mise à jour, l'ID de la couche fournit 
@@ -225,7 +229,7 @@ const onSaveVector = (e) => {
     var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
     data.type = type;
     data.uuid = uuid;
-    promise = updateVectorDocument(data);
+    promise = useUpdateDocument(data, emitter, service);
   }
   
   promise
@@ -263,137 +267,6 @@ const onSaveVector = (e) => {
       message: t.drawing.save_failed
     });
   });
-}
-
-/**
- * Créer un document pour un vecteur
- * @param data 
- * @property {String} data.content - export data
- * @property {String} data.name - name
- * @property {String} data.description - description
- * @property {String} data.format - format : kml, geojson, ...
- * @property {String} data.target - internal, external
- * @property {String} data.type - drawing, import, bookmark
- * @property {Object} data.layer - layer
- */
-const createVectorDocument = async (data) => {
-  try {
-    const o = await service.setDocument(data)
-    var uuid = o.uuid;
-    var action = o.action;
-    
-    // mise à jour de l'id interne de la couche
-    if (data.layer.gpResultLayerId) {
-      data.layer.gpResultLayerId = `bookmark:${data.type}-${data.format.toLowerCase()}:${uuid}`;
-    }
-    
-    // mise à jour de l'entrée du gestionnaire de couche
-    if (data.layer.gpResultLayerDiv) {
-      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
-      if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
-      }  
-    }
-
-    // rendre public le document
-    const s = await service.sharingDocument({
-      uuid : uuid,
-      type : data.type
-    });
-    console.debug(s);
-
-    // mise à jour des extras du document
-    const x = await service.updateMetadataDocument({
-      uuid : uuid,
-      type : data.type,
-      name : data.name,
-      description : data.description,
-      // FIXME extra !? sinon, labels !
-      extra : {
-        format: data.format.toLowerCase(),
-        target: "internal",
-        date: new Date().toLocaleDateString()
-      }
-    });
-    console.debug(x);
-
-    // emettre un event pour prévenir l'ajout d'un croquis
-    // au composant des favoris
-    emitter.dispatchEvent("document:saved", {
-      uuid : uuid,
-      action : action // added, updated, deleted
-    });
-
-    return o;
-
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-/**
- * Mettre à jour un document pour un vecteur
- * @param data 
- * @property {String} data.content - export data
- * @property {String} data.name - name
- * @property {String} data.description - description
- * @property {String} data.format - format : kml, geojson, ...
- * @property {Object} data.layer - layer
- */
-const updateVectorDocument = async (data) => {
-  try {
-    const o = await service.updateGeometryDocument(data);
-    var uuid = o.uuid;
-    var action = o.action;
-
-    // mise à jour de l'entrée du gestionnaire de couche
-    if (data.layer.gpResultLayerDiv) {
-      var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
-      if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
-      }  
-    }
-
-    const document = service.find(uuid);
-    if (document && !document.public_url) {
-      // rendre public le document
-      const s = await service.sharingDocument({
-        uuid : uuid,
-        type : data.type
-      });
-      console.debug(s);
-    }
-
-    // mise à jour des extras du document
-    const x = await service.updateMetadataDocument({
-      uuid : uuid,
-      type : data.type,
-      name : data.name,
-      description : data.description,
-      // FIXME extra !? sinon, labels !
-      extra : {
-        format: data.format.toLowerCase(),
-        target: "internal",
-        date: new Date().toLocaleDateString()
-      }
-    });
-    console.debug(x);
-    
-    // emettre un event pour prévenir l'ajout d'un croquis 
-    // au composant des favoris
-    emitter.dispatchEvent("document:updated", {
-      uuid : uuid,
-      action : action // added, updated, deleted
-    });
-
-    return o;
-
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
 }
 
 /**

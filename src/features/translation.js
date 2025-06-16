@@ -32,6 +32,8 @@ export default {
   },
   layerimport: {
     title: 'Import de couche',
+    save_success: 'L\'import est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement de l\'import',
     add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
     add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` },
     add_success_mapbox: 'La couche MapBox est ajoutée à la carte',
@@ -44,6 +46,27 @@ export default {
     remove_success: 'La couche est supprimé de la carte',
     remove_failed: 'Une erreur est survenue dans la suppression de la couche',
     failed_not_yet_implemented: 'L\'édition de ce type de données n\'est pas encore gérée !',
+  },
+  route: {
+    title: 'Itinéraire',
+    failed_import: "La couche importée ne semble pas être un calcul d`itinéraire !",
+    save_already: 'Le calcul d\'itinéraire a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul d\'itinéraire est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d`itinéraire'
+  },
+  iso: {
+    title: 'Isochrone',
+    failed_import: "La couche importée ne semble pas être un calcul d\'isochrone !",
+    save_already: 'Le calcul d\'isochrone a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul d\'isochrone est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d\'isochrone'
+  },
+  profil: {
+    title: 'Profil altimétrique',
+    failed_import: "La couche importée ne semble pas être un calcul de profil !",
+    save_already: 'Le calcul de profil a déjà été enregistré dans l\'espace personnel',
+    save_success: 'Le calcul de profil est enregistré dans l\'espace personnel',
+    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul de profil'
   },
   searchengine: {
     title: 'Recherche de couche'
