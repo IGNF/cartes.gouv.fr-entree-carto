@@ -237,6 +237,17 @@ const notificationsTheme = computed(() => {
     ...myNotificationsTheme
   };
 });
+
+const scrollDown = () => {
+  // on scroll down pour afficher le footer
+  setTimeout(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, 100);
+}
+
 </script>
 
 <template>
@@ -275,6 +286,7 @@ const notificationsTheme = computed(() => {
   <label
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
+    @click="scrollDown"
   ><span>Fermer</span></label>
   <input
     id="fr-footer-toggle"
@@ -376,6 +388,9 @@ const notificationsTheme = computed(() => {
     margin-top: 0;
     box-shadow: inset 0 0px 0 0 var(--border-default-grey);
   }
+  .fr-footer__partners + .fr-footer__bottom {
+    margin-top: 0;
+  }
 
   /* mini footer */
   #fr-footer-toggle {
@@ -391,7 +406,7 @@ const notificationsTheme = computed(() => {
     background-image: url(../assets/arrow-down.svg);
     background-repeat: no-repeat;
     background-position: center;
-    transform: translate(-15px, 18px);
+    transform: translate(-15px, 10px);
     caret-color: transparent;
   }
 
