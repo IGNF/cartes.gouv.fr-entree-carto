@@ -79,8 +79,8 @@ var service :any = inject('services');
 
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
-// et si elle est valide, on demande le jeton de connexion, puis, 
-// on récupère les informations utilisateurs. 
+// et si elle est valide, on demande le jeton de connexion, puis,
+// on récupère les informations utilisateurs.
 // Pour les favoris, on récupère aussi les documents.
 service.isAccessValided()
 .then((status:any) => {
@@ -206,7 +206,7 @@ const myNotificationsIcons = {
   close : markRaw(NotificationClose)
 }
 
-// theme à customiser 
+// theme à customiser
 const myNotificationsTheme: NotivueTheme = {
   '--nv-radius': '0',
   '--nv-width': '350px',
@@ -237,6 +237,17 @@ const notificationsTheme = computed(() => {
     ...myNotificationsTheme
   };
 });
+
+const scrollDown = () => {
+  // on scroll down pour afficher le footer
+  setTimeout(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  }, 100);
+}
+
 </script>
 
 <template>
@@ -255,13 +266,13 @@ const notificationsTheme = computed(() => {
     </template>
   </DsfrHeader>
 
-  <!-- Notifications 
+  <!-- Notifications
   -->
   <Notivue v-slot="item">
-    <Notification 
-    :item="item"
-    :icons="myNotificationsIcons"
-    :theme="notificationsTheme" 
+    <Notification
+      :item="item"
+      :icons="myNotificationsIcons"
+      :theme="notificationsTheme"
     />
   </Notivue>
 
@@ -273,9 +284,10 @@ const notificationsTheme = computed(() => {
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
   <label
-    class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline"
+    class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
-  />
+    @click="scrollDown"
+  ><span>Fermer</span></label>
   <input
     id="fr-footer-toggle"
     type="checkbox"
@@ -317,7 +329,6 @@ const notificationsTheme = computed(() => {
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 222.5px);
-    margin-bottom: -10px;
   }
 
   @media (max-width: 576px) {
@@ -330,14 +341,14 @@ const notificationsTheme = computed(() => {
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /* 
+  /*
   .Notivue__content-message {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: wrap;
-  } 
+  }
   */
-  /*   
+  /*
   .Notivue__icon {
     color: white;
     display: flex;
@@ -347,9 +358,9 @@ const notificationsTheme = computed(() => {
     min-width: var(--nv-icon-size);
     width: var(--nv-icon-size);
     margin: 0;
-  } 
+  }
   */
- /*   
+ /*
   [data-notivue='error'] .Notivue__icon {
     background-color: #ce0500;
   }
@@ -375,8 +386,13 @@ const notificationsTheme = computed(() => {
   }
   .fr-footer__bottom {
     margin-top: 0;
+    box-shadow: inset 0 0px 0 0 var(--border-default-grey);
+  }
+  .fr-footer__partners + .fr-footer__bottom {
+    margin-top: 0;
   }
 
+  /* mini footer */
   #fr-footer-toggle {
     display: none;
   }
@@ -390,18 +406,51 @@ const notificationsTheme = computed(() => {
     background-image: url(../assets/arrow-down.svg);
     background-repeat: no-repeat;
     background-position: center;
-    transform: translateY(12px);
-    transition: transform 0.2s;
+    transform: translate(-15px, 10px);
     caret-color: transparent;
   }
+
+  .fr-footer-toggle-label::after {
+    display: none;
+  }
+  .fr-footer-toggle-label > span {
+    display: none;
+  }
+
+  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
+    display: inline-block;
+  }
+
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked) {
-    transform: translateY(12px) rotateX(180deg);
+    background-image: unset;
+    width: 100px;
   }
-  @media (min-width: 576px){
-    .fr-footer-toggle-label {
-      display: none;
-    }
+
+  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked) > span {
+    display: inline;
   }
+
+  #fr-footer-toggle:checked + .fr-footer {
+    padding-top: 4rem;
+  }
+
+  #fr-footer-toggle:checked + .fr-footer .fr-footer__body {
+    display: flex;
+  }
+
+  #fr-footer-toggle:checked + .fr-footer .fr-footer__partners,
+  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > div {
+    display: unset;
+  }
+
+  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
+    display: inline-block;
+  }
+
+  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
+    display: inline-block;
+  }
+
   @media (max-width: 576px){
     /* mini header */
     .fr-header__service-tagline {
@@ -427,7 +476,7 @@ const notificationsTheme = computed(() => {
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
       display: none;
     }
-    .fr-footer-toggle, .fr-footer-toggle-label{
+    .fr-footer-toggle {
       display: none;
     }
     .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
@@ -435,27 +484,6 @@ const notificationsTheme = computed(() => {
     }
     .fr-footer__bottom {
       box-shadow: unset;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer {
-      padding-top: 2rem;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__body {
-      display: flex;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__partners,
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > div {
-      display: unset;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
-      display: inline-block;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
-      display: inline-block;
     }
 
     #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom {
