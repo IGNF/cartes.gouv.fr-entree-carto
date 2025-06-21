@@ -4,7 +4,7 @@ services:
     entree_carto_dev:
         build:
             context: ..
-            dockerfile: ./.docker-dev/Dockerfile
+            dockerfile: ./.docker-dev/carto/Dockerfile
             args:
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
@@ -27,6 +27,50 @@ services:
         ports:
         # - HOST:CONTAINER
           - 8083:5173
+        networks:
+          - web_dev
+
+    app_dev:
+        image: ghcr.io/ignf/cartes.gouv.fr:latest
+        container_name: cartesgouvfr-dev
+        env_file:
+            - ./cartes/.env.local
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+            - APP_ROOT_URL=https://cartesgouvfr-dev.docker.localhost
+            - XDEBUG_MODE=debug
+            - XDEBUG_CONFIG=client_host=host.docker.internal client_port=9003
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        ports:
+            - "9092:8000"
+            - "5173:5173"
+        networks:
+            - web_dev
+
+    nginx_proxy:
+        build:
+            context: ..
+            dockerfile: ./docker-dev/proxy/Dockerfile
+            args:
+              HTTP_PROXY: "http://proxy.ign.fr:3128"
+              HTTPS_PROXY: "http://proxy.ign.fr:3128"
+        image: cartesgouvfr-nginx_proxy-dev:latest
+        depends_on:
+          - entree_carto_dev
+          - app_dev
+        container_name: cartesgouvfr-nginx_proxy-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+        # - HOST:CONTAINER
+          - 1235:1235
         networks:
           - web_dev
 
