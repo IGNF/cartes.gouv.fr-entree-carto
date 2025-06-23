@@ -37,6 +37,7 @@ var EVENTS = {
     "drawing:open:clicked",
     "layerimport:open:clicked",
     "searchengine:open:displayed",
+    "reporting:open:clicked",
     // edition
     "vector:edit:clicked",
     "mapbox:edit:clicked",

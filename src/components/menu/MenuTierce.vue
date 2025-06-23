@@ -18,6 +18,8 @@
 import { useMapStore } from "@/stores/mapStore"
 import { useDomStore } from "@/stores/domStore"
 
+const emitter = inject('emitter');
+
 const domStore = useDomStore();
 const mapStore = useMapStore();
 
@@ -28,6 +30,14 @@ const emit = defineEmits([
   'onModalThemeOpen', 
   'onBookMarksOpen'
 ]);
+
+function onOpenControlReporting() {
+  // envoi d'un evenement pour l'ouverture du contrôle 
+  emitter.dispatchEvent("reporting:open:clicked", {
+    open : true,
+    componentName: "Reporting"
+  });
+}
 
 function openControl(controlName) {
   mapStore.getMap().getControls().getArray().forEach(control => {
@@ -105,6 +115,15 @@ onMounted(() => {
       @click="$emit('onModalPrintOpen')"
     >
       Imprimer
+    </DsfrButton>
+
+    <DsfrButton
+      tertiary
+      no-outline
+      icon="fr-icon-feedback-line"
+      @click="onOpenControlReporting()"
+    >
+      Signaler une anomalie
     </DsfrButton>
     <hr>
     <DsfrButton

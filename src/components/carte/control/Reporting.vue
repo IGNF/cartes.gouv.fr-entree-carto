@@ -8,6 +8,8 @@ import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
 import { Reporting } from 'geopf-extensions-openlayers';
 
+const emitter = inject('emitter');
+
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
@@ -18,9 +20,15 @@ const props = defineProps({
 const log = useLogger();
 const store = useDataStore();
 
-
 const map = inject(props.mapId)
 const reporting = ref(new Reporting(props.reportingOptions));
+
+// abonnement sur l'ouverture du controle
+emitter.addEventListener("reporting:open:clicked", (e) => {
+  if (reporting.value) {
+    reporting.value.setCollapsed(!e.open);
+  }
+});
 
 function addThematics () {
   // TODO 

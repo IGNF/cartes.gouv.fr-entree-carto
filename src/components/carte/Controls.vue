@@ -44,6 +44,8 @@ import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+const emitter = inject('emitter');
+
 const isProduction = (import.meta.env.MODE === "production");
 isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
 
@@ -426,6 +428,16 @@ const contextMenuOptions = computed(() => {
         text : "Mes enregistrements",
         callback : () => {
           domStore.getBookmarksButton().firstChild.click()
+        }
+      },
+      {
+        text : "Signaler une anomalie",
+        callback : () => {
+          // envoi d'un evenement pour l'ouverture du contrôle 
+          emitter.dispatchEvent("reporting:open:clicked", {
+            open : true,
+            componentName: "Reporting"
+          });
         }
       }
     ]
