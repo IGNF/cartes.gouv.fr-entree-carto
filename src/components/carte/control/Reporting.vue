@@ -2,7 +2,9 @@
 
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useActionButtonEulerian } from '@/composables/actionEulerian';
+
+import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
 import { Reporting } from 'geopf-extensions-openlayers';
 
@@ -29,13 +31,15 @@ function addThematics () {
 onMounted(() => {
   if (props.visibility) {
     addThematics();
+    reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value)
     if (props.analytic) {
       var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
-    reporting.value.on("", );
+    reporting.value.once("reporting:opened", onOpenPanelInformation);
+    reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
 
@@ -48,6 +52,7 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     addThematics();
+    reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value);
     if (props.analytic) {
       var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
