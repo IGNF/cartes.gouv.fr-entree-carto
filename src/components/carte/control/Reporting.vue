@@ -1,8 +1,10 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
+
+import ReportingSuccessSentModal from '@/components/modals/ModalReportingSuccessSent.vue';
+import ReportingStartModal from '@/components/modals/ModalReportingStart.vue';
 
 import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
@@ -18,10 +20,12 @@ const props = defineProps({
 });
 
 const log = useLogger();
-const store = useDataStore();
 
 const map = inject(props.mapId)
 const reporting = ref(new Reporting(props.reportingOptions));
+
+const refModalReportingSent = ref({});
+const refModalReportingStart = ref({});
 
 // abonnement sur l'ouverture du controle
 emitter.addEventListener("reporting:open:clicked", (e) => {
@@ -79,6 +83,7 @@ onUpdated(() => {
  */
 const onOpenPanelInformation = (e) => {
   log.debug(e);
+  refModalReportingStart.value.openModalReportingStart();
 }
 /** 
  * gestionnaire d'evenement sur les abonnements
@@ -87,11 +92,13 @@ const onOpenPanelInformation = (e) => {
  */
 const onSendingReporting = (e) => {
   log.debug(e);
+  refModalReportingSent.value.openModalReportingSent();
 }
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <ReportingSuccessSentModal ref="refModalReportingSent" />
+  <ReportingStartModal ref="refModalReportingStart" />
 </template>
 
 <style>

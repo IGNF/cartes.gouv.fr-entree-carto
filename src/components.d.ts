@@ -68,6 +68,8 @@ declare module 'vue' {
     ModalConsent: typeof import('./components/modals/ModalConsent.vue')['default']
     ModalInformation: typeof import('./components/modals/ModalInformation.vue')['default']
     ModalLogin: typeof import('./components/modals/ModalLogin.vue')['default']
+    ModalReportingStart: typeof import('./components/modals/ModalReportingStart.vue')['default']
+    ModalReportingSuccessSent: typeof import('./components/modals/ModalReportingSuccessSent.vue')['default']
     ModalSave: typeof import('./components/modals/ModalSave.vue')['default']
     ModalTheme: typeof import('./components/modals/ModalTheme.vue')['default']
     MousePosition: typeof import('./components/carte/control/MousePosition.vue')['default']
