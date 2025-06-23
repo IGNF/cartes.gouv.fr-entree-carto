@@ -32,11 +32,15 @@ const emit = defineEmits([
 ]);
 
 function onOpenControlReporting() {
-  // envoi d'un evenement pour l'ouverture du contrôle 
-  emitter.dispatchEvent("reporting:open:clicked", {
-    open : true,
-    componentName: "Reporting"
-  });
+  // on active le controle
+  mapStore.addControl("Reporting");
+  // envoi d'un evenement pour l'ouverture du contrôle
+  setTimeout(() => {
+    emitter.dispatchEvent("reporting:open:clicked", {
+      open : true,
+      componentName: "Reporting"
+    });
+  }, 0);
 }
 
 function openControl(controlName) {
