@@ -12,6 +12,7 @@ export default {
 import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
 
+const emitter = inject('emitter');
 const eulerian = useEulerian();
 const router = useRouter();
 
@@ -22,6 +23,11 @@ const actions = [
     label: 'Retour à la carte',
     onClick () {
       opened.value = false;
+      // envoi d'un evenement pour la fermeture du contrôle 
+      emitter.dispatchEvent("reporting:open:clicked", {
+        open : false,
+        componentName: "Reporting"
+      });
     }
   },
   {

@@ -11,9 +11,13 @@ export default {
 <script setup lang="js">
 import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
+import { useMapStore } from "@/stores/mapStore";
+import { useDataStore } from "@/stores/dataStore";
 
 const eulerian = useEulerian();
 const router = useRouter();
+const mapStore = useMapStore();
+const dataStore = useDataStore();
 
 const title = "Avant d'effectuer un signalement";
 const icon = 'fr-icon-feedback-line';
@@ -29,6 +33,8 @@ const actions = [
     tertiary: true,
     onClick () {
       opened.value = false;
+      var id = dataStore.getLayerIdByName("GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1", "WMTS");
+      mapStore.addLayer(id);
     }
   },
 ];
