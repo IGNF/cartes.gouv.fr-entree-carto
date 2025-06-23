@@ -75,6 +75,7 @@ declare module 'vue' {
     Patience: typeof import('./components/utils/Patience.vue')['default']
     Print: typeof import('./components/carte/control/Print.vue')['default']
     PrintModal: typeof import('./components/carte/control/PrintModal.vue')['default']
+    Reporting: typeof import('./components/carte/control/Reporting.vue')['default']
     ReverseGeocode: typeof import('./components/carte/control/ReverseGeocode.vue')['default']
     RightMenuTool: typeof import('./components/menu/RightMenuTool.vue')['default']
     Route: typeof import('./components/carte/control/Route.vue')['default']

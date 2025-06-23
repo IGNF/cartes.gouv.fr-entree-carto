@@ -150,6 +150,12 @@ export const useControls = {
     active: true,
     disable: true,
     analytic: true
+  },
+  Reporting: {
+    id: 'Reporting',
+    active: true,
+    disable: false,
+    analytic: true
   }
 }
 
@@ -334,6 +340,13 @@ export function useControlsMenuOptions() {
       name: useControls.ContextMenu.id,
       hint: 'Menu contextuel au clic droit sur la carte',
       disabled: useControls.ContextMenu.disable
+    },
+    {
+      label: 'Signaler une anomalie',
+      id: 'reporting',
+      name: useControls.Reporting.id,
+      hint: 'Outil de signalement d\'anomalie',
+      disabled: useControls.Reporting.disable
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
@@ -360,7 +373,8 @@ export function useControlsExtensionPosition() {
     elevationPathOptions : 'top-right',
     layerImportOptions : 'top-right',
     mousePositionOptions : 'top-right',
-    drawingOptions : 'top-right'
+    drawingOptions : 'top-right',
+    reportingOptions : 'top-right'
   }
 }
 
@@ -451,7 +465,12 @@ export function useControlsPosition() {
   if (useControlsExtensionPosition().controlListOptions.includes("left"))
     leftC.push(useControls.ControlList.id)
   if (useControlsExtensionPosition().controlListOptions.includes("right"))
-    rightC.push(useControls.ControlList.id) 
+    rightC.push(useControls.ControlList.id)
+  // Signalement
+  if (useControlsExtensionPosition().reportingOptions.includes("left"))
+    leftC.push(useControls.Reporting.id)
+  if (useControlsExtensionPosition().reportingOptions.includes("right"))
+    rightC.push(useControls.Reporting.id)
 
   return {
     left : leftC,

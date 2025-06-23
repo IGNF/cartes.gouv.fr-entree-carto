@@ -32,6 +32,7 @@ import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
 import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
+import Reporting from './control/Reporting.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
@@ -389,6 +390,14 @@ const layerImportOptions = {
   listable: true,
 };
 
+const reportingOptions = {
+  id: "21",
+  position: useControlsExtensionPosition().reportingOptions,
+  gutter: false,
+  listable: true,
+  format : "kml"
+};
+
 const refModalPrint = inject("refModalPrint")
 const refModalShare = inject("refModalShare")
 
@@ -573,6 +582,13 @@ const contextMenuOptions = computed(() => {
     :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
     :analytic="useControls.ContextMenu.analytic"
     :context-menu-options="contextMenuOptions"
+    :map-id="mapId"
+  />
+  <Reporting
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Reporting.id)"
+    :analytic="useControls.Reporting.analytic"
+    :reporting-options="reportingOptions"
     :map-id="mapId"
   />
 </template>
