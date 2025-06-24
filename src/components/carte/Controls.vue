@@ -635,7 +635,7 @@ const contextMenuOptions = computed(() => {
 }
 
 .gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPcontrolList-"]) > .gpf-btn-icon {
+.gpf-button-no-gutter:has(+ .gpf-widget-button[id^="GPcontrolList-"]) > .gpf-btn-icon {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
