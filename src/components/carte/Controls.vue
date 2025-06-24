@@ -635,7 +635,7 @@ const contextMenuOptions = computed(() => {
 }
 
 .gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPcontrolList-"]) > .gpf-btn-icon {
+.gpf-button-no-gutter:has(+ .gpf-widget-button[id^="GPcontrolList-"]) > .gpf-btn-icon {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -671,7 +671,7 @@ const contextMenuOptions = computed(() => {
     padding: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"]) {
     margin: 0;
     padding: 0;
   }
@@ -710,7 +710,7 @@ const contextMenuOptions = computed(() => {
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
@@ -749,7 +749,7 @@ const contextMenuOptions = computed(() => {
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
