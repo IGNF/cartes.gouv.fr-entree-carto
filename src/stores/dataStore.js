@@ -63,8 +63,20 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
-      const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
-      const alertsRes = await fetch(alertsConfURL)
+      var alertsRes = null;
+
+      // on utilise les annexes pour les alertes
+      // la stabilité n'étant pas fiable, on prévoit
+      // un fallback (pour test)
+      try {
+        const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
+        alertsRes = await fetch(alertsConfURL);
+        if (!alertsRes.ok) throw new Error('Erreur HTTP');
+      } catch (e) {
+        // fallback uniquement sur un souci de réseau !
+        alertsRes = await fetch("data/alerts.json");
+      }
+
       const alerts = await alertsRes.json();
 
       m_alerts.value = alerts;

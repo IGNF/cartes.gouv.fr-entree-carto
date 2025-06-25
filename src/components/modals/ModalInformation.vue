@@ -55,9 +55,12 @@ const alerts = data.getAlerts();
 
 const description = (alert) => {
   // INFO
-  // link : url relative à cartes.gouv.fr par défaut
-  var url = useBaseUrl() + alert.link.url;
-  var message = `${alert.description} - ${alert.details} <a href="${url}">${alert.link.label}</a>`;
+  // link : par défaut, url relative à cartes.gouv.fr
+  var url = alert.link.url;
+  if (url.startsWith('/')) {
+    url = useBaseUrl() + alert.link.url;
+  }
+  var message = `${alert.description} - ${alert.details} <a href="${url}" title="ouvre une nouvelle fenêtre" target="_blank" class="fr-notice__link">${alert.link.label}</a>`;
   return `${message}`;
 };
 
