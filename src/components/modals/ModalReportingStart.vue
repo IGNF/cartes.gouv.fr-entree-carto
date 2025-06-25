@@ -29,7 +29,7 @@ const actions = [
     }
   },
   {
-    label: 'Mettre à jour la donnée',
+    label: 'Afficher Plan IGN J+1',
     tertiary: true,
     onClick () {
       opened.value = false;
@@ -78,7 +78,7 @@ defineExpose({
     <template #default>
       <p>
         Avant de débuter, nous vous recommendons de prendre connaissance de 
-        notre <a href="" target="_blank">foire aux questions</a> dédiée, et de mettre à jour les données,
+        notre <a href="" target="_blank">foire aux questions</a> dédiée, et d'afficher la carte la plus à jour,
         afin de vérifier que l'anomalie n'a pas déjà été prise en compte.
       </p>
     </template>
