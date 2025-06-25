@@ -51,7 +51,14 @@ const store = useMapStore();
 const data = useDataStore();
 
 const title = "Messages d'informations";
-const alerts = data.getAlerts();
+const alerts = computed(() => {
+  var lstAlerts = data.getAlerts();
+  for (let index = 0; index < lstAlerts.length; index++) {
+    const element = lstAlerts[index];
+    element.closed = false;
+  }
+  return lstAlerts;
+});
 
 const description = (alert) => {
   // INFO
@@ -67,7 +74,13 @@ const description = (alert) => {
 // FIXME
 // utiliser pour stopper l'affichage : store.noInformation=true|false
 // mais si nouvelles alertes, il faut les afficher de nouveau !
-const opened = ref(!store.noInformation);
+var newAlertes = computed(() => {
+  // nouvelles alertes par rapport à la dernière fois 
+  // où on a décidé de ne plus les afficher.
+  return false;
+});
+
+const opened = ref(!store.noInformation || newAlertes);
 
 if (opened.value) {
   eulerian.pause();
@@ -83,6 +96,13 @@ const onModalNoInformationClose = () => {
   eulerian.resume();
 };
 
+const onClose = (id) => {
+  alerts.value.forEach((alert) => {
+    if (alert.id === id) {
+      alert.closed = true // mettre la propriété closed à true pour cette alerte
+    }
+  })
+}
 </script>
 
 <template>
@@ -98,6 +118,9 @@ const onModalNoInformationClose = () => {
       :key="`alert-${alert.id}`"
       :type="alert.severity"
       :title="alert.title"
+      :closed="alert.closed"
+      :closeable=true
+      @close="onClose(alert.id)"
     >
       <div v-html="description(alert)"></div>
     </DsfrAlert>
