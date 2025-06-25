@@ -28,7 +28,7 @@ const DEFAULT = {
   LAT: 46.493888, // informatif
   ZOOM: 6,
   FIRSTVISIT: false,
-  NOINFORMATION: null
+  NOINFORMATION: false
 }
 
 /**
@@ -302,7 +302,7 @@ export const useMapStore = defineStore('map', () => {
     localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
   })
   watch(noInformation, () => {
-    localStorage.setItem(ns('noInformation'), noInformation.value); // number
+    localStorage.setItem(ns('noInformation'), noInformation.value); // booleen
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
