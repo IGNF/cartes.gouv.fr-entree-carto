@@ -166,7 +166,6 @@ export const useMapStore = defineStore('map', () => {
     // INFO
     // on exclue la route /embed
     var permalinkUrl = "";
-    console.log(controls.value);
     var permanentControls = ["OverviewMap","SearchEngine","ScaleLine","LayerSwitcher","GetFeatureInfo","Legends","Zoom","FullScreen","Share","Print","Territories","LayerImport","ControlList","ContextMenu","Reporting"]
     var optionalControls = controls.value.split(",").filter((c) => !permanentControls.includes(c)).toString();
     var last = location.pathname.slice(-1);
