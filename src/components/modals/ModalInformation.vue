@@ -35,8 +35,6 @@
  * 
  * Le champ **opened** permet d'activer (true) / désactiver (false) la modale au chargement du site.
  * 
- * L'utilisateur a la possibilité de valider le choix afin de ne plus afficher l'information sur la prochaine session
- * (cf. localStorage : cartes.gouv.fr.noInformation)
  */
 export default {};
 </script>
@@ -47,7 +45,6 @@ import { useEulerian } from '@/plugins/Eulerian';
 import { useBaseUrl } from '@/composables/baseUrl';
 
 const eulerian = useEulerian();
-const store = useMapStore();
 const data = useDataStore();
 
 const title = "Messages d'informations";
@@ -71,28 +68,13 @@ const description = (alert) => {
   return `${message}`;
 };
 
-// FIXME
-// utiliser pour stopper l'affichage : store.noInformation=true|false
-// mais si nouvelles alertes, il faut les afficher de nouveau !
-var newAlertes = computed(() => {
-  // nouvelles alertes par rapport à la dernière fois 
-  // où on a décidé de ne plus les afficher.
-  return false;
-});
-
-const opened = ref(!store.noInformation || newAlertes);
+const opened = ref(alerts.value.length !== 0);
 
 if (opened.value) {
   eulerian.pause();
 }
 const onModalInformationClose = () => {
   opened.value = false;
-  eulerian.resume();
-};
-
-const onModalNoInformationClose = () => {
-  opened.value = false;
-  store.noInformation = true;
   eulerian.resume();
 };
 
@@ -124,23 +106,7 @@ const onClose = (id) => {
     >
       <div v-html="description(alert)"></div>
     </DsfrAlert>
-    <!-- fr-btn--close -->
-    <button
-      class="fr-btn--tertiary-no-outline" 
-      title="ne plus afficher ce message"
-      type="button"
-      @click="onModalNoInformationClose"
-    >
-      <span>Ne plus afficher ce message</span>
-    </button>
   </DsfrModal>
 </template>
 
-<style>
-/* Surcharge sur le composant DsfrConsent : 
-  > on n'affiche pas le bouton 'Personnaliser' 
-*/
-button[title="ne plus afficher ce message"] {
-  margin-top: 16px;
-}
-</style>
+<style></style>
