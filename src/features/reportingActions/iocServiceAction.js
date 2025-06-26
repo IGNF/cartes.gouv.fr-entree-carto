@@ -40,7 +40,7 @@ class MyServiceAction {
                 "EPSG:4326"
             );
         }
-        const permalink = `https://cartes.gouv.fr/cartes?c=${location[0]},${location[1]}&z=11&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&w=OverviewMap,SearchEngine,ScaleLine,LayerSwitcher,GetFeatureInfo,Legends,Zoom,FullScreen,Share,Print,Territories,LayerImport,ControlList,ContextMenu&permalink=yes`;
+        const permalink = `https://cartes.gouv.fr/cartes?c=${location[0]},${location[1]}&p=${location[0]},${location[1]}&z=11&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&w=OverviewMap,SearchEngine,ScaleLine,LayerSwitcher,GetFeatureInfo,Legends,Zoom,FullScreen,Share,Print,Territories,LayerImport,ControlList,ContextMenu&permalink=yes`;
         const anomaly = {
             name: data.name + " (Anomalie) (cartes.gouv.fr)",
             description: data.desc,
