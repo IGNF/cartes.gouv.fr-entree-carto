@@ -154,7 +154,7 @@ export const useControls = {
   Reporting: {
     id: 'Reporting',
     active: true,
-    disable: false,
+    disable: true,
     analytic: true
   }
 }
