@@ -163,6 +163,7 @@ export const useMapStore = defineStore('map', () => {
     // INFO
     // on exclue la route /embed
     var permalinkUrl = "";
+    var optionalControls = controls.value.split(",").filter((c) => !defaultControls.includes(c)).toString();
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
@@ -171,8 +172,8 @@ export const useMapStore = defineStore('map', () => {
       permalinkUrl += `&p=${geolocation.value}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
-    `&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
-    `&l=${layers.value}&w=${controls.value}`;
+    `&l=${layers.value}&w=${optionalControls}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}&w=${optionalControls}`;
     return permalinkUrl + "&permalink=yes";
   });
 
