@@ -71,29 +71,28 @@ const onCustomizeCookies = () => {
 </script>
 
 <template>
-  <!-- Modale : Gestion des cookies (+ Eulerian) -->
-  <DsfrModal 
-    :opened="consentModalOpened" 
-    :title="title"
-    :size="size" 
-    @close="onModalConsentClose"
-  >
-    <!-- slot : c'est ici que l'on customise le contenu ! -->
+  <div v-if="consentModalOpened" class="fr-consent-banner">
+    <h2 class="fr-h6">{{ title }}</h2>
     <p id="my-consent">
-      <DsfrConsent
-        @accept-all="onAcceptConsentAll()"
-        @refuse-all="onRefuseConsentAll()"
-        @customize="onCustomizeCookies()"
-      >
-        Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
-        les services disponibles sur ce site. 
-        Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
-        Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
-        Préférences pour tous les services.
-      </DsfrConsent>
+        <DsfrConsent
+          @accept-all="onAcceptConsentAll()"
+          @refuse-all="onRefuseConsentAll()"
+          @customize="onCustomizeCookies()"
+        >
+          Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
+          les services disponibles sur ce site. 
+          Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
+          Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
+          Préférences pour tous les services.
+        </DsfrConsent>
     </p>
-  </DsfrModal>
-   <!-- Modale : Gestion des cookies personnalisés -->
+    <DsfrButton
+      id="fr-consent-modal-hidden-control-button"
+      class="fr-hidden"
+      @click="onModalConsentClose"
+    />
+  </div>
+  <!-- Modale : Gestion des cookies personnalisés -->
   <ModalConsentCustom ref="refModalConsentCustom" />
 </template>
 
@@ -102,6 +101,6 @@ const onCustomizeCookies = () => {
   > on centre les boutons 
 */
 .fr-btns-group--inline-sm.fr-btns-group--right.fr-btns-group--inline-reverse {
-  justify-content: center;
+  justify-content: end;
 }
 </style>
