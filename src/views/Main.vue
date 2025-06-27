@@ -19,6 +19,7 @@ import { useBaseUrl } from '@/composables/baseUrl'
 import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 // components
 import ModalConsent from '@/components/modals/ModalConsent.vue'
+import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
@@ -60,6 +61,7 @@ const afterMandatoryLinks = computed(() => {
 
 // ref sur le component ModalConsent
 const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
+const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
 
 // INFO
 // on met à jour les mandatoryLinks pour y ajouter des
@@ -68,7 +70,7 @@ const mandatoryLinks = computed(() => {
   return footerParams.mandatoryLinks.map((element: any) => {
     if (element.label === 'Gestion des cookies') {
       delete element.href
-      element.onclick = refModalConsent.value ? refModalConsent.value.openModalConsent : null
+      element.onclick = refModalConsentCustom.value ? refModalConsentCustom.value.openModalConsentCustom : null
       element.to = '/'
     }
     return element
@@ -322,6 +324,7 @@ const scrollDown = () => {
 
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
+    <ModalConsentCustom ref="refModalConsentCustom" />
   </div>
 </template>
 

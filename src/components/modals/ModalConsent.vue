@@ -15,18 +15,22 @@ export default {};
 import { useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';
 
+import ModalConsentCustom from './ModalConsentCustom.vue';
+
 // plugin local
 import { useEulerian } from '@/plugins/Eulerian.js';
 
 const router = useRouter();
 const eulerian = useEulerian();
 
+const refModalConsentCustom = ref(null);
+
 // gestion de la modale de consentement 'eulerian'
 var open = eulerian.hasKey();
 
 const consentModalOpened = ref(!open);
 
-const title = "Panneau de gestion des cookies";
+const title = "À propos des cookies sur cartes.gouv.fr";
 const size = "md";
 const url = useBaseUrl() + "/donnees-personnelles";
 
@@ -56,49 +60,47 @@ const onRefuseConsentAll = () => {
   eulerian.stop();
   onModalConsentClose();
 }
+const onCustomizeCookies = () => {
+  eulerian.stop();
+  onModalConsentClose();
+  if (refModalConsentCustom.value) {
+    refModalConsentCustom.value.openModalConsentCustom();
+  }
+}
+
 </script>
 
 <template>
-  <!-- Modale : Gestion des cookies (+ Eulerian) -->
-  <DsfrModal 
-    :opened="consentModalOpened" 
-    :title="title"
-    :size="size" 
-    @close="onModalConsentClose"
-  >
-    <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <p>
-      <DsfrConsent
-        @accept-all="onAcceptConsentAll()"
-        @refuse-all="onRefuseConsentAll()"
-      >
-        Préférences pour tous les services.
-        <a :href="url">Données personnelles et cookies</a>
-      </DsfrConsent>
+  <div v-if="consentModalOpened" class="fr-consent-banner">
+    <h2 class="fr-h6">{{ title }}</h2>
+    <p id="my-consent">
+        <DsfrConsent
+          @accept-all="onAcceptConsentAll()"
+          @refuse-all="onRefuseConsentAll()"
+          @customize="onCustomizeCookies()"
+        >
+          Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
+          les services disponibles sur ce site. 
+          Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
+          Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
+          Préférences pour tous les services.
+        </DsfrConsent>
     </p>
-    <hr>
-    <div>
-      <h5>Eulerian Analytics</h5>
-      En cliquant sur 'Tout accepter', vous consentez à l'utilisation des cookies pour nous aider
-      à améliorer notre site web en collectant et en rapportant des informations sur votre
-      utilisation grâce à Eulerian Analytics. <br>
-      Si vous n'êtes pas d'accord, veuillez cliquer sur 'Tout refuser'. 
-      Votre expérience de navigation ne sera pas affectée.
-    </div>
-  </DsfrModal>
+    <DsfrButton
+      id="fr-consent-modal-hidden-control-button"
+      class="fr-hidden"
+      @click="onModalConsentClose"
+    />
+  </div>
+  <!-- Modale : Gestion des cookies personnalisés -->
+  <ModalConsentCustom ref="refModalConsentCustom" />
 </template>
 
 <style>
 /* Surcharge sur le composant DsfrConsent : 
-  > on n'affiche pas le bouton 'Personnaliser' 
-*/
-button[title="Personnaliser les cookies"] {
-  display: none;
-}
-/* Surcharge sur le composant DsfrConsent : 
   > on centre les boutons 
 */
 .fr-btns-group--inline-sm.fr-btns-group--right.fr-btns-group--inline-reverse {
-  justify-content: center;
+  justify-content: end;
 }
 </style>
