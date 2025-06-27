@@ -22,6 +22,7 @@ const router = useRouter();
 const eulerian = useEulerian();
 
 const consentCustomModalOpened = ref(false);
+const refConsent = ref(null);
 
 const title = "Panneau de gestion des cookies";
 const size = "md";
@@ -57,18 +58,39 @@ const onClickValideChoice = () => {
   onModalConsentCustomClose();
 }
 
+onMounted(() => {
+  if (refConsent.value) {}
+})
+
+onBeforeUpdate(() => {
+  if (refConsent.value) {
+    var btn = refConsent.value.querySelector('button[title="Refuser tous les cookies"]');
+    btn.classList.add("fr-btn--secondary");
+  }
+})
+
+onUpdated(() => {
+  if (refConsent.value) {
+    // HACK
+    var btn = refConsent.value.querySelector('button[title="Refuser tous les cookies"]');
+    btn.classList.add("fr-btn--secondary");
+    var ul = refConsent.value.querySelector('ul');
+    ul.classList.replace("fr-btns-group--inline-reverse", "fr-btns-group--inline");
+  }
+})
+
 </script>
 
 <template>
   <!-- Modale : Gestion des cookies (+ Eulerian) -->
-  <DsfrModal 
+  <DsfrModal
     :opened="consentCustomModalOpened" 
     :title="title"
     :size="size" 
     @close="onModalConsentCustomClose"
   >
     <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <p id="my-consent-custom">
+    <p id="my-consent-custom" ref="refConsent">
       <DsfrConsent
         @accept-all="onAcceptConsentAll()"
         @refuse-all="onRefuseConsentAll()"
@@ -98,7 +120,7 @@ const onClickValideChoice = () => {
 
 <style>
 /* Surcharge sur le composant DsfrConsent : 
-  > on n'affiche pas le bouton 'Personnaliser' 
+  > on n'affiche pas le bouton 'Personnaliser les cookies' 
 */
 #my-consent-custom button[title="Personnaliser les cookies"] {
   display: none;
