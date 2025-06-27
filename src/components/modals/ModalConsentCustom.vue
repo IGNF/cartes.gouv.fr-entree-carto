@@ -53,6 +53,10 @@ const onRefuseConsentAll = () => {
   eulerian.stop();
   onModalConsentCustomClose();
 }
+const onClickValideChoice = () => {
+  onModalConsentCustomClose();
+}
+
 </script>
 
 <template>
@@ -82,6 +86,13 @@ const onRefuseConsentAll = () => {
       Si vous n'êtes pas d'accord, veuillez cliquer sur 'Tout refuser'. 
       Votre expérience de navigation ne sera pas affectée.
     </div>
+    <div class="fr-consent-manager__buttons fr-btns-group fr-btns-group--right fr-btns-group--inline-sm">
+      <DsfrButton
+        @click="onClickValideChoice"
+      >
+        Confirmer mes choix
+      </DsfrButton>
+    </div>
   </DsfrModal>
 </template>
 
@@ -96,6 +107,6 @@ const onRefuseConsentAll = () => {
   > on centre les boutons 
 */
 .fr-btns-group--inline-sm.fr-btns-group--right.fr-btns-group--inline-reverse {
-  justify-content: center;
+  justify-content: end;
 }
 </style>
