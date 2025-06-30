@@ -112,7 +112,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 4px;
-  box-shadow: 0px 0px 15px var(--grey-975-75);
+  box-shadow: var(--raised-shadow);
 }
 
 .navButton.fr-btn--secondary {

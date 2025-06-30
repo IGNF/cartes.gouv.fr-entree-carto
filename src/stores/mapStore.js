@@ -27,8 +27,7 @@ const DEFAULT = {
   LON: 2.602777, // informatif
   LAT: 46.493888, // informatif
   ZOOM: 6,
-  FIRSTVISIT: false,
-  NOINFORMATION: null
+  FIRSTVISIT: false
 }
 
 /**
@@ -59,7 +58,6 @@ const ns = ((value) => {
  * - cartes.gouv.fr.lon --> geographic
  * - cartes.gouv.fr.lat --> geographic
  * - cartes.gouv.fr.controls
- * - cartes.gouv.fr.noInformation
  * - cartes.gouv.fr.location
  *
  * Construction du permalien :
@@ -146,7 +144,6 @@ export const useMapStore = defineStore('map', () => {
   var lon = useStorage(ns('lon'), DEFAULT.LON);
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
-  var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
   var geolocation = useStorage(ns('geolocation'), "");
   
   // INFO
@@ -166,6 +163,7 @@ export const useMapStore = defineStore('map', () => {
     // INFO
     // on exclue la route /embed
     var permalinkUrl = "";
+    var optionalControls = controls.value.split(",").filter((c) => !defaultControls.includes(c)).toString();
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var url = location.origin + path.replace("/embed", "");
@@ -174,8 +172,8 @@ export const useMapStore = defineStore('map', () => {
       permalinkUrl += `&p=${geolocation.value}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
-    `&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
-    `&l=${layers.value}&w=${controls.value}`;
+    `&l=${layers.value}&w=${optionalControls}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}&w=${optionalControls}`;
     return permalinkUrl + "&permalink=yes";
   });
 
@@ -300,9 +298,6 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(firstVisit, () => {
     localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
-  })
-  watch(noInformation, () => {
-    localStorage.setItem(ns('noInformation'), noInformation.value); // number
   })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
@@ -555,7 +550,6 @@ export const useMapStore = defineStore('map', () => {
     lon,
     lat,
     firstVisit,
-    noInformation,
     permalink,
     permalinkShare,
     geolocation,

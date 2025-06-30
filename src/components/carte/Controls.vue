@@ -32,6 +32,7 @@ import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
 import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
+import Reporting from './control/Reporting.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
@@ -42,6 +43,8 @@ import { useLogger } from 'vue-logger-plugin';
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
+
+const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
 isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
@@ -389,6 +392,14 @@ const layerImportOptions = {
   listable: true,
 };
 
+const reportingOptions = {
+  id: "21",
+  position: useControlsExtensionPosition().reportingOptions,
+  gutter: false,
+  listable: true,
+  format : "kml"
+};
+
 const refModalPrint = inject("refModalPrint")
 const refModalShare = inject("refModalShare")
 
@@ -417,6 +428,20 @@ const contextMenuOptions = computed(() => {
         text : "Mes enregistrements",
         callback : () => {
           domStore.getBookmarksButton().firstChild.click()
+        }
+      },
+      {
+        text : "Signaler une anomalie",
+        callback : () => {
+          // on active le controle
+          mapStore.addControl("Reporting");
+          // envoi d'un evenement pour l'ouverture du contrôle
+          setTimeout(() => {
+            emitter.dispatchEvent("reporting:open:clicked", {
+              open : true,
+              componentName: "Reporting"
+            });
+          }, 0);
         }
       }
     ]
@@ -575,6 +600,13 @@ const contextMenuOptions = computed(() => {
     :context-menu-options="contextMenuOptions"
     :map-id="mapId"
   />
+  <Reporting
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Reporting.id)"
+    :analytic="useControls.Reporting.analytic"
+    :reporting-options="reportingOptions"
+    :map-id="mapId"
+  />
 </template>
 
 <style>
@@ -635,7 +667,7 @@ const contextMenuOptions = computed(() => {
 }
 
 .gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPcontrolList-"]) > .gpf-btn-icon {
+.gpf-button-no-gutter:has(+ .gpf-widget-button[id^="GPcontrolList-"]) > .gpf-btn-icon {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -671,7 +703,7 @@ const contextMenuOptions = computed(() => {
     padding: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"]) {
     margin: 0;
     padding: 0;
   }
@@ -710,7 +742,7 @@ const contextMenuOptions = computed(() => {
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
@@ -749,7 +781,7 @@ const contextMenuOptions = computed(() => {
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }

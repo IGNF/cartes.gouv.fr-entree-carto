@@ -1,17 +1,29 @@
 <script lang="js">
 /**
+ * @see https://vue-ds.fr/composants/DsfrAlert
  * @description
- * Affichage d'une modale d'information afin de prévenir 
+ * Affichage d'une modale d'alertes afin de prévenir 
  * les utilisateurs d'une opération de maintenance
  * 
- * Cette modale est configurable via l'edito : 
+ * Cette modale est configurable via le fichier d'alertes : 
  * ```json
- * "informations" : {
- *    "title": "Intervention technique",
- *    "description": "Une opération de maintenance aura lieu le lundi 15 juillet à partir de 19h.",
- *    "type": "error",
- *    "opened": false,
- *    "version": 1
+ * {
+ *    "id": "edef2f50-4b68-4d3b-bf90-7c247b97b04f",
+ *    "title": "Test 1",
+ *    "description": "Test alerte 1",
+ *    "link": {
+ *      "url": "/niveau-de-service",
+ *      "label": "En savoir plus"
+ *    },
+ *    "severity": "warning",
+ *    "details": "C'est les détails",
+ *    "date": "2025-06-24T20:48:07.455Z",
+ *    "visibility": {
+ *      "homepage": false,
+ *      "contact": false,
+ *      "map": true,
+ *      "serviceLevel": true
+ *    }
  * }
  * ```
  * 
@@ -23,26 +35,40 @@
  * 
  * Le champ **opened** permet d'activer (true) / désactiver (false) la modale au chargement du site.
  * 
- * L'utilisateur a la possibilité de valider le choix afin de ne plus afficher l'information sur la prochaine session
- * (cf. localStorage : cartes.gouv.fr.noInformation)
  */
 export default {};
 </script>
 <script setup lang="js">
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
-import { useEulerian } from '@/plugins/Eulerian.js';
+import { useEulerian } from '@/plugins/Eulerian';
+import { useBaseUrl } from '@/composables/baseUrl';
 
 const eulerian = useEulerian();
-const store = useMapStore();
 const data = useDataStore();
 
-const info = data.getInformations();
-const title = info.title;
-const description = info.description;
-const type = info.type;
-const version = info.version;
-const opened = ref(info.opened && (version !== parseInt(store.noInformation, 10)));
+const title = "Messages d'informations";
+const alerts = computed(() => {
+  var lstAlerts = data.getAlerts();
+  for (let index = 0; index < lstAlerts.length; index++) {
+    const element = lstAlerts[index];
+    element.closed = false;
+  }
+  return lstAlerts;
+});
+
+const description = (alert) => {
+  // INFO
+  // link : par défaut, url relative à cartes.gouv.fr
+  var url = alert.link.url;
+  if (url.startsWith('/')) {
+    url = useBaseUrl() + alert.link.url;
+  }
+  var message = `${alert.description} - ${alert.details} <a href="${url}" title="ouvre une nouvelle fenêtre" target="_blank" class="fr-notice__link">${alert.link.label}</a>`;
+  return `${message}`;
+};
+
+const opened = ref(alerts.value.length !== 0);
 
 if (opened.value) {
   eulerian.pause();
@@ -52,12 +78,13 @@ const onModalInformationClose = () => {
   eulerian.resume();
 };
 
-const onModalNoInformationClose = () => {
-  opened.value = false;
-  store.noInformation = version;
-  eulerian.resume();
-};
-
+const onClose = (id) => {
+  alerts.value.forEach((alert) => {
+    if (alert.id === id) {
+      alert.closed = true // mettre la propriété closed à true pour cette alerte
+    }
+  })
+}
 </script>
 
 <template>
@@ -69,26 +96,17 @@ const onModalNoInformationClose = () => {
   >
     <!-- slot : c'est ici que l'on customise le contenu ! -->
     <DsfrAlert
-      :description="description"
-      :type="type"
-    />
-    <!-- fr-btn--close -->
-    <button
-      class="fr-btn--tertiary-no-outline" 
-      title="ne plus afficher ce message"
-      type="button"
-      @click="onModalNoInformationClose"
+      v-for="alert in alerts"
+      :key="`alert-${alert.id}`"
+      :type="alert.severity"
+      :title="alert.title"
+      :closed="alert.closed"
+      :closeable=true
+      @close="onClose(alert.id)"
     >
-      <span>Ne plus afficher ce message</span>
-    </button>
+      <div v-html="description(alert)"></div>
+    </DsfrAlert>
   </DsfrModal>
 </template>
 
-<style>
-/* Surcharge sur le composant DsfrConsent : 
-  > on n'affiche pas le bouton 'Personnaliser' 
-*/
-button[title="ne plus afficher ce message"] {
-  margin-top: 16px;
-}
-</style>
+<style></style>

@@ -9,14 +9,13 @@ import {
  * - ressources additionnelles : metadonnées, vignettes, ...
  */
 export const useDataStore = defineStore('data', () => {
-  const m_informations = ref({});
-
   const m_layers = ref({});
   const m_generalOptions = ref({});
   const m_tileMatrixSets = ref({});
   const m_contacts = ref({});
   const m_territories = ref([]);
   const m_featured = ref([]);
+  const m_alerts = ref([]);
   const isLoaded = ref(false);
   const error = ref("");
   const filterServices = "WMTS,WMS,TMS";
@@ -64,13 +63,30 @@ export const useDataStore = defineStore('data', () => {
   async function fetchData() {
     try {
 
+      var alertsRes = null;
+
+      // on utilise les annexes pour les alertes
+      // la stabilité n'étant pas fiable, on prévoit
+      // un fallback (pour test)
+      try {
+        const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
+        alertsRes = await fetch(alertsConfURL);
+        if (!alertsRes.ok) throw new Error('Erreur HTTP');
+      } catch (e) {
+        // fallback uniquement sur un souci de réseau !
+        alertsRes = await fetch("data/alerts.json");
+      }
+
+      const alerts = await alertsRes.json();
+
+      m_alerts.value = alerts;
+
       const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
       const entreeCartoRes = await fetch(entreeCartoConfURL)
       const conf = await entreeCartoRes.json();
 
       m_territories.value = conf.territories;
       m_contacts.value = conf.contacts;
-      m_informations.value = conf.informations;
       m_featured.value = conf.featured || [];
       m_layers.value = conf.layers;
       m_generalOptions.value.apiKeys = {
@@ -96,8 +112,8 @@ export const useDataStore = defineStore('data', () => {
     return m_contacts.value;
   }
 
-  function getInformations() {
-    return m_informations.value;
+  function getAlerts() {
+    return m_alerts.value.filter((alert) => alert.visibility.map);
   }
 
   function getThematics() {
@@ -292,7 +308,7 @@ export const useDataStore = defineStore('data', () => {
     fetchData,
     getTerritories,
     getContacts,
-    getInformations,
+    getAlerts,
     getLayersByThematic,
     getThematics,
     getLayersByProducer,
