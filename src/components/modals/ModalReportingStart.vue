@@ -13,12 +13,14 @@ import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
 import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from "@/stores/dataStore";
+import { useBaseUrl } from '@/composables/baseUrl';
 
 const eulerian = useEulerian();
 const router = useRouter();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
+const faq = `${useBaseUrl()}/faq`;
 const title = "Avant d'effectuer un signalement";
 const icon = 'fr-icon-feedback-line';
 const actions = [
@@ -77,8 +79,8 @@ defineExpose({
     <!-- slot : c'est ici que l'on customise le contenu ! -->
     <template #default>
       <p>
-        Avant de débuter, nous vous recommendons de prendre connaissance de 
-        notre <a href="" target="_blank">foire aux questions</a> dédiée, et d'afficher la carte la plus à jour,
+        Avant de débuter, nous vous recommandons de prendre connaissance de 
+        notre <a :href="faq" target="_blank">foire aux questions</a> dédiée et d'afficher la carte la plus à jour,
         afin de vérifier que l'anomalie n'a pas déjà été prise en compte.
       </p>
     </template>

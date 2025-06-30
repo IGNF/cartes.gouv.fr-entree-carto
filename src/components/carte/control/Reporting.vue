@@ -50,7 +50,7 @@ onMounted(() => {
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
-    reporting.value.once("reporting:opened", onOpenPanelInformation);
+    reporting.value.on("reporting:opened", onOpenPanelInformation);
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
@@ -71,7 +71,7 @@ onUpdated(() => {
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
-    reporting.value.once("reporting:opened", onOpenPanelInformation);
+    reporting.value.on("reporting:opened", onOpenPanelInformation);
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
@@ -83,7 +83,7 @@ onUpdated(() => {
  */
 const onOpenPanelInformation = (e) => {
   log.debug(e);
-  refModalReportingStart.value.openModalReportingStart();
+  refModalReportingStart.value.openModalReportingStart(true);
 }
 /** 
  * gestionnaire d'evenement sur les abonnements
