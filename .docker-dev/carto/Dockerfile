@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:23-alpine AS builder
 
 WORKDIR /app
 
@@ -10,4 +10,4 @@ RUN npm install
 ENV BASE_URL="/cartes" 
 ENV SOURCE_MAP=true
 
-CMD [ "npm", "run", "dev", "--", "--mode", "docker-dev-local" ]
+CMD [ "npm", "run", "dev", "--", "--mode", "docker-local" ]
