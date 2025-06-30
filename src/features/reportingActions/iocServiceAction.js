@@ -5,7 +5,7 @@ import {
 class MyServiceAction {
     constructor () {
         console.info("MyServiceAction constructor");
-        this.url = "https://www.geoportail.gouv.fr/wp-json/wp/v2";
+        this.url = import.meta.env.VITE_GPF_SERVICE_ANOMALY || "https://www.geoportail.gouv.fr/wp-json/wp/v2";
     }
     // ######################################################## //
     // ########################## API ######################### //
