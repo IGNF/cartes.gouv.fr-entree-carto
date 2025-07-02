@@ -70,7 +70,7 @@ onMounted(() => {
         layer = new GeoportalWMS({
           layer : name,
           configuration : value,
-          apiKey : "ign_scan_ws",
+          apiKey : "entree-carto",
           olParams : Object.assign(options, preload)
         });
         break;
@@ -78,7 +78,7 @@ onMounted(() => {
         layer = new GeoportalWMTS({
           layer : name,
           configuration : value,
-          apiKey : "ign_scan_ws",
+          apiKey : "entree-carto",
           olParams : Object.assign(options, preload)
         });
         break;
@@ -89,7 +89,7 @@ onMounted(() => {
           layer : name,
           style : props.layerOptions.style,
           configuration : value,
-          apiKey : "ign_scan_ws",
+          apiKey : "entree-carto",
         }, options);
         break;
       default:

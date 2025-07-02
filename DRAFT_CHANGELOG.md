@@ -7,7 +7,7 @@
 ### 🎉 Résumé
 
 Ajout de la fonctionnalité de signalement accessible depuis le menu contextuel (clic droit) ou le menu carte en haut à gauche. Reprise du design des boutons, du footer, et de la fenêtre de consentement.
-Branchement de la configuration du cartalogue au service de recherche de la Géoplateforme.
+Branchement de la configuration du cartalogue au service de recherche de la Géoplateforme, et utilisation d'une clé d'accès dédiée pour les offres sur la route private.
 
 ### 💥 Breaking changes
 
