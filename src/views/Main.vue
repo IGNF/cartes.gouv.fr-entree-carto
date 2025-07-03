@@ -82,12 +82,14 @@ var service :any = inject('services');
 service.isAuthentificate()
 .then((status:boolean) => {
   // le service renvoie un user 
-  // et on n'est pas authentifié sur la carto
+  // mais on n'est pas authentifié sur la carto
+  // --> sync
   if (status && !service.authenticated && service.mode === "remote") {
     router.push({ path : '/login?success=1' });
   }
   // le service ne renvoie rien (401 Unauthorized)
-  // et on est encore enregistré comme authentifié
+  // mais, on est encore enregistré comme authentifié
+  // --> sync
   if (!status && service.authenticated && service.mode === "remote") {
     router.push({ path : '/logout?success=1' });
   }

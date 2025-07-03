@@ -144,7 +144,15 @@ class ServiceBase {
   async getAccessToken () {
     Promise.reject('this must be overridden !');
   }
+  /**
+   * Check if the authentificate is done
+   * @returns {Boolean} - True if authentificate
+   */
   async isAuthentificate () {
+    // only for remote mode !
+    if (this.mode === "local") {
+      return false;
+    }
     var data = await this.getUserMe();
     return (data !== null);
   }
