@@ -79,6 +79,22 @@ const mandatoryLinks = computed(() => {
 
 var service :any = inject('services');
 
+service.isAuthentificate()
+.then((status:boolean) => {
+  // le service renvoie un user 
+  // et on n'est pas authentifié sur la carto
+  if (status && !service.authenticated && service.mode === "remote") {
+    router.push({ path : '/login?success=1' });
+  }
+  // le service ne renvoie rien (401 Unauthorized)
+  // et on est encore enregistré comme authentifié
+  if (!status && service.authenticated && service.mode === "remote") {
+    router.push({ path : '/logout?success=1' });
+  }
+})
+.catch()
+.finally();
+
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
 // et si elle est valide, on demande le jeton de connexion, puis,

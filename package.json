@@ -31,6 +31,7 @@
     "clean:dist": "rimraf dist",
     "build-only": "vite build",
     "dev": "vite --force --host --mode development-local",
+    "dev-local": "vite --force --host --mode docker-local",
     "build": "run-p type-check \"build-only {@}\" --",
     "format": "eslint ./src --fix",
     "lint": "eslint ./src",

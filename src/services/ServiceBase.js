@@ -144,6 +144,10 @@ class ServiceBase {
   async getAccessToken () {
     Promise.reject('this must be overridden !');
   }
+  async isAuthentificate () {
+    var data = await this.getUserMe();
+    return (data !== null);
+  }
 }
 
 // Mixin
