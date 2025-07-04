@@ -63,10 +63,14 @@ var Users = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
-      var data = await response.json();
-      this.user = data;
-      
-      this.saveStore();
+
+      var data = null;
+      if (response.status === 200) {
+        data = await response.json();
+        this.user = data;
+        
+        this.saveStore();
+      }
   
       return data;
     } catch (error) {

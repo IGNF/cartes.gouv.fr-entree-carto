@@ -10,4 +10,4 @@ RUN npm install
 ENV BASE_URL="/cartes" 
 ENV SOURCE_MAP=true
 
-CMD [ "npm", "run", "dev", "--", "--mode", "docker-local" ]
+CMD [ "npm", "run", "dev-local"]
