@@ -66,6 +66,10 @@ export function useUrlParams(url) {
             break;
           case "p":
             params.geolocation = urlParams[key];
+            break;
+          case "permalink":
+            params.permalink = urlParams[key]; // yes | no
+            break;
           default:
             break;
         }

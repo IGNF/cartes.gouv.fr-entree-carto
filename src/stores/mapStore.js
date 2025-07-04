@@ -99,8 +99,13 @@ export const useMapStore = defineStore('map', () => {
   try {
     var params = useUrlParams();
     var defaultControls = DEFAULT.CONTROLS.split(",");
+    const type = params.permalink;
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
+        // on ne traite pas cette clef dans le localStorage
+        if (key === "permalink") {
+          continue;
+        }
         if (key === "controls") {
           var myControls = params[key].split(",");
           defaultControls.forEach(function(defaultControl) {
@@ -109,7 +114,30 @@ export const useMapStore = defineStore('map', () => {
             }
           })
         }
-        const value = params[key];
+        var value = params[key];
+        if (key === "layers") {
+          // 2 cas :
+          // - permalink = yes : remplace la conf
+          // - permalink = no  : complete la conf
+          if (type === "no") {
+            // on modifier la position des nouvelles couches
+            // à ajouter pour qu'elle soit toujours au dessus
+            var newValue = "";
+            var curLyr = localStorage.getItem(ns(key));
+            var posLyr = curLyr.split(",").length + 1;
+            var newsLyr = value.split(",");
+            for (let i = 0; i < newsLyr.length; i++) {
+              const lyr = newsLyr[i];
+              var id = lyr.substring(0, lyr.indexOf("("));
+              var opts = lyr.substring(lyr.indexOf("(") + 1, lyr.indexOf(")"));
+              var props = opts.split(";");
+              props[0] = posLyr + i;
+              var newVal = id + "(" + props.join(";") + ")";
+              curLyr = curLyr.concat(",", newVal);
+            }
+            value = curLyr;
+          }
+        }
         localStorage.setItem(ns(key), value);
       }
     }
