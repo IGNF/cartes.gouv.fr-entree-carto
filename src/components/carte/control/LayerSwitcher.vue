@@ -244,7 +244,8 @@ const onZoomToExtentLayer = (e) => {
         globalConstraints.extent.top
       ];
 
-      var crsSource = globalConstraints.crs;
+      var crsSource = globalConstraints.projection;
+      // par défaut, les projections devraient être en Geographique
       if (!crsSource) {
         crsSource = "EPSG:4326";
       }

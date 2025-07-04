@@ -276,7 +276,9 @@ export const useDataStore = defineStore('data', () => {
       // get layer configuration object
       var l = this.getLayerByID(id);
       params = {};
-      params.projection = l.defaultProjection;
+      // par défaut, les projections devraient être en Geographique
+      // sauf si renseignée
+      params.projection = l.globalConstraint.crs; 
       params.minScale = l.globalConstraint.minScaleDenominator;
       params.maxScale = l.globalConstraint.maxScaleDenominator;
       params.extent = l.globalConstraint.bbox;
