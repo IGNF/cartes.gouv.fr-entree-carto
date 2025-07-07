@@ -12,7 +12,7 @@ export const getLayersFromPermalink = (url) => {
   var params = useUrlParams(url);
   for (const key in params) {
     if (Object.prototype.hasOwnProperty.call(params, key)) {
-      if (key !== "center") {
+      if (key !== "center" && key !== "permalink") {
         const value = params[key];
         store[key] = value; // reactive !
       }
