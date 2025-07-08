@@ -73,7 +73,6 @@ defineExpose({
     size="md" 
     :icon="icon"
     :is-alert="true"
-    :actions="actions"
     @close="onModalReportingStartClose"
   >
     <!-- slot : c'est ici que l'on customise le contenu ! -->
@@ -83,6 +82,13 @@ defineExpose({
         notre <a :href="faq" target="_blank">foire aux questions</a> dédiée et d'afficher la carte la plus à jour,
         afin de vérifier que l'anomalie n'a pas déjà été prise en compte.
       </p>
+    </template>
+    <template #footer>
+      <DsfrButtonGroup
+        align="center"
+        :buttons="actions"
+        inline-layout-when="large"
+      />
     </template>
   </DsfrModal>
 </template>
