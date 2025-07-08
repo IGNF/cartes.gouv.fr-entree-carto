@@ -3,7 +3,7 @@
 ## serviceStore
 
 le store est connecté au plugin 'pinia-plugin-store',
-ce qui va enregistrer les properties de la classe **Services** dans le localStorage.
+ce qui va enregistrer les properties de la classe **Services** dans le sessionStorage.
 
 Ex. de configuration stocké dans la cled **service**
 
@@ -44,4 +44,4 @@ Ex. de configuration stocké dans la cled **service**
 }
 ```
 
-Toutes manipulations des documents de l'espace personnel declenchent une mise à jour du localStorage.
+Toutes manipulations des documents de l'espace personnel declenchent une mise à jour du sessionStorage.
