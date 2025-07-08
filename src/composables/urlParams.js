@@ -45,8 +45,8 @@ export function useUrlParams(url) {
         switch (key) {
           case "c":
             var lonlat = urlParams[key].split(",");
-            params.lon = lonlat[0];
-            params.lat = lonlat[1];
+            params.lon = parseFloat(lonlat[0]);
+            params.lat = parseFloat(lonlat[1]);
             var xy = fromLonLatProj(lonlat);
             params.x = xy[0];
             params.y = xy[1];
