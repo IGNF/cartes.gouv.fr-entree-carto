@@ -136,7 +136,7 @@ const lstMap = computed(() => {
         name : document.name,
         type : "carte",
         type_fr : "permalien",
-        icon : "fr-icon-link", // icon de permalien
+        icon : "ri-map-2-line", // icon de permalien : fr-icon-link
       });
     }
   }

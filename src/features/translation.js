@@ -22,6 +22,7 @@ export default {
     failed_add_data: (value) => { return `Erreur sur l'ajout de la donnée : ${value}` },
     success_save_map: 'La carte est enregistrée dans l\'espace personnel',
     failed_save_map: 'Une erreur est survenue sur l\'enregistrement de la carte',
+    success_copy_permalink: 'Le permalien est copié',
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
   },
