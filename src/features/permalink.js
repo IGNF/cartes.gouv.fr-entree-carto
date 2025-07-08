@@ -19,12 +19,6 @@ export const getLayersFromPermalink = (url) => {
       if (key === 'center') {
         continue;
       }
-      if (key === 'lon') {
-        continue;
-      }
-      if (key === 'lat') {
-        continue;
-      }
       store[key] = value; // reactive !
     }
   }

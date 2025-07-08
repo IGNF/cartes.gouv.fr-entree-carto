@@ -34,8 +34,13 @@ import { toShare } from '@/features/share.js';
 import { push } from 'notivue'
 import t from '@/features/translation';
 
+import { useClipboard } from '@vueuse/core'
 import { useMapStore } from "@/stores/mapStore";
+
 const mapStore = useMapStore();
+
+const clipboardSource = ref('');
+const { copy } = useClipboard({ clipboardSource });
 
 /**
  * Options :
@@ -219,6 +224,32 @@ const onClickButtonExport = (e) => {
     }
   });
 };
+const onClickButtonCopyPermalink = (e) => {
+  console.debug(e);
+  var data = {
+    uuid : props.data.id,
+    type : props.data.type
+  };
+
+  service.getCartes(data.uuid)
+  .then((response) => {
+    copy(response);
+  })
+  .then(() => {
+    push.success({
+      title: t.bookmark.title,
+      message: t.bookmark.success_copy_permalink
+    });
+  })
+  .catch((e) => {
+    console.error(e);
+    push.error({
+      title: t.bookmark.title,
+      message: t.bookmark.failed_add_data(e.message),
+    });
+  });
+
+}
 
 const onClickButtonValidateRename = (e) => {
   console.debug(e);
@@ -261,7 +292,7 @@ const onClickButtonCancelRename  = (e) => {
 // on ajoute des informations utiles directement dans le dataset des boutons
 // - data-id : uuid
 // - data-type : ex. drawing, import, carte...
-const buttonsMap = [
+const buttonsCommon = [
   {
     label: 'Renommer',
     icon: "fr-icon-edit-line",
@@ -293,9 +324,27 @@ const buttonsMap = [
     onclick: onClickButtonDelete
   }
 ];
+const buttonsMap = [
+  ...buttonsCommon,
+  {
+    label: 'Copier',
+    icon: "fr-icon-link",
+    "data-id": props.data.id,
+    "data-type": props.data.type,
+    "data-name": props.data.name,
+    disabled: false,
+    iconOnly: true,
+    iconRight: false,
+    secondary: true,
+    noOutline: true,
+    style: "margin: unset;box-shadow: unset;",
+    class: 'bookmark-button-container-advanced',
+    onclick: onClickButtonCopyPermalink
+  }
+];
 
 const buttonsData = [
-  ...buttonsMap,
+  ...buttonsCommon,
   {
     label: 'Exporter',
     icon: "fr-icon-download-line",
