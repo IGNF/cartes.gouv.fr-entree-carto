@@ -92,10 +92,10 @@ const notivue = createNotivue({
 const bus = createBusEvent();
 
 // INFO
-// on enregistre les informations de connexion dans le sessionStorage
+// on enregistre les informations de connexion dans le localStorage
 const store = storePlugin({
   stores: ['service'],
-  storage: sessionStorage,
+  storage: localStorage,
 })
 pinia.use(store)
 

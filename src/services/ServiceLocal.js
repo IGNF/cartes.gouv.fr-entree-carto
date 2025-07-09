@@ -97,7 +97,7 @@ class ServiceLocal extends ServiceBase {
   }
 
   /**
-   * Retourne le token d'authentification du sessionStorage
+   * Retourne le token d'authentification du localStorage
    * @returns {Object} auth
    * @example
    * {
@@ -111,7 +111,7 @@ class ServiceLocal extends ServiceBase {
    * }
    */
   #getTokenStorage () {
-    var service = JSON.parse(sessionStorage.getItem("service"));
+    var service = JSON.parse(localStorage.getItem("service"));
     if (service) {
       return service.connexion.token;
     }
@@ -251,7 +251,7 @@ class ServiceLocal extends ServiceBase {
       
     const codeVerifier = await generateCodeVerifier();
     this.codeVerifier = codeVerifier; // au cas où...
-    sessionStorage.setItem("codeVerifier", codeVerifier);
+    localStorage.setItem("codeVerifier", codeVerifier);
     
     var responseIAM = await this.#client.authorizationCode.getAuthorizeUri({
       redirectUri: url,
@@ -328,7 +328,7 @@ class ServiceLocal extends ServiceBase {
   async getAccessToken () {
     const url = this.url.includes("login") ? this.url : this.url + "/login";
       
-    var codeVerifier = this.codeVerifier || sessionStorage.getItem("codeVerifier");
+    var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
       location,

@@ -79,7 +79,7 @@ var SetDocuments = {
    * - POST /users/me/documents -> 201 response json
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
@@ -201,7 +201,7 @@ var SetDocuments = {
    * - PUT /users/me/documents/{document}
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @fixme On ne peut pas mettre à jour le contenu d'un document avec le PUT pour le mode remote !
@@ -276,7 +276,7 @@ var SetDocuments = {
    * - PATCH /users/me/documents/{document}
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
@@ -353,7 +353,7 @@ var SetDocuments = {
    * - PATCH /users/me/documents/{document}
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
@@ -423,7 +423,7 @@ var SetDocuments = {
    * - PATCH /users/me/documents/{document}
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
@@ -505,7 +505,7 @@ var SetDocuments = {
    * - DELETE /users/me/documents/{document} -> 204
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
@@ -568,7 +568,7 @@ var SetDocuments = {
    * - GET /users/me/documents/${document}/file
    * 
    * Actions :
-   * - enregistrer la réponse dans le sessionStorage : ex. service.documents.drawing
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
    * @example
