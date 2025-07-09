@@ -1,6 +1,7 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { useMatchMedia, useMatchMediaHeight } from '@/composables/matchMedia';
+// REMOVEME : le bouton "+" ne descend plus quand l'écran est petit. Commenté au cas-où on re-change d'avis
+// import { useMatchMedia, useMatchMediaHeight } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin'
 import {
   ControlList
