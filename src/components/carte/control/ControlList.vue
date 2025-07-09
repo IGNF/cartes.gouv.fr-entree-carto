@@ -20,26 +20,27 @@ const log = useLogger()
 const map = inject(props.mapId)
 const controlList = ref(new ControlList(props.controlListOptions))
 
-const isSmallScreen = useMatchMedia('SM')
-const isSmallHeight = useMatchMediaHeight('XS')
+// REMOVEME : le bouton "+" ne descend plus quand l'écran est petit. Commenté au cas-où on re-change d'avis
+// const isSmallScreen = useMatchMedia('SM')
+// const isSmallHeight = useMatchMediaHeight('XS')
 
-watch(isSmallScreen, () => {
-  if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
-    controlList.value.setPosition("top-right")
-  }
-  else {
-    controlList.value.setPosition("bottom-right")
-  }
-})
+// watch(isSmallScreen, () => {
+//   if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
+//     controlList.value.setPosition("top-right")
+//   }
+//   else {
+//     controlList.value.setPosition("bottom-right")
+//   }
+// })
 
-watch(isSmallHeight, () => {
-  if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
-    controlList.value.setPosition("top-right")
-  }
-  else {
-    controlList.value.setPosition("bottom-right")
-  }
-})
+// watch(isSmallHeight, () => {
+//   if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
+//     controlList.value.setPosition("top-right")
+//   }
+//   else {
+//     controlList.value.setPosition("bottom-right")
+//   }
+// })
 
 watch(selectedControls, () => {
   setTimeout(() => {
@@ -50,12 +51,13 @@ watch(selectedControls, () => {
         var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
         useActionButtonEulerian(el);
       }
-      if (!isSmallScreen.value && !isSmallHeight.value) {
-        controlList.value.setPosition("top-right")
-      }
-      else {
-        controlList.value.setPosition("bottom-right")
-      }
+      // REMOVEME : le bouton "+" ne descend plus quand l'écran est petit. Commenté au cas-où on re-change d'avis
+      // if (!isSmallScreen.value && !isSmallHeight.value) {
+      //   controlList.value.setPosition("top-right")
+      // }
+      // else {
+      //   controlList.value.setPosition("bottom-right")
+      // }
     }
   }, 10);
 })
