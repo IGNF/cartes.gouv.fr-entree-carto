@@ -662,14 +662,38 @@ const contextMenuOptions = computed(() => {
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
     display: none;
+  }
+
+  .position-container-top-right > div:nth-child(n+4) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 }
 
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 controls optionnels */
-@media (max-height: 819px) {
+@media (min-height: 740px) and (max-height: 819px) {
   .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
     display: none;
   }
@@ -708,7 +732,7 @@ const contextMenuOptions = computed(() => {
 
 /* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
 /* 6 controls optionnels */
-@media (max-height: 919px) {
+@media (min-height: 820px) and (max-height: 919px) {
   .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
     display: none;
   }
@@ -747,7 +771,7 @@ const contextMenuOptions = computed(() => {
 
 /* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
 /* 8 controls optionnels */
-@media (max-height: 999px) {
+@media (min-height: 920px) and (max-height: 999px) {
   .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
     display: none;
   }
