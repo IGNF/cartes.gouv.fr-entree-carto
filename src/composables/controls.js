@@ -371,10 +371,10 @@ export function useControlsExtensionPosition() {
     measureAreaOptions : 'top-right',
     measureAzimuthOptions : 'top-right',
     elevationPathOptions : 'top-right',
-    layerImportOptions : 'top-right',
+    layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
-    reportingOptions : 'top-right'
+    reportingOptions : 'top-left'
   }
 }
 
@@ -400,22 +400,22 @@ export function useControlsPosition() {
   if (useControlsExtensionPosition().legendsOptions.includes("left"))
     leftC.push(useControls.Legends.id)
   if (useControlsExtensionPosition().legendsOptions.includes("right"))
-    rightC.push(useControls.Legends.id)  
+    rightC.push(useControls.Legends.id)
   // Route
   if (useControlsExtensionPosition().routeOptions.includes("left"))
     leftC.push(useControls.Route.id)
   if (useControlsExtensionPosition().routeOptions.includes("right"))
-    rightC.push(useControls.Route.id)    
+    rightC.push(useControls.Route.id)
   // Isocurve
   if (useControlsExtensionPosition().isocurveOptions.includes("left"))
     leftC.push(useControls.Isocurve.id)
   if (useControlsExtensionPosition().isocurveOptions.includes("right"))
-    rightC.push(useControls.Isocurve.id) 
+    rightC.push(useControls.Isocurve.id)
   // ReverseGeocode
   if (useControlsExtensionPosition().reverseGeocodeOptions.includes("left"))
     leftC.push(useControls.ReverseGeocode.id)
   if (useControlsExtensionPosition().reverseGeocodeOptions.includes("right"))
-    rightC.push(useControls.ReverseGeocode.id) 
+    rightC.push(useControls.ReverseGeocode.id)
   // ReverseGeocode
   if (useControlsExtensionPosition().drawingOptions.includes("left"))
     leftC.push(useControls.Drawing.id)
@@ -425,42 +425,42 @@ export function useControlsPosition() {
   if (useControlsExtensionPosition().getFeatureInfoOptions.includes("left"))
     leftC.push(useControls.GetFeatureInfo.id)
   if (useControlsExtensionPosition().getFeatureInfoOptions.includes("right"))
-    rightC.push(useControls.GetFeatureInfo.id)  
+    rightC.push(useControls.GetFeatureInfo.id)
   // Territories
   if (useControlsExtensionPosition().territoriesOptions.includes("left"))
     leftC.push(useControls.Territories.id)
   if (useControlsExtensionPosition().territoriesOptions.includes("right"))
-    rightC.push(useControls.Territories.id) 
+    rightC.push(useControls.Territories.id)
   // MeasureLength
   if (useControlsExtensionPosition().measureLengthOptions.includes("left"))
     leftC.push(useControls.MeasureLength.id)
   if (useControlsExtensionPosition().measureLengthOptions.includes("right"))
-    rightC.push(useControls.MeasureLength.id) 
+    rightC.push(useControls.MeasureLength.id)
   // MeasureArea
   if (useControlsExtensionPosition().measureAreaOptions.includes("left"))
     leftC.push(useControls.MeasureArea.id)
   if (useControlsExtensionPosition().measureAreaOptions.includes("right"))
-    rightC.push(useControls.MeasureArea.id) 
+    rightC.push(useControls.MeasureArea.id)
   // MeasureAzimuth
   if (useControlsExtensionPosition().measureAzimuthOptions.includes("left"))
     leftC.push(useControls.MeasureAzimuth.id)
   if (useControlsExtensionPosition().measureAzimuthOptions.includes("right"))
-    rightC.push(useControls.MeasureAzimuth.id) 
+    rightC.push(useControls.MeasureAzimuth.id)
   // MousePosition
   if (useControlsExtensionPosition().mousePositionOptions.includes("left"))
     leftC.push(useControls.MousePosition.id)
   if (useControlsExtensionPosition().mousePositionOptions.includes("right"))
-    rightC.push(useControls.MousePosition.id) 
+    rightC.push(useControls.MousePosition.id)
   // ElevationPath
   if (useControlsExtensionPosition().elevationPathOptions.includes("left"))
     leftC.push(useControls.ElevationPath.id)
   if (useControlsExtensionPosition().elevationPathOptions.includes("right"))
-    rightC.push(useControls.ElevationPath.id) 
+    rightC.push(useControls.ElevationPath.id)
   // LayerImport
   if (useControlsExtensionPosition().layerImportOptions.includes("left"))
     leftC.push(useControls.LayerImport.id)
   if (useControlsExtensionPosition().layerImportOptions.includes("right"))
-    rightC.push(useControls.LayerImport.id) 
+    rightC.push(useControls.LayerImport.id)
   // ControlList
   if (useControlsExtensionPosition().controlListOptions.includes("left"))
     leftC.push(useControls.ControlList.id)
