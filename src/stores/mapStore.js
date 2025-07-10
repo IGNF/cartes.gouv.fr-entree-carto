@@ -197,6 +197,8 @@ export const useMapStore = defineStore('map', () => {
     var url = location.origin + path.replace("/embed", "");
     permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
+      // coordonnées avec 6 chiffres après la virgule
+      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
       permalinkUrl += `&p=${geolocation.value}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
@@ -214,6 +216,8 @@ export const useMapStore = defineStore('map', () => {
     var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
     permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
+      // coordonnées avec 6 chiffres après la virgule
+      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
       permalinkShareUrl += `&p=${geolocation.value}`;
     }
     permalinkShareUrl += (bookmarks.value.length > 0) ? 
