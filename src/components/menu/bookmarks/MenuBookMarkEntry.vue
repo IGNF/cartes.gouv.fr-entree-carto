@@ -406,9 +406,9 @@ const buttonsData = [
     - date?
   -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
-    <span>{{ data.type_fr }}</span>
-    <span v-if="data.format"> - {{ data.format }}</span>
-    <span v-if="data.date"> - {{ data.date }}</span>
+    <span v-if="data.type_fr !== 'permalien'"> {{ data.type_fr }}</span>
+    <span v-if="data.format"> {{ data.format }}</span>
+    <span v-if="data.date"> {{ data.date }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
   <div

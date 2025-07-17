@@ -354,9 +354,9 @@ const scrollDown = () => {
 
   @media (max-width: 576px) {
     .futur-map-container{
-    height: calc(100vh - 131px);
-    margin-bottom: 0px;
-  }
+      height: calc(100vh - 131px);
+      margin-bottom: 0px;
+    }
   }
   /* TODO :
   surcharge des popups de notifications :
