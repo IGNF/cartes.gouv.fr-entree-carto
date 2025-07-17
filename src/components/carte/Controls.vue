@@ -655,18 +655,6 @@ const contextMenuOptions = computed(() => {
   padding: 2px;
 }
 
-/* Cas particuliers pour éviter les coins non arrondis autour de l'import qui est caché (uniquement sur l'entree carto) */
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter:not([id^="GPimport-"])) > .gpf-btn-icon {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.gpf-button-no-gutter[id^="GPimport-"] + .gpf-button-no-gutter:not([id^="GPimport-"]) > .gpf-btn-icon {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
 .gpf-button-no-gutter:has(+ .gpf-widget-button[id^="GPcontrolList-"]) > .gpf-btn-icon {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -674,14 +662,38 @@ const contextMenuOptions = computed(() => {
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
     display: none;
+  }
+
+  .position-container-top-right > div:nth-child(n+4) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) {
+    margin: 0;
+    padding: 0;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 }
 
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 controls optionnels */
-@media (max-height: 819px) {
+@media (min-height: 740px) and (max-height: 819px) {
   .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
     display: none;
   }
@@ -720,7 +732,7 @@ const contextMenuOptions = computed(() => {
 
 /* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
 /* 6 controls optionnels */
-@media (max-height: 919px) {
+@media (min-height: 820px) and (max-height: 919px) {
   .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
     display: none;
   }
@@ -759,7 +771,7 @@ const contextMenuOptions = computed(() => {
 
 /* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
 /* 8 controls optionnels */
-@media (max-height: 999px) {
+@media (min-height: 920px) and (max-height: 999px) {
   .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
     display: none;
   }
@@ -829,8 +841,22 @@ const contextMenuOptions = computed(() => {
     max-height: calc(100% + 302px);
   }
 
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
     display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
+    padding: 2px;
   }
 
   .position-container-bottom-left {
