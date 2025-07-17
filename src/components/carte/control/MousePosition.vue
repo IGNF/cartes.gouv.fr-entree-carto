@@ -50,7 +50,7 @@ onUpdated(() => {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style scoped>
+<style>
 /* reduction de la largeur du panel déterminé par max-content */
 div[id^=GPmousePositionSettings-] {
   width: 275px;
