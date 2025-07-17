@@ -21,6 +21,7 @@
 #### 🐛 [Correction]
 
 - Widgets Additionnels (UI) : le bouton permettant d'accéder aux widgets additionnels reste toujours sous la liste des widgets optionnel même en mode mobile (#664) 
+- Partage : les coordonnées du lien de partage ne compte que 6 chiffres après la virgule
 
 #### 🔒 [Sécurité]
 
