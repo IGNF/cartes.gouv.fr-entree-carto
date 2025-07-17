@@ -835,10 +835,10 @@ const contextMenuOptions = computed(() => {
 
   /* Mode mobile : on positionne les dialog par dessus la barre de recherche
   en position fix, sous le header DSFR, et on annule le positionnement introduit
-  par la classe gpf-mobile-fullscree (right ou left) à l'aide de marges */
+  par la classe gpf-mobile-fullscreen (right ou left) à l'aide de marges */
   .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    margin-top: -250px;
-    max-height: calc(100% + 258px);
+    margin-top: -294px;
+    max-height: calc(100% + 302px);
   }
 
   .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
