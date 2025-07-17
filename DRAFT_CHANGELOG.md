@@ -12,6 +12,8 @@
 
 #### ✨ [Ajout]
 
+- Coordonnées de la souris : ajout du mode édition pour choisir les coordonnées de centrage (#671)
+
 #### 🔨 [Evolution]
 
 #### 🔥 [Obsolète]

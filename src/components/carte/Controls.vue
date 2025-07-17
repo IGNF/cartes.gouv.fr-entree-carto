@@ -238,6 +238,7 @@ const mousePositionOptions = {
   id: "18",
   gutter: false,
   listable: true,
+  editCoordinates : true,
   // On ajoute les systemes UTM pour les territoires
   systems : [
     {
