@@ -19,11 +19,15 @@ A chaque modification du code, avec le mode **watch**, le container est reconstr
 **NOTE2 :**
 > installation de docker compose 2.22 : <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
 
+**NOTE3 :**
+> les images doivent être construites au prealables !
+> sinon, lancer avec l'option `docker compose up --build`
+
 ## Fonctionnement
 
 Etapes par étapes :
 
-* `docker create network web_dev` (facultatif)
+* `docker network create web_dev` (facultatif)
   > tous les containers sont sur le même réseau
 
 * dans le dossier du projet **cartes.gouv.fr** : `docker compose -f docker-compose.yml up -d --build`
@@ -45,9 +49,31 @@ Pour l'image de **cartes.gouv.fr**, il faut completer le fichier d'environnement
 **NOTE :**
 > Le fichier **.env.local** est à demander pour un deploiement de production.
 
+## Auth
+
+Sur gitHub, new Personnal Access Token (PAT) de type "Classique"
+
+`-> Settings / Developer Settings / Tokens (Classic) ---> Generate new PAT`
+
+Convertir le PAT en base 64
+
+```bash
+echo -n "{{githubUserName}}:{{PAT}}" | base64
+```
+
+Dans le fichier ~/.docker/config.json, ajouter :
+
+```json
+"auths": {
+  "ghcr.io": {
+    "auth": "{{PAT en base 64}}"
+  }
+}
+```
+
 ## Liens utiles
 
-Reverse
+Reverse Proxy
 
 * <https://codingwithmanny.medium.com/create-an-nginx-reverse-proxy-with-docker-a1c0aa9078f1>
 * <https://stackoverflow.com/questions/62562017/docker-compose-with-nginx-reverse-a-website-and-a-restful-api>
