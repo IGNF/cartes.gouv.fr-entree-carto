@@ -54,7 +54,7 @@ services:
     nginx_proxy:
         build:
             context: ..
-            dockerfile: ./docker-dev/proxy/Dockerfile
+            dockerfile: ./.docker-dev/proxy/Dockerfile
             args:
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
