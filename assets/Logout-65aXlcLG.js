@@ -1,0 +1,2 @@
+import{t as u,x as l,Z as i,h as _}from"./index-CDAE7PCn.js";const f={},h=Object.assign(f,{__name:"Logout",setup(m){const a=i(),t=l("services");return u(()=>{const e=location.search,o=new URLSearchParams(e);var c=o.get("session_state"),r=o.get("success");if(!e){t.getAccessLogout().then(n=>{location.href=n});return}var s=0;t.mode==="local"&&c?s=1:t.mode==="remote"&&r!==null?s=parseInt(r,10):s=0,a.push({path:"/",query:{from:"logout",success:s}})}),(e,o)=>_(e.$slots,"default")}});export{h as default};
+//# sourceMappingURL=Logout-65aXlcLG.js.map
