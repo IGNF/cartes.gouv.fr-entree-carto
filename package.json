@@ -71,6 +71,7 @@
     "@vue/tsconfig": "^0.7.0",
     "@vueuse/components": "^13.1.0",
     "@vueuse/core": "^13.1.0",
+    "ajv-formats": "^2.1.1",
     "eslint": "^9.24.0",
     "eslint-plugin-vue": "^10.0.0",
     "express": "^5.1.0",
