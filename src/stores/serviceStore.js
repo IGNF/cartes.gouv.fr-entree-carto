@@ -7,7 +7,7 @@ import { serviceFactotyCreate } from '@/services/ServiceFactory';
 // INFO
 // le store est connecté au plugin 'pinia-plugin-store'
 // ce qui va enregistrer les properties de la classe Services
-// dans le localStorage
+// dans le sessionStorage
 export const useServiceStore = defineStore({
   id: 'service',
   state: () => ({

@@ -54,7 +54,7 @@ export class Eulerian {
     this.load().then(() => {
       console.debug("import dynamic dsfr !");
       // activation de la collecte si la clef de consentement est déjà active
-      var value = JSON.parse(localStorage.getItem(this.key));
+      var value = JSON.parse(sessionStorage.getItem(this.key));
       if (value) {
         if (value.eulerianAnalytics) {
           this.start();
@@ -83,7 +83,7 @@ export class Eulerian {
    */
   start () {
     console.debug("start");
-    localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
+    sessionStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
     window.dsfr.analytics.opt.enable();
     window.dsfr.start();
     window.dsfr.analytics.readiness.then(() => {
@@ -103,7 +103,7 @@ export class Eulerian {
    */
   stop () {
     console.debug("stop");
-    localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
+    sessionStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
     // window.dsfr.analytics.opt.disable();
     window.dsfr.stop();
     this.status = false;
@@ -133,7 +133,7 @@ export class Eulerian {
 
   /**
    * Obtenir la clef d'enregistrement de la collecte
-   * @returns {String} - clef du localStorage
+   * @returns {String} - clef du sessionStorage
    */
   getKey() {
     return this.key;
@@ -152,7 +152,7 @@ export class Eulerian {
    * @returns {Boolean} - true/false
    */
   hasKey() {
-    var value = localStorage.getItem(this.key);
+    var value = sessionStorage.getItem(this.key);
     return !!value;
   }
 

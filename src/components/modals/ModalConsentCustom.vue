@@ -3,7 +3,7 @@
  * @description
  * Modale de consentements des cookies / trackers Eulerian
  * 
- * La validation enregistre une entrée dans le localStorage :
+ * La validation enregistre une entrée dans le sessionStorage :
  * `{"eulerianAnalytics":true,"isFullConsent":true}`
  * 
  * cf. {@link src/plugins/Eulerian.js}

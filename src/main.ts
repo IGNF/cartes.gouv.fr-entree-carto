@@ -56,7 +56,7 @@ async function waitingPrepareApp() {
 
 // INFO
 // on recupere les info de connexion de la session, et les transmettre !
-const storage = localStorage.getItem('service')
+const storage = sessionStorage.getItem('service')
 const services = createServices(storage ? JSON.parse(storage).connexion : {})
 
 const eulerian = createEulerian({
