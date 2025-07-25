@@ -16,16 +16,19 @@
 
 #### 🔨 [Evolution]
 
+- Zoom : Mise à jour des icones pour les fonctions de zoom (via geopf-ext-ol-#412) 
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
 
-- Widgets Additionnels (UI) : le bouton permettant d'accéder aux widgets additionnels reste toujours sous la liste des widgets optionnel même en mode mobile (#664) 
-- Partage : les coordonnées du lien de partage ne compte que 6 chiffres après la virgule (#665)
+- UI : le bouton permettant d’afficher les widgets additionnels (“+”) reste toujours positionné en dernier élément de la pile supérieure droite de boutons (#664)
+- Partage : dans le lien de partage, seuls 6 chiffres significatifs sont enregistrés pour les coordonnées d’un partage de géolocalisation (#665)
 - UI : en mode mobile, les panels se positionnent correctement en hauteur (#667)
-- LayerSwitcher : en mode mobile, le menu des fonctionnalités ne laisse pplus d'espace vide 
+- LayerSwitcher : en mode mobile, le menu des fonctionnalités ne laisse plus d'espace vide (via geopf-ext-ol-#417) 
+- Itinéraire/Isochrone : Mise en conformité des requêtes itinéraire / isochrone en réduisant la précision des coordonnées à 5 chiffres significatifs (via geopf-ext-ol-#411) 
 
 #### 🔒 [Sécurité]
 
