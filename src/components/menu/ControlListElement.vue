@@ -37,26 +37,46 @@ onUpdated(() => {
 </script>
 
 <template>
-  <tr class="control-list-element">
+  <!-- <tr class="control-list-element">
     <td class="control-list-element-img" />
-    <td>
+    <td> -->
+      <div v-if="['elevationPath','measureAzimuth','reverseGeocode'].includes(controlListElementOptions.id)">
+        <DsfrTooltip
+        onHover
+        :content="controlListElementOptions.hint">
       <DsfrToggleSwitch
         v-model="isActive"
         :disabled="controlListElementOptions.disabled"
-        :hint="controlListElementOptions.hint"
         :input-id="controlListElementOptions.id"
         :label="controlListElementOptions.label"
         label-left
         :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
         v-bind="$attrs"
+        class="control-list-element"
       />
-    </td>
-  </tr>
+      </DsfrTooltip>
+      </div>
+      <div v-else>
+      <DsfrToggleSwitch
+        v-model="isActive"
+        :disabled="controlListElementOptions.disabled"
+        :input-id="controlListElementOptions.id"
+        :label="controlListElementOptions.label"
+        label-left
+        :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
+        v-bind="$attrs"
+        class="control-list-element"
+      />
+      </div>
+
+    <!-- </td>
+  </tr> -->
 </template>
 
 <style scoped>
 .control-list-element {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    max-width: 95%;
 }
 .control-list-element-img {
   border: solid --background-default-grey;
