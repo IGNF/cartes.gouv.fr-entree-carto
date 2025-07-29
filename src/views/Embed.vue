@@ -65,6 +65,7 @@ onMounted(() => {
         <Carto 
           :selected-layers="selectedLayers"
           :selected-controls="selectedControls"
+          :selected-bookmarks="[]"
         />
       </div>
     </StoreData>
