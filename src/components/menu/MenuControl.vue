@@ -101,7 +101,7 @@ onUpdated(() => {})
 
 
     <div class="control-content">
-      <table>
+      <!-- <table> -->
         <ControlListElement
           v-for="(opt, idx) in allOptions"
           :key="idx"
@@ -109,7 +109,7 @@ onUpdated(() => {})
           :model-value="props.selectedControls"
           :control-list-element-options="opt"
         />
-      </table>
+      <!-- </table> -->
       <!-- <DsfrTabs
         :tab-list-name="tabListName"
         :tab-titles="tabTitles"
