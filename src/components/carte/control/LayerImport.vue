@@ -102,7 +102,7 @@ const onOpenModalLogin = (e) => {
   // On peut deleguer une action de sauvegarde ou emettre un evenement
   // aprés la validation de la connexion
   // Pour garder les informations de sauvegarde temporaire, 
-  // on les stocke dans le localStorage
+  // on les stocke dans le sessionStorage
   log.debug(e);
   if (refModalLogin) {
     // true pour proposer le message 'Ne plus afficher le message'

@@ -58,7 +58,7 @@ const onModalLoginClose = () => {
 
 const onModalLoginNoInformation = (status) => {
   console.log(status);
-  // enregistrer l'information dans le localStorage
+  // enregistrer l'information dans le sessionStorage
   store.noLoginInformation = status;
 };
 
