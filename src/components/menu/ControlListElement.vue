@@ -11,6 +11,7 @@
 </script>
 
 <script setup lang="js">
+import { VIcon } from '@gouvminint/vue-dsfr';
 
 const props = defineProps({
   controlListElementOptions : Object,
@@ -37,13 +38,23 @@ onUpdated(() => {
 </script>
 
 <template>
-  <!-- <tr class="control-list-element">
-    <td class="control-list-element-img" />
-    <td> -->
-      <div v-if="['elevationPath','measureAzimuth','reverseGeocode'].includes(controlListElementOptions.id)">
-        <DsfrTooltip
+  <tr class="control-list-element">
+    <td class="control-list-element-img">
+      <DsfrTooltip
         onHover
-        :content="controlListElementOptions.hint">
+        :content="controlListElementOptions.tooltip">
+      <div><span v-if="controlListElementOptions.svg" v-html="controlListElementOptions.svg" class="custom-svg-icon"></span>
+        <VIcon v-else
+          :name="controlListElementOptions.icon"
+        />
+    </div>
+  </DsfrTooltip>
+
+    </td>
+    <td class="control-list-element-img">
+      <DsfrTooltip
+        onHover
+        :content="controlListElementOptions.tooltip">
       <DsfrToggleSwitch
         v-model="isActive"
         :disabled="controlListElementOptions.disabled"
@@ -55,22 +66,8 @@ onUpdated(() => {
         class="control-list-element"
       />
       </DsfrTooltip>
-      </div>
-      <div v-else>
-      <DsfrToggleSwitch
-        v-model="isActive"
-        :disabled="controlListElementOptions.disabled"
-        :input-id="controlListElementOptions.id"
-        :label="controlListElementOptions.label"
-        label-left
-        :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
-        v-bind="$attrs"
-        class="control-list-element"
-      />
-      </div>
-
-    <!-- </td>
-  </tr> -->
+    </td>
+  </tr> 
 </template>
 
 <style scoped>
@@ -81,4 +78,24 @@ onUpdated(() => {
 .control-list-element-img {
   border: solid --background-default-grey;
 }
+
+.custom-svg-icon svg {
+  width: 19.2px;
+  height: 19.2px;
+  display: inline-block;
+  color: var(--test-default-grey);
+  fill: currentColor;
+}
+.custom-svg-icon{
+  display: inline-block;
+  vertical-align: middle; 
+  color: var(--test-default-grey);
+  font-size: 1em;
+}
+
+td {
+  vertical-align: top;
+  text-align: left;
+}
+
 </style>
