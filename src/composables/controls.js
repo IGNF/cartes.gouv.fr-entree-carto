@@ -229,7 +229,7 @@ export function useControlsMenuOptions() {
       tooltip: ""
     },
     {
-      label: 'Croquis',
+      label: 'Annoter la carte',
       id: 'drawing',
       name: useControls.Drawing.id,
       hint: 'Annoter la carte',
@@ -238,7 +238,7 @@ export function useControlsMenuOptions() {
       icon: "ri-pencil-line",
     },
     {
-      label: 'Geocodage inverse',
+      label: 'Trouver une adresse',
       id: 'reverseGeocode',
       name: useControls.ReverseGeocode.id,
       hint: 'Geocodage inverse',
@@ -254,7 +254,7 @@ export function useControlsMenuOptions() {
 `
     },
     {
-      label: 'Calcul d\'isochrone',
+      label: 'Zone selon temps de trajet',
       id: 'isocurve',
       name: useControls.Isocurve.id,
       hint: 'Calcul d\'isochrone',
@@ -272,7 +272,7 @@ export function useControlsMenuOptions() {
 </svg>`
     },
     {
-      label: 'Calcul d\'itinéraire',
+      label: 'Itinéraire',
       id: 'route',
       name: useControls.Route.id,
       hint: 'Calcul d\'itinéraire',
@@ -303,7 +303,7 @@ export function useControlsMenuOptions() {
       tooltip: ""
     },
     {
-      label: 'Mesure de distance',
+      label: 'Mesurer une distance',
       id: 'measureLength',
       name: useControls.MeasureLength.id,
       hint: 'Mesures',
@@ -321,7 +321,7 @@ export function useControlsMenuOptions() {
 `
     },
     {
-      label: 'Mesure d\'aire',
+      label: 'Mesurer une surface',
       id: 'measureArea',
       name: useControls.MeasureArea.id,
       hint: 'Mesures',
@@ -342,7 +342,7 @@ export function useControlsMenuOptions() {
 `
     },
     {
-      label: 'Mesure d\'azimut',
+      label: 'Mesurer un angle',
       id: 'measureAzimuth',
       name: useControls.MeasureAzimuth.id,
       hint: 'Mesures',
@@ -372,7 +372,7 @@ export function useControlsMenuOptions() {
       tooltip: ""
     },
     {
-      label: 'Afficher les coordonnées',
+      label: 'Coordonnées du curseur',
       id: 'mousePosition',
       name: useControls.MousePosition.id,
       hint: 'Position de la souris',
@@ -394,7 +394,7 @@ export function useControlsMenuOptions() {
       tooltip: ""
     },
     {
-      label: 'Profil altimétrique',
+      label: 'Courbe d\'altitude le long d\'un trajet',
       id: 'elevationPath',
       name: useControls.ElevationPath.id,
       hint: 'Profil altimétrique',
