@@ -110,48 +110,13 @@ onUpdated(() => {})
           :control-list-element-options="opt"
         />
       </table>
-      <!-- <DsfrTabs
-        :tab-list-name="tabListName"
-        :tab-titles="tabTitles"
-        :initial-selected-index="initialSelectedIndex"
-        @select-tab="selectTab">
-
-        <DsfrTabContent
-          panel-id="tab-content-0"
-          tab-id="tab-0"
-          :selected="selectedTabIndex === 0"
-          :asc="asc">
-            <DsfrCheckboxSet
-              v-model="selectedControls"
-              :disabled="disabled"
-              :inline="inline"
-              :small="small"
-              :required="required"
-              :options="allOptions"
-              :model-value="props.selectedControls"/>
-        </DsfrTabContent>
-        <DsfrTabContent
-          panel-id="tab-content-1"
-          tab-id="tab-1"
-          :selected="selectedTabIndex === 1"
-          :asc="asc">
-            <DsfrCheckboxSet
-              v-model="selectedControls"
-              :disabled="disabled"
-              :inline="inline"
-              :small="small"
-              :required="required"
-              :options="favOptions"
-              :model-value="props.selectedControls"/>
-        </DsfrTabContent>
-      </DsfrTabs> -->
     </div>
   </div>
 </template>
 
 <style scoped>
 table {
-  border-spacing: 5px 1rem;
+  border-spacing: 30px 1rem;
   border-collapse: separate;
 }
 .control-search-bar {
