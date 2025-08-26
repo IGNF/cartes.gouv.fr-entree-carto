@@ -23,10 +23,12 @@ import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+import { useMapStore} from "@/stores/mapStore"
 // others
 import t from '@/features/translation'
 
 useAppStore()
+const mapStore = useMapStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -268,6 +270,16 @@ const scrollDown = () => {
   }, 100);
 }
 
+const alertClosed = ref(false);
+
+const alertData = {
+    title : "Information",
+    description : "TODO : Le permalien est issu de la redirection du Geoportail !",
+};
+const onCloseAlert = () => {
+  alertClosed.value = true;
+};
+
 </script>
 
 <template>
@@ -286,8 +298,7 @@ const scrollDown = () => {
     </template>
   </DsfrHeader>
 
-  <!-- Notifications
-  -->
+  <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
     <Notification
       :item="item"
@@ -296,10 +307,26 @@ const scrollDown = () => {
     />
   </Notivue>
 
+  <!-- INFO
+    Message d'information sur la redirection issue du geoportail 
+    Le permalien possède la clef/valeur : "redirect=geoportail"
+    On informe donc l'utilisateur d'une action à faire.
+  -->
+  <div v-if="mapStore.isRedirect">
+    <DsfrAlert
+      type="info"
+      :title="alertData.title"
+      :description="alertData.description"
+      :closed="alertClosed"
+      :closeable="true"
+      @close="onCloseAlert()"
+    />
+  </div>
+  
   <div class="futur-map-container">
     <router-view />
   </div>
-
+  
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
@@ -307,7 +334,9 @@ const scrollDown = () => {
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
-  ><span>Fermer</span></label>
+  >
+    <span>Fermer</span>
+  </label>
   <input
     id="fr-footer-toggle"
     type="checkbox"
@@ -339,9 +368,9 @@ const scrollDown = () => {
   <div class="fr-container fr-container--fluid fr-container-md">
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
-
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
+    <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
   </div>
 </template>

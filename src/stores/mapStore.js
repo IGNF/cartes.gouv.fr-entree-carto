@@ -58,7 +58,7 @@ const ns = ((value) => {
  * - cartes.gouv.fr.lon --> geographic
  * - cartes.gouv.fr.lat --> geographic
  * - cartes.gouv.fr.controls
- * - cartes.gouv.fr.location
+ * - cartes.gouv.fr.geolocation
  *
  * Construction du permalien :
  * 
@@ -67,6 +67,9 @@ const ns = ((value) => {
  *   ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(4;1;1;0)
  *    avec caractére de séparation des options de la liste : ';'
  *    et ',' pour chaque couches
+ * 
+ *   Pour une couche de type TMS, on peut ajouter une propriété facultative "style"
+ *   ex. OPENSTREETMAP$OSM:TMS(1;1;1;0;standard)
  * 
  * - La structure des contrôles
  *   CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
@@ -86,6 +89,24 @@ const ns = ((value) => {
  *    visible=1&
  *    grayscale=0
  * 
+ * Informations complémentaires :
+ * 
+ * - cartes.gouv.fr.noLoginInformation --> boolean
+ *   Permet de savoir si l'utilisateur a déjà eu une notification
+ *   concernant l'authentification.
+ * 
+ * - cartes.gouv.fr.permalink --> string
+ *   Stocke le permalien complet de la carte
+ *   Mais, la clef 'permalink=yes|no' dans l'URL permet de savoir
+ *   si on doit remplacer la configuration courante
+ *   par celle du permalien (yes) ou la compléter (no).
+ * 
+ * - isRedirect() --> boolean
+ *  Detecte une information de redirection après le chargement de la carte
+ *  ceci permet d'informer l'utilisateur qu'il a été redirigé
+ *  depuis une autre application (ex. Geoportail, GéoIDE, etc.)
+ * 
+ * @see useUrlParams
  */
 export const useMapStore = defineStore('map', () => {
   const emitter = inject('emitter');
@@ -102,8 +123,12 @@ export const useMapStore = defineStore('map', () => {
     const type = params.permalink;
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
-        // on ne traite pas cette clef dans le localStorage
+        // on ne traite pas ces clefs dans le localStorage
+        // elles sont gérées par en mode computed()
         if (key === "permalink") {
+          continue;
+        }
+        if (key === "redirect") {
           continue;
         }
         if (key === "controls") {
@@ -122,7 +147,6 @@ export const useMapStore = defineStore('map', () => {
           if (type === "no") {
             // on modifier la position des nouvelles couches
             // à ajouter pour qu'elle soit toujours au dessus
-            var newValue = "";
             var curLyr = localStorage.getItem(ns(key));
             var posLyr = curLyr.split(",").length + 1;
             var newsLyr = value.split(",");
@@ -182,6 +206,10 @@ export const useMapStore = defineStore('map', () => {
   //////////////////
   // objets calculés
   //////////////////
+
+  var isRedirect = computed(() => {
+    return (location.search.includes("redirect=geoportail") || location.search.includes("redirect=geoide"));
+  });
 
   var isPermalink = computed(() => {
     return (location.search.includes("permalink=yes"));
@@ -585,6 +613,7 @@ export const useMapStore = defineStore('map', () => {
     permalink,
     permalinkShare,
     geolocation,
+    isRedirect,
     isPermalink,
     noLoginInformation,
     getMap,
