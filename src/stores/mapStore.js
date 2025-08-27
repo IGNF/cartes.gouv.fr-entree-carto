@@ -208,7 +208,7 @@ export const useMapStore = defineStore('map', () => {
   //////////////////
 
   var isRedirect = computed(() => {
-    return (location.search.includes("redirect=geoportail") || location.search.includes("redirect=geoide"));
+    return (location.search.includes("fromgpp=1") || location.search.includes("redirect=geoide"));
   });
 
   var isPermalink = computed(() => {

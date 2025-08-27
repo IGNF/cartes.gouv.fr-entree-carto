@@ -273,8 +273,8 @@ const scrollDown = () => {
 const alertClosed = ref(false);
 
 const alertData = {
-    title : "Information",
-    description : "<strong>TODO</strong> : Le <i>permalien</i> est issu de la redirection du <a href=\"www.geoportail.gouv.fr\">Geoportail</a> !",
+    title : "Iframe obsolète",
+    description : "<strong>Attention</strong> : Cette <i>iframe</i> issue du Géoportail est obsolète. Elle ne sera plus fonctionnelle à partir du <strong>xx/xx/202x</strong>. Veuillez la mettre à jour en utilisant cette <a href=\"https://studious-adventure-w6v1o51.pages.github.io/\" target=\"_blank\"> interface de conversion </a> !",
 };
 const onCloseAlert = () => {
   alertClosed.value = true;
@@ -309,12 +309,12 @@ const onCloseAlert = () => {
 
   <!-- INFO
     Message d'information sur la redirection issue du geoportail 
-    Le permalien possède la clef/valeur : "redirect=geoportail"
+    Le permalien possède la clef/valeur : "fromgpp=1"
     On informe donc l'utilisateur d'une action à faire.
   -->
   <div v-if="mapStore.isRedirect">
     <DsfrAlert
-      type="info"
+      type="warning"
       :title="alertData.title"
       :closed="alertClosed"
       :closeable="true"
