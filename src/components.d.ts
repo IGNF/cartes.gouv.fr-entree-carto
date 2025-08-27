@@ -38,6 +38,7 @@ declare module 'vue' {
     DsfrTabContent: typeof import('@gouvminint/vue-dsfr')['DsfrTabContent']
     DsfrTabs: typeof import('@gouvminint/vue-dsfr')['DsfrTabs']
     DsfrToggleSwitch: typeof import('@gouvminint/vue-dsfr')['DsfrToggleSwitch']
+    DsfrTooltip: typeof import('@gouvminint/vue-dsfr')['DsfrTooltip']
     ElevationPath: typeof import('./components/carte/control/ElevationPath.vue')['default']
     FullScreen: typeof import('./components/carte/control/FullScreen.vue')['default']
     GetFeatureInfo: typeof import('./components/carte/control/GetFeatureInfo.vue')['default']
