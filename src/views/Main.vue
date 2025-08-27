@@ -274,7 +274,7 @@ const alertClosed = ref(false);
 
 const alertData = {
     title : "Information",
-    description : "TODO : Le permalien est issu de la redirection du Geoportail !",
+    description : "<strong>TODO</strong> : Le <i>permalien</i> est issu de la redirection du <a href=\"www.geoportail.gouv.fr\">Geoportail</a> !",
 };
 const onCloseAlert = () => {
   alertClosed.value = true;
@@ -316,11 +316,12 @@ const onCloseAlert = () => {
     <DsfrAlert
       type="info"
       :title="alertData.title"
-      :description="alertData.description"
       :closed="alertClosed"
       :closeable="true"
       @close="onCloseAlert()"
-    />
+    >
+      <p v-html="alertData.description" />
+    </DsfrAlert>
   </div>
   
   <div class="futur-map-container">
