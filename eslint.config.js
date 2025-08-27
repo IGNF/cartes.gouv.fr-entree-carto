@@ -3,8 +3,6 @@ import globals from 'globals'
 import vueParser from 'vue-eslint-parser'
 import js from '@eslint/js'
 import ts from 'typescript-eslint'
-import { rejects } from 'assert'
-import { inject } from 'vue'
 
 export default [
   js.configs.recommended,
@@ -15,14 +13,14 @@ export default [
       // override/add rules settings here, such as:
       // 'vue/no-unused-vars': 'error'
       "vue/multi-word-component-names": 'off',
-      'no-undef': 'warn'
+      'no-undef': 'warn',
+      "vue/no-v-html": ["error", {
+        "ignorePattern": "^html"
+    }]
     },
     files: ['**/*.{js,ts,vue}'],
     languageOptions: {
       sourceType: 'module',
-      globals: {
-        ...globals.browser
-      },
       parser: vueParser,
       parserOptions: {
         parser: {
@@ -31,6 +29,7 @@ export default [
         }
       },
       globals: {
+        ...globals.browser,
         // Vue 3
         inject: 'readonly',
         provide: 'readonly',

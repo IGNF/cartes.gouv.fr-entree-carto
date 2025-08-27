@@ -23,10 +23,12 @@ import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+import { useMapStore} from "@/stores/mapStore"
 // others
 import t from '@/features/translation'
 
 useAppStore()
+const mapStore = useMapStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -268,6 +270,16 @@ const scrollDown = () => {
   }, 100);
 }
 
+const alertClosed = ref(false);
+
+const alertData = {
+    title : "Iframe obsolète",
+    description : "<strong>Attention</strong> : Cette <i>iframe</i> issue du Géoportail est obsolète. Elle ne sera plus fonctionnelle à partir du <strong>xx/xx/202x</strong>. Veuillez la mettre à jour en utilisant cette <a href=\"https://studious-adventure-w6v1o51.pages.github.io/\" target=\"_blank\"> interface de conversion </a> !",
+};
+const onCloseAlert = () => {
+  alertClosed.value = true;
+};
+
 </script>
 
 <template>
@@ -286,8 +298,7 @@ const scrollDown = () => {
     </template>
   </DsfrHeader>
 
-  <!-- Notifications
-  -->
+  <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
     <Notification
       :item="item"
@@ -296,10 +307,27 @@ const scrollDown = () => {
     />
   </Notivue>
 
+  <!-- INFO
+    Message d'information sur la redirection issue du geoportail 
+    Le permalien possède la clef/valeur : "fromgpp=1"
+    On informe donc l'utilisateur d'une action à faire.
+  -->
+  <div v-if="mapStore.isRedirect">
+    <DsfrAlert
+      type="warning"
+      :title="alertData.title"
+      :closed="alertClosed"
+      :closeable="true"
+      @close="onCloseAlert()"
+    >
+      <p v-html="alertData.description" />
+    </DsfrAlert>
+  </div>
+  
   <div class="futur-map-container">
     <router-view />
   </div>
-
+  
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
@@ -307,7 +335,9 @@ const scrollDown = () => {
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
-  ><span>Fermer</span></label>
+  >
+    <span>Fermer</span>
+  </label>
   <input
     id="fr-footer-toggle"
     type="checkbox"
@@ -339,9 +369,9 @@ const scrollDown = () => {
   <div class="fr-container fr-container--fluid fr-container-md">
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
-
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
+    <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
   </div>
 </template>
