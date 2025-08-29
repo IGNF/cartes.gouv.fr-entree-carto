@@ -31,7 +31,7 @@ const DEFAULT = {
 }
 
 /**
- * Espace de noms des clefs du localStorage
+ * Espace de noms des clefs du sessionStorage
  */
 const NAMESPACE = "cartes.gouv.fr";
 
@@ -102,7 +102,7 @@ export const useMapStore = defineStore('map', () => {
     const type = params.permalink;
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
-        // on ne traite pas cette clef dans le localStorage
+        // on ne traite pas cette clef dans le sessionStorage
         if (key === "permalink") {
           continue;
         }
@@ -123,7 +123,7 @@ export const useMapStore = defineStore('map', () => {
             // on modifier la position des nouvelles couches
             // à ajouter pour qu'elle soit toujours au dessus
             var newValue = "";
-            var curLyr = localStorage.getItem(ns(key));
+            var curLyr = sessionStorage.getItem(ns(key));
             var posLyr = curLyr.split(",").length + 1;
             var newsLyr = value.split(",");
             for (let i = 0; i < newsLyr.length; i++) {
@@ -138,13 +138,13 @@ export const useMapStore = defineStore('map', () => {
             value = curLyr;
           }
         }
-        localStorage.setItem(ns(key), value);
+        sessionStorage.setItem(ns(key), value);
       }
     }
   } catch (error) {
     // INFO
     // si le permalien est mal formaté, une exception est renvoyée
-    // et on ne le prend pas en compte afin de ne pas casser le localStorage
+    // et on ne le prend pas en compte afin de ne pas casser le sessionStorage
     // le message reste en mode silencieux, pas de notfication...
     console.error(error);
   }
@@ -152,8 +152,8 @@ export const useMapStore = defineStore('map', () => {
   // HACK
   // gestion de la geolocalisation à la lecture du permalien
   setTimeout(() => {
-    if (localStorage.getItem(ns('geolocation')) !== "") {
-      var coordinates = localStorage.getItem(ns('geolocation')).split(",");
+    if (sessionStorage.getItem(ns('geolocation')) !== "") {
+      var coordinates = sessionStorage.getItem(ns('geolocation')).split(",");
       // envoi d'un evenement pour afficher la geolocalisation
       emitter.dispatchEvent("searchengine:open:displayed", {
         position : coordinates
@@ -166,18 +166,18 @@ export const useMapStore = defineStore('map', () => {
   // objets simples
   //////////////////
 
-  var zoom = useStorage(ns('zoom'), DEFAULT.ZOOM);
-  var x = useStorage(ns('x'), DEFAULT.X);
-  var y = useStorage(ns('y'), DEFAULT.Y);
-  var lon = useStorage(ns('lon'), DEFAULT.LON);
-  var lat = useStorage(ns('lat'), DEFAULT.LAT);
-  var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
-  var geolocation = useStorage(ns('geolocation'), "");
+  var zoom = useStorage(ns('zoom'), DEFAULT.ZOOM, sessionStorage);
+  var x = useStorage(ns('x'), DEFAULT.X, sessionStorage);
+  var y = useStorage(ns('y'), DEFAULT.Y, sessionStorage);
+  var lon = useStorage(ns('lon'), DEFAULT.LON, sessionStorage);
+  var lat = useStorage(ns('lat'), DEFAULT.LAT, sessionStorage);
+  var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT, sessionStorage);
+  var geolocation = useStorage(ns('geolocation'), "", sessionStorage);
   
   // INFO
   // cette valeur devrait toujours être reinitilisée à false
-  localStorage.setItem(ns('noLoginInformation'), false);
-  var noLoginInformation = useStorage(ns('noLoginInformation'), false);
+  sessionStorage.setItem(ns('noLoginInformation'), false);
+  var noLoginInformation = useStorage(ns('noLoginInformation'), false, sessionStorage);
 
   //////////////////
   // objets calculés
@@ -240,7 +240,7 @@ export const useMapStore = defineStore('map', () => {
    * La liste des couches
    * ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
    */
-  var layers = useStorage(ns('layers'), DEFAULT.LAYERS);
+  var layers = useStorage(ns('layers'), DEFAULT.LAYERS, sessionStorage);
   if (!layers.value) {
     var l = DEFAULT.LAYERS.split(",").filter(function (l) {
       return !!l;
@@ -260,7 +260,7 @@ export const useMapStore = defineStore('map', () => {
    * La liste des contrôles
    * ex. Isocurve(1)
    */
-  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
+  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS, sessionStorage);
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
       return !!c;
@@ -282,7 +282,7 @@ export const useMapStore = defineStore('map', () => {
    *    visible=1&
    *    grayscale=0
    */
-  var bookmarks = useStorage(ns('bookmarks'), "");
+  var bookmarks = useStorage(ns('bookmarks'), "", sessionStorage);
   if (!bookmarks.value) {
     bookmarks.value = "";
   } else {
@@ -297,51 +297,51 @@ export const useMapStore = defineStore('map', () => {
   // watcher
   ///////////
 
-  localStorage.setItem(ns('center'), center.value);
-  localStorage.setItem(ns('permalink'), permalink.value);
-  localStorage.setItem(ns('permalinkShare'), permalinkShare.value);
+  sessionStorage.setItem(ns('center'), center.value);
+  sessionStorage.setItem(ns('permalink'), permalink.value);
+  sessionStorage.setItem(ns('permalinkShare'), permalinkShare.value);
 
   watch(zoom, () => {
-    localStorage.setItem(ns('zoom'), Math.round(zoom.value));
+    sessionStorage.setItem(ns('zoom'), Math.round(zoom.value));
   })
   watch(x, () => {
-    localStorage.setItem(ns('x'), x.value);
+    sessionStorage.setItem(ns('x'), x.value);
   })
   watch(y, () => {
-    localStorage.setItem(ns('y'), y.value);
+    sessionStorage.setItem(ns('y'), y.value);
   })
   watch(lon, () => {
-    localStorage.setItem(ns('lon'), lon.value);
+    sessionStorage.setItem(ns('lon'), lon.value);
   })
   watch(lat, () => {
-    localStorage.setItem(ns('lat'), lat.value);
+    sessionStorage.setItem(ns('lat'), lat.value);
   })
   watch(layers, () => {
-    localStorage.setItem(ns('layers'), layers.value.toString()); // string
+    sessionStorage.setItem(ns('layers'), layers.value.toString()); // string
   })
   watch(permalink, () => {
-    localStorage.setItem(ns('permalink'), permalink.value.toString()); // string
+    sessionStorage.setItem(ns('permalink'), permalink.value.toString()); // string
   })
   watch(permalinkShare, () => {
-    localStorage.setItem(ns('permalinkShare'), permalinkShare.value.toString()); // string
+    sessionStorage.setItem(ns('permalinkShare'), permalinkShare.value.toString()); // string
   })
   watch(center, () => {
-    localStorage.setItem(ns('center'), center.value.toString()); // string
+    sessionStorage.setItem(ns('center'), center.value.toString()); // string
   })
   watch(firstVisit, () => {
-    localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
+    sessionStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
   })
   watch(controls, () => {
-    localStorage.setItem(ns('controls'), controls.value.toString()); // string
+    sessionStorage.setItem(ns('controls'), controls.value.toString()); // string
   })
   watch(bookmarks, () => {
-    localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
+    sessionStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
   })
   watch(geolocation, () => {
-    localStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
+    sessionStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
   })
   watch(noLoginInformation, () => {
-    localStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
+    sessionStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
   })
 
   //////////////////
