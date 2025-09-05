@@ -24,10 +24,10 @@ const domStore = useDomStore();
 const mapStore = useMapStore();
 
 const emit = defineEmits([
-  'openControl', 
-  'onModalShareOpen', 
-  'onModalPrintOpen', 
-  'onModalThemeOpen', 
+  'openControl',
+  'onModalShareOpen',
+  'onModalPrintOpen',
+  'onModalThemeOpen',
   'onBookMarksOpen'
 ]);
 
@@ -40,6 +40,7 @@ function onOpenControlReporting() {
       open : true,
       componentName: "Reporting"
     });
+    emit("openControl");
   }, 0);
 }
 
@@ -64,7 +65,7 @@ const iconProps = computed(() => typeof icon === 'string'
 );
 
 // INFO
-// on active / desactive le bouton "Mes enregistrements" selon 
+// on active / desactive le bouton "Mes enregistrements" selon
 // si on est authentifié ou pas
 var service = inject('services');
 var authenticatedValue = computed(() => service.authenticated);

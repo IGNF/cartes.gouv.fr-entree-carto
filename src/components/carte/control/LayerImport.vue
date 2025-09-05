@@ -14,7 +14,7 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
-import { 
+import {
   useCreateDocument
 } from '@/components/carte/control/actions/actionSaveButton';
 
@@ -101,12 +101,12 @@ const onOpenModalLogin = (e) => {
   // car il n'est pas enregistré !
   // On peut deleguer une action de sauvegarde ou emettre un evenement
   // aprés la validation de la connexion
-  // Pour garder les informations de sauvegarde temporaire, 
+  // Pour garder les informations de sauvegarde temporaire,
   // on les stocke dans le localStorage
   log.debug(e);
   if (refModalLogin) {
     // true pour proposer le message 'Ne plus afficher le message'
-    refModalLogin.value.openModalLogin(true); 
+    refModalLogin.value.openModalLogin(true);
   }
 }
 
@@ -121,12 +121,12 @@ const onOpenModalSave = () => {
 }
 
 /**
- * 
+ *
  * @param e - donnée de sauvegarde de l'import
  */
 const saveImportVector = (e) => {
   console.log("saveImportVector", e);
-  
+
   var data = {
     layer : e.layer,
     content : e.data,
@@ -138,13 +138,13 @@ const saveImportVector = (e) => {
   };
 
   var promise = useCreateDocument(data, emitter, service);
-  
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { 
-        opacity: data.layer.get('opacity'), 
+      var url = toShare(document, {
+        opacity: data.layer.get('opacity'),
         visible: data.layer.get('visible'),
         grayscale: data.layer.get('grayscale'),
         stop: 1 // HACK !
@@ -176,17 +176,17 @@ const saveImportVector = (e) => {
   });
 }
 
-/** 
+/**
  * Gestionnaires d'evenement
- * 
+ *
  * @description
- * 
+ *
  * Ecouteur pour la sauvegarde automatique d'un import de type :
  * - vecteur
  * - service
  * - mapbox
  * - compute
- * 
+ *
  * @event layerimport:service:added
  * @property {Object} type - event
  * @property {String} name - layerName
@@ -214,7 +214,7 @@ const onSaveImportVector = (e) => {
     refModalSave.value.onDelegateCbk(() => {
       saveImportVector(e);
     });
-  
+
     // si on est authentifié, on propose la possibilité de sauvegarder ou pas
     if (service.authenticated) {
       onOpenModalSave();
@@ -265,7 +265,7 @@ const onSaveImportService = (e) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
-        opacity: 1, 
+        opacity: 1,
         visible: true,
         grayscale: false,
         stop : 1
@@ -312,7 +312,7 @@ const onSaveImportMapbox = (e) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
-        opacity: 1, 
+        opacity: 1,
         visible: true,
         grayscale: false,
         stop : 1
@@ -395,15 +395,15 @@ const getDataServiceWMTS = (data) => {
       y: data["Origin"][1]
     },
     resolutions : data["Resolutions"],
-    matrixIds : data["MatrixIds"],  
+    matrixIds : data["MatrixIds"],
     title : data["Title"],
     description : data["Abstract"]
   };
 }
 /**
  * Créer un document pour un service
- * 
- * @param data 
+ *
+ * @param data
  * @property {String} data.content - export data
  * @property {String} data.name - name
  * @property {String} data.description - description
@@ -418,7 +418,7 @@ const getDataServiceWMTS = (data) => {
     const o = await service.setDocument(data)
     var uuid = o.uuid;
     var action = o.action;
-    
+
     // rendre public le document
     const s = await service.sharingDocument({
       uuid : uuid,
@@ -455,6 +455,9 @@ const getDataServiceWMTS = (data) => {
 
 <style>
 button[id^=GPshowImportPicto-] {
+  display: none;
+}
+.gpf-widget-button[id^=GPimport-]:has(>.gpf-btn-icon[aria-pressed=true]):after {
   display: none;
 }
 dialog[id^=GPcontrolListPanel-] button[id^=GPshowImportPicto-]{
