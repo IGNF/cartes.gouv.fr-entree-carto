@@ -14,6 +14,9 @@ import {
  * - bookmarks : ...
  * - controls : ...
  * - zoom : ...
+ * - geolocation : ...
+ * - permalink : yes | no
+ * - redirect : url de redirection
  * 
  * @example
  * http://localhost:5173/cartes.gouv.fr-entree-carto/embed?
@@ -69,6 +72,9 @@ export function useUrlParams(url) {
             break;
           case "permalink":
             params.permalink = urlParams[key]; // yes | no
+            break;
+          case "redirect":
+            params.redirect = urlParams[key]; // url de redirection
             break;
           default:
             break;
