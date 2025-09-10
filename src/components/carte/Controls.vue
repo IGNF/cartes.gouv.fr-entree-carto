@@ -817,9 +817,12 @@ const contextMenuOptions = computed(() => {
     height: calc(100% - 102px);
   }
 
-  .position-container-top-right,
+  .position-container-top-right {
+      top: 99px;
+  }
+/* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
-    top: 99px;
+    top: 13px;
   }
 }
 @media (max-width: 576px) {

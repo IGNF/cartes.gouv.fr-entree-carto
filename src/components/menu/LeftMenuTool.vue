@@ -37,7 +37,7 @@ const tabArray = computed(() => {
             icon : "ri-bookmark-line",
             title : "Mes Enregistrements",
             visibility : false, // bouton invisible
-            secondary : true 
+            secondary : true
           }
     ];
 
@@ -80,9 +80,9 @@ function onBookMarksOpen() {
     return;
   }
   // INFO
-  // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin 
+  // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin
   // d'afficher le menu (cf. tabClicked()).
-  // cette classe expose 
+  // cette classe expose
   // - l'id
   // - une méthode clickButton()
   tabRefs.value.forEach((e) => {
@@ -91,7 +91,7 @@ function onBookMarksOpen() {
         // on ouvre le menu des favoris
         e.clickButton();
       } else {
-        // on ouvre la modale de connexion 
+        // on ouvre la modale de connexion
         // sans déclencher l'ouverture des favoris
         // on emet un evenement qui déclenche l'ouverture de la modale !
         // (cf. src/components/CartoAndTools.vue ~ onModalLoginOpen())
@@ -101,11 +101,16 @@ function onBookMarksOpen() {
   })
 }
 
+function onOpenControl() {
+  // on ferme le menu lateral
+  wrapper.value.closeMenu();
+}
+
 const tabRefs = useTemplateRef('tabs')
 
 const emit = defineEmits([
-  'onModalShareOpen', 
-  'onModalPrintOpen', 
+  'onModalShareOpen',
+  'onModalPrintOpen',
   'onModalThemeOpen',
   'onModalLoginOpen'
 ])
@@ -131,6 +136,7 @@ const emit = defineEmits([
           @on-modal-print-open="$emit('onModalPrintOpen')"
           @on-modal-theme-open="$emit('onModalThemeOpen')"
           @on-book-marks-open="onBookMarksOpen"
+          @open-control="onOpenControl"
         />
       </div>
       <div
