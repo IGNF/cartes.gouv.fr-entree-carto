@@ -2,7 +2,7 @@ import { useUrlSearchParams } from '@vueuse/core';
 import {
   fromLonLat as fromLonLatProj
 } from "ol/proj";
-
+import { useDefaultControls } from '@/composables/controls';
 /**
  * Lecture du permalink pour y extraire les informations.
  * La structure est identique au permalien de la carte
@@ -56,7 +56,7 @@ export function useUrlParams(url) {
             params.layers = urlParams[key];
             break;
           case "w":
-            params.controls = urlParams[key];
+            params.controls = urlParams[key] + "," + useDefaultControls().toString();
             break;
           case "d":
             params.bookmarks = urlParams[key];

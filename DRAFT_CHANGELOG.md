@@ -22,6 +22,8 @@
 
 #### 🐛 [Correction]
 
+  - Espace Perso : correction du #698 pour le chargement des cartes enregistrées (#701)
+
 #### 🔒 [Sécurité]
 
 ---
