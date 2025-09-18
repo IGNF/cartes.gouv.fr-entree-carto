@@ -194,7 +194,8 @@ export function useControlsMenuOptions() {
       name: useControls.OverviewMap.id,
       hint: 'Petite carte pour se repérer',
       disabled: useControls.OverviewMap.disable,
-      tooltip: ""
+      tooltip: "Mini Carte pour contextualiser la zone cartographique",
+      icon: "ri-map-2-line"
     },
     {
       label: 'Scale Line',
@@ -290,9 +291,10 @@ export function useControlsMenuOptions() {
       label: 'Zoom',
       id: 'zoom',
       name: useControls.Zoom.id,
-      hint: 'Zoom',
+      hint: 'Zoomer - dézoomer',
       disabled: useControls.Zoom.disable,
-      tooltip: ""
+      tooltip: "Zoomer dézoomer sur la carte",
+      icon: "ri-zoom-in-line"
     },
     {
       label: 'Plein écran',
