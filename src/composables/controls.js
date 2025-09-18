@@ -15,8 +15,8 @@
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
-    active: false,
-    disable: true,
+    active: true,
+    disable: false,
     analytic: true
   },
   SearchEngine: {
