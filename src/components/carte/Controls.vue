@@ -620,6 +620,10 @@ const contextMenuOptions = computed(() => {
   padding: 0;
 }
 
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  margin-bottom: 60px;
+}
+
 /* 10 controls optionnels */
 .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
   display: none;
@@ -818,7 +822,7 @@ const contextMenuOptions = computed(() => {
   }
 
   .position-container-top-right {
-      top: 99px;
+      top: 60px;
   }
 /* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
@@ -826,10 +830,13 @@ const contextMenuOptions = computed(() => {
   }
 }
 @media (max-width: 576px) {
-  .position-container-top-right,
   .position-container-top-left {
     top: 299px;
   }
+  .position-container-top-right{
+    top: 259px;
+  }
+  
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
@@ -879,7 +886,7 @@ const contextMenuOptions = computed(() => {
 @media (max-width: 627px) and (min-width: 576px){
   .position-container-top-right,
   .position-container-top-left {
-    top: 164px;
+    top: 124px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,

@@ -141,7 +141,15 @@ defineExpose({
 }
 .right {
   .menu-logo-list {
-  right: 16px;
+    right: 16px;
+  // hack pour positionnement du layer switcher
+    ::v-deep(div:has(> #MenuControl)) {
+      padding-top: 68px; /* ajoute un grand espace avant MenuControl */
+      }
+    ::v-deep(button[id="MenuControl"]) {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      }
   }
   .menu-content-list {
     right: 60px;
@@ -191,6 +199,11 @@ defineExpose({
   margin-top: 12px;
   width: 40px;
   position: absolute;
+  pointer-events: none;
+  // hack pour positionnement du layer switcher
+  ::v-deep(button) {
+    pointer-events: all;
+  }
 }
 
 /* FIXME : le bouton widget n'est pas intégré à la grille des widgets
