@@ -853,6 +853,10 @@ const contextMenuOptions = computed(() => {
     display: none;
   }
 
+  .gpf-widget[id^="GPzoom-"]{
+    display: none;
+  }
+
   .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: inline-flex;
     border-top-left-radius: 4px;
