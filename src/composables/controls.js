@@ -15,7 +15,7 @@
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
-    active: true,
+    active: false,
     disable: true,
     analytic: true
   },
@@ -70,7 +70,7 @@ export const useControls = {
   Zoom: {
     id: 'Zoom',
     active: true,
-    disable: true,
+    disable: false,
     analytic: false
   },
   Route: {
@@ -463,7 +463,7 @@ export function useControlsExtensionPosition() {
     printOptions : 'top-right',
     territoriesOptions : 'bottom-left',
     layerSwitcherOptions : "top-right",
-    legendsOptions : "top-right",
+    legendsOptions : "bottom-left",
     getFeatureInfoOptions : 'bottom-left',
     overviewMapOptions : 'bottom-left',
     zoomOptions : 'bottom-right',
