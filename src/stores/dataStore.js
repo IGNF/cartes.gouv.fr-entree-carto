@@ -16,6 +16,7 @@ export const useDataStore = defineStore('data', () => {
   const m_territories = ref([]);
   const m_featured = ref([]);
   const m_alerts = ref([]);
+  const m_topics = ref([]);
   const isLoaded = ref(false);
   const error = ref("");
   const filterServices = "WMTS,WMS,TMS";
@@ -93,6 +94,7 @@ export const useDataStore = defineStore('data', () => {
         ...conf.generalOptions.apiKeys
       }
       m_tileMatrixSets.value = conf.tileMatrixSets;
+      m_topics.value = conf.topics || [];
 
       this.isLoaded = true;
       return conf.layers;
@@ -300,6 +302,10 @@ export const useDataStore = defineStore('data', () => {
     return m_tileMatrixSets.value[id];
   }
 
+  function getTopics() {
+    return m_topics.value;
+  }
+
   return {
     error,
     isLoaded,
@@ -328,6 +334,7 @@ export const useDataStore = defineStore('data', () => {
     getLayerParamsByName,
     getLayerParamsByID,
     getGlobalConstraintsByID,
-    getGlobalConstraintsByName
+    getGlobalConstraintsByName,
+    getTopics
   }
 })

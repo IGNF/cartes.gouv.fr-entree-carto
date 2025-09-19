@@ -22,7 +22,8 @@ import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 import CatalogManager from './control/CatalogManager.vue';
 
-import { useMapStore } from "@/stores/mapStore"
+import { useMapStore } from "@/stores/mapStore";
+import { useDataStore } from "@/stores/dataStore";
 import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
@@ -41,6 +42,7 @@ const props = defineProps({
 })
 
 const mapStore = useMapStore()
+const dataStore = useDataStore()
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
@@ -125,6 +127,13 @@ const catalogManagerOptions = {
     type : "json",
     urls : ["data/test-catalog.json"]
   }
+  // configuration : {
+  //   type : "json",
+  //   data : {
+  //     layers : dataStore.getLayers(),
+  //     topics : dataStore.getTopics()
+  //   }
+  // }
 };
 </script>
 
