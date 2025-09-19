@@ -119,7 +119,12 @@ const catalogManagerOptions = {
         }
       ]
     },
-  ]
+  ],
+  // FIXME test sur la taille du DOM
+  configuration : {
+    type : "json",
+    urls : ["data/test-catalog.json"]
+  }
 };
 </script>
 
