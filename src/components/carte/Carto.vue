@@ -20,17 +20,29 @@ import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
+import CatalogManager from './control/CatalogManager.vue';
 
-import { useMapStore } from "@/stores/mapStore"
+import { useMapStore } from "@/stores/mapStore";
+import { useDataStore } from "@/stores/dataStore";
 import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
-  selectedControls : Array,
-  selectedLayers : Object,
-  selectedBookmarks : Object
+  selectedControls: {
+    type: Array,
+    default: () => []
+  },
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const mapStore = useMapStore()
+const dataStore = useDataStore()
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
@@ -50,6 +62,79 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
+
+const catalogManagerOptions = {
+  id: "22",
+  position: "top-right",
+  gutter: false,
+  listable: true,
+  titlePrimary : "Catalogue des cartes",
+  layerLabel : "title",
+  layerThumbnail : true,
+  size : "lg",
+  addToMap : false,
+  search : {
+    display : false,
+    criteria : ["name","title","description"]
+  },
+  categories : [
+    {
+      title : "Cartes de références",
+      id : "base",
+      filter : {
+        field : "base",
+        value : "true"
+      }
+    },
+    {
+      title : "Toutes les cartes",
+      id : "data",
+      search : true,
+      items : [
+        {
+          title : "Thème",
+          default : true,
+          section : true,
+          icon : true,
+          filter : {
+            field : "thematic",
+            value : "*"
+          }
+        },
+        {
+          title : "Producteur",
+          section : true,
+          icon : false,
+          filter : {
+            field : "producer",
+            value : "*"
+          }
+        },
+        {
+          title : "Service",
+          section : true,
+          icon : false,
+          filter : {
+            field : "service",
+            value : "*"
+          }
+        }
+      ]
+    },
+  ],
+  // FIXME test sur la taille du DOM
+  configuration : {
+    type : "json",
+    urls : ["data/test-catalog.json"]
+  }
+  // configuration : {
+  //   type : "json",
+  //   data : {
+  //     layers : dataStore.getLayers(),
+  //     topics : dataStore.getTopics()
+  //   }
+  // }
+};
 </script>
 
 <template>
@@ -63,6 +148,18 @@ const mapIsReady = computed(() => {
       :map-id="mainMap"
       :center="mapStore.center"
       :zoom="mapStore.zoom"
+    />
+    <!-- 
+      Composant pour gérer le catalogue des couches 
+      On decide de le mettre toujours visible
+      et de l'ajouter à la carte en haut de la liste des widgets.
+      FIXME performances !?
+    -->
+    <CatalogManager
+      :visibility="true"
+      :analytic="true"
+      :catalog-manager-options="catalogManagerOptions"
+      :map-id="mainMap"
     />
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
