@@ -1,9 +1,10 @@
 <script lang="js">
   /**
    * @description
+   * Composant de gestion des contrôles de la carte
    *
    * @property { Array } controlOptions tableau contenant les controls disponibles
-   *
+   * @property { String } mapId identifiant de la carte
    */
   export default {
     name: 'Controls'
@@ -33,6 +34,7 @@ import ContextMenu from './control/ContextMenu.vue';
 import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
 import Reporting from './control/Reporting.vue';
+// import CatalogManager from './control/CatalogManager.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
@@ -47,11 +49,21 @@ import { LoggerUtils } from 'geopf-extensions-openlayers';
 const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
-isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
+if (isProduction) {
+  LoggerUtils.disableAll();
+} else {
+  LoggerUtils.enableAll();
+}
 
 const props = defineProps({
-  controlOptions: Array,
-  mapId: String
+  controlOptions: {
+    type: Array,
+    default: () => []
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 });
 
 // INFO
@@ -401,6 +413,67 @@ const reportingOptions = {
   format : "kml"
 };
 
+// FIXME: temporairement désactivé car problème performance !?
+// const catalogManagerOptions = {
+//   id: "22",
+//   gutter: false,
+//   listable: true,
+//   titlePrimary : "Catalogue des cartes",
+//   layerLabel : "title",
+//   layerThumbnail : true,
+//   size : "lg",
+//   addToMap : false,
+//   search : {
+//     display : false,
+//     criteria : ["name","title","description"]
+//   },
+//   categories : [
+//     {
+//       title : "Cartes de références",
+//       id : "base",
+//       filter : {
+//         field : "base",
+//         value : "true"
+//       }
+//     },
+//     {
+//       title : "Toutes les cartes",
+//       id : "data",
+//       search : true,
+//       items : [
+//         {
+//           title : "Thème",
+//           default : true,
+//           section : true,
+//           icon : true,
+//           filter : {
+//             field : "thematic",
+//             value : "*"
+//           }
+//         },
+//         {
+//           title : "Producteur",
+//           section : true,
+//           icon : false,
+//           filter : {
+//             field : "producer",
+//             value : "*"
+//           }
+//         },
+//         {
+//           title : "Service",
+//           section : true,
+//           icon : false,
+//           filter : {
+//             field : "service",
+//             value : "*"
+//           }
+//         }
+//       ]
+//     },
+//   ]
+// };
+
 const refModalPrint = inject("refModalPrint")
 const refModalShare = inject("refModalShare")
 
@@ -608,6 +681,13 @@ const contextMenuOptions = computed(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
+  <!-- <CatalogManager
+    v-if="controlOptions"
+    visibility="true"
+    analytic="true"
+    :catalog-manager-options="catalogManagerOptions"
+    :map-id="mapId"
+  /> -->
 </template>
 
 <style>
