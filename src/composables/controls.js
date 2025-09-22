@@ -17,145 +17,169 @@ export const useControls = {
     id: 'OverviewMap',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: true
   },
   SearchEngine: {
     id: 'SearchEngine',
     active: true,
     disable: true,
-    analytic: false
+    analytic: false,
+    default: true
   },
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
     disable: true,
-    analytic: false
+    analytic: false,
+    default: true
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   Legends: {
     id: 'Legends',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   Drawing: {
     id: 'Drawing',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   Isocurve: {
     id: 'Isocurve',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   Zoom: {
     id: 'Zoom',
     active: true,
     disable: false,
-    analytic: false
+    analytic: false,
+    default: false
   },
   Route: {
     id: 'Route',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   FullScreen: {
     id: 'FullScreen',
     active: true,
     disable: true,
-    analytic: false
+    analytic: false,
+    default: true
   },
   MeasureLength: {
     id: 'MeasureLength',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: false
   },
   Share: {
     id: 'Share',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   Print: {
     id: 'Print',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   MousePosition: {
     id: 'MousePosition',
     active: true,
     disable: false,
-    analytic: false
+    analytic: false,
+    default: false
   },
   Territories: {
     id: 'Territories',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   ElevationPath: {
     id: 'ElevationPath',
     active: true,
     disable: false,
-    analytic: false
+    analytic: false,
+    default: false
   },
   LayerImport: {
     id: 'LayerImport',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   ControlList: {
     id: 'ControlList',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   ContextMenu: {
     id: 'ContextMenu',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   },
   Reporting: {
     id: 'Reporting',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true
   }
 }
 
@@ -167,7 +191,7 @@ export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
-    if (useControls[control].active === true && useControls[control].disable === true) {
+    if (useControls[control].default == true || (useControls[control].active === true && useControls[control].disable === true)) {
       defaultControls.push(useControls[control].id);
     }
   }
