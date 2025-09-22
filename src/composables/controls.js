@@ -81,7 +81,7 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: false,
-    default: false
+    default: true
   },
   Route: {
     id: 'Route',
