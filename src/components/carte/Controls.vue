@@ -836,7 +836,10 @@ const contextMenuOptions = computed(() => {
   .position-container-top-right{
     top: 259px;
   }
-  
+  .GPpanel {
+    margin-top : -259px !important;
+  }
+
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
