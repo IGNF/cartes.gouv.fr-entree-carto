@@ -826,7 +826,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 
   .position-container-top-right {
-      top: 60px;
+      top: 58px;
   }
 /* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
@@ -838,7 +838,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 299px;
   }
   .position-container-top-right{
-    top: 259px;
+    top: 257px;
   }
   .GPpanel {
     margin-top : -259px !important;
