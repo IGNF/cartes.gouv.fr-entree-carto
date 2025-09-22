@@ -624,6 +624,10 @@ const contextMenuOptions = computed(() => {
   margin-bottom: 60px;
 }
 
+button[id^="GPgetFeatureInfoPicto-"] {
+  display: none;
+}
+
 /* 10 controls optionnels */
 .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
   display: none;
