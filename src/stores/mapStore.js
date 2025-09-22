@@ -353,8 +353,30 @@ export const useMapStore = defineStore('map', () => {
   }
   function setMap (m) {
     map.value = m;
+    console.error(map.value)
+    if (map.value) {
+    console.error("blablablaaaaaaaaaaaaa")
+    map.value.addEventListener("change", () => {
+      console.error("EVENT ECOUTEEEE")
+    })
+    let ret = map.value.getTarget()
+      console.error(ret)
+    let ret2 = map.value.getTarget()
+    .querySelector('.ol-viewport')
+    .querySelector('.ol-overlaycontainer-stopevent')
+    .querySelector('.position-container-top-right')
+    if (ret2) {
+      console.error("INIT TOP RIGHT CONTIANER")
+    console.error(typeof ret2)
+    mapTopRightContainer.value = ret2
+    }
+    console.error(ret2)
   }
-
+  }
+  const mapTopRightContainer = ref(null)
+  function getMapTopRightContainer () {
+    return mapTopRightContainer.value;
+  }
   function getLayers () {
     // INFO
     // on retourne la liste des couches sans les options
@@ -570,6 +592,8 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+
+
   return {
     map,
     layers,
@@ -589,6 +613,7 @@ export const useMapStore = defineStore('map', () => {
     noLoginInformation,
     getMap,
     setMap,
+    getMapTopRightContainer,
     getLayers,
     cleanLayers,
     addLayer,

@@ -448,6 +448,10 @@ const contextMenuOptions = computed(() => {
     ]
   }
 })
+onMounted(() => {
+    mapStore.setMap(mapStore.getMap())
+})
+
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste
@@ -610,7 +614,9 @@ const contextMenuOptions = computed(() => {
   />
 </template>
 
-<style>
+<style lang="scss">
+$top-right-top : 13px;
+$gap-layerswitcher: 40px;
 
 .position-container-bottom-left,
 .position-container-bottom-right,
@@ -620,24 +626,24 @@ const contextMenuOptions = computed(() => {
   padding: 0;
 }
 
-.gpf-widget[id^="GPlayerSwitcher-"] {
-  margin-bottom: 60px;
-}
+// .gpf-widget[id^="GPlayerSwitcher-"] {
+//   margin-bottom: calc($gap-layerswitcher);
+// }
 
 /* 10 controls optionnels */
-.position-container-top-right > .gpf-widget:nth-child(n+13) > button {
+.position-container-top-right > .gpf-widget:nth-child(n+13) > button:not(.navButton) {
   display: none;
 }
 
-.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button:not(.navButton) {
   display: none;
 }
 
-.position-container-top-right:not(:has(.gpf-widget:nth-child(14))) > .gpf-widget[id^="GPcontrolList-"] > button {
+.position-container-top-right:not(:has(.gpf-widget:nth-child(14))) > .gpf-widget[id^="GPcontrolList-"] > button:not(.navButton) {
   display: none;
 }
 
-.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
+.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button:not(.navButton) {
   display: inline-flex;
 }
 
@@ -667,7 +673,7 @@ const contextMenuOptions = computed(() => {
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu +, pas de controls */
 @media (max-height: 739px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button:not(.navButton) {
     display: none;
   }
 
@@ -676,7 +682,7 @@ const contextMenuOptions = computed(() => {
     padding: 0;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button:not(.navButton) {
     display: none;
   }
 
@@ -699,19 +705,19 @@ const contextMenuOptions = computed(() => {
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 controls optionnels */
 @media (min-height: 740px) and (max-height: 819px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+7) > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button:not(.navButton) {
     display: inline-flex;
   }
 
@@ -777,19 +783,19 @@ const contextMenuOptions = computed(() => {
 /* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
 /* 8 controls optionnels */
 @media (min-height: 920px) and (max-height: 999px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button:not(.navButton) {
     display: inline-flex;
   }
 
@@ -822,7 +828,7 @@ const contextMenuOptions = computed(() => {
   }
 
   .position-container-top-right {
-      top: 60px;
+      top: calc(13px + 48px);
   }
 /* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
@@ -834,7 +840,7 @@ const contextMenuOptions = computed(() => {
     top: 299px;
   }
   .position-container-top-right{
-    top: 259px;
+    top: 310px;
   }
   
   .position-container-bottom-left,
@@ -852,11 +858,11 @@ const contextMenuOptions = computed(() => {
     max-height: calc(100% + 302px);
   }
 
-  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button:not(.navButton) {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button:not(.navButton) {
     display: none;
   }
 

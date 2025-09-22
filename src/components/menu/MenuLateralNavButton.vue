@@ -28,7 +28,8 @@ const props = defineProps({
     title: String,
     side: String,
     visibility: Boolean,
-    secondary: Boolean
+    secondary: Boolean,
+    classes: String
 })
 
 const icon = props.icon
@@ -87,20 +88,31 @@ onMounted(() => {
     domStore.setmenuCatalogueButton(button.value)
   }
 })
+
+
+// const topRightWidget = computed(() => {
+//     return mapStore.getMapTopRightContainer();
+// })
+
+// watch(topRightWidget, (newtopRightWidget) => {
+//   console.error(newtopRightWidget)
+// })
 </script>
 
 <template>
-  <div ref="button">
+<!-- l'ID GPname-1 permet de garder le fonctionnement des extensions -->
+  <div ref="button" :id="'GP' + id + '-1'">
     <DsfrButton
       :id="id"
       :secondary="secondary"
       :aria-label="title"
-      :class="`${active ? 'active': ''}  navBarIcon ${visibility ? '' : 'invisibleNavButton'} navButton` "
+      :class="`${active ? 'active': ''}  navBarIcon ${visibility ? '' : 'invisibleNavButton'} navButton ${classes}` "
       :icon="icon"
       :icon-only="true"
       @click="tabClicked"
     />
   </div>
+    <!-- </Teleport> -->
 </template>
 
 <style scoped lang="scss">

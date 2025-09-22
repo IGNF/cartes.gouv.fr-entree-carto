@@ -11,8 +11,12 @@
 <script setup lang="js">
 import { useDataStore } from "@/stores/dataStore";
 import MenuControl from '@/components/menu/MenuControl.vue';
+import { useMapStore } from "@/stores/mapStore"
 
 import { inject } from 'vue';
+
+
+const mapStore = useMapStore();
 
 const props = defineProps({
   selectedControls : {Object},
@@ -68,6 +72,73 @@ function tabIsActive(componentName) {
     return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
 
+
+const topRightWidget = computed(() => {
+    return mapStore.getMapTopRightContainer();
+})
+
+// watch(topRightWidget, (newtopRightWidget) => {
+//   console.error(newtopRightWidget)
+//   buttons.value.forEach(button => {
+//       console.error(button)
+
+//       if (newtopRightWidget && button) {
+//         newtopRightWidget.prepend(button.$el) // <-- insère au début
+//   }})
+// })
+// const buttons = ref([])
+
+// onMounted(() => {
+//   nextTick(() => {
+//     console.error(buttons)
+//     buttons.value.forEach((button, index) => {
+//       console.error(button)
+//       console.error(typeof topRightWidget.value)
+//       // const parent = el?.parentNode;
+//       // if (parent) {
+//       //   parent.insertBefore(el, parent.children[index] || null);
+//       // }
+
+//     console.error("topRightWidget.value instanceof HTMLElement")
+//     console.error(topRightWidget.value instanceof Node)
+//       if (topRightWidget.value && button) {
+//         topRightWidget.value.insertBefore(button, topRightWidget.value[index] || null) // <-- insère au début
+//   }
+//     })
+
+
+//   })
+// })
+
+const teleportedInstances = ref([]);
+
+function setTeleportedRef(instance, index) {
+  teleportedInstances.value[index] = instance ?? null
+}
+
+function prependTeleports() {
+  nextTick(() => {
+    // récupérer les DOM des buttons exposés
+    const nodes = teleportedInstances.value
+      .map(i => i?.button?.value)
+      .filter(Boolean)
+    
+    if (!nodes.length) return
+    const parent = topRightWidget.value
+    if (!parent) return
+
+    // insérer en reverse pour respecter l’ordre
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i]
+      if (node && node.parentNode === parent) {
+        parent.insertBefore(node, parent.firstChild)
+      }
+    }
+  })
+}
+
+onMounted(prependTeleports)
+onUpdated(prependTeleports)
 </script>
 
 <template>
@@ -99,8 +170,11 @@ function tabIsActive(componentName) {
       </div>
     </template>
     <template #navButtons>
+    <Teleport  v-if="topRightWidget && side=='right'" to="#position-container-top-right">
       <MenuLateralNavButton
-        v-for="tab in tabArray"
+        v-for="(tab, i) in tabArray"
+        :ref="el => setTeleportedRef(el, i)"
+        :key="tab.componentName"
         :id="tab.componentName"
         :visibility="tab.visibility"
         :side="side"
@@ -108,20 +182,30 @@ function tabIsActive(componentName) {
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
         :secondary="tab.secondary"
+        classes="gpf-btn-icon"
+        class="GPwidget gpf-widget gpf-widget-button gpf-mobile-fullscreen rightButton"
         @tab-clicked="tabClicked"
       />
-    </template>
+    </Teleport>
+  </template>
   </MenuLateralWrapper>
 </template>
 
 
 
-<style scoped lang="scss">
+<style lang="scss">
 .activeTab {
     display : block;
 }
 
 .inactiveTab {
     display : none;
+}
+.rightButton{
+  display: contents;
+}
+
+#GPMenuCatalogue-1 {
+  top: 0;
 }
 </style>

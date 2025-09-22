@@ -15,7 +15,9 @@
 
 <script setup lang="js">
 import { VIcon } from '@gouvminint/vue-dsfr'
-import { useDocumentVisibility } from '@vueuse/core';
+import { useMapStore } from "@/stores/mapStore"
+
+const mapStore = useMapStore();
 
 const props = defineProps({
   side: String,
@@ -69,6 +71,19 @@ defineExpose({
   closeMenu,
   openMenu
 })
+
+// onMounted(() => {
+//     console.error(topRightWidget.value)
+// })
+
+// const topRightWidget = computed(() => {
+//     return mapStore.getMapTopRightContainer();
+// })
+
+// watch(topRightWidget, (newtopRightWidget) => {
+//   console.log(newtopRightWidget)
+// })
+
 </script>
 
 <template>
@@ -81,7 +96,10 @@ defineExpose({
       ref="menuTabs"
       class="menu-logo-list"
     >
-      <slot name="navButtons" />
+    <!-- <Teleport  to="#position-container-top-right"> -->
+    <slot name="navButtons" />
+  <!-- </Teleport> -->
+
     </div>
 
     <div
@@ -128,9 +146,14 @@ defineExpose({
   .navButton[aria-label]:hover .vicon {
     position: absolute;
   }
+
+
 </style>
 
 <style scoped lang="scss">
+
+$gap-layerswitcher: 40px;
+
 .left {
   .menu-logo-list {
     left: 10px;
@@ -144,7 +167,7 @@ defineExpose({
     right: 16px;
   // hack pour positionnement du layer switcher
     ::v-deep(div:has(> #MenuControl)) {
-      padding-top: 68px; /* ajoute un grand espace avant MenuControl */
+      padding-top: 52px; /* ajoute un grand espace avant MenuControl */
       }
     ::v-deep(button[id="MenuControl"]) {
       border-bottom-left-radius: 0;
