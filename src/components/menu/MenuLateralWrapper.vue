@@ -15,8 +15,14 @@
 
 <script setup lang="js">
 import { VIcon } from '@gouvminint/vue-dsfr'
-import { useDocumentVisibility } from '@vueuse/core';
+import { useMapStore } from "@/stores/mapStore";
+import { useControlsPosition } from '@/composables/controls';
 
+const mapStore = useMapStore();
+const rightControls = useControlsPosition().right;
+const hasControls = computed(() => {
+  return mapStore.getControls().filter(c => rightControls.includes(c)).length > 3;
+})
 const props = defineProps({
   side: String,
   visibility: Boolean,
@@ -147,8 +153,8 @@ defineExpose({
       padding-top: 68px; /* ajoute un grand espace avant MenuControl */
       }
     ::v-deep(button[id="MenuControl"]) {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+          border-bottom-left-radius: v-bind("hasControls ? '0px' : '4px'");
+          border-bottom-right-radius: v-bind("hasControls ? '0px' : '4px'");
       }
   }
   .menu-content-list {
