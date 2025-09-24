@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
-
+import CustomNavigation from '@/components/CustomNavigation.vue'
+import CustomNavigationMenu from '@/components/CustomNavigationMenu.vue'
 import { inject } from 'vue'
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue';
@@ -268,6 +269,33 @@ const scrollDown = () => {
   }, 100);
 }
 
+const navItemsTest = [
+  {
+    title: "Mon espace",
+    links :[
+      {
+          text: `<div class="fr-description" id="description-358">
+                          <div class="fr-description__label fr-text--bold fr-text--sm fr-text-action-high--grey">Nom
+                            utilisateur</div>
+                          <div class="fr-description__info fr-text--xs fr-text-mention--grey">
+                            adresseutilisateur@email.com</div>
+                        </div>`,
+          type: "html"
+      },
+      {
+          text: "Tableau de bord",
+          to: "#",
+          icon: "ri-dashboard-3-line"
+      },
+      {
+          text: "Mon compte",
+          to: "#",
+          icon: "ri-user-line"
+      }
+    ]   
+  }
+]
+
 </script>
 
 <template>
@@ -279,10 +307,17 @@ const scrollDown = () => {
     :logo-text="headerParams.logoText"
     :quick-links="quickLinks"
   >
-    <template #mainnav>
+    <!-- <template #mainnav>
       <DsfrNavigation
         :nav-items="navItems"
       />
+    </template> -->
+    <template #after-quick-links>
+    <CustomNavigation
+      id="main-navigation"
+      :label="'Menu principal'"
+      :nav-items="navItemsTest"
+    />
     </template>
   </DsfrHeader>
 
