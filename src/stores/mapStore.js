@@ -332,6 +332,7 @@ export const useMapStore = defineStore('map', () => {
     localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
   })
   watch(controls, () => {
+    console.log("watch controls", controls.value);
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
   })
   watch(bookmarks, () => {
@@ -554,6 +555,7 @@ export const useMapStore = defineStore('map', () => {
     controls.value = "";
   }
   function addControl (id) {
+    console.log("addControl", id);
     if (getControls().includes(id)) {
       return;
     }
@@ -562,6 +564,7 @@ export const useMapStore = defineStore('map', () => {
     controls.value = c.toString(); // string
   }
   function removeControl (id) {
+    console.log("removeControl", id);
     const index = getControls().indexOf(id);
     if (index !== -1) {
       var c = controls.value.split(",");

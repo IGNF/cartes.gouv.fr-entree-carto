@@ -7,16 +7,10 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { Catalog } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: {
-    type: String,
-    default: ''
-  },
+  mapId: String,
   visibility: Boolean,
   analytic: Boolean,
-  catalogManagerOptions: {
-    type: Object,
-    default: () => ({})
-  }
+  catalogManagerOptions: Object
 });
 
 const log = useLogger();
@@ -27,6 +21,7 @@ const map = inject(props.mapId);
 const catalog = ref(new Catalog(props.catalogManagerOptions));
 
 onMounted(() => {
+  console.log("CatalogManager mounted AAAAAAAAAAAAAAAAAAAAA");
   if (props.visibility) {
     map.addControl(catalog.value);
     log.info("CatalogManager mounted", catalog.value);
@@ -53,8 +48,9 @@ onBeforeUpdate(() => {
 })
 
 onUpdated(() => {
+  console.log("CatalogManager updated AAAAAAAAAAAAAAAAAAAAA");
   if (props.visibility) {
-    map.addControl(catalog.value);
+    // map.addControl(catalog.value);
   log.info("CatalogManager updated", catalog.value);
     if (props.analytic) {
       var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
@@ -96,9 +92,6 @@ const onCatalogLayerRemove = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
 </template>
 
 <style></style>

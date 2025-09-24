@@ -156,6 +156,12 @@ export const useControls = {
     active: true,
     disable: true,
     analytic: true
+  },
+  CatalogManager: {
+    id: 'CatalogManager',
+    active: true,
+    disable: true,
+    analytic: true
   }
 }
 
@@ -452,7 +458,17 @@ export function useControlsMenuOptions() {
       hint: 'Outil de signalement d\'anomalie',
       disabled: useControls.Reporting.disable,
       tooltip: ""
-    }
+    },
+
+    {
+      label: 'CatalogManager',
+      id: 'catalogManager',
+      name: useControls.CatalogManager.id,
+      hint: 'CatalogManager',
+      disabled: useControls.CatalogManager.disable,
+      tooltip: "blablabl",
+      icon: "ri-pencil-line",
+    },
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
 }
@@ -479,7 +495,8 @@ export function useControlsExtensionPosition() {
     layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
-    reportingOptions : 'top-left'
+    reportingOptions : 'top-left',
+    catalogManagerOptions : 'top-right',
   }
 }
 
@@ -576,6 +593,11 @@ export function useControlsPosition() {
     leftC.push(useControls.Reporting.id)
   if (useControlsExtensionPosition().reportingOptions.includes("right"))
     rightC.push(useControls.Reporting.id)
+  // Catalogue
+  if (useControlsExtensionPosition().catalogManagerOptions.includes("left"))
+    leftC.push(useControls.CatalogManager.id)
+  if (useControlsExtensionPosition().catalogManagerOptions.includes("right"))
+    rightC.push(useControls.CatalogManager.id)
 
   return {
     left : leftC,
