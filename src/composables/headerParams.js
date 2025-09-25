@@ -11,23 +11,23 @@ export function useHeaderParams() {
     // Paramètres pour le Header
     headerParams.value = {
         serviceTitle: 'cartes.gouv.fr',
-        serviceDescription: 'Le service public des cartes et données du territoire',
-        logoText: ['RÉPUBLIQUE', 'FRANÇAISE'],
+        // serviceDescription: 'Le service public des cartes et données du territoire',
+        // logoText: ['RÉPUBLIQUE', 'FRANÇAISE'],
         quickLinks: [
-            {
-              label: 'Accueil',
-              to: '/',
-              href: useBaseUrl() + '/',
-              icon: 'ri-arrow-right-line',
-              iconRight: true
-            },
-            {
-              label: 'Catalogue',
-              to: '/catalogue',
-              href: useBaseUrl() + '/catalogue',
-              icon: 'ri-arrow-right-line',
-              iconRight: true,
-            }
+            // {
+            //   label: 'Accueil',
+            //   to: '/',
+            //   href: useBaseUrl() + '/',
+            //   icon: 'ri-arrow-right-line',
+            //   iconRight: true
+            // },
+            // {
+            //   label: 'Catalogue',
+            //   to: '/catalogue',
+            //   href: useBaseUrl() + '/catalogue',
+            //   icon: 'ri-arrow-right-line',
+            //   iconRight: true,
+            // }
         ],
         searchQuery: ref('')
     };
@@ -35,9 +35,9 @@ export function useHeaderParams() {
     // activation de la connexion aux favoris
     if (import.meta.env.IAM_DISABLE === '0') {
       headerParams.value.quickLinks.push({
-        label: 'Se connecter',
-        to: '/login',
-        class: 'fr-icon-account-fill',
+        label: '',
+        to: '#',
+        class: '',
         authenticated: false, // information pour l'authentification
         onClick: (e) => {}
       });

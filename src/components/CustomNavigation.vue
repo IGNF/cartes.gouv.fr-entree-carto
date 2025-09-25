@@ -62,27 +62,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <nav
-    :id="id"
-    class="fr-nav"
-    role="navigation"
-    :aria-label="label"
-  >
-    <ul class="fr-nav__list">
-      <!-- @slot Slot par défaut pour le contenu de la liste. Sera dans `<ul class="fr-nav__list">` -->
-      <DsfrNavigationItem
-        v-for="(navItem, idx) of navItems"
-        :id="navItem.id"
-        :key="idx"
-      >
       <CustomNavigationMenu
-          v-bind="navItem"
+      v-for="(items, idx) of navItems"
+          :key="idx"
+          :id="items.id"
+          :menu="items"
           :expanded-id="expandedMenuId"
           @toggle-id="toggle($event)"
         />
-      </DsfrNavigationItem>
-    </ul>
-  </nav>
 </template>
 
 <style>
