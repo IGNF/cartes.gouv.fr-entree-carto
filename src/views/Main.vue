@@ -271,6 +271,33 @@ const scrollDown = () => {
 
 const navItemsTest = [
 {
+    title: "Aides",
+    icon: "ri-question-fill",
+    get active () {
+      return [
+        'Tableau de bord',
+        'Mon compte',
+      ].includes(route.name as string)
+    },
+    links :[
+      {
+          text: "Questions Fréquentes",
+          to: "#",
+          icon: "ri-question-mark"
+      },
+      {
+          text: "Documentation",
+          to: "#",
+          icon: "ri-file-text-line"
+      },
+      {
+          text: "Nous contacter",
+          to: "#",
+          icon: "ri-mail-line"
+      }
+    ]   
+  },  
+{
     title: "Services",
     icon: "ri-grid-fill",
     get active () {
@@ -303,7 +330,7 @@ const navItemsTest = [
   },  
 {
     title: "Mon espace",
-    icon: "ri-account-fill",
+    icon: "ri-account-circle-fill",
     get active () {
       return [
         'Tableau de bord',

@@ -1,5 +1,6 @@
 <script setup lang="js">
 import { useRandomId, useCollapsable } from "@gouvminint/vue-dsfr"
+import { useElementSize } from '@vueuse/core'
 
 const props = defineProps({
   id: {
@@ -15,10 +16,6 @@ const props = defineProps({
     default: '',
   }
 })
-
-const emit = defineEmits(['toggleId'])
-
-
 const {
   collapse,
   collapsing,
@@ -26,7 +23,15 @@ const {
   doExpand,
   onTransitionEnd,
 } = useCollapsable()
+const emit = defineEmits(['toggleId'])
+const button = ref(null)
+const {  width: btnWidth, height: btnHeight } = useElementSize(button)
+const { width: menuWidth, height: menuHeight } = useElementSize(collapse)
 
+// 16px déduit de la classe .fr-menu
+const marginLeft = computed(() => {
+  return `-${menuWidth.value - btnWidth.value - 16}px`
+})
 const expanded = computed(() => props.id === props.expandedId)
 
 watch(expanded, (newValue, oldValue) => {
@@ -53,19 +58,20 @@ onMounted(() => {
     :aria-label="menu.title"
     :id="menu.title.trim().toLowerCase().replaceAll(' ', '-')"
   > 
-  <button
+  <DsfrButton
+    ref="button"
+    :label="menu.title"
+    :icon="menu.icon"
     class="fr-nav__btn"
     :aria-expanded="expanded"
     :aria-controls="id"
-    @click.stop="$emit('toggleId', id)"
-  >
-    <VIcon :name="menu.icon" size="1.5rem" class="fr-icon--grey-800" />
-    <span>{{ menu.title }}</span>
-  </button>
+    @click.stop="$emit('toggleId', id)">
+
+  </DsfrButton>
     <div
     :id="id"
     ref="collapse"
-    class="fr-collapse fr-menu"
+    class="fr-collapse fr-menu fr-access_menu"
     data-testid="navigation-menu"
     :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
     @transitionend="onTransitionEnd(expanded)"
@@ -73,8 +79,6 @@ onMounted(() => {
     <ul
       class="fr-menu__list"
     >
-      <!-- @slot Slot par défaut pour le contenu de l’item de liste. Sera dans `<ul class="fr-menu__list">` -->
-      <slot />
       <DsfrNavigationMenuItem
         v-for="(link, idx) of menu.links"
         :key="idx"
@@ -89,10 +93,6 @@ onMounted(() => {
         <!-- <VIcon :name="link.icon" size="1.5rem" class="fr-icon--grey-800" /> -->
         {{link.text}}
       </a>
-        <!-- <DsfrNavigationMenuLink
-          v-bind="link"
-          @toggle-id="$emit('toggleId', expandedId)"
-        /> -->
       </DsfrNavigationMenuItem>
     </ul>
   </div>
@@ -105,5 +105,8 @@ onMounted(() => {
 }
 .fr-nav__list {
   position: relative;
+}
+.fr-access_menu {
+  margin-left: v-bind(marginLeft);
 }
 </style>
