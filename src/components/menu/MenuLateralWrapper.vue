@@ -15,8 +15,14 @@
 
 <script setup lang="js">
 import { VIcon } from '@gouvminint/vue-dsfr'
-import { useDocumentVisibility } from '@vueuse/core';
+import { useMapStore } from "@/stores/mapStore";
+import { useControlsPosition } from '@/composables/controls';
 
+const mapStore = useMapStore();
+const rightControls = useControlsPosition().right;
+const hasControls = computed(() => {
+  return mapStore.getControls().filter(c => rightControls.includes(c)).length > 3;
+})
 const props = defineProps({
   side: String,
   visibility: Boolean,
@@ -141,7 +147,15 @@ defineExpose({
 }
 .right {
   .menu-logo-list {
-  right: 16px;
+    right: 16px;
+  // hack pour positionnement du layer switcher
+    ::v-deep(div:has(> #MenuControl)) {
+      padding-top: 68px; /* ajoute un grand espace avant MenuControl */
+      }
+    ::v-deep(button[id="MenuControl"]) {
+          border-bottom-left-radius: v-bind("hasControls ? '0px' : '4px'");
+          border-bottom-right-radius: v-bind("hasControls ? '0px' : '4px'");
+      }
   }
   .menu-content-list {
     right: 60px;
@@ -191,6 +205,11 @@ defineExpose({
   margin-top: 12px;
   width: 40px;
   position: absolute;
+  pointer-events: none;
+  // hack pour positionnement du layer switcher
+  ::v-deep(button) {
+    pointer-events: all;
+  }
 }
 
 /* FIXME : le bouton widget n'est pas intégré à la grille des widgets
