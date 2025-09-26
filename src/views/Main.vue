@@ -274,8 +274,9 @@ const alertClosed = ref(false);
 
 const alertData = {
     title : "Iframe obsolète",
-    description : "<strong>Attention</strong> : Cette <i>iframe</i> issue du Géoportail est obsolète. Elle ne sera plus fonctionnelle à partir du <strong>xx/xx/202x</strong>. Veuillez la mettre à jour en utilisant cette <a href=\"https://studious-adventure-w6v1o51.pages.github.io/\" target=\"_blank\"> interface de conversion </a> !",
-};
+    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du xx/xx/202x. Pour le mettre à jour, rendez vous sur notre <a href=\"https://studious-adventure-w6v1o51.pages.github.io/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
+}; 
+
 const onCloseAlert = () => {
   alertClosed.value = true;
 };
