@@ -620,6 +620,19 @@ const contextMenuOptions = computed(() => {
   padding: 0;
 }
 
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  margin-bottom: 60px;
+}
+
+button[id^="GPgetFeatureInfoPicto-"] {
+  display: none;
+}
+
+.gpf-widget-button[id^="GPgetFeatureInfo"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+  content: none;
+  background: none;
+}
+
 /* 10 controls optionnels */
 .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
   display: none;
@@ -817,16 +830,25 @@ const contextMenuOptions = computed(() => {
     height: calc(100% - 102px);
   }
 
-  .position-container-top-right,
+  .position-container-top-right {
+      top: 58px;
+  }
+/* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
-    top: 99px;
+    top: 13px;
   }
 }
 @media (max-width: 576px) {
-  .position-container-top-right,
   .position-container-top-left {
     top: 299px;
   }
+  .position-container-top-right{
+    top: 257px;
+  }
+  .GPpanel {
+    margin-top : -259px !important;
+  }
+
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
@@ -847,6 +869,10 @@ const contextMenuOptions = computed(() => {
   }
 
   .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+    display: none;
+  }
+
+  .gpf-widget[id^="GPzoom-"]{
     display: none;
   }
 
@@ -872,7 +898,7 @@ const contextMenuOptions = computed(() => {
 @media (max-width: 627px) and (min-width: 576px){
   .position-container-top-right,
   .position-container-top-left {
-    top: 164px;
+    top: 124px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,

@@ -1,8 +1,8 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.9...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.10...HEAD>
 
-## 🔖 version 1.0.9 - __DATE__
+## 🔖 version 1.0.10 - __DATE__
 
 ### 🎉 Résumé
 
@@ -12,11 +12,13 @@
 
 #### ✨ [Ajout]
 
-- Coordonnées de la souris : ajout du mode édition pour choisir les coordonnées de centrage (#671)
+  - Geocodage inverse : possibilité de copier le résultat (#705)
 
 #### 🔨 [Evolution]
 
-- Zoom : Mise à jour des icones pour les fonctions de zoom (via geopf-ext-ol-#412) 
+  - Menu des Widgets : mise à jour de la présentation de la liste des widgets et de leur description (#687)
+  - Menu des Widgets : Changement de la position et des icons de certains boutons (#705)
+  - Menu des Widgets : Zoom et MiniCarte rendus facultatifs (#705)
 
 #### 🔥 [Obsolète]
 
@@ -24,11 +26,8 @@
 
 #### 🐛 [Correction]
 
-- UI : le bouton permettant d’afficher les widgets additionnels (“+”) reste toujours positionné en dernier élément de la pile supérieure droite de boutons (#664)
-- Partage : dans le lien de partage, seuls 6 chiffres significatifs sont enregistrés pour les coordonnées d’un partage de géolocalisation (#665)
-- UI : en mode mobile, les panels se positionnent correctement en hauteur (#667)
-- LayerSwitcher : en mode mobile, le menu des fonctionnalités ne laisse plus d'espace vide (via geopf-ext-ol-#417) 
-- Itinéraire/Isochrone : Mise en conformité des requêtes itinéraire / isochrone en réduisant la précision des coordonnées à 5 chiffres significatifs (via geopf-ext-ol-#411) 
+  - Espace Perso : correction du #698 pour le chargement des cartes enregistrées (#701)
+  - LayerSwitcher : Le drag & drop de couches est réparé sous les navigateurs au moteur Chrome
 
 #### 🔒 [Sécurité]
 
