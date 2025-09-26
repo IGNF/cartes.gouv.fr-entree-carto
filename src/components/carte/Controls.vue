@@ -628,6 +628,11 @@ button[id^="GPgetFeatureInfoPicto-"] {
   display: none;
 }
 
+.gpf-widget-button[id^="GPgetFeatureInfo"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+  content: none;
+  background: none;
+}
+
 /* 10 controls optionnels */
 .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
   display: none;
