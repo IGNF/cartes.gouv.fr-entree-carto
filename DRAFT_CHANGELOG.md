@@ -12,6 +12,8 @@
 
 #### ✨ [Ajout]
 
+  - Geocodage inverse : possibilité de copier le résultat (#705)
+
 #### 🔨 [Evolution]
 
   - Menu des Widgets : mise à jour de la présentation de la liste des widgets et de leur description (#687)
