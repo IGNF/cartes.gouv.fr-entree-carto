@@ -27,6 +27,7 @@
 #### 🐛 [Correction]
 
   - Espace Perso : correction du #698 pour le chargement des cartes enregistrées (#701)
+  - LayerSwitcher : Le drag & drop de couches est réparé sous les navigateurs au moteur Chrome
 
 #### 🔒 [Sécurité]
 
