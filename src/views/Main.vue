@@ -464,7 +464,7 @@ onMounted(() => {
 <style>
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 222.5px);
+    height: calc(100vh - 108.5px);
   }
 
   @media (max-width: 576px) {
