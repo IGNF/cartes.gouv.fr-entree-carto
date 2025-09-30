@@ -12,7 +12,7 @@ export function useHeaderParams() {
     headerParams.value = {
         serviceTitle: 'cartes.gouv.fr',
         // serviceDescription: 'Le service public des cartes et données du territoire',
-        // logoText: ['RÉPUBLIQUE', 'FRANÇAISE'],
+        logoText: [''],
         quickLinks: [
             // {
             //   label: 'Accueil',
