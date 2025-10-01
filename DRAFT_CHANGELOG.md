@@ -20,6 +20,7 @@
   - Menu des Widgets : Changement de la position et des icons de certains boutons (#705)
   - Menu des Widgets : Zoom et MiniCarte rendus facultatifs (#705)
   - Menu Contextuel : retrait des entrées "Imprimer carte", "Partager", "Ajouter données", "Mes Enregistrements" (#720)
+  - Footer : changement de l'url vers service-public.gouv.fr
 
 #### 🔥 [Obsolète]
 
@@ -30,6 +31,7 @@
   - Espace Perso : correction du #698 pour le chargement des cartes enregistrées (#701)
   - LayerSwitcher : Le drag & drop de couches est réparé sous les navigateurs au moteur Chrome
   - Menu Contextuel : Le clic pour obtenir les informations sur la couche n'active pas définitivement la fonctionnalité au clic gauche sur la carte 
+  - Informations des couches (GetFeatureInfo) : le texte affiché en résultat dans le panel d'informations des couches est sélectionnable
 
 #### 🔒 [Sécurité]
 
