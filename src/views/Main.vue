@@ -461,7 +461,7 @@ const navItemsTest = [
 
   @media (max-width: 576px) {
     .futur-map-container{
-      height: calc(100vh - 131px);
+      height: calc(100vh - 100px);
       margin-bottom: 0px;
     }
   }

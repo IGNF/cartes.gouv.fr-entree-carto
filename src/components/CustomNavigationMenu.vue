@@ -58,6 +58,7 @@ onMounted(() => {
     :aria-label="menu.title"
     :id="menu.title.trim().toLowerCase().replaceAll(' ', '-')"
   > 
+  <div class="fr-nav__item">
   <DsfrButton
     ref="button"
     :label="menu.title"
@@ -96,6 +97,8 @@ onMounted(() => {
       </DsfrNavigationMenuItem>
     </ul>
   </div>
+
+  </div>
 </nav>
 </template>
 
@@ -106,7 +109,9 @@ onMounted(() => {
 .fr-nav__list {
   position: relative;
 }
+@media (min-width: 992px) {
 .fr-access_menu {
   margin-left: v-bind(marginLeft);
+}
 }
 </style>
