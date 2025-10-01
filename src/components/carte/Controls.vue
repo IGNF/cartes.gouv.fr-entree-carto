@@ -408,30 +408,6 @@ const contextMenuOptions = computed(() => {
   return {
     contextMenuItemsOptions : [
       {
-        text : "Imprimer la carte",
-        callback : function() {
-          refModalPrint.value.onModalPrintOpen()
-        }
-      },
-      {
-        text : "Partager la carte",
-        callback : function() {
-          refModalShare.value.onModalShareOpen()
-        }
-      },
-      {
-        text : "Ajouter des données",
-        callback : () => {
-          domStore.getmenuCatalogueButton().firstChild.click()
-        }
-      },
-      {
-        text : "Mes enregistrements",
-        callback : () => {
-          domStore.getBookmarksButton().firstChild.click()
-        }
-      },
-      {
         text : "Signaler une anomalie",
         callback : () => {
           // on active le controle
