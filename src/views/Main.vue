@@ -269,105 +269,6 @@ const scrollDown = () => {
   }, 100);
 }
 
-const navItemsTest = [
-{
-    title: "Aides",
-    icon: "ri-question-fill",
-    get active () {
-      return [
-        'Tableau de bord',
-        'Mon compte',
-      ].includes(route.name as string)
-    },
-    links :[
-      {
-          text: "Questions Fréquentes",
-          to: "#",
-          icon: "ri-question-mark"
-      },
-      {
-          text: "Documentation",
-          to: "#",
-          icon: "ri-file-text-line"
-      },
-      {
-          text: "Nous contacter",
-          to: "#",
-          icon: "ri-mail-line"
-      }
-    ]   
-  },  
-{
-    title: "Services",
-    icon: "ri-grid-fill",
-    get active () {
-      return [
-        'Tableau de bord',
-        'Mon compte',
-      ].includes(route.name as string)
-    },
-    links :[
-      {
-          text: `<div class="fr-grid-row fr-grid-row--left" id="description-358">
-                          <div class="fr-description__label fr-text--bold fr-text--sm fr-text-action-high--grey">Nom
-                            utilisateur</div>
-                          <div class="fr-description__info fr-text--xs fr-text-mention--grey">
-                            adresseutilisateur@email.com</div>
-                        </div>`,
-          type: "html"
-      },
-      {
-          text: "Tableau de bord",
-          to: "#",
-          icon: "ri-dashboard-3-line"
-      },
-      {
-          text: "Mon compte",
-          to: "#",
-          icon: "ri-user-line"
-      }
-    ]   
-  },  
-{
-    title: "Mon espace",
-    icon: "ri-account-circle-fill",
-    get active () {
-      return [
-        'Tableau de bord',
-        'Mon compte',
-      ].includes(route.name as string)
-    },
-    links :[
-      {
-          text: `<div class="fr-grid-row fr-grid-row--left" id="description-358">
-                          <div class="fr-description__label fr-text--bold fr-text--sm fr-text-action-high--grey">Nom
-                            utilisateur</div>
-                          <div class="fr-description__info fr-text--xs fr-text-mention--grey">
-                            adresseutilisateur@email.com</div>
-                        </div>`,
-          type: "html"
-      },
-      {
-          text: "Tableau de bord",
-          to: "#",
-          icon: "ri-dashboard-3-line"
-      },
-      {
-          text: "Mon compte",
-          to: "#",
-          icon: "ri-user-line"
-      },
-      {
-          text: `<div class="fr-grid-row fr-grid-row--center">
-                          <button class="fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left">
-                            <i class="ri-logout-box-line"></i> Se déconnecter
-                          </button>
-                  </div>`,
-          type: "html"
-      },
-    ]   
-  }
-]
 </script>
 
 <template>
@@ -388,7 +289,7 @@ const navItemsTest = [
     <CustomNavigation
       id="main-navigation"
       :label="'Menu principal'"
-      :nav-items="navItemsTest"
+      :nav-items="headerParams.afterQuickLinks"
     />
     </template>
   </DsfrHeader>
