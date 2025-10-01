@@ -19,6 +19,7 @@
   - Menu des Widgets : mise à jour de la présentation de la liste des widgets et de leur description (#687)
   - Menu des Widgets : Changement de la position et des icons de certains boutons (#705)
   - Menu des Widgets : Zoom et MiniCarte rendus facultatifs (#705)
+  - Footer : changement de l'url vers service-public.gouv.fr
 
 #### 🔥 [Obsolète]
 
