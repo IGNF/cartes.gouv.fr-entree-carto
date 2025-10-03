@@ -160,6 +160,7 @@ const getFeatureInfoOptions = {
 
 const overviewMapOptions = {
   id: "7",
+  collapsed: false,
   position: useControlsExtensionPosition().overviewMapOptions
 };
 

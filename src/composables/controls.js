@@ -15,10 +15,10 @@
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
-    active: true,
+    active: false,
     disable: false,
     analytic: true,
-    default: true
+    default: false
   },
   SearchEngine: {
     id: 'SearchEngine',
