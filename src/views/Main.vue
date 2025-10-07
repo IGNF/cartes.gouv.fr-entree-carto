@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
+import { DsfrAccordion, type DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 
 import { inject } from 'vue'
 // icones
@@ -268,10 +268,57 @@ const scrollDown = () => {
   }, 100);
 }
 
+const testMenuItems = [
+      {
+        label: 'Service',
+        icon: 'fr-icon-grid-fill',
+        connectionMenu: false,
+        links: [
+          { label: 'Tableau de bord', href: '#', icon: 'fr-icon-dashboard-3-line' },
+          { label: 'Mon compte', href: '#', icon: 'fr-icon-user-line' },
+        ],
+      },
+      {
+        label: 'Mon espace',
+        icon: 'fr-icon-account-fill',
+        connectionMenu: true,
+        links: [
+          { label: 'Tableau de bord', href: '#', icon: 'fr-icon-dashboard-3-line' },
+          { label: 'Mon compte', href: '#', icon: 'fr-icon-user-line' },
+        ],
+      },
+    ];
+    declare global {
+  interface Window {
+    dsfr?: {
+      start: () => void;
+    };
+  }
+}
+
+const header = ref(null);
+    onMounted(() => {
+      log.info('Main.vue mounted')
+      const el = document.querySelector('ign-dsfr-header');
+console.log(el);
+console.log(el instanceof HTMLElement); 
+console.log(el?.constructor.name);
+console.log(customElements.get('ign-dsfr-header'));
+console.log("init dsfr")
+      if (header?.value && (header?.value as any).initDSFR){
+        console.log((header?.value as any));
+
+        (header?.value as any).initDSFR(window);
+      }
+    })  
 </script>
 
 <template>
-  <DsfrHeader
+  <ign-dsfr-header
+    ref="header"
+    :menuItems="testMenuItems"
+  ></ign-dsfr-header>
+  <!-- <DsfrHeader
     v-model="headerParams.serviceTitle"
     :service-title="headerParams.serviceTitle"
     :show-beta="true"
@@ -284,7 +331,7 @@ const scrollDown = () => {
         :nav-items="navItems"
       />
     </template>
-  </DsfrHeader>
+  </DsfrHeader> -->
 
   <!-- Notifications
   -->

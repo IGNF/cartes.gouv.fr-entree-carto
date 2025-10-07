@@ -26,6 +26,9 @@ import router from './router/index'
 
 import './main.css'
 
+import 'ign-dsfr-header'
+
+
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
 
