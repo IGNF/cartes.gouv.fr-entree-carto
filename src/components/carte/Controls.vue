@@ -464,11 +464,21 @@ const catalogManagerOptions = {
         {
           title : "Service",
           section : true,
-          icon : false,
+          icon : true,
           filter : {
             field : "service",
             value : "*"
           }
+        },
+        {
+          title : "Tout",
+          section : false,
+          cluster : true,
+          clusterOptions : {
+            rows_in_block : 20,
+            blocks_in_cluster : 4
+          },
+          filter : null
         }
       ]
     },
@@ -690,8 +700,8 @@ const contextMenuOptions = computed(() => {
     :map-id="mapId"
   />
   <CatalogManager
-    visibility="true"
-    analytic="true"
+    :visibility="true"
+    :analytic="true"
     :catalog-manager-options="catalogManagerOptions"
     :map-id="mapId"
   />
