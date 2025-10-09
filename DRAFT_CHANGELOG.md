@@ -15,7 +15,8 @@
 #### 🔨 [Evolution]
 
   - Menu des Widgets : mise à jour de la présentation de la liste des widgets et de leur description (#687)
-
+  - Gestionnaire de couches : refonte complète du rendu et de l'UX de l'outil
+ 
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
