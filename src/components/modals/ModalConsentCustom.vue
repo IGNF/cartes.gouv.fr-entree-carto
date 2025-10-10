@@ -59,7 +59,9 @@ const onClickValideChoice = () => {
 }
 
 onMounted(() => {
-  if (refConsent.value) {}
+  if (refConsent.value) {
+    // some stuff...
+  }
 })
 
 onBeforeUpdate(() => {
@@ -100,13 +102,16 @@ onUpdated(() => {
       Votre expérience de navigation ne sera pas affectée.
     </div>
     <div>
-      <p id="my-consent-buttons" ref="refConsent">
+      <p
+        id="my-consent-buttons"
+        ref="refConsent"
+      >
         <DsfrConsent
-        @accept-all="onAcceptConsentAll()"
-        @refuse-all="onRefuseConsentAll()"
+          @accept-all="onAcceptConsentAll()"
+          @refuse-all="onRefuseConsentAll()"
         >
-        Préférences pour tous les services.
-        <a :href="url">Données personnelles et cookies</a>
+          Préférences pour tous les services.
+          <a :href="url">Données personnelles et cookies</a>
         </DsfrConsent>
       </p>
     </div>

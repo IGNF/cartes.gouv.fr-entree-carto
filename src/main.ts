@@ -2,8 +2,9 @@ import '@gouvfr/dsfr/dist/core/core.main.min.css'
 import '@gouvfr/dsfr/dist/component/component.main.min.css'
 import '@gouvfr/dsfr/dist/utility/utility.main.min.css'
 import '@gouvminint/vue-dsfr/styles'
-
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
+
+import '@gouvfr/dsfr/dist/dsfr.module'
 
 import 'notivue/notification.css'
 import 'notivue/animations.css'
@@ -63,6 +64,7 @@ const storage = localStorage.getItem('service')
 const services = createServices(storage ? JSON.parse(storage).connexion : {})
 
 const eulerian = createEulerian({
+  autoStart : false,
   verbose : !isProduction, // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
   isActionEnabled: "reduce", // on limite le tracking uniquement sur les elements "data-fr-analytics-action"

@@ -45,19 +45,35 @@ export class Eulerian {
     this.key = "@codegouvfr/react-dsfr finalityConsent eulerianAnalytics";
 
     /**
+     * Statut du demarrage de l'import de la librairie Analytics Eulerian
+     * @example
+     * import("@gouvfr/dsfr/dist/analytics/analytics.module").then(() => {
+     *   console.debug("import dynamic analytics.module !");
+     * })
+     */
+    this.loaded = false;
+
+    /**
      * Statut de l'activation de la collecte
      * @returns {Boolean} - true|false
      */
     this.status = false;
 
     // chargement des scripts de l'API Analytics Eulerain
-    this.load().then(() => {
-      console.debug("import dynamic dsfr !");
+    this.loadModule().then(() => {
+      if (!this.options.autoStart) {
+        return;
+      }
+      window.dsfr.start();
       // activation de la collecte si la clef de consentement est déjà active
       var value = JSON.parse(localStorage.getItem(this.key));
       if (value) {
         if (value.eulerianAnalytics) {
-          this.start();
+          if (!this.loaded) {
+            this.loadAnalytics().then(() => {
+              this.start();
+            });
+          }
         } else {
           this.stop();
         }
@@ -68,12 +84,16 @@ export class Eulerian {
   /**
    * Chargement de l'API Analytics Eulerain
    */
-  async load() {
+  async loadModule() {
     await import("@gouvfr/dsfr/dist/dsfr.module").then(() => {
       console.debug("import dynamic dsfr.module !");
     })
+  }
+
+  async loadAnalytics() {
     await import("@gouvfr/dsfr/dist/analytics/analytics.module").then(() => {
       console.debug("import dynamic analytics.module !");
+      this.loaded = true;
     })
   }
 
@@ -82,8 +102,21 @@ export class Eulerian {
    * @public
    */
   start () {
+    if (!this.options.autoStart) {
+      return;
+    }
     console.debug("start");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
+    if (!this.loaded) {
+      this.loadAnalytics().then(() => {
+        this._start();
+      });
+    } else {
+      this._start();
+    }
+  }
+
+  _start() {
     window.dsfr.analytics.opt.enable();
     window.dsfr.start();
     window.dsfr.analytics.readiness.then(() => {
@@ -102,6 +135,9 @@ export class Eulerian {
    * @public
    */
   stop () {
+    if (!this.options.autoStart) {
+      return;
+    }
     console.debug("stop");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
     // window.dsfr.analytics.opt.disable();
@@ -114,6 +150,9 @@ export class Eulerian {
    * @public
    */
   pause () {
+    if (!this.options.autoStart) {
+      return;
+    }
     if (this.status) {
       window.dsfr.stop();
     }
@@ -125,6 +164,9 @@ export class Eulerian {
    * @public
    */
   resume () {
+    if (!this.options.autoStart) {
+      return;
+    }
     if (this.status) {
       window.dsfr.start();
     }

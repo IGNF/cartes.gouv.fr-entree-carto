@@ -71,20 +71,23 @@ const onCustomizeCookies = () => {
 </script>
 
 <template>
-  <div v-if="consentModalOpened" class="fr-consent-banner">
-    <h2 class="fr-h6">{{ title }}</h2>
+  <div v-if="consentModalOpened"
+class="fr-consent-banner">
+    <h2 class="fr-h6">
+{{ title }}
+</h2>
     <p id="my-consent">
-        <DsfrConsent
-          @accept-all="onAcceptConsentAll()"
-          @refuse-all="onRefuseConsentAll()"
-          @customize="onCustomizeCookies()"
-        >
-          Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
-          les services disponibles sur ce site. 
-          Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
-          Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
-          Préférences pour tous les services.
-        </DsfrConsent>
+      <DsfrConsent
+        @accept-all="onAcceptConsentAll()"
+        @refuse-all="onRefuseConsentAll()"
+        @customize="onCustomizeCookies()"
+      >
+        Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
+        les services disponibles sur ce site. 
+        Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
+        Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
+        Préférences pour tous les services.
+      </DsfrConsent>
     </p>
     <DsfrButton
       id="fr-consent-modal-hidden-control-button"
