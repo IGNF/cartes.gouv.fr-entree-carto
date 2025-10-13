@@ -693,30 +693,30 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(7))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(6))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(7)) > .gpf-widget:nth-child(n+5)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(7)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+6) {
+  .position-container-top-right > div:nth-child(n+5) {
     margin: 0;
     padding: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+5):has(> div[id^="GPcontrolList-"]) {
+  .position-container-top-right:has(div:nth-child(6)) > div:nth-child(n+5):has(> div[id^="GPcontrolList-"]) {
     margin: 0;
     padding: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(7))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(div:nth-child(6))) > div[id^="GPcontrolList-"] {
     margin: 0;
     padding: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+5)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(6)) > div:nth-child(n+5)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
@@ -728,34 +728,34 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+8) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(7))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+7)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+7) {
+  .position-container-top-right > div:nth-child(n+6) {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(div:nth-child(7))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
@@ -770,30 +770,30 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(9))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+9)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+9) {
+  .position-container-top-right > div:nth-child(n+8) {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:has(div:nth-child(9)) > div:nth-child(n+8):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(div:nth-child(9))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(9)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
@@ -808,30 +808,30 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(11))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(11)) > .gpf-widget:nth-child(n+9)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(11)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+10) {
+  .position-container-top-right > div:nth-child(n+9) {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+9):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+9):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(11))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+9)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+9)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
@@ -846,30 +846,30 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(13))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(13)) > .gpf-widget:nth-child(n+11)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(13)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+12) {
+  .position-container-top-right > div:nth-child(n+11) {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+11):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+11):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(13))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+11)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+11)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
