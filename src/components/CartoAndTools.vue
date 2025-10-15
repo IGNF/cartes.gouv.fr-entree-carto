@@ -231,6 +231,10 @@ Cache le menu latéral si widget ouvert...
 #map-and-tools-container:has(#position-container-bottom-left > div > button[aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
   display: none;
 }
+/* Exception pour l'overviewmap */
+#map-and-tools-container:has(#position-container-bottom-left > div > button[id^="GPshowOverviewMap"][aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
+  display: block;
+}
 
 #map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
     display: none;
