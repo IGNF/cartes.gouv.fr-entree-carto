@@ -11,6 +11,7 @@ declare module 'vue' {
     Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
     Carto: typeof import('./components/carte/Carto.vue')['default']
     CartoAndTools: typeof import('./components/CartoAndTools.vue')['default']
+    CatalogManager: typeof import('./components/carte/control/CatalogManager.vue')['default']
     ContextMenu: typeof import('./components/carte/control/ContextMenu.vue')['default']
     ControlList: typeof import('./components/carte/control/ControlList.vue')['default']
     ControlListElement: typeof import('./components/menu/ControlListElement.vue')['default']
