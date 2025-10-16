@@ -317,6 +317,7 @@ console.log("init dsfr")
   <ign-dsfr-header
     ref="header"
     :menuItems="testMenuItems"
+    :minimized="true"
   ></ign-dsfr-header>
   <!-- <DsfrHeader
     v-model="headerParams.serviceTitle"
