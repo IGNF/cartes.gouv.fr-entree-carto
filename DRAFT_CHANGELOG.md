@@ -29,6 +29,7 @@ Mise à jour de la version du localStorage, perte des données enregistrées ded
   - Menu Contextuel : retrait des entrées "Imprimer carte", "Partager", "Ajouter données", "Mes Enregistrements" (#720)
   - Menu Contextuel : changement du titre de l'entrée "isochrone" en "Zone selon temps de trajet" (https://github.com/IGNF/geopf-extensions-openlayers/commit/3d228a692c8d51155bbdf8c8c32bb51629b6a03f)
   - Footer : changement de l'url vers service-public.gouv.fr (https://github.com/IGNF/cartes.gouv.fr-entree-carto/commit/f7c70c658b2709fc86cbedb73c4671dfd1bc0e88)
+  - Mini Carte : réduction de la taille de la minicarte et mise en place de bords arrondis (#748)
 
 #### 🔥 [Obsolète]
 
