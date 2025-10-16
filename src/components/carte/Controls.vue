@@ -419,7 +419,7 @@ const catalogManagerOptions = {
   position: "top-right",
   gutter: false,
   listable: true,
-  titlePrimary : "Catalogue des cartes",
+  titlePrimary : "Catalogue de cartes",
   layerLabel : "title",
   layerThumbnail : true,
   size : "xl",
@@ -430,7 +430,7 @@ const catalogManagerOptions = {
   },
   categories : [
     {
-      title : "Cartes de références",
+      title : "Cartes de référence",
       id : "base",
       filter : {
         field : "base",
@@ -470,16 +470,16 @@ const catalogManagerOptions = {
             value : "*"
           }
         },
-        {
-          title : "Tout",
-          section : false,
-          cluster : true,
-          clusterOptions : {
-            rows_in_block : 20,
-            blocks_in_cluster : 4
-          },
-          filter : null
-        }
+        // {
+        //   title : "Tout",
+        //   section : false,
+        //   cluster : true,
+        //   clusterOptions : {
+        //     rows_in_block : 20,
+        //     blocks_in_cluster : 4
+        //   },
+        //   filter : null
+        // }
       ]
     },
   ],
