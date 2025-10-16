@@ -172,6 +172,7 @@ const getFeatureInfoOptions = {
 
 const overviewMapOptions = {
   id: "7",
+  collapsed: false,
   position: useControlsExtensionPosition().overviewMapOptions
 };
 
@@ -499,30 +500,6 @@ const contextMenuOptions = computed(() => {
   return {
     contextMenuItemsOptions : [
       {
-        text : "Imprimer la carte",
-        callback : function() {
-          refModalPrint.value.onModalPrintOpen()
-        }
-      },
-      {
-        text : "Partager la carte",
-        callback : function() {
-          refModalShare.value.onModalShareOpen()
-        }
-      },
-      {
-        text : "Ajouter des données",
-        callback : () => {
-          domStore.getmenuCatalogueButton().firstChild.click()
-        }
-      },
-      {
-        text : "Mes enregistrements",
-        callback : () => {
-          domStore.getBookmarksButton().firstChild.click()
-        }
-      },
-      {
         text : "Signaler une anomalie",
         callback : () => {
           // on active le controle
@@ -715,6 +692,19 @@ const contextMenuOptions = computed(() => {
 .position-container-top-right {
   margin: 0;
   padding: 0;
+}
+
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  margin-bottom: 60px;
+}
+
+button[id^="GPgetFeatureInfoPicto-"] {
+  display: none;
+}
+
+.gpf-widget-button[id^="GPgetFeatureInfo"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+  content: none;
+  background: none;
 }
 
 /* 10 controls optionnels */
@@ -915,7 +905,7 @@ const contextMenuOptions = computed(() => {
   }
 
   .position-container-top-right {
-      top: 99px;
+      top: 58px;
   }
 /* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
@@ -923,10 +913,16 @@ const contextMenuOptions = computed(() => {
   }
 }
 @media (max-width: 576px) {
-  .position-container-top-right,
   .position-container-top-left {
     top: 299px;
   }
+  .position-container-top-right{
+    top: 257px;
+  }
+  .GPpanel {
+    margin-top : -259px !important;
+  }
+
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
@@ -947,6 +943,10 @@ const contextMenuOptions = computed(() => {
   }
 
   .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+    display: none;
+  }
+
+  .gpf-widget[id^="GPzoom-"]{
     display: none;
   }
 
@@ -972,7 +972,7 @@ const contextMenuOptions = computed(() => {
 @media (max-width: 627px) and (min-width: 576px){
   .position-container-top-right,
   .position-container-top-left {
-    top: 164px;
+    top: 124px;
   }
   .position-container-bottom-left,
   .position-container-bottom-right,
