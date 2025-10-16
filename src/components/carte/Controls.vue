@@ -414,7 +414,6 @@ const reportingOptions = {
   format : "kml"
 };
 
-// FIXME: temporairement désactivé car problème performance !?
 const catalogManagerOptions = {
   id: "22",
   position: "top-right",
@@ -423,7 +422,7 @@ const catalogManagerOptions = {
   titlePrimary : "Catalogue des cartes",
   layerLabel : "title",
   layerThumbnail : true,
-  size : "lg",
+  size : "xl",
   addToMap : false,
   search : {
     display : false,
@@ -678,7 +677,7 @@ const contextMenuOptions = computed(() => {
   />
   <CatalogManager
     :visibility="true"
-    :analytic="true"
+    :analytic="false"
     :catalog-manager-options="catalogManagerOptions"
     :map-id="mapId"
   />

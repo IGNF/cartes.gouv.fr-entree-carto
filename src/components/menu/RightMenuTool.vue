@@ -17,8 +17,9 @@
 import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuControl from '@/components/menu/MenuControl.vue';
-// import MenuCatalogue from '@/components/menu/MenuCatalogue.vue';
+// import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue';
 
+// import { useDataStore } from "@/stores/dataStore"
 import { inject } from 'vue';
 
 const props = defineProps({
@@ -32,9 +33,11 @@ const props = defineProps({
   }
 })
 
+// var dataStore = useDataStore()
+
 // Pour information, le menu lateral est un composant generique
 // qui permet d'afficher un menu lateral gauche ou droit
-// avec un ensemble d'onglets.
+// avec un ensemble d'ocatalognglets.
 
 // Pour ajouter un onglet, il faut :
 // 1. Ajouter l'onglet dans ce tableau
@@ -52,16 +55,25 @@ const props = defineProps({
 // position du menu lateral
 const side = "right";
 
+// abonnement sur l'ouverture du catalogue sur un evenement emis
+const emitter = inject('emitter');
+
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
-        // {
-        //     componentName : "MenuCatalogue",
-        //     icon : "octicon:book-24",
-        //     title : "Catalogue de données",
-        //     visibility : true,
-        //     secondary : false
-        // },
+        {
+            componentName : "MenuCatalogue",
+            icon : "octicon:book-24",
+            title : "Catalogue de données",
+            visibility : true,
+            secondary : false,
+            onClick: () => {
+              emitter.dispatchEvent("catalog:open:clicked", {
+                open : true,
+                componentName: "MenuCatalogue"
+              })
+            }
+        },
         {
             componentName : "MenuControl",
             icon : "ri:tools-line",
@@ -83,19 +95,19 @@ const wrapper = ref(null);
 
 // gestion de l'ouverture/fermeture du menu lateral
 function tabClicked(newTab) {
+  const tab = tabArray.value.find(t => t.componentName === newTab);
+  if (!tab) {
+    return;
+  }
   if (tabIsActive(newTab) && is_expanded.value) {
       wrapper.value.closeMenu();
   } else {
       activeTab.value = newTab + "Content";
-      wrapper.value.openMenu();
+      if (!Object.prototype.hasOwnProperty.call(tab, 'onClick') || tab.onClick === null) {
+        wrapper.value.openMenu();
+      }
   }
 }
-
-// abonnement sur l'ouverture du catalogue sur un evenement emis
-const emitter = inject('emitter');
-emitter.addEventListener("catalog:open:clicked", (e) => {
-  tabClicked(e.componentName);
-});
 
 // fonction qui verifie si l'onglet est actif
 function tabIsActive(componentName) {
@@ -116,15 +128,15 @@ function tabIsActive(componentName) {
   >
     <!-- Contenu du menu lateral -->
     <template #content>
-      <div
+      <!-- <div
         id="MenuCatalogueContent"
         :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']"
       >
-        <!-- <MenuCatalogue
+        <MenuCatalogue
           :selected-layers="props.selectedLayers"
           :layers="dataStore.getLayers()"
-        /> -->
-      </div> 
+        />
+      </div>  -->
      
       <div
         id="MenuControlContent"
@@ -147,6 +159,7 @@ function tabIsActive(componentName) {
         :active="tabIsActive(tab.componentName)"
         :title="tab.title"
         :secondary="tab.secondary"
+        @click="tab.onClick"
         @tab-clicked="tabClicked"
       />
     </template>

@@ -23,8 +23,16 @@ const log = useLogger();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
 
+const emitter = inject('emitter');
 const map = inject(props.mapId);
 const catalog = ref(new Catalog(props.catalogManagerOptions));
+
+// abonnement sur l'ouverture du controle
+emitter.addEventListener("catalog:open:clicked", (e) => {
+  if (catalog.value) {
+    catalog.value.setCollapsed(!e.open);
+  }
+});
 
 onMounted(() => {
   if (props.visibility) {
@@ -101,4 +109,14 @@ const onCatalogLayerRemove = (e) => {
   </div>
 </template>
 
-<style></style>
+<style>
+button[id^=GPshowCatalogPicto-] {
+  display: none;
+}
+.gpf-widget-button[id^=GPcatalog-]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+  display: none;
+}
+dialog[id^=GPcontrolListPanel-] button[id^=GPshowCatalogPicto-]{
+  display: block;
+}
+</style>
