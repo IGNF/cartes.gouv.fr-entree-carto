@@ -425,6 +425,10 @@ const contextMenuOptions = computed(() => {
     ]
   }
 })
+
+onMounted(() => {
+  domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
+})
 </script>
 <!-- INFO : Affichage du contrôle
 >>> option visibility:true, si le contrôle est dans la liste

@@ -16,11 +16,17 @@ import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 import { useTemplateRef } from 'vue';
 import { inject } from 'vue';
 
+import { useDomStore } from '@/stores/domStore';
+
+const domStore = useDomStore();
+
 const props = defineProps({
 })
 
 const side = "left"
 const is_expanded = ref()
+
+const leftControls = ref(null)
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
@@ -114,6 +120,19 @@ const emit = defineEmits([
   'onModalThemeOpen',
   'onModalLoginOpen'
 ])
+
+/**
+ * Réinitialise le menu à "fermé" quand on ouvre un control extension
+ * Excpetion pour l'overviewmap
+ */
+watch(() => domStore.getleftControlMenu(), (newVal) => {
+  leftControls.value = newVal
+  leftControls.value?.addEventListener("click", function (e) {
+  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed == "true") {
+    is_expanded.value = false;
+  }
+})
+}, { immediate: true })
 </script>
 
 <template>
