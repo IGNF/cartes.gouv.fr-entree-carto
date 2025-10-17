@@ -66,4 +66,10 @@ function onToggleGetFeatureInfo (e) {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style></style>
+<style>
+/* surcharge style renvoyé dans getFeature info pour meilleur rendu voulu par #695 */
+.geoportail-popup-content :is(h1, h2, h3, h4, h5) {
+  font-size: 1.25rem;
+}
+
+</style>
