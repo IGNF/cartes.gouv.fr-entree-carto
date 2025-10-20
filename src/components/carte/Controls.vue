@@ -155,7 +155,8 @@ const territoriesOptions = {
 // actif par défaut
 const getFeatureInfoOptions = {
   id: "6",
-  position: useControlsExtensionPosition().getFeatureInfoOptions
+  position: useControlsExtensionPosition().getFeatureInfoOptions,
+  noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
 const overviewMapOptions = {
