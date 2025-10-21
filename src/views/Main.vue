@@ -131,23 +131,7 @@ service.isAccessValided()
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
-  return headerParams.value.quickLinks.filter((element: any) => {
-    // INFO
-    // en cas de refresh de la page...
-    if (service.authenticated && element.label === "...") {
-      if (Object.keys(service.user).length) {
-        var name = service.getUser();
-        element.label = name;
-      } else {
-        // si il y'a un souci pour récuperer des informations,
-        // on n'affiche pas l'utilisateur...
-        return false;
-      }
-    }
-    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
-      return true;
-    }
-  });
+  return headerParams.value.quickLinks
 })
 
 // paramètre pour la barre de navigations

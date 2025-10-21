@@ -36,17 +36,17 @@ export function useHeaderParams() {
             links :[
               {
                   text: "Questions Fréquentes",
-                  to: "#",
+                  to: useBaseUrl() + '/faq',
                   icon: "ri-question-mark"
               },
               {
                   text: "Documentation",
-                  to: "#",
+                  to: useBaseUrl() + '/documentation',
                   icon: "ri-file-text-line"
               },
               {
                   text: "Nous contacter",
-                  to: "#",
+                  to: useBaseUrl() + '/nous-ecrire',
                   icon: "ri-mail-line"
               }
             ]   
@@ -56,61 +56,32 @@ export function useHeaderParams() {
             icon: "ri-grid-fill",
             links :[
               {
-                  text: `<div class="fr-grid-row fr-grid-row--left">
-                                  <div class="fr-description__label fr-text--bold fr-text--sm fr-text-action-high--grey">Nom
-                                    utilisateur</div>
-                                </div>    
-                                <div class="fr-grid-row fr-grid-row--left">
-                                  <div class="fr-description__info fr-text--xs fr-text-mention--grey">
-                                    adresseutilisateur@email.com</div>
-                                </div>`,
-                  type: "html"
+                  text: "Offre de service",
+                  to: useBaseUrl() + '/offre',
+                  // icon: "ri-user-line"
               },
               {
-                  text: "Tableau de bord",
-                  to: "#",
-                  icon: "ri-dashboard-3-line"
-              },
-              {
-                  text: "Mon compte",
-                  to: "#",
-                  icon: "ri-user-line"
+                  text: "Niveau de service",
+                  to: useBaseUrl() + '/niveau-de-service',
+                  // icon: "ri-dashboard-3-line"
               }
             ]   
           },  
         {
             title: "Mon espace",
             icon: "ri-account-circle-fill",
+            connexionMenu: true,
             links :[
               {
-                  text: `<div class="fr-grid-row fr-grid-row--left">
-                                  <div class="fr-description__label fr-text--bold fr-text--sm fr-text-action-high--grey">Nom
-                                    utilisateur</div>
-                                </div>    
-                                <div class="fr-grid-row fr-grid-row--left">
-                                  <div class="fr-description__info fr-text--xs fr-text-mention--grey">
-                                    adresseutilisateur@email.com</div>
-                                </div>`,
-                  type: "html"
-              },
-              {
                   text: "Tableau de bord",
-                  to: "#",
+                  to: useBaseUrl() + '/',
                   icon: "ri-dashboard-3-line"
               },
               {
                   text: "Mon compte",
-                  to: "#",
+                  to: useBaseUrl() + '/',
                   icon: "ri-user-line"
-              },
-              {
-                  text: `<div class="fr-grid-row fr-grid-row--center">
-                                  <button class="fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left">
-                                    <i class="ri-logout-box-line"></i> Se déconnecter
-                                  </button>
-                          </div>`,
-                  type: "html"
-              },
+              }
             ]   
           }
         ],
@@ -126,21 +97,21 @@ export function useHeaderParams() {
         authenticated: false, // information pour l'authentification
         onClick: (e) => {}
       });
-      headerParams.value.quickLinks.push({
-        label: 'Se déconnecter',
-        to: '/logout',
-        class: 'fr-icon-logout-box-r-line',
-        authenticated: true, // information pour l'authentification
-        onClick: (e) => {}
-      });
-      headerParams.value.quickLinks.push({
-        label: "...", 
-        // to: '/bookmarks',
-        href: useBaseUrl() + '/tableau-de-bord',
-        class: 'fr-icon-account-fill',
-        authenticated: true, // information pour l'authentification
-        onClick: (e) => {}
-      });
+      // headerParams.value.quickLinks.push({
+      //   label: 'Se déconnecter',
+      //   to: '/logout',
+      //   class: 'fr-icon-logout-box-r-line',
+      //   authenticated: true, // information pour l'authentification
+      //   onClick: (e) => {}
+      // });
+      // headerParams.value.quickLinks.push({
+      //   label: "...", 
+      //   // to: '/bookmarks',
+      //   href: useBaseUrl() + '/tableau-de-bord',
+      //   class: 'fr-icon-account-fill',
+      //   authenticated: true, // information pour l'authentification
+      //   onClick: (e) => {}
+      // });
     }
 
     return headerParams;

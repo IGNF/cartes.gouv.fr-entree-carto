@@ -1,6 +1,7 @@
 <script setup lang="js">
 import { useRandomId, useCollapsable } from "@gouvminint/vue-dsfr"
 import { useElementSize } from '@vueuse/core'
+import { useBaseUrl } from '@/composables/baseUrl';
 
 const props = defineProps({
   id: {
@@ -33,6 +34,15 @@ const marginLeft = computed(() => {
   return `-${menuWidth.value - btnWidth.value - 16}px`
 })
 const expanded = computed(() => props.id === props.expandedId)
+
+const service = inject('services');
+
+const user = computed(() => {
+  if (service.authenticated) {
+    return service.getUser()
+  }
+  return null
+});
 
 watch(expanded, (newValue, oldValue) => {
   // @see https://github.com/GouvernementFR/dsfr/blob/main/src/core/script/collapse/collapse.js
@@ -80,13 +90,21 @@ onMounted(() => {
     <ul
       class="fr-menu__list"
     >
-      <DsfrNavigationMenuItem
+    <DsfrNavigationMenuItem v-if="menu.connexionMenu && user">
+      <div class="fr-container">  
+        <div class="fr-grid-row fr-grid-row--left">
+          <div class="fr-m-3v fr-description__info fr-text--xs fr-text-mention--grey">
+            {{ user }}
+          </div>
+        </div>
+      </div>
+    </DsfrNavigationMenuItem>
+    <DsfrNavigationMenuItem
         v-for="(link, idx) of menu.links"
         :key="idx"
         @click.stop="$emit('toggleId', expandedId)"
       >
-      <div :id="idx" class="fr-container" v-if="link.type && link.type == 'html'" v-html="link.text"
-      >
+      <div :id="idx" class="fr-container" v-if="link.type && link.type == 'html'" v-html="link.text">
       </div>
       <a v-else :id="idx" :href="link.to"
         class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
@@ -95,6 +113,17 @@ onMounted(() => {
         {{link.text}}
       </a>
       </DsfrNavigationMenuItem>
+      <DsfrNavigationMenuItem v-if="menu.connexionMenu">
+      <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--center">
+          <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left">
+            <i class="ri-logout-box-line"></i>
+              <a v-if="user" :href="useBaseUrl() + '/logout'">Se déconnecter</a>
+              <a v-else :href="useBaseUrl() +  '/login'">Se Connecter</a>
+          </button>
+        </div>
+      </div>
+    </DsfrNavigationMenuItem>
     </ul>
   </div>
 
