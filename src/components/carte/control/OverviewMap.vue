@@ -66,4 +66,10 @@ function onToggleOverviewMap (e) {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style></style>
+<style>
+.ol-overviewmap .ol-overviewmap-map {
+  border-radius : 4px;
+  width: 104px;
+  height: 104px;
+}
+</style>

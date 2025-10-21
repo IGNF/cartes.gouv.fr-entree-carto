@@ -1,8 +1,3 @@
-import LogoIGN from "../assets/logo-ign.png"
-import LogoTRANSFO from "../assets/logo-transformation-fonction-publiques.png"
-import LogoECOLO from "../assets/logo-transition-ecologique.png"
-import LogoCNIG from "../assets/logo-cnig.png"
-
 import { useBaseUrl } from '@/composables/baseUrl';
 
 /**
@@ -36,8 +31,8 @@ export function useFooterParams() {
                 href: 'https://info.gouv.fr',
             },
             {
-                label: 'service-public.fr',
-                href: 'https://service-public.fr',
+                label: 'service-public.gouv.fr',
+                href: 'https://service-public.gouv.fr',
             },
             {
                 label: 'legifrance.gouv.fr',
@@ -54,22 +49,22 @@ export function useFooterParams() {
             subPartners: [
                 {
                     href: "https://www.ign.fr/",
-                    logo: LogoIGN,
+                    logo: "https://data.geopf.fr/annexes/ressources/footer/ign.png",
                     name: "IGN"
                 },
                 {
                     href: "https://www.transformation.gouv.fr/",
-                    logo: LogoTRANSFO,
+                    logo: "https://data.geopf.fr/annexes/ressources/footer/min_fp.jpg",
                     name: "Ministère de la transformation et de la fonction publiques"
                 },
                 {
                     href: "https://www.ecologie.gouv.fr/",
-                    logo: LogoECOLO,
+                    logo: "https://data.geopf.fr/annexes/ressources/footer/min_ecologie.jpg",
                     name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
                 },
                 {
                     href: "https://cnig.gouv.fr/",
-                    logo: LogoCNIG,
+                    logo: "https://data.geopf.fr/annexes/ressources/footer/rf_cnig.jpg",
                     name: "Conseil national de l’information géolocalisée"
                 },
             ]

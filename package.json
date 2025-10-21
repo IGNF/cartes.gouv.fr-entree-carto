@@ -1,9 +1,9 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "25/07/2025",
+  "date": "20/10/2025",
   "directories": {},
   "engines": {
     "node": ">=20"
@@ -50,7 +50,7 @@
     "@gouvfr/dsfr": "^1.13.1",
     "@gouvminint/vue-dsfr": "^8.3.1",
     "@iconify/vue": "^4.3.0",
-    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.5-420.tgz",
+    "geopf-extensions-openlayers": "./geopf-extensions-openlayers-1.0.0-beta.6-448.tgz",
     "jspdf": "^3.0.1",
     "ol": "^10.5.0",
     "serve": "^14.2.4",

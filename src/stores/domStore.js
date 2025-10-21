@@ -5,6 +5,7 @@ import {
 export const useDomStore = defineStore('dom', () => {
   var menuCatalogueButton = ref();
   var BookmarksButton = ref();
+  var leftControlMenu = ref();
 
   function getBookmarksButton () {
     return BookmarksButton.value;
@@ -20,12 +21,23 @@ export const useDomStore = defineStore('dom', () => {
     menuCatalogueButton.value = m;
   }
 
+  function getleftControlMenu () {
+    return leftControlMenu.value;
+  }
+  function setleftControlMenu (m) {
+    console.log('setleftControlMenu', m);
+    leftControlMenu.value = m;
+  }
+
   return {
     menuCatalogueButton,
+    leftControlMenu,
     BookmarksButton,
     getmenuCatalogueButton,
     setmenuCatalogueButton,
     getBookmarksButton,
-    setBookmarksButton
+    setBookmarksButton,
+    getleftControlMenu,
+    setleftControlMenu
   }
 });

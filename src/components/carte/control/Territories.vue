@@ -75,6 +75,13 @@ onUpdated(() => {
 </template>
 
 <style>
+/*
+VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
+*/
+dialog[id^=GPterritoriesPanel-] {
+  top : -85px !important;
+}
+
   @media (max-width: 576px){
     .gpf-panel__body_territories {
       max-height: calc(100vh - 92.5px - 56px);

@@ -40,4 +40,11 @@ onBeforeUpdate(() => {
   <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
-<style></style>
+<style>
+/*
+VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
+*/
+dialog[id^=GPlegendsPanel-] {
+  top : -85px !important;
+}
+</style>
