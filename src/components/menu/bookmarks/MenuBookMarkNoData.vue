@@ -5,6 +5,7 @@
  * dans l'espace de l'utilisateur
  * 
  * @fires emitter#catalog:open:clicked
+ * @fires emitter#leftmenu:close
  * @fires emitter#layerimport:open:clicked
  * @todo impl. handler sur l'enregistrement de la carte
  */
@@ -95,32 +96,36 @@ const buttons = [
     }
   },
   {
-    label: 'Consulter le catalogue',
-    icon: "fr-icon-highlight",
+    label: 'Annoter la carte',
+    icon: "fr-icon-pencil-line",
     iconOnly: false,
     iconRight: false,
-    secondary: true,
+    tertiary: true,
     class: 'bookmark-button-container',
     onclick: () => {
       // envoi d'un evenement pour l'ouverture du catalogue
-      emitter.dispatchEvent("catalog:open:clicked", {
+      emitter.dispatchEvent("drawing:open:clicked", {
         open : true,
-        componentName: "MenuCatalogue"
+        componentName: "Drawing"
       });
     }
   },
   {
-    label: 'Ajouter une donnée',
+    label: 'Importer une donnée',
     icon: "fr-icon-upload-line",
     iconOnly: false,
     iconRight: false,
-    secondary: true,
+    tertiary: true,
     class: 'bookmark-button-container',
     onclick: () => {
       // envoi d'un evenement pour l'ouverture du contrôle d'import de données
       emitter.dispatchEvent("layerimport:open:clicked", {
         open : true,
         componentName: "LayerImport"
+      });
+      emitter.dispatchEvent("leftmenu:close", {
+        open : false,
+        componentName: "LeftMenu"
       });
     }
   }
