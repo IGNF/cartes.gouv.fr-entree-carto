@@ -120,6 +120,10 @@ dialog[id^=GPcontrolListPanel-] button[id^=GPshowCatalogPicto-]{
   display: block;
 }
 
+dialog[id^=GPcatalogPanel-] {
+  top: -47px !important;
+}
+
 @media (max-width: 576px) {
   button[id^="GPshowCatalogPicto-"][aria-pressed="true"] + dialog {
     max-width: unset;
