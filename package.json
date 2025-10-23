@@ -43,7 +43,8 @@
     "test:e2e:report": "playwright show-report",
     "type-check": "vue-tsc --build --force",
     "preview": "vite preview",
-    "serve": "BASE_URL=/ vite build && serve -s dist/"
+    "serve": "BASE_URL=/ vite build && serve -s dist/",
+    "ext:i": "rm -rf node_modules/geopf-extensions-openlayers package-lock.json && npm install --force"
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.13.1",

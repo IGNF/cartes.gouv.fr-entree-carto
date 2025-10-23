@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
-
+import CustomNavigation from '@/components/CustomNavigation.vue'
+import CustomNavigationMenu from '@/components/CustomNavigationMenu.vue'
 import { inject } from 'vue'
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue';
@@ -130,23 +131,7 @@ service.isAccessValided()
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
-  return headerParams.value.quickLinks.filter((element: any) => {
-    // INFO
-    // en cas de refresh de la page...
-    if (service.authenticated && element.label === "...") {
-      if (Object.keys(service.user).length) {
-        var name = service.getUser();
-        element.label = name;
-      } else {
-        // si il y'a un souci pour récuperer des informations,
-        // on n'affiche pas l'utilisateur...
-        return false;
-      }
-    }
-    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
-      return true;
-    }
-  });
+  return headerParams.value.quickLinks
 })
 
 // paramètre pour la barre de navigations
@@ -279,10 +264,17 @@ const scrollDown = () => {
     :logo-text="headerParams.logoText"
     :quick-links="quickLinks"
   >
-    <template #mainnav>
+    <!-- <template #mainnav>
       <DsfrNavigation
         :nav-items="navItems"
       />
+    </template> -->
+    <template #after-quick-links>
+    <CustomNavigation
+      id="main-navigation"
+      :label="'Menu principal'"
+      :nav-items="headerParams.afterQuickLinks"
+    />
     </template>
   </DsfrHeader>
 
@@ -349,12 +341,12 @@ const scrollDown = () => {
 <style>
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 222.5px);
+    height: calc(100vh - 108.5px);
   }
 
   @media (max-width: 576px) {
     .futur-map-container{
-      height: calc(100vh - 131px);
+      height: calc(100vh - 100px);
       margin-bottom: 0px;
     }
   }
@@ -512,5 +504,22 @@ const scrollDown = () => {
     }
   }
 
+/* Surcharge du logo DSFR */
+.fr-logo::after {
+    content: none !important; /* Supprime complètement le pseudo-élément */
+    background: none !important;
+    display: none !important;
+}
+.fr-logo {
+    padding-top: 1rem !important;
+    scale: 1.3 !important;
+}
 
+
+.fr-header__body-row {
+        padding: 0;
+}
+.flex-start {
+  justify-content: flex-start;
+}
 </style>
