@@ -102,8 +102,13 @@ const buttons = [
     iconRight: false,
     tertiary: true,
     class: 'bookmark-button-container',
-    onclick: () => {
+    onclick: async () => {
       // envoi d'un evenement pour l'ouverture du catalogue
+      if (!mapStore.getControls().includes("Drawing")) {
+        // activer le controle de dessin
+        mapStore.addControl("Drawing");
+        await nextTick();
+      }
       emitter.dispatchEvent("drawing:open:clicked", {
         open : true,
         componentName: "Drawing"
