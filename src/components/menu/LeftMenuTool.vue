@@ -2,6 +2,7 @@
   /**
    * @description
    * ...
+   * @listens emitter#leftmenu:close
    */
   export default {
     name: 'LeftMenuTool'
@@ -73,6 +74,12 @@ function tabClicked(newTab) {
 function tabIsActive(componentName) {
   return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
+
+// abonnement sur la fermeture du catalogue sur un evenement emis
+const emitter = inject('emitter');
+emitter.addEventListener("leftmenu:close", (e) => {
+  wrapper.value.closeMenu();
+});
 
 var service = inject('services');
 var authenticated = computed(() => service.authenticated);

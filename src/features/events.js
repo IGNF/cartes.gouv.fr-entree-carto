@@ -34,6 +34,7 @@ var EVENTS = {
     "document:shared",
     // widgets
     "catalog:open:clicked",
+    "leftmenu:close",
     "drawing:open:clicked",
     "layerimport:open:clicked",
     "searchengine:open:displayed",
