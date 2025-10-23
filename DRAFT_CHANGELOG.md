@@ -6,6 +6,8 @@
 
 ### 🎉 Résumé
 
+Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI sur le panel de consultation des informations des couches et sur les points de rupture de l'interface.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -27,6 +29,7 @@
 #### 🐛 [Correction]
 
   - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
+  - Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760)
 
 #### 🔒 [Sécurité]
 
