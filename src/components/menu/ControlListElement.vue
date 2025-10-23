@@ -1,9 +1,10 @@
 <script lang="js">
   /**
-   * @description
+   * @description 
+   * Composant représentant un élément de la liste des contrôles dans le menu de gestion des outils.
    * 
-   * @property {Object} controlListElementOptions 
-   * 
+   * @property {Object} controlListElementOptions Options de l'élément de la liste des contrôles
+   * @property {Array} selectedControls Tableau des contrôles sélectionnés ajoutés à la carte
    */
   export default {
     name: 'ControlListElement'
@@ -14,26 +15,30 @@
 import { VIcon } from '@gouvminint/vue-dsfr';
 
 const props = defineProps({
-  controlListElementOptions : Object,
-  selectedControls : () => []
+  controlListElementOptions: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedControls: {
+    type: Array,
+    default: () => []
+  }
 });
-const selectedControls = defineModel()
+
+const selectedControlsModel = defineModel({ type: Array, default: () => [] })
 const isActive = ref()
 
 watch(isActive, (value) => {
-  if(value === true && !selectedControls.value.includes(props.controlListElementOptions.name)) {
-    selectedControls.value = [...selectedControls.value, props.controlListElementOptions.name]
+  if(value === true && !selectedControlsModel.value.includes(props.controlListElementOptions.name)) {
+    selectedControlsModel.value = [...selectedControlsModel.value, props.controlListElementOptions.name]
   }
   if(value === false) {
-    selectedControls.value = selectedControls.value.filter(e => e !== props.controlListElementOptions.name);
+    selectedControlsModel.value = selectedControlsModel.value.filter(e => e !== props.controlListElementOptions.name);
   }
 })
 
-onMounted(() => {
-
-})
-onUpdated(() => {
-})
+onMounted(() => {})
+onUpdated(() => {})
 
 </script>
 
@@ -41,30 +46,37 @@ onUpdated(() => {
   <tr class="control-list-element">
     <td class="control-list-element-img">
       <DsfrTooltip
-        onHover
-        :content="controlListElementOptions.tooltip">
-      <div><span v-if="controlListElementOptions.svg" v-html="controlListElementOptions.svg" class="custom-svg-icon"></span>
-        <VIcon v-else
-          :name="controlListElementOptions.icon"
-        />
-    </div>
-  </DsfrTooltip>
-
+        on-hover
+        :content="controlListElementOptions.tooltip"
+      >
+        <div>
+          <span
+            v-if="controlListElementOptions.svg" 
+            class="custom-svg-icon" 
+            v-html="controlListElementOptions.svg"
+          />
+          <VIcon
+            v-else
+            :name="controlListElementOptions.icon"
+          />
+        </div>
+      </DsfrTooltip>
     </td>
     <td class="control-list-element-img">
       <DsfrTooltip
-        onHover
-        :content="controlListElementOptions.tooltip">
-      <DsfrToggleSwitch
-        v-model="isActive"
-        :disabled="controlListElementOptions.disabled"
-        :input-id="controlListElementOptions.id"
-        :label="controlListElementOptions.label"
-        label-left
-        :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
-        v-bind="$attrs"
-        class="control-list-element"
-      />
+        on-hover
+        :content="controlListElementOptions.tooltip"
+      >
+        <DsfrToggleSwitch
+          v-model="isActive"
+          :disabled="controlListElementOptions.disabled"
+          :input-id="controlListElementOptions.id"
+          :label="controlListElementOptions.label"
+          label-left
+          :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
+          v-bind="$attrs"
+          class="control-list-element"
+        />
       </DsfrTooltip>
     </td>
   </tr> 

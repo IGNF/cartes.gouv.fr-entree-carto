@@ -1,6 +1,7 @@
 <script lang="js">
   /**
    * @description
+   * Composant représentant le menu de gestion des outils.
    * 
    * @property {Object} selectedControls Tableau des contrôles sélectionnés ajoutés à la carte
    * 
@@ -20,15 +21,14 @@ const log = useLogger();
 const mapStore = useMapStore();;
 
 const props = defineProps({
-  selectedControls : Array
+  selectedControls: {
+    type: Array,
+    default: () => []
+  }
 });
 
-const selectedControls = defineModel();
+const selectedControlsModel = defineModel({ type: Array, default: () => [] });
 
-const disabled = false;
-const inline = false;
-const required = false;
-const small = false;
 const opts = useControlsMenuOptions();
 
 const allOptions = computed(() => {
@@ -40,43 +40,12 @@ const allOptions = computed(() => {
   })
 });
 
-const favOptions = computed(() => {
-  if (props.selectedControls) {
-    return allOptions.value.filter((opt) => {
-      if (props.selectedControls.includes(opt.name))
-        return opt;
-      })
-  } else {
-    return [];
-  }
-})
-
-const tabListName = "Gestion d'outils";
-const tabTitles = [
-  {
-    title : "Ajouter des outils",
-    tabId : "tab-0",
-    panelId : "tab-content-0"
-  },
-  {
-    title : "Mes Outils",
-    tabId : "tab-1",
-    panelId : "tab-content-1"
-  }
-];
-const selectedTabIndex = ref(0);
-const asc = ref(true);
-const initialSelectedIndex = 0;
-function selectTab (idx) {
-  asc.value = selectedTabIndex.value < idx;
-  selectedTabIndex.value = idx;
-}
 const searchString = ref("");
 function updateSearch(e) {
   searchString.value = e;
 }
 
-watch(selectedControls, (values) => {
+watch(selectedControlsModel, (values) => {
   mapStore.cleanControls();
   for (let index = 0; index < values.length; index++) {
     const key = values[index];
@@ -97,15 +66,12 @@ onUpdated(() => {})
         @update:model-value="updateSearch"
       />
     </div>
-
-
-
     <div class="control-content">
       <table>
         <ControlListElement
           v-for="(opt, idx) in allOptions"
           :key="idx"
-          v-model="selectedControls"
+          v-model="selectedControlsModel"
           :model-value="props.selectedControls"
           :control-list-element-options="opt"
         />
