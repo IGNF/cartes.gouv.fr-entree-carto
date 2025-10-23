@@ -27,6 +27,7 @@
 #### 🐛 [Correction]
 
   - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
+  - Mini Carte : correction de l'affichage de la mini carte aux très petites ou grandes echelles (#760)
 
 #### 🔒 [Sécurité]
 
