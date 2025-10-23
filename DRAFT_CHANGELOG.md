@@ -18,6 +18,7 @@
   - Footer : mise à jour des logos (#726)
   - Informations attributaire : mise à jour du panel de résultat de consultation des informations attributaires des couches (#744)
   - UI : nouveaux points de rupture pour l'affichage de nombres de boutons différentes en fonction de la hauteur de l'écran (#746)
+  - Espace Perso : mise à jour du panel en mode connecté sans enregistrements (#757)
 
 #### 🔥 [Obsolète]
 

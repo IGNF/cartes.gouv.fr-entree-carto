@@ -174,10 +174,15 @@ const addMap = () => {
 const addData = () => {
   // envoi d'un evenement pour l'ouverture du contrôle d'import de données
   // et le widget realise l'enregistrement automatique dans l'espace personnel
-  emitter.dispatchEvent("layerimport:open:clicked", {
-    open : true,
-    componentName: "LayerImport"
-  });
+      // envoi d'un evenement pour l'ouverture du contrôle d'import de données
+      emitter.dispatchEvent("layerimport:open:clicked", {
+        open : true,
+        componentName: "LayerImport"
+      });
+      emitter.dispatchEvent("leftmenu:close", {
+        open : false,
+        componentName: "LeftMenu"
+      });
 };
 
 const refDivMapName = useTemplateRef('div-map-name');
