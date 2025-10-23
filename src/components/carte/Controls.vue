@@ -46,6 +46,10 @@ import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+import { 
+  LayerWMTS as GeoportalWMTS
+} from 'geopf-extensions-openlayers';
+
 const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
@@ -171,10 +175,20 @@ const getFeatureInfoOptions = {
   noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
+
 const overviewMapOptions = {
   id: "7",
   collapsed: false,
-  position: useControlsExtensionPosition().overviewMapOptions
+  position: useControlsExtensionPosition().overviewMapOptions,
+  layers : [
+    new GeoportalWMTS({
+      layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+      configuration : {
+        ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+        params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+      }
+    })
+  ]
 };
 
 const fullscreenOptions = {
