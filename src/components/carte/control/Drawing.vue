@@ -13,6 +13,7 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
 
 import { 
   useCreateDocument, 
@@ -33,6 +34,7 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 var service = inject('services');
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
 const log = useLogger();
 
@@ -123,6 +125,12 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
     drawing.value.setCollapsed(!e.open);
   }
 });
+
+emitter.addEventListener("document:restore", (e) => {
+  if (drawing.value && e.type === "drawing") {
+    log.debug("Restoration of temporary drawing document", e.value);
+  }
+}); 
 
 onMounted(() => {
   if (props.visibility) {
@@ -219,7 +227,6 @@ const onSaveVector = (e) => {
       title: t.auth.title,
       message: t.auth.not_authentificated
     });
-    return; // pas plus loin...
   }
 
   var gpID = e.layer.gpResultLayerId.toLowerCase();
@@ -235,6 +242,19 @@ const onSaveVector = (e) => {
     type : gpID.split(':')[0].replace("layer", "") // ex. drawing, import, bookmark...
   };
 
+  if (!service.authenticated) {
+    // stockage temporaire dans le localStorage
+    appStore.setDocumentTemporary(JSON.stringify({
+      content : data.content,
+      name : data.name,
+      description : data.description,
+      format : data.format,
+      target : data.target,
+      type : data.type
+    }));
+    return; // pas plus loin...
+  }
+
   var promise;
   if (type !== "bookmark") {
     promise = useCreateDocument(data, emitter, service);
@@ -244,8 +264,8 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = type;
+    var _type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = _type;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }
@@ -294,12 +314,17 @@ const onSaveVector = (e) => {
  * 
  * @param {Object} e
  */
-const onExportVector = (e) => {}
+const onExportVector = (e) => {
+  log.debug(e);
+  // rien de particulier pour l'instant
+}
 
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

@@ -32,6 +32,7 @@ var EVENTS = {
     "document:deleted",
     "document:exported",
     "document:shared",
+    "document:restore",
     // widgets
     "catalog:open:clicked",
     "leftmenu:close",

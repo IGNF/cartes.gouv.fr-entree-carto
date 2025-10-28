@@ -31,7 +31,7 @@ const DEFAULT = {
 }
 
 /**
- * Espace de noms des clefs du localStorage
+ * Espace de noms des clefs du localStorage (persistantes)
  */
 const NAMESPACE = "cartes.gouv.fr";
 

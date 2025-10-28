@@ -26,11 +26,13 @@ import { useAppStore } from "@/stores/appStore"
 // others
 import t from '@/features/translation'
 
-useAppStore()
 
+const mapStore = useAppStore()
 const route = useRoute()
 const router = useRouter()
 const log = useLogger()
+
+const emitter = inject('emitter')
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia('LG')
@@ -112,6 +114,18 @@ service.isAccessValided()
         element.label = name;
       }
     });
+    // on regarde si il y'a un document temporaire à restaurer
+    var docTemp = mapStore.getDocumentTemporary();
+    if (docTemp) {
+      mapStore.clearDocumentTemporary();
+      // on émet un event pour le restaurer
+      // (emitter as { dispatchEvent: Function })
+      var jsonDocTemp = JSON.parse(docTemp);
+      emitter.dispatchEvent("document:restore", {
+        type : jsonDocTemp.type,
+        value : jsonDocTemp
+      });
+    }
   }
   if (status !== "no-auth") {
     router.replace({ query: undefined });
@@ -162,7 +176,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     },
     links: [
       {
-        to: `${useBaseUrl()}/documentation`,
+        to: `${useBaseUrl()}/aide/`,
         text: 'Documentation',
       },
       {
