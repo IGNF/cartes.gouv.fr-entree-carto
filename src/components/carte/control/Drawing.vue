@@ -96,11 +96,14 @@ const btnSave = ref(new ButtonExport({
 }));
 
 /** 
+ * @event vector:edit:clicked
+ * @description
  * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
- * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @property {Object} layer - couche à éditer
+ * @property {Object} options - options de la couche
  * @see LayerSwitcher
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
@@ -128,32 +131,40 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   }
 });
 
-// abonnement sur l'ouverture du controle
+/**
+ * @event drawing:open:clicked
+ * @description Evenement pour ouvrir/fermer le controle de dessin
+ * @property {Boolean} open - ouvrir/fermer le controle
+ */
 emitter.addEventListener("drawing:open:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(!e.open);
   }
 });
 
-// INFO
-// restauration d'un document temporaire
-// l'evenement est déclenché par un outil (ex. dessin) si l'utilisateur
-// souhaite enregistrer son document alors qu'il n'est pas connecté.
+/**
+ * l'evenement est déclenché par un outil (ex. dessin) si l'utilisateur
+ * souhaite enregistrer son document alors qu'il n'est pas connecté.
+ * @event document:restore
+ * @description Evenement pour restaurer un document temporaire
+ * @property {Object} data - données du document
+ * @property {String} componentName - nom du component qui emet l'event
+ */
 emitter.addEventListener("document:restore", (e) => {
-      log.debug("Restore drawing document !", e);
-      if (drawing.value && e.type === "drawing") {
-        drawing.value.setCollapsed(false);
-        createVectorLayer({
-          name : e.name  || "Restored document",
-          description : e.description || "Document restauré depuis une session temporaire",
-          type : e.type,
-          format : e.format,
-          target : e.target,
-          data : e.content
-        }).then((layer) => {
-          map.addLayer(layer);
-        });
-      }
+  log.debug("Restore drawing document !", e);
+  if (drawing.value && e.data.type === "drawing") {
+    drawing.value.setCollapsed(true);
+    createVectorLayer({
+      name : e.data.name  || "Restored document",
+      description : e.data.description || "Document temporaire restauré depuis une précedente session",
+      type : e.data.type || "drawing",
+      format : e.data.format || "kml",
+      target : e.data.target || "internal",
+      data : e.data.content
+    }).then((layer) => {
+      map.addLayer(layer);
+    });
+  }
 });
 
 onMounted(() => {

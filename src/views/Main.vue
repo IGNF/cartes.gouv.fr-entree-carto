@@ -113,19 +113,20 @@ service.isAccessValided()
       }
     });
     // on regarde si il y'a un document temporaire à restaurer
+    // on émet un event pour le restaurer
     var docTemp = mapStore.getDocumentTemporary();
     if (docTemp) {
       mapStore.clearDocumentTemporary();
-      // on émet un event pour le restaurer
       var jsonDocTemp = JSON.parse(docTemp);
       setTimeout(() => {
+        /**
+         * @event document:restore
+         * @description Evenement pour restaurer un document temporaire
+         * @property {Object} data - données du document
+         * @property {String} componentName - nom du component qui emet l'event
+         */
         emitter.dispatchEvent("document:restore", {
-          type : jsonDocTemp.type, // ex. drawing, import, bookmark...
-          format : jsonDocTemp.format, // ex. geojson
-          content : jsonDocTemp.content, // ex. { "type": "FeatureCollection", ... }
-          name : jsonDocTemp.name,
-          description : jsonDocTemp.description,
-          target : jsonDocTemp.target, // ex. internal
+          data : jsonDocTemp,
           componentName : "Main"
         });
       }, 500);
