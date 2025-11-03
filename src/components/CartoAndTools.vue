@@ -11,6 +11,7 @@ import SaveModal from "@/components/modals/ModalSave.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
+import { useLogger } from 'vue-logger-plugin';
 
 import { fromShare } from '@/features/share';
 
@@ -20,6 +21,7 @@ import t from '@/features/translation';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+const log = useLogger()
 
 const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})
@@ -158,6 +160,10 @@ const selectedControls = computed(() => {
 const cartoRef = ref(null)
 
 provide("selectedLayers", selectedLayers);
+
+onMounted(() => {
+  log.debug("CartoAndTools component mounted")
+})
 </script>
 
 <template>

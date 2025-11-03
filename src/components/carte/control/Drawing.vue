@@ -26,6 +26,7 @@ import {
 } from 'geopf-extensions-openlayers';
 
 import { toShare } from '@/features/share';
+import { createVectorLayer } from '@/features/layer';
 
 // lib notification
 import { push } from 'notivue';
@@ -38,11 +39,19 @@ const appStore = useAppStore();
 const mapStore = useMapStore();
 const log = useLogger();
 
+log.debug("Drawing component register");
+
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  drawingOptions: Object
+  drawingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const map = inject(props.mapId)
@@ -126,13 +135,29 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
   }
 });
 
+// INFO
+// restauration d'un document temporaire
+// l'evenement est déclenché par un outil (ex. dessin) si l'utilisateur
+// souhaite enregistrer son document alors qu'il n'est pas connecté.
 emitter.addEventListener("document:restore", (e) => {
-  if (drawing.value && e.type === "drawing") {
-    log.debug("Restoration of temporary drawing document", e.value);
-  }
-}); 
+      log.debug("Restore drawing document !", e);
+      if (drawing.value && e.type === "drawing") {
+        drawing.value.setCollapsed(false);
+        createVectorLayer({
+          name : e.name  || "Restored document",
+          description : e.description || "Document restauré depuis une session temporaire",
+          type : e.type,
+          format : e.format,
+          target : e.target,
+          data : e.content
+        }).then((layer) => {
+          map.addLayer(layer);
+        });
+      }
+});
 
 onMounted(() => {
+  log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);

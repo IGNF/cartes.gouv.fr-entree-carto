@@ -26,16 +26,16 @@ import { useAppStore } from "@/stores/appStore"
 // others
 import t from '@/features/translation'
 
-
 const mapStore = useAppStore()
 const route = useRoute()
 const router = useRouter()
 const log = useLogger()
 
-const emitter = inject('emitter')
+var service :any = inject('services');
+const emitter :any = inject('emitter');
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-const largeScreen = useMatchMedia('LG')
+useMatchMedia('LG')
 
 // paramètres pour le Header
 const headerParams = useHeaderParams()
@@ -79,8 +79,6 @@ const mandatoryLinks = computed(() => {
   })
 })
 
-var service :any = inject('services');
-
 service.isAuthentificate()
 .then((status:boolean) => {
   // le service renvoie un user 
@@ -105,7 +103,7 @@ service.isAuthentificate()
 // on récupère les informations utilisateurs.
 // Pour les favoris, on récupère aussi les documents.
 service.isAccessValided()
-.then((status:any) => {
+.then((status:string) => {
   if (status === "login") {
     // on met à jour le header en renseignant les informations utilisateurs
     var name = service.getUser();
@@ -119,12 +117,18 @@ service.isAccessValided()
     if (docTemp) {
       mapStore.clearDocumentTemporary();
       // on émet un event pour le restaurer
-      // (emitter as { dispatchEvent: Function })
       var jsonDocTemp = JSON.parse(docTemp);
-      emitter.dispatchEvent("document:restore", {
-        type : jsonDocTemp.type,
-        value : jsonDocTemp
-      });
+      setTimeout(() => {
+        emitter.dispatchEvent("document:restore", {
+          type : jsonDocTemp.type, // ex. drawing, import, bookmark...
+          format : jsonDocTemp.format, // ex. geojson
+          content : jsonDocTemp.content, // ex. { "type": "FeatureCollection", ... }
+          name : jsonDocTemp.name,
+          description : jsonDocTemp.description,
+          target : jsonDocTemp.target, // ex. internal
+          componentName : "Main"
+        });
+      }, 500);
     }
   }
   if (status !== "no-auth") {
