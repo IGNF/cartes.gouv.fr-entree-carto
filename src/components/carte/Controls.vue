@@ -518,11 +518,16 @@ const contextMenuOptions = computed(() => {
         callback : () => {
           // on active le controle
           mapStore.addControl("Reporting");
-          // envoi d'un evenement pour l'ouverture du contrôle
           setTimeout(() => {
+            // envoi d'un evenement pour l'ouverture du contrôle
             emitter.dispatchEvent("reporting:open:clicked", {
               open : true,
               componentName: "Reporting"
+            });
+            // envoi d'un evenement pour la fermeture du menu de gauche
+            emitter.dispatchEvent("leftmenu:close", {
+              open : false,
+              componentName: "ContextMenu"
             });
           }, 0);
         }
