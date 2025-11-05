@@ -8,6 +8,8 @@
 
 Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI sur le panel de consultation des informations des couches et sur les points de rupture de l'interface.
 
+Mise en place d'un mécanisme d'icônes personnalisés.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -31,7 +33,7 @@ Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI
 
 - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
 - Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760)
-- Recherche d'adresse : correction de l'affichage des résultats en mode mobile (https://github.com/IGNF/geopf-extensions-openlayers/pull/456)
+- Recherche d'adresse : correction de l'affichage des résultats en mode mobile (<https://github.com/IGNF/geopf-extensions-openlayers/pull/456>)
 
 #### 🔒 [Sécurité]
 
