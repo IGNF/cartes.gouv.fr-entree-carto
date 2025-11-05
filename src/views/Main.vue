@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 
-import { inject, markRaw } from 'vue'
+import { inject } from 'vue'
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue';
 import NotificationSuccess from '@/icons/NotificationSuccess.vue';
