@@ -63,7 +63,7 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuCatalogue",
-            icon : { name: "custom:icon-catalog", color: "#FFF" }, // ou "octicon:book-24",
+            icon : { name: "cartes.gouv.fr:icon-catalog", color: "#FFF" }, // ou "octicon:book-24",
             title : "Catalogue de données",
             visibility : true,
             secondary : false,

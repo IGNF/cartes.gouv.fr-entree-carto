@@ -8,21 +8,24 @@ import type { IconifyJSON } from '@iconify/vue'
  *
  * @description
  * Chaque nom d'icone de la collection doit respecter un format :
- * - Préfixe de la collection : "custom"
+ * - Préfixe de la collection : "cartes.gouv.fr"
  * - Nom de l'icône : "icon-catalog", "icon-menu-tools", etc.
- * Chaque icône est définie par un objet contenant une propriété `body` qui inclut le SVG de l'icône.
- * Les icônes peuvent être utilisées dans les composants en spécifiant le nom complet de l'icône, y compris le préfixe de la collection.
+ *
+ * Chaque icône est définie par un objet contenant une propriété `body`
+ * qui inclut le SVG de l'icône. Les icônes peuvent être utilisées dans 
+ * les composants en spécifiant le nom complet de l'icône, y compris le
+ * préfixe de la collection.
  *
  * Par definition, on utilise le prefixe
  * - 'icon' pour les icônes générales
  * - 'widget' pour les icônes spécifiques aux widgets des extensions.
  *
- * @see src/main.ts pour l'ajout dans le registre d'Iconify
- * @see https://iconify.design/docs/overview/ pour plus d'informations sur Iconify
- * @see https://iconify.design/docs/collections/ pour plus d'informations sur les collections d'icônes
+ * Le SVG est défini dans le fichier `src/main.ts` pour l'ajout dans le registre d'Iconify
+ * @see https://iconify.design/docs/icon-components/ pour plus d'informations sur Iconify
+ * @see https://icon-sets.iconify.design/ pour plus d'informations sur les collections d'icônes
  */
 const collections: IconifyJSON[] = [{
-  prefix : "custom",
+  prefix : "cartes.gouv.fr",
   width: 24,
   height: 24,
   icons: {
@@ -53,7 +56,7 @@ const collections: IconifyJSON[] = [{
     "widget-measure-area": {
       body: ``,
     },
-    "widget-measure-azimuth": {
+    "widget-measure'azimuth": {
       body: ``,
     },
     "icon-share": {
