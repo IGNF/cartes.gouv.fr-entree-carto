@@ -1,4 +1,5 @@
 import type { IconifyJSON } from '@iconify/vue'
+import { addCollection } from '@iconify/vue'
 
 /**
  * Collections d'icônes personnalisées utilisées dans l'application
@@ -74,4 +75,14 @@ const collections: IconifyJSON[] = [{
   }
 }]
 
-export default collections
+/**
+ * Enregistre les collections d'icônes personnalisées
+ */
+const registeredIconCollections = () => {
+  // https://vue-ds.fr/guide/icones#eviter-les-appels-reseaux-optionnel-pour-les-applications-internes
+  for (const collection of collections) {
+    addCollection(collection)
+  }
+}
+
+export { registeredIconCollections }

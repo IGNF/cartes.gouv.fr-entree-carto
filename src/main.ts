@@ -26,13 +26,9 @@ import router from './router/index'
 
 import './main.css'
 
-import collections from './iconscustom'
-import { addCollection } from '@iconify/vue'
+import { registeredIconCollections } from './iconscustom'
 
-// https://vue-ds.fr/guide/icones#eviter-les-appels-reseaux-optionnel-pour-les-applications-internes
-for (const collection of collections) {
-  addCollection(collection)
-}
+registeredIconCollections()
 
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")

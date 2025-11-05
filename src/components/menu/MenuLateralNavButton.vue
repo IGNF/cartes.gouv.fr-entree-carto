@@ -22,7 +22,10 @@ const mapStore = useMapStore();
 const domStore = useDomStore();
 
 const props = defineProps({
-    icon: String,
+    icon: {
+        type: [String, Object],
+        default: ''
+    },
     id: String,
     active: Boolean,
     title: String,
