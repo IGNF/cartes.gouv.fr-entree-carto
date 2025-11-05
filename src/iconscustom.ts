@@ -53,7 +53,7 @@ const collections: IconifyJSON[] = [{
     "widget-measure-area": {
       body: ``,
     },
-    "widget-measure'azimuth": {
+    "widget-measure-azimuth": {
       body: ``,
     },
     "icon-share": {
