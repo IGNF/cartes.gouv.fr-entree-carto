@@ -4,8 +4,8 @@ import { addCollection } from '@iconify/vue'
 /**
  * Collections d'icônes personnalisées utilisées dans l'application
  * @sample
- * <DsfrButton icon='custom:icon-catalog' />
- * <DsfrButton icon={ name: 'custom:icon-menu-tools', color: 'red' } />
+ * <DsfrButton icon='cartes.gouv.fr:icon-catalog' />
+ * <DsfrButton icon={ name: 'cartes.gouv.fr:icon-menu-tools', color: 'red' } />
  *
  * @description
  * Chaque nom d'icone de la collection doit respecter un format :

@@ -8,7 +8,12 @@
 
 Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI sur le panel de consultation des informations des couches et sur les points de rupture de l'interface.
 
-Mise en place d'un mécanisme d'icônes personnalisés.
+Mise en place d'un mécanisme d'icônes personnalisés :
+
+```html
+<DsfrButton icon='cartes.gouv.fr:icon-catalog' />
+<DsfrButton icon={ name: 'cartes.gouv.fr:icon-menu-tools', color: '#000091' } />
+```
 
 ### 💥 Breaking changes
 
@@ -24,6 +29,7 @@ Mise en place d'un mécanisme d'icônes personnalisés.
 - UI : nouveaux points de rupture pour l'affichage de nombres de boutons différentes en fonction de la hauteur de l'écran (#746)
 - Espace Perso : mise à jour du panel en mode connecté sans enregistrements (#757)
 - Catalogue : refonte du rendu et de l'UX de l'outil (#712)
+- Icones : mécanisme pour les icones personnalisés (#777)
 
 #### 🔥 [Obsolète]
 
