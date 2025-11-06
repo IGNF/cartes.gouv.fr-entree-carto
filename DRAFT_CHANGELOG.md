@@ -8,6 +8,13 @@
 
 Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI sur le panel de consultation des informations des couches et sur les points de rupture de l'interface.
 
+Mise en place d'un mécanisme d'icônes personnalisés :
+
+```html
+<DsfrButton icon='cartes.gouv.fr:icon-catalog' />
+<DsfrButton icon={ name: 'cartes.gouv.fr:icon-menu-tools', color: '#000091' } />
+```
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -22,6 +29,7 @@ Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI
 - UI : nouveaux points de rupture pour l'affichage de nombres de boutons différentes en fonction de la hauteur de l'écran (#746)
 - Espace Perso : mise à jour du panel en mode connecté sans enregistrements (#757)
 - Catalogue : refonte du rendu et de l'UX de l'outil (#712)
+- Icones : mécanisme pour les icones personnalisés (#777)
 
 #### 🔥 [Obsolète]
 
@@ -31,7 +39,7 @@ Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI
 
 - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
 - Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760)
-- Recherche d'adresse : correction de l'affichage des résultats en mode mobile (https://github.com/IGNF/geopf-extensions-openlayers/pull/456)
+- Recherche d'adresse : correction de l'affichage des résultats en mode mobile (<https://github.com/IGNF/geopf-extensions-openlayers/pull/456>)
 
 #### 🔒 [Sécurité]
 

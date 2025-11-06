@@ -1,0 +1,6 @@
+:root {
+  --icon-custom-color-default: #000091;
+}
+svg.vicon.iconify.iconify--cartes\.gouv\.fr {
+    color: var(--icon-custom-color-default);
+}

@@ -50,7 +50,7 @@ const props = defineProps({
 // 8. Ajouter les events au composant (si besoin)
 // 9. Ajouter les emits au composant (si besoin)
 // 10. Ajouter les listeners au composant (si besoin)
-// 11. Ajouter les icones dans le fichier /src/assets/icons.svg (si besoin)
+// 11. Utiliser les icones dans le fichier /src/iconscustom.ts (si besoin)
 
 // position du menu lateral
 const side = "right";
@@ -63,7 +63,7 @@ const tabArray = computed(() => {
     const arr = [
         {
             componentName : "MenuCatalogue",
-            icon : "octicon:book-24",
+            icon : { name: "cartes.gouv.fr:icon-catalog", color: "#FFF" }, // alternative : "octicon:book-24",
             title : "Catalogue de données",
             visibility : true,
             secondary : false,
@@ -76,7 +76,7 @@ const tabArray = computed(() => {
         },
         {
             componentName : "MenuControl",
-            icon : "ri:tools-line",
+            icon : "cartes.gouv.fr:icon-menu-tools", // alternative : "ri:tools-line",
             title : "Catalogue d'outils",
             visibility : true,
             secondary : true
