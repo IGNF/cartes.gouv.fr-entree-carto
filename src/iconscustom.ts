@@ -17,16 +17,19 @@ import { addCollection } from '@iconify/vue'
  * les composants en spécifiant le nom complet de l'icône, y compris le
  * préfixe de la collection.
  *
- * Par definition, on utilise le prefixe
- * - 'icon' pour les icônes générales
- * - 'widget' pour les icônes spécifiques aux widgets des extensions.
+ * Par definition, on utilise une nomenclature pour différencier les icônes :
+ * - 'icon-' pour les icônes générales
+ * - 'widget-' pour les icônes spécifiques aux widgets des extensions.
  *
- * Le SVG est défini dans le fichier `src/main.ts` pour l'ajout dans le registre d'Iconify
+ * Pour l'ajout dans le registre d'Iconify, on appelle `registeredIconCollections()` 
+ * dans le fichier `src/main.ts` 
+ * 
+ * La couleur par défaut des icônes peut être personnalisée via la variable CSS.
+ * @see src/iconscustom.css
  * @see https://iconify.design/docs/icon-components/ pour plus d'informations sur Iconify
  * @see https://icon-sets.iconify.design/ pour plus d'informations sur les collections d'icônes
  */
-const color = "#000091";
-const size = 24;
+
 const collections: IconifyJSON[] = [{
   prefix : "cartes.gouv.fr",
   width: 24,
@@ -94,7 +97,5 @@ const registeredIconCollections = () => {
 }
 
 export { 
-  registeredIconCollections, 
-  color, 
-  size
+  registeredIconCollections
 }
