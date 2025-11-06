@@ -2,8 +2,8 @@
   /**
    * @description
    *
-   * @property { String } icon nom de l'icône à afficher
-   * @property { String } id du menu à ouvrir au clic sur l'icone
+   * @property { String | Object } icon nom de l'icône à afficher
+   * @property { String } id du menu à ouvrir au clic sur l'icône
    * @property { Boolean } active boolean assurant le style actif ou inactif du bouton
    * @property { Boolean } title label du bouton
    *

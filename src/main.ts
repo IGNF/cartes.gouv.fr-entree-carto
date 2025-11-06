@@ -12,11 +12,11 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
 // plugin local
-import { createEulerian } from './plugins/Eulerian'
-import { createServices } from './plugins/Services'
-import { createBusEvent } from './plugins/BusEvent'
+import { createEulerian } from './plugins/Eulerian.js'
+import { createServices } from './plugins/Services.js'
+import { createBusEvent } from './plugins/BusEvent.js'
 
-// library notificaiton
+// library notification
 import { createNotivue } from 'notivue'
 
 import { storePlugin } from 'pinia-plugin-store'
