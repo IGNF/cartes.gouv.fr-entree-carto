@@ -1,11 +1,28 @@
+import { useStorage } from '@vueuse/core';
+
 import {
   defineStore
 } from 'pinia';
+
+/**
+ * Espace de noms des clefs du localStorage
+ */
+const NAMESPACE = "cartes.gouv.fr";
+
+const ns = ((value) => {
+  return NAMESPACE + '.' + value;
+});
+
 
 export const useDomStore = defineStore('dom', () => {
   var menuCatalogueButton = ref();
   var BookmarksButton = ref();
   var leftControlMenu = ref();
+  var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
+
+  watch(isHeaderCompact, () => {
+    localStorage.setItem(ns('isHeaderCompact'), isHeaderCompact.value);
+  })
 
   function getBookmarksButton () {
     return BookmarksButton.value;
@@ -29,7 +46,15 @@ export const useDomStore = defineStore('dom', () => {
     leftControlMenu.value = m;
   }
 
+  function getIsHeaderCompact () {
+    return isHeaderCompact.value;
+  }
+  function setIsHeaderCompact (m) {
+    isHeaderCompact.value = m;
+  }
+
   return {
+    isHeaderCompact,
     menuCatalogueButton,
     leftControlMenu,
     BookmarksButton,
@@ -38,6 +63,8 @@ export const useDomStore = defineStore('dom', () => {
     getBookmarksButton,
     setBookmarksButton,
     getleftControlMenu,
-    setleftControlMenu
+    setleftControlMenu,
+    getIsHeaderCompact,
+    setIsHeaderCompact
   }
 });

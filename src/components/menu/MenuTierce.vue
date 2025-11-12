@@ -31,6 +31,8 @@ const emit = defineEmits([
   'onBookMarksOpen'
 ]);
 
+const isCompact = ref(domStore.getIsHeaderCompact())
+
 function onOpenControlReporting() {
   // on active le controle
   mapStore.addControl("Reporting");
@@ -55,6 +57,11 @@ function openControl(controlName) {
         emit("openControl");
       }
   })
+}
+
+function onToggleHeaderCompact() {
+  isCompact.value = !isCompact.value
+  domStore.setIsHeaderCompact(isCompact.value);
 }
 
 const icon = "mingcute:file-import-line"
@@ -138,6 +145,24 @@ onMounted(() => {
     >
       <span class="fr-icon-theme-fill fr-link--icon-left" />  Paramètres d'affichage
     </DsfrButton>
+
+    <DsfrButton
+      tertiary
+      no-outline
+      @click="onToggleHeaderCompact"
+    >
+    <div class="compact-toggle">
+      <span class="fr-icon-layout-top-line fr-link--icon-left" />
+      Affichage compact
+      <DsfrToggleSwitch
+        no-text
+        label-left
+        v-model="isCompact"
+        @click.stop
+        @click="domStore.setIsHeaderCompact(!isCompact)"
+      />
+    </div>
+    </DsfrButton>
   </div>
 </template>
 
@@ -177,5 +202,10 @@ a {
   .tierce-print {
     display: none;
   }
+}
+
+.compact-toggle {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

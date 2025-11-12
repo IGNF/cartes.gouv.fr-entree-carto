@@ -24,10 +24,12 @@ import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+import { useDomStore } from "@/stores/domStore"
 // others
 import t from '@/features/translation'
 
 useAppStore()
+const domStore = useDomStore();
 
 const route = useRoute()
 const router = useRouter()
@@ -260,9 +262,10 @@ const scrollDown = () => {
     v-model="headerParams.serviceTitle"
     :service-title="headerParams.serviceTitle"
     :show-beta="true"
-    :service-description="headerParams.serviceDescription"
-    :logo-text="headerParams.logoText"
+    :service-description="domStore.isHeaderCompact ? '' : headerParams.serviceDescription"
+    :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
     :quick-links="quickLinks"
+    :class="domStore.isHeaderCompact ? 'minimized': ''"
   >
     <!-- <template #mainnav>
       <DsfrNavigation
@@ -277,7 +280,6 @@ const scrollDown = () => {
     />
     </template>
   </DsfrHeader>
-
   <!-- Notifications
   -->
   <Notivue v-slot="item">
@@ -288,14 +290,14 @@ const scrollDown = () => {
     />
   </Notivue>
 
-  <div class="futur-map-container">
+  <div class="futur-map-container" :class="domStore.isHeaderCompact ? 'minimized': ''">
     <router-view />
   </div>
 
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <label
+  <!-- <label
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
@@ -303,7 +305,7 @@ const scrollDown = () => {
   <input
     id="fr-footer-toggle"
     type="checkbox"
-  >
+  > -->
   <!-- INFO
       On retire les valeurs par defaut pour ajouter
       des valeurs customisées de mandatoryLinks.
@@ -314,6 +316,7 @@ const scrollDown = () => {
         :a11y-compliance-link="footerParams.a11yComplianceLink"
   -->
   <DsfrFooter
+    v-show="!largeScreen"
     :before-mandatory-links="footerParams.beforeMandatoryLinks"
     :after-mandatory-links="afterMandatoryLinks"
     :logo-text="footerParams.logoText"
@@ -328,7 +331,8 @@ const scrollDown = () => {
     :mandatory-links="mandatoryLinks"
   />
 
-  <div class="fr-container fr-container--fluid fr-container-md">
+  <div
+   class="fr-container fr-container--fluid fr-container-md">
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
 
@@ -338,15 +342,23 @@ const scrollDown = () => {
   </div>
 </template>
 
-<style>
+<style lang="scss">
   .futur-map-container{
     width: 100%;
+    height: calc(100vh - 172.5px);
+  }
+  .minimized.futur-map-container{
     height: calc(100vh - 108.5px);
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 100px);
+      height: calc(100vh - 168px);
+      margin-bottom: 0px;
+
+    }
+    .minimized.futur-map-container{
+      height: calc(100vh - 52px);
       margin-bottom: 0px;
     }
   }
@@ -464,18 +476,21 @@ const scrollDown = () => {
     display: inline-block;
   }
 
-  @media (max-width: 576px){
+  @media (max-width: 991px){
     /* mini header */
-    .fr-header__service-tagline {
+    .minimized {
+      .fr-header__service-tagline {
       display: none;
     }
     .fr-header__service {
       position: absolute;
       left: 100px;
     }
-    .fr-header__service::before {
+      .fr-header__service::before {
       display: none;
+      }
     }
+
     /* mini footer */
     .fr-footer {
       padding: 0.5rem 0;
@@ -505,20 +520,21 @@ const scrollDown = () => {
   }
 
 /* Surcharge du logo DSFR */
-.fr-logo::after {
+.minimized {
+  .fr-logo::after {
     content: none !important; /* Supprime complètement le pseudo-élément */
     background: none !important;
     display: none !important;
 }
-.fr-logo {
+  .fr-logo {
     padding-top: 1rem !important;
     scale: 1.3 !important;
 }
-
-
 .fr-header__body-row {
-        padding: 0;
+    padding: 0;
+  }
 }
+
 .flex-start {
   justify-content: flex-start;
 }
