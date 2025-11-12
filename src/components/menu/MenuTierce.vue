@@ -93,14 +93,14 @@ onMounted(() => {
   <div class="container">
     <div ref="BookmarksButton">
       <DsfrButton
-      tertiary
-      no-outline
-      :class="authenticatedClass"
-      icon="ri-bookmark-line"
-      @click="$emit('onBookMarksOpen')"
-    >
-      Mes enregistrements
-    </DsfrButton>
+        tertiary
+        no-outline
+        :class="authenticatedClass"
+        icon="ri-bookmark-line"
+        @click="$emit('onBookMarksOpen')"
+      >
+        Mes enregistrements
+      </DsfrButton>
     </div>
     <hr>
     <DsfrButton

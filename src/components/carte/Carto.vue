@@ -21,13 +21,22 @@ import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
-import { useMapStore } from "@/stores/mapStore"
+import { useMapStore } from "@/stores/mapStore";
 import { mainMap } from "@/composables/keys"
 
 const props = defineProps({
-  selectedControls : Array,
-  selectedLayers : Object,
-  selectedBookmarks : Object
+  selectedControls: {
+    type: Array,
+    default: () => []
+  },
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const mapStore = useMapStore()
@@ -50,6 +59,7 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
+
 </script>
 
 <template>

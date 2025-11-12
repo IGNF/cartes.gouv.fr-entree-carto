@@ -2,7 +2,8 @@
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 import CustomNavigation from '@/components/CustomNavigation.vue'
 import CustomNavigationMenu from '@/components/CustomNavigationMenu.vue'
-import { inject } from 'vue'
+import { inject, markRaw } from 'vue'
+
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue';
 import NotificationSuccess from '@/icons/NotificationSuccess.vue';
@@ -36,7 +37,7 @@ const router = useRouter()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-const largeScreen = useMatchMedia('LG')
+useMatchMedia('LG')
 
 // paramètres pour le Header
 const headerParams = useHeaderParams()

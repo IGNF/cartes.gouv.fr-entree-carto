@@ -1,9 +1,10 @@
 <script lang="js">
   /**
    * @description
+   * Composant de gestion des contrôles de la carte
    *
    * @property { Array } controlOptions tableau contenant les controls disponibles
-   *
+   * @property { String } mapId identifiant de la carte
    */
   export default {
     name: 'Controls'
@@ -33,6 +34,7 @@ import ContextMenu from './control/ContextMenu.vue';
 import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
 import Reporting from './control/Reporting.vue';
+import CatalogManager from './control/CatalogManager.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
@@ -44,14 +46,28 @@ import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+import { 
+  LayerWMTS as GeoportalWMTS
+} from 'geopf-extensions-openlayers';
+
 const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
-isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
+if (isProduction) {
+  LoggerUtils.disableAll();
+} else {
+  LoggerUtils.enableAll();
+}
 
 const props = defineProps({
-  controlOptions: Array,
-  mapId: String
+  controlOptions: {
+    type: Array,
+    default: () => []
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 });
 
 // INFO
@@ -159,10 +175,20 @@ const getFeatureInfoOptions = {
   noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
+
 const overviewMapOptions = {
   id: "7",
   collapsed: false,
-  position: useControlsExtensionPosition().overviewMapOptions
+  position: useControlsExtensionPosition().overviewMapOptions,
+  layers : [
+    new GeoportalWMTS({
+      layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+      configuration : {
+        ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+        params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+      }
+    })
+  ]
 };
 
 const fullscreenOptions = {
@@ -403,6 +429,84 @@ const reportingOptions = {
   format : "kml"
 };
 
+const catalogManagerOptions = {
+  id: "22",
+  position: "top-right",
+  gutter: false,
+  listable: true,
+  titlePrimary : "Catalogue de cartes",
+  layerLabel : "title",
+  layerThumbnail : true,
+  size : "xl",
+  addToMap : false,
+  search : {
+    display : false,
+    criteria : ["name","title","description"]
+  },
+  categories : [
+    {
+      title : "Cartes de référence",
+      id : "base",
+      filter : {
+        field : "base",
+        value : "true"
+      }
+    },
+    {
+      title : "Toutes les cartes",
+      id : "data",
+      search : true,
+      items : [
+        {
+          title : "Thème",
+          default : true,
+          section : true,
+          icon : true,
+          filter : {
+            field : "thematic",
+            value : "*"
+          }
+        },
+        {
+          title : "Producteur",
+          section : true,
+          icon : false,
+          filter : {
+            field : "producer",
+            value : "*"
+          }
+        },
+        {
+          title : "Service",
+          section : true,
+          icon : true,
+          filter : {
+            field : "service",
+            value : "*"
+          }
+        },
+        // {
+        //   title : "Tout",
+        //   section : false,
+        //   cluster : true,
+        //   clusterOptions : {
+        //     rows_in_block : 20,
+        //     blocks_in_cluster : 4
+        //   },
+        //   filter : null
+        // }
+      ]
+    },
+  ],
+  configuration : {
+    type : "json",
+    data : {
+      layers : dataStore.getLayers(),
+      topics : dataStore.getTopics()
+    }
+  }
+};
+
 const refModalPrint = inject("refModalPrint")
 const refModalShare = inject("refModalShare")
 
@@ -414,11 +518,16 @@ const contextMenuOptions = computed(() => {
         callback : () => {
           // on active le controle
           mapStore.addControl("Reporting");
-          // envoi d'un evenement pour l'ouverture du contrôle
           setTimeout(() => {
+            // envoi d'un evenement pour l'ouverture du contrôle
             emitter.dispatchEvent("reporting:open:clicked", {
               open : true,
               componentName: "Reporting"
+            });
+            // envoi d'un evenement pour la fermeture du menu de gauche
+            emitter.dispatchEvent("leftmenu:close", {
+              open : false,
+              componentName: "ContextMenu"
             });
           }, 0);
         }
@@ -588,6 +697,12 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.Reporting.id)"
     :analytic="useControls.Reporting.analytic"
     :reporting-options="reportingOptions"
+    :map-id="mapId"
+  />
+  <CatalogManager
+    :visibility="true"
+    :analytic="false"
+    :catalog-manager-options="catalogManagerOptions"
     :map-id="mapId"
   />
 </template>
