@@ -37,7 +37,7 @@ const router = useRouter()
 const log = useLogger()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-useMatchMedia('LG')
+const largeScreen = useMatchMedia('LG')
 
 // paramètres pour le Header
 const headerParams = useHeaderParams()
