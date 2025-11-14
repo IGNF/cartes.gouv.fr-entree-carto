@@ -37,7 +37,10 @@ const map = inject(props.mapId);
  */
 const view = new View({ 
   zoom: props.zoom, 
-  center: fromLonLatProj(props.center)
+  center: fromLonLatProj(props.center),
+  minZoom : 0,
+  maxZoom : 21,
+  projection : "EPSG:3857"
 });
 
 /**

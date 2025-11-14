@@ -13,6 +13,14 @@ export default {
 import { CRS } from 'geopf-extensions-openlayers'
 
 import Map from 'ol/Map'
+import {
+    MouseWheelZoom,
+    defaults as defaultInteractions
+} from "ol/interaction";
+import {
+    shiftKeyOnly as eventShiftKeyOnly
+} from "ol/events/condition";
+
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
 
@@ -33,7 +41,13 @@ const mapRef = ref(null)
 */
 const map = new Map({
   target: props.mapId,
-  controls: [] // on supprime les contrôles par defaut !
+  controls: [], // on supprime les contrôles par defaut !
+  interactions : defaultInteractions().extend([
+    new MouseWheelZoom({
+      constrainResolution : true,
+      condition : eventShiftKeyOnly
+    })
+  ]),
 })
 
 /**

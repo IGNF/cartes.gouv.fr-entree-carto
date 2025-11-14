@@ -1,3 +1,14 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @listens emitter#drawing:open:clicked
+   */
+  export default {
+    name: 'Drawing'
+  };
+</script>
+
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
@@ -103,6 +114,13 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
     }
     btnExport.value.setFormat(format);
     btnSave.value.setFormat(format);
+  }
+});
+
+// abonnement sur l'ouverture du controle
+emitter.addEventListener("drawing:open:clicked", (e) => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(!e.open);
   }
 });
 
