@@ -469,6 +469,13 @@ const onCloseAlert = () => {
     display: none;
   }
 
+  .fr-footer__logo {
+    max-height: 5.625rem;
+  }
+  .fr-footer__partners-logos {
+    justify-content: flex-start;
+  }
+
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
     display: inline-block;
   }
