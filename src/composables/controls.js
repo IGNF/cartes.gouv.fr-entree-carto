@@ -9,177 +9,202 @@
  *    active: true,      // rendre actif le widget sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
  *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
+ *    default: true      // actif par défaut sur la carte
+ *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
-
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     active: false,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:navigation-line"
   },
   SearchEngine: {
     id: 'SearchEngine',
     active: true,
     disable: true,
     analytic: false,
-    default: true
+    default: true,
+    icon: "ri:search-line"
   },
   ScaleLine: {
     id: 'ScaleLine',
     active: true,
     disable: true,
     analytic: false,
-    default: true
+    default: true,
+    icon: ""
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "fr-icon-stack-line"
   },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "gpf:getfeature-line"
   },
   Legends: {
     id: 'Legends',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "ri:list-indefinite"
   },
   Drawing: {
     id: 'Drawing',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:pencil-line"
   },
   Isocurve: {
     id: 'Isocurve',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:map-pin-time-line"
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:signpost-line"
   },
   Zoom: {
     id: 'Zoom',
     active: true,
     disable: false,
     analytic: false,
-    default: true
+    default: true,
+    icon: "ri:zoom-in-line"
   },
   Route: {
     id: 'Route',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:route-line"
   },
   FullScreen: {
     id: 'FullScreen',
     active: true,
     disable: true,
     analytic: false,
-    default: true
+    default: true,
+    icon: "ri:fullscreen-line"
   },
   MeasureLength: {
     id: 'MeasureLength',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "fr-icon-ruler-line"
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "ri:custom-size"
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
     active: true,
     disable: false,
     analytic: true,
-    default: false
+    default: false,
+    icon: "fr-icon-compass-3-line"
   },
   Share: {
     id: 'Share',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "ri:map-2-line"
   },
   Print: {
     id: 'Print',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "fr-icon-printer-line"
   },
   MousePosition: {
     id: 'MousePosition',
     active: true,
     disable: false,
     analytic: false,
-    default: false
+    default: false,
+    icon: "gpf:coordonnee"
   },
   Territories: {
     id: 'Territories',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "fr-icon-france-line" 
   },
   ElevationPath: {
     id: 'ElevationPath',
     active: true,
     disable: false,
     analytic: false,
-    default: false
+    default: false,
+    icon: "ri:line-chart-line"
   },
   LayerImport: {
     id: 'LayerImport',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "ri:file-upload-line"
   },
   ControlList: {
     id: 'ControlList',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "ri:list-check"
   },
   ContextMenu: {
     id: 'ContextMenu',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "ri:menu-2-line"
   },
   Reporting: {
     id: 'Reporting',
     active: true,
     disable: true,
     analytic: true,
-    default: true
+    default: true,
+    icon: "fr-icon-feedback-line" // ri:feedback-line
   }
 }
 
@@ -245,7 +270,7 @@ export function useControlsMenuOptions() {
       hint: 'Informations sur les couches',
       disabled: useControls.GetFeatureInfo.disable,
       tooltip: "",
-      icon: "cartes.gouv.fr:getfeature-line"
+      icon: "gpf:getfeature-line"
     },
     {
       label: 'Légendes',
@@ -263,7 +288,7 @@ export function useControlsMenuOptions() {
       hint: 'Annoter la carte',
       disabled: useControls.Drawing.disable,
       tooltip: "Ajouter des points, lignes, formes ou textes directement sur la carte",
-      icon: "fr-icon-pencil-line",
+      icon: "ri:pencil-line",
     },
     {
       label: 'Trouver une adresse',
@@ -317,7 +342,7 @@ export function useControlsMenuOptions() {
       hint: 'Mesures',
       disabled: useControls.MeasureLength.disable,
       tooltip: "Tracer un trajet pour connaître sa longueur",
-      icon: "fr-icon-pencil-ruler-line"
+      icon: "fr-icon-ruler-line"
     },
     {
       label: 'Mesurer une surface',
@@ -353,7 +378,7 @@ export function useControlsMenuOptions() {
       hint: 'Position de la souris',
       disabled: useControls.MousePosition.disable,
       tooltip: "Voir les coordonnées du curseur",
-      icon: "cartes.gouv.fr:coordonnee"
+      icon: "gpf:coordonnee"
     },
     {
       label: 'Selectionner un territoire',
@@ -371,7 +396,7 @@ export function useControlsMenuOptions() {
       hint: 'Profil altimétrique',
       disabled: useControls.ElevationPath.disable,
       tooltip: "Afficher le profil altimétrique le long d'un trajet",
-      icon: "fr-icon-line-chart-line"
+      icon: "ri:line-chart-line"
     },
     {
       label: 'Importer des données',
@@ -422,6 +447,10 @@ export function useControlsMenuOptions() {
   .filter(opt => !opt.disabled)
 }
 
+/**
+ * Obtenir les positions des contrôles (extensions)
+ * @returns 
+ */
 export function useControlsExtensionPosition() {
   return {
     shareOptions : 'top-left',
@@ -448,6 +477,10 @@ export function useControlsExtensionPosition() {
   }
 }
 
+/**
+ * Obtenir la position des contrôles (gauche/droite)  
+ * @returns 
+ */
 export function useControlsPosition() {
   let leftC = []
   let rightC = []

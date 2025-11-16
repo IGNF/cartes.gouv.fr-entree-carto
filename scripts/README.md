@@ -76,3 +76,19 @@ Récuperer la reponse :
 ```
 
 Copier cette reponse dans le fichier `src/iconscustom.ts`
+
+## Classes CSS / SVG Remixicon pour les extensions
+
+Usage : <https://iconify.design/docs/usage/css/no-code/>
+
+Génerer le fichier de CSS : `ri.css`
+
+```text
+https://api.iconify.design/ri.css?icons=custom-size,drag-drop-fill,drag-drop-line,draggable,earth-fill,earth-line,file-copy-fill,file-copy-line,file-upload-fill,file-upload-line,flower-fill,flower-line,fullscreen-exit-fill,fullscreen-exit-line,fullscreen-fill,fullscreen-line,function-add-fill,function-add-line,list-indefisnite,map-2-fill,map-2-line,map-pin-5-fill,map-pin-5-line,map-pin-add-fill,map-pin-add-line,map-pin-time-fill,map-pin-time-line,menu-search-fill,menu-search-line,navigation-fill,navigation-line,pencil-line,play-list-add-fill,play-list-add-line,route-fill,route-line,share-2-fill,share-2-line,shining-2-fill,shining-2-line,signpost-fill,signpost-line,text,tree-fill,tree-line
+```
+
+Utilisation des icones :
+
+```html
+<span class="icon--ri icon--ri--signpost-line"></span>
+```

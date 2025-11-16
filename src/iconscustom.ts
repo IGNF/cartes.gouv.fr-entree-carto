@@ -4,8 +4,8 @@ import { addCollection } from '@iconify/vue'
 /**
  * Collections d'icônes personnalisées utilisées dans l'application
  * @sample
- * <DsfrButton icon='cartes.gouv.fr:icon-catalog' />
- * <DsfrButton icon={ name: 'cartes.gouv.fr:icon-menu-tools', color: 'red' } />
+ * <DsfrButton icon='gpf:icon-catalog' />
+ * <DsfrButton icon={ name: 'gpf:icon-menu-tools', color: 'red' } />
  *
  * @description
  * Chaque nom d'icone de la collection doit respecter un format :
@@ -28,7 +28,7 @@ import { addCollection } from '@iconify/vue'
 
 const collections: IconifyJSON[] = [
   {
-    prefix : "cartes.gouv.fr",
+    prefix : "gpf",
     width: 24,
     height: 24,
     icons: {
@@ -151,6 +151,7 @@ const collections: IconifyJSON[] = [
       "close-line": {
         body: '<path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/>',
       },
+      // Icone de l'outil de surface (widget)
       "custom-size": {
         body: '<path fill="currentColor" d="M8 3h7V.5L18.5 4L15 7.5V5H8v2.5L4.5 4L8 .5zM3 17V6.5h2V17a2 2 0 0 0 2 2h10.5v2H7a4 4 0 0 1-4-4m18-1V9h2.5L20 5.5L16.5 9H19v7h-2.5l3.5 3.5l3.5-3.5z"/>',
       },
@@ -201,6 +202,9 @@ const collections: IconifyJSON[] = [
       "function-add-line": {
         body: '<path fill="currentColor" d="M4 3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm0 10a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm10 0a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm1 6v-4h4v4zM5 9V5h4v4zm0 10v-4h4v4zm11-8V8h-3V6h3V3h2v3h3v2h-3v3z"/>',
       },
+      "line-chart-line": {
+        body: '<path fill="currentColor" d="M5 3v16h16v2H3V3zm15.293 3.293l1.414 1.414L16 13.414l-3-2.999l-4.293 4.292l-1.414-1.414L13 7.586l3 2.999z"/>',
+      },
       "list-indefinite": {
         body: '<path fill="currentColor" d="M13 4h8v2h-8zm0 7h8v2h-8zm0 7h8v2h-8zm-6.5 1a2 2 0 1 1 0-4a2 2 0 0 1 0 4m0 2a4 4 0 1 0 0-8a4 4 0 0 0 0 8M5 6v3h3V6zM3 4h7v7H3z"/>',
       },
@@ -239,8 +243,12 @@ const collections: IconifyJSON[] = [
       "navigation-fill": {
         body: '<path fill="currentColor" d="m2.9 2.3l18.805 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.912a.5.5 0 0 1 .638-.612"/>',
       },
+      // Icône de la mini-carte (widget)
       "navigation-line": {
         body: '<path fill="currentColor" d="m4.965 5.096l3.546 12.41l3.04-6.08l5.637-2.255zM2.899 2.3l18.806 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.91a.5.5 0 0 1 .638-.611"/>',
+      },
+      "pencil-line": {
+        body: '<path fill="currentColor" d="m15.728 9.576l-1.414-1.414L5 17.476v1.414h1.414zm1.414-1.414l1.414-1.414l-1.414-1.414l-1.414 1.414zm-9.9 12.728H3v-4.243L16.435 3.212a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414z"/>',
       },
       "play-list-add-fill": {
         body: '<path fill="currentColor" d="M2 18h10v2H2zm0-7h20v2H2zm0-7h20v2H2zm16 14v-3h2v3h3v2h-3v3h-2v-3h-3v-2z"/>',
