@@ -36,6 +36,7 @@ export const useControls = {
     disable: true,
     analytic: false,
     default: true,
+    // The ScaleLine control is a non-interactive widget and does not require an icon.
     icon: ""
   },
   LayerSwitcher: {
