@@ -75,7 +75,7 @@ Récuperer la reponse :
 }
 ```
 
-Copier cette reponse dans le fichier `src/iconscustom.ts`
+Copier cette réponse dans le fichier `src/iconscustom.ts`
 
 ## Classes CSS / SVG Remixicon pour les extensions
 
