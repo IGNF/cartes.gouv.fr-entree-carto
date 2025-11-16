@@ -69,7 +69,7 @@ const icon = (label) => {
   var icon = "";
   if (service.labels.includes(label)) {
       if (label === "drawing") {
-        icon = "fr-icon-edit-line";
+        icon = "fr-icon-pencil-line";
       }
       if (label === "import") {
         icon = "fr-icon-file-download-line";

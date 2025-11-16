@@ -1,60 +1,11 @@
-import type { IconifyJSON } from '@iconify/vue'
-import { addCollection } from '@iconify/vue'
-
-/**
- * Collections d'icônes personnalisées utilisées dans l'application
- * @sample
- * <DsfrButton icon='gpf:icon-catalog' />
- * <DsfrButton icon={ name: 'gpf:icon-menu-tools', color: 'red' } />
- *
- * @description
- * Chaque nom d'icone de la collection doit respecter un format :
- * - Préfixe de la collection : "cartes.gouv.fr"
- * - Nom de l'icône : "icon-catalog", "icon-menu-tools", etc.
- *
- * Chaque icône est définie par un objet contenant une propriété `body`
- * qui inclut le SVG de l'icône. Les icônes peuvent être utilisées dans 
- * les composants en spécifiant le nom complet de l'icône, y compris le
- * préfixe de la collection.
- *
- * Pour l'ajout dans le registre d'Iconify, on appelle `registeredIconCollections()` 
- * dans le fichier `src/main.ts` 
- * 
- * La couleur par défaut des icônes peut être personnalisée via la variable CSS.
- * @see src/iconscustom.css
- * @see https://iconify.design/docs/icon-components/ pour plus d'informations sur Iconify
- * @see https://icon-sets.iconify.design/ pour plus d'informations sur les collections d'icônes
- */
-
+import type { IconifyJSON } from "@iconify/vue";
 const collections: IconifyJSON[] = [
   {
-    prefix : "gpf",
-    width: 24,
-    height: 24,
-    icons: {
-      // Icône de l'outil coordonnée (widget)
-      "coordonnee" : {
-        body: `<path d="M19.96 21L19.43 16.23L18.02 17.64L12.99 12.61V6.75H14.99L11.99 3L8.99 6.75H10.99V12.6L5.94 17.64L4.53 16.23L4 21L8.77 20.47L7.36 19.06L11.98 14.43L16.6 19.06L15.19 20.47L19.96 21Z" fill="currentColor"/>`
-      },
-      // Icône de l'outil getFeatureInfo (widget)
-      "getfeature-fill" : {
-        body: `<path d="M11 18.43C11 18.21 11.01 18 11.03 17.78L9.06 16.8L9 16.83V4.24L14.94 7.21L15 7.18V12.11C15.91 11.68 16.92 11.43 18 11.43C19.49 11.43 20.87 11.9 22 12.69V2.76C22 2.69 21.99 2.63 21.96 2.56C21.85 2.31 21.56 2.19 21.3 2.3L15 5L9 2L2 5V21.24C2 21.31 2.01 21.37 2.04 21.44C2.15 21.69 2.44 21.81 2.7 21.7L9 19L11.21 20.11C11.08 19.57 11 19.01 11 18.43Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.77 20.29V21.89H17.17V20.29H18.77ZM18.34 13.91C19.8 14.1 20.86 15.4 20.77 16.87C20.67 18.34 19.45 19.49 17.98 19.49H17.18V17.89H17.98C18.61 17.89 19.14 17.4 19.18 16.77C19.22 16.14 18.77 15.58 18.14 15.5C17.51 15.42 16.93 15.83 16.81 16.45L15.24 16.14C15.53 14.69 16.89 13.72 18.35 13.91H18.34Z" fill="currentColor"/>`
-      },
-      // Icône de l'outil getFeatureInfo (widget)
-      "getfeature-line" : {
-        body: `<path d="M11 18.43C11 18.21 11.01 18 11.03 17.78L10 17.26V4.74L14 6.74V12.69C14.6 12.27 15.28 11.94 16 11.72V6.75L20 5.04V11.73C20.72 11.95 21.4 12.27 22 12.7V2.76C22 2.69 21.99 2.63 21.96 2.56C21.85 2.31 21.56 2.19 21.3 2.3L15 5L9 2L2 5V21.24C2 21.31 2.01 21.37 2.04 21.44C2.15 21.69 2.44 21.81 2.7 21.7L9 19L11.21 20.11C11.08 19.57 11 19.01 11 18.43ZM8 17.25L4 18.96V6.32L8 4.61V17.26V17.25Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.77 20.29V21.89H17.17V20.29H18.77ZM18.34 13.91C19.8 14.1 20.86 15.4 20.77 16.87C20.67 18.34 19.45 19.49 17.98 19.49H17.18V17.89H17.98C18.61 17.89 19.14 17.4 19.18 16.77C19.22 16.14 18.77 15.58 18.14 15.5C17.51 15.42 16.93 15.83 16.81 16.45L15.24 16.14C15.53 14.69 16.89 13.72 18.35 13.91H18.34Z" fill="currentColor"/>`
-      }
-    }
-  },
-  {
     prefix: "ri",
-    width: 24,
-    height: 24,
     icons: {
       "arrow-right-line": {
         body: '<path fill="currentColor" d="m16.172 11l-5.364-5.364l1.414-1.414L20 12l-7.778 7.778l-1.414-1.414L16.172 13H4v-2z"/>',
       },
-      // Icône des enregistrements favoris (bookmark)
       "bookmark-line": {
         body: '<path fill="currentColor" d="M5 2h14a1 1 0 0 1 1 1v19.143a.5.5 0 0 1-.766.424L12 18.03l-7.234 4.536A.5.5 0 0 1 4 22.143V3a1 1 0 0 1 1-1m13 2H6v15.432l6-3.761l6 3.761z"/>',
       },
@@ -65,7 +16,6 @@ const collections: IconifyJSON[] = [
       "compasses-2-line": {
         body: '<path fill="currentColor" d="M16.33 13.497a6.99 6.99 0 0 0 2.67-5.5h2a8.99 8.99 0 0 1-3.661 7.246l2.527 4.378a2 2 0 0 1-.732 2.732l-3.527-6.108a9 9 0 0 1-3.607.752a9 9 0 0 1-3.607-.752l-3.527 6.108a2 2 0 0 1-.732-2.732l5.064-8.77A4.002 4.002 0 0 1 11 4.123V1.997h2v2.126a4.002 4.002 0 0 1 1.803 6.728zm-1.73 1.001l-1.528-2.646a4 4 0 0 1-2.142 0l-1.528 2.646a7 7 0 0 0 2.599.499a7 7 0 0 0 2.599-.499M12 9.997a2 2 0 1 0 0-4a2 2 0 0 0 0 4"/>',
       },
-      // Icone de l'outil de surface (widget)
       "custom-size": {
         body: '<path fill="currentColor" d="M8 3h7V.5L18.5 4L15 7.5V5H8v2.5L4.5 4L8 .5zM3 17V6.5h2V17a2 2 0 0 0 2 2h10.5v2H7a4 4 0 0 1-4-4m18-1V9h2.5L20 5.5L16.5 9H19v7h-2.5l3.5 3.5l3.5-3.5z"/>',
       },
@@ -126,7 +76,6 @@ const collections: IconifyJSON[] = [
       "map-2-fill": {
         body: '<path fill="currentColor" d="m2 5l7-3l6 3l6.303-2.701a.5.5 0 0 1 .697.46V19l-7 3l-6-3l-6.303 2.701a.5.5 0 0 1-.697-.46zm13 14.764V7.176l-.065.028L9 4.236v12.588l.065-.028z"/>',
       },
-      // Icone du catalogue (widget)
       "map-2-line": {
         body: '<path fill="currentColor" d="m2 5l7-3l6 3l6.303-2.701a.5.5 0 0 1 .697.46V19l-7 3l-6-3l-6.303 2.701a.5.5 0 0 1-.697-.46zm14 14.395l4-1.714V5.033l-4 1.714zm-2-.131V6.736l-4-2v12.528zm-6-2.011V4.605L4 6.319v12.648z"/>',
       },
@@ -159,7 +108,6 @@ const collections: IconifyJSON[] = [
       "navigation-fill": {
         body: '<path fill="currentColor" d="m2.9 2.3l18.805 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.912a.5.5 0 0 1 .638-.612"/>',
       },
-      // Icône de la mini-carte (widget)
       "navigation-line": {
         body: '<path fill="currentColor" d="m4.965 5.096l3.546 12.41l3.04-6.08l5.637-2.255zM2.899 2.3l18.806 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.91a.5.5 0 0 1 .638-.611"/>',
       },
@@ -210,20 +158,68 @@ const collections: IconifyJSON[] = [
       "zoom-in-line": {
         body: '<path fill="currentColor" d="m18.031 16.617l4.283 4.282l-1.415 1.415l-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9s9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617m-2.006-.742A6.98 6.98 0 0 0 18 11c0-3.867-3.133-7-7-7s-7 3.133-7 7s3.133 7 7 7a6.98 6.98 0 0 0 4.875-1.975zM10 10V7h2v3h3v2h-3v3h-2v-3H7v-2z"/>',
       },
-    }
-  }
-]
-
-/**
- * Enregistre les collections d'icônes personnalisées
- */
-const registeredIconCollections = () => {
-  // https://vue-ds.fr/guide/icones#eviter-les-appels-reseaux-optionnel-pour-les-applications-internes
-  for (const collection of collections) {
-    addCollection(collection)
-  }
-}
-
-export { 
-  registeredIconCollections
-}
+    },
+    width: 24,
+    height: 24,
+  },
+];
+export const ri = {
+  arrowRightLine: "ri:arrow-right-line",
+  bookmarkLine: "ri:bookmark-line",
+  checkLine: "ri:check-line",
+  closeLine: "ri:close-line",
+  compasses2Line: "ri:compasses-2-line",
+  customSize: "ri:custom-size",
+  dragDropFill: "ri:drag-drop-fill",
+  dragDropLine: "ri:drag-drop-line",
+  draggable: "ri:draggable",
+  earthFill: "ri:earth-fill",
+  earthLine: "ri:earth-line",
+  fileCopyFill: "ri:file-copy-fill",
+  fileCopyLine: "ri:file-copy-line",
+  fileUploadFill: "ri:file-upload-fill",
+  fileUploadLine: "ri:file-upload-line",
+  flowerFill: "ri:flower-fill",
+  flowerLine: "ri:flower-line",
+  fullscreenExitFill: "ri:fullscreen-exit-fill",
+  fullscreenExitLine: "ri:fullscreen-exit-line",
+  fullscreenFill: "ri:fullscreen-fill",
+  fullscreenLine: "ri:fullscreen-line",
+  functionAddFill: "ri:function-add-fill",
+  functionAddLine: "ri:function-add-line",
+  lineChartLine: "ri:line-chart-line",
+  listCheck: "ri:list-check",
+  listIndefinite: "ri:list-indefinite",
+  map2Fill: "ri:map-2-fill",
+  map2Line: "ri:map-2-line",
+  mapPin5Fill: "ri:map-pin-5-fill",
+  mapPin5Line: "ri:map-pin-5-line",
+  mapPinAddFill: "ri:map-pin-add-fill",
+  mapPinAddLine: "ri:map-pin-add-line",
+  mapPinTimeFill: "ri:map-pin-time-fill",
+  mapPinTimeLine: "ri:map-pin-time-line",
+  menu2Line: "ri:menu-2-line",
+  menuAddFill: "ri:menu-add-fill",
+  menuSearchFill: "ri:menu-search-fill",
+  menuSearchLine: "ri:menu-search-line",
+  navigationFill: "ri:navigation-fill",
+  navigationLine: "ri:navigation-line",
+  pencilLine: "ri:pencil-line",
+  playListAddFill: "ri:play-list-add-fill",
+  playListAddLine: "ri:play-list-add-line",
+  routeFill: "ri:route-fill",
+  routeLine: "ri:route-line",
+  rulerLine: "ri:ruler-line",
+  share2Fill: "ri:share-2-fill",
+  share2Line: "ri:share-2-line",
+  shining2Fill: "ri:shining-2-fill",
+  shining2Line: "ri:shining-2-line",
+  signpostFill: "ri:signpost-fill",
+  signpostLine: "ri:signpost-line",
+  text: "ri:text",
+  toolsLine: "ri:tools-line",
+  treeFill: "ri:tree-fill",
+  treeLine: "ri:tree-line",
+  zoomInLine: "ri:zoom-in-line",
+} as const;
+export default collections;

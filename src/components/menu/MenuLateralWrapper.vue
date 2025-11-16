@@ -30,12 +30,7 @@ const props = defineProps({
   width: Number,
   padding: Number
 })
-const icon = "ion:close"
-const defaultScale = 0.8325;
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
+const icon = "fr-icon-close-line"
 
 const widthValue = props.width || 550
 const paddingValue = props.padding || 30
@@ -103,7 +98,10 @@ defineExpose({
           @click="closeMenu"
         >
           Fermer
-          <VIcon v-bind="iconProps" />
+          <span
+            :class="icon" 
+            aria-hidden="true"
+          />
         </DsfrButton>
       </div>
 
