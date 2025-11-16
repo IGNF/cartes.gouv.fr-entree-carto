@@ -117,7 +117,7 @@ export const useControls = {
     disable: false,
     analytic: true,
     default: false,
-    icon: "fr-icon-ruler-line"
+    icon: "ri:ruler-line"
   },
   MeasureArea: {
     id: 'MeasureArea',
@@ -133,7 +133,7 @@ export const useControls = {
     disable: false,
     analytic: true,
     default: false,
-    icon: "fr-icon-compass-3-line"
+    icon: "ri:compasses-2-line"
   },
   Share: {
     id: 'Share',
@@ -343,7 +343,7 @@ export function useControlsMenuOptions() {
       hint: 'Mesures',
       disabled: useControls.MeasureLength.disable,
       tooltip: "Tracer un trajet pour connaître sa longueur",
-      icon: "fr-icon-ruler-line"
+      icon: "ri:ruler-line"
     },
     {
       label: 'Mesurer une surface',
@@ -361,7 +361,7 @@ export function useControlsMenuOptions() {
       hint: 'Mesures',
       disabled: useControls.MeasureAzimuth.disable,
       tooltip: "Tracer un trait pour connaître l'angle par rapport au Nord",
-      icon: "fr-icon-compass-3-line"
+      icon: "ri:compasses-2-line"
     },
     {
       label: 'Partager une carte',

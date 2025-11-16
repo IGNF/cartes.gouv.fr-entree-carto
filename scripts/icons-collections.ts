@@ -13,6 +13,9 @@ const collections: IconifyJSON[] = [
       "close-line": {
         body: '<path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/>',
       },
+      "compasses-2-line": {
+        body: '<path fill="currentColor" d="M16.33 13.497a6.99 6.99 0 0 0 2.67-5.5h2a8.99 8.99 0 0 1-3.661 7.246l2.527 4.378a2 2 0 0 1-.732 2.732l-3.527-6.108a9 9 0 0 1-3.607.752a9 9 0 0 1-3.607-.752l-3.527 6.108a2 2 0 0 1-.732-2.732l5.064-8.77A4.002 4.002 0 0 1 11 4.123V1.997h2v2.126a4.002 4.002 0 0 1 1.803 6.728zm-1.73 1.001l-1.528-2.646a4 4 0 0 1-2.142 0l-1.528 2.646a7 7 0 0 0 2.599.499a7 7 0 0 0 2.599-.499M12 9.997a2 2 0 1 0 0-4a2 2 0 0 0 0 4"/>',
+      },
       "custom-size": {
         body: '<path fill="currentColor" d="M8 3h7V.5L18.5 4L15 7.5V5H8v2.5L4.5 4L8 .5zM3 17V6.5h2V17a2 2 0 0 0 2 2h10.5v2H7a4 4 0 0 1-4-4m18-1V9h2.5L20 5.5L16.5 9H19v7h-2.5l3.5 3.5l3.5-3.5z"/>',
       },
@@ -123,6 +126,9 @@ const collections: IconifyJSON[] = [
       "route-line": {
         body: '<path fill="currentColor" d="M4 15V8.5a4.5 4.5 0 0 1 9 0v7a2.5 2.5 0 0 0 5 0V8.83a3.001 3.001 0 1 1 2 0v6.67a4.5 4.5 0 1 1-9 0v-7a2.5 2.5 0 0 0-5 0V15h3l-4 5l-4-5zm15-8a1 1 0 1 0 0-2a1 1 0 0 0 0 2"/>',
       },
+      "ruler-line": {
+        body: '<path fill="currentColor" d="m6.343 14.728l-2.828 2.829l3.535 3.535L20.485 7.657L16.95 4.121l-2.121 2.122l1.414 1.414l-1.414 1.414l-1.415-1.414l-2.121 2.121l2.121 2.122L12 13.314l-2.12-2.121l-2.122 2.12l1.415 1.415l-1.415 1.414zM17.657 2l4.95 4.95a1 1 0 0 1 0 1.414l-14.85 14.85a1 1 0 0 1-1.414 0l-4.95-4.95a1 1 0 0 1 0-1.415L16.243 2a1 1 0 0 1 1.414 0"/>',
+      },
       "share-2-fill": {
         body: '<path fill="currentColor" d="M18.414 9L12 2.586L5.586 9H11v7h2V9zM3 14v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4h-2v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4z"/>',
       },
@@ -162,6 +168,7 @@ export const ri = {
   bookmarkLine: "ri:bookmark-line",
   checkLine: "ri:check-line",
   closeLine: "ri:close-line",
+  compasses2Line: "ri:compasses-2-line",
   customSize: "ri:custom-size",
   dragDropFill: "ri:drag-drop-fill",
   dragDropLine: "ri:drag-drop-line",
@@ -202,6 +209,7 @@ export const ri = {
   playListAddLine: "ri:play-list-add-line",
   routeFill: "ri:route-fill",
   routeLine: "ri:route-line",
+  rulerLine: "ri:ruler-line",
   share2Fill: "ri:share-2-fill",
   share2Line: "ri:share-2-line",
   shining2Fill: "ri:shining-2-fill",

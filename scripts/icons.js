@@ -11,9 +11,7 @@ const riIconNames = [
   "bookmark-line",
   "check-line",
   "close-line",
-  "menu-add-fill",
-  "tools-line",
-  "zoom-in-line",
+  "compasses-2-line",
   "custom-size",
   "drag-drop-fill",
   "drag-drop-line",
@@ -43,6 +41,7 @@ const riIconNames = [
   "map-pin-add-line",
   "map-pin-time-fill",
   "map-pin-time-line",
+  "menu-add-fill",
   "menu-2-line",
   "menu-search-fill",
   "menu-search-line",
@@ -53,6 +52,7 @@ const riIconNames = [
   "play-list-add-line",
   "route-fill",
   "route-line",
+  "ruler-line",
   "share-2-fill",
   "share-2-line",
   "shining-2-fill",
@@ -60,8 +60,10 @@ const riIconNames = [
   "signpost-fill",
   "signpost-line",
   "text",
+  "tools-line",
   "tree-fill",
-  "tree-line"
+  "tree-line",
+  "zoom-in-line"
 ];
 
 
