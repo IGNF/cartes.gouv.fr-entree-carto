@@ -52,7 +52,7 @@ npm run dev
 
 Ouvrir le panneau de developpement du navigateur.
 
-Identifier dans l'onget _reseau_ les téléchargements d'icones :
+Identifier dans l'onglet _réseau_ les téléchargements d'icones :
 
 ```text
 https://api.iconify.design/ion.json?icons=close
