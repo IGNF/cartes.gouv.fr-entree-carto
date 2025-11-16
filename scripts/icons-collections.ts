@@ -66,6 +66,7 @@ const collections: IconifyJSON[] = [
       "line-chart-line": {
         body: '<path fill="currentColor" d="M5 3v16h16v2H3V3zm15.293 3.293l1.414 1.414L16 13.414l-3-2.999l-4.293 4.292l-1.414-1.414L13 7.586l3 2.999z"/>',
       },
+      "list-check": { body: '<path fill="currentColor" d="M8 4h13v2H8zm-5-.5h3v3H3zm0 7h3v3H3zm0 7h3v3H3zM8 11h13v2H8zm0 7h13v2H8z"/>' },
       "list-indefinite": {
         body: '<path fill="currentColor" d="M13 4h8v2h-8zm0 7h8v2h-8zm0 7h8v2h-8zm-6.5 1a2 2 0 1 1 0-4a2 2 0 0 1 0 4m0 2a4 4 0 1 0 0-8a4 4 0 0 0 0 8M5 6v3h3V6zM3 4h7v7H3z"/>',
       },
@@ -91,6 +92,7 @@ const collections: IconifyJSON[] = [
       "map-pin-time-line": {
         body: '<path fill="currentColor" d="M16.95 15.95a7 7 0 1 0-9.9 0L12 20.9zM12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0zM13 11h4v2h-6V6h2z"/>',
       },
+      "menu-2-line": { body: '<path fill="currentColor" d="M3 4h18v2H3zm0 7h12v2H3zm0 7h18v2H3z"/>' },
       "menu-add-fill": {
         body: '<path fill="currentColor" d="m18 15l-.001 3H21v2h-3.001L18 23h-2l-.001-3H13v-2h2.999L16 15zm-7 3v2H3v-2zm10-7v2H3v-2zm0-7v2H3V4z"/>',
       },
@@ -179,6 +181,7 @@ export const ri = {
   functionAddFill: "ri:function-add-fill",
   functionAddLine: "ri:function-add-line",
   lineChartLine: "ri:line-chart-line",
+  listCheck: "ri:list-check",
   listIndefinite: "ri:list-indefinite",
   map2Fill: "ri:map-2-fill",
   map2Line: "ri:map-2-line",
@@ -188,6 +191,7 @@ export const ri = {
   mapPinAddLine: "ri:map-pin-add-line",
   mapPinTimeFill: "ri:map-pin-time-fill",
   mapPinTimeLine: "ri:map-pin-time-line",
+  menu2Line: "ri:menu-2-line",
   menuAddFill: "ri:menu-add-fill",
   menuSearchFill: "ri:menu-search-fill",
   menuSearchLine: "ri:menu-search-line",

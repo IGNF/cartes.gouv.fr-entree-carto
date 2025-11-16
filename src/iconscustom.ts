@@ -32,106 +32,17 @@ const collections: IconifyJSON[] = [
     width: 24,
     height: 24,
     icons: {
-      "2D-fill" : {
-        body: ``
-      },
-      "2D-line" : {
-        body: ``
-      },
-      "3D-fill" : {
-        body: ``
-      },
-      "3D-line" : {
-        body: ``
-      },
-      "accroche-option-fill" : {
-        body: ``
-      },
-      "accroche-option-line" : {
-        body: ``
-      },
-      "accroche" : {
-        body: ``
-      },
-      "cercle-MD-fill" : {
-        body: ``
-      },
-      "cercle-MD-line" : {
-        body: ``
-      },
-      "cercle-SM-fill" : {
-        body: ``
-      },
-      "cercle-SM-line" : {
-        body: ``
-      },
       // Icône de l'outil coordonnée (widget)
       "coordonnee" : {
         body: `<path d="M19.96 21L19.43 16.23L18.02 17.64L12.99 12.61V6.75H14.99L11.99 3L8.99 6.75H10.99V12.6L5.94 17.64L4.53 16.23L4 21L8.77 20.47L7.36 19.06L11.98 14.43L16.6 19.06L15.19 20.47L19.96 21Z" fill="currentColor"/>`
       },
-      "dupliquer-fill" : {
-        body: ``
-      },
-      "dupliquer-line" : {
-        body: ``
-      },
+      // Icône de l'outil getFeatureInfo (widget)
       "getfeature-fill" : {
-        body: ``
+        body: `<path d="M11 18.43C11 18.21 11.01 18 11.03 17.78L9.06 16.8L9 16.83V4.24L14.94 7.21L15 7.18V12.11C15.91 11.68 16.92 11.43 18 11.43C19.49 11.43 20.87 11.9 22 12.69V2.76C22 2.69 21.99 2.63 21.96 2.56C21.85 2.31 21.56 2.19 21.3 2.3L15 5L9 2L2 5V21.24C2 21.31 2.01 21.37 2.04 21.44C2.15 21.69 2.44 21.81 2.7 21.7L9 19L11.21 20.11C11.08 19.57 11 19.01 11 18.43Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.77 20.29V21.89H17.17V20.29H18.77ZM18.34 13.91C19.8 14.1 20.86 15.4 20.77 16.87C20.67 18.34 19.45 19.49 17.98 19.49H17.18V17.89H17.98C18.61 17.89 19.14 17.4 19.18 16.77C19.22 16.14 18.77 15.58 18.14 15.5C17.51 15.42 16.93 15.83 16.81 16.45L15.24 16.14C15.53 14.69 16.89 13.72 18.35 13.91H18.34Z" fill="currentColor"/>`
       },
       // Icône de l'outil getFeatureInfo (widget)
       "getfeature-line" : {
         body: `<path d="M11 18.43C11 18.21 11.01 18 11.03 17.78L10 17.26V4.74L14 6.74V12.69C14.6 12.27 15.28 11.94 16 11.72V6.75L20 5.04V11.73C20.72 11.95 21.4 12.27 22 12.7V2.76C22 2.69 21.99 2.63 21.96 2.56C21.85 2.31 21.56 2.19 21.3 2.3L15 5L9 2L2 5V21.24C2 21.31 2.01 21.37 2.04 21.44C2.15 21.69 2.44 21.81 2.7 21.7L9 19L11.21 20.11C11.08 19.57 11 19.01 11 18.43ZM8 17.25L4 18.96V6.32L8 4.61V17.26V17.25Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.77 20.29V21.89H17.17V20.29H18.77ZM18.34 13.91C19.8 14.1 20.86 15.4 20.77 16.87C20.67 18.34 19.45 19.49 17.98 19.49H17.18V17.89H17.98C18.61 17.89 19.14 17.4 19.18 16.77C19.22 16.14 18.77 15.58 18.14 15.5C17.51 15.42 16.93 15.83 16.81 16.45L15.24 16.14C15.53 14.69 16.89 13.72 18.35 13.91H18.34Z" fill="currentColor"/>`
-      },
-      "ligne-fill" : {
-        body: ``
-      },
-      "ligne-line" : {
-        body: ``
-      },
-      "limite-admin-fill" : {
-        body: ``
-      },
-      "limite-admin-line" : {
-        body: ``
-      },
-      "mer" : {
-        body: ``
-      },
-      "parcelle-select-fill" : {
-        body: ``
-      },
-      "parcelle-select-line" : {
-        body: ``
-      },
-      "recherche-attribut-fill" : {
-        body: ``
-      },
-      "recherche-attribut-line" : {
-        body: ``
-      },
-      "route-2-fill" : {
-        body: ``
-      },
-      "route-2-line" : {
-        body: ``
-      },
-      "separer-fill" : {
-        body: ``
-      },
-      "separer-line" : {
-        body: ``
-      },
-      "shape-2-fill" : {
-        body: ``
-      },
-      "shape-2-line" : {
-        body: ``
-      },
-      "shape-3-fill" : {
-        body: ``
-      },
-      "shape-3-line" : {
-        body: ``
       }
     }
   },
@@ -205,6 +116,7 @@ const collections: IconifyJSON[] = [
       "line-chart-line": {
         body: '<path fill="currentColor" d="M5 3v16h16v2H3V3zm15.293 3.293l1.414 1.414L16 13.414l-3-2.999l-4.293 4.292l-1.414-1.414L13 7.586l3 2.999z"/>',
       },
+      "list-check": { body: '<path fill="currentColor" d="M8 4h13v2H8zm-5-.5h3v3H3zm0 7h3v3H3zm0 7h3v3H3zM8 11h13v2H8zm0 7h13v2H8z"/>' },
       "list-indefinite": {
         body: '<path fill="currentColor" d="M13 4h8v2h-8zm0 7h8v2h-8zm0 7h8v2h-8zm-6.5 1a2 2 0 1 1 0-4a2 2 0 0 1 0 4m0 2a4 4 0 1 0 0-8a4 4 0 0 0 0 8M5 6v3h3V6zM3 4h7v7H3z"/>',
       },
@@ -231,6 +143,7 @@ const collections: IconifyJSON[] = [
       "map-pin-time-line": {
         body: '<path fill="currentColor" d="M16.95 15.95a7 7 0 1 0-9.9 0L12 20.9zM12 23.728l-6.364-6.364a9 9 0 1 1 12.728 0zM13 11h4v2h-6V6h2z"/>',
       },
+      "menu-2-line": { body: '<path fill="currentColor" d="M3 4h18v2H3zm0 7h12v2H3zm0 7h18v2H3z"/>' },
       "menu-add-fill": {
         body: '<path fill="currentColor" d="m18 15l-.001 3H21v2h-3.001L18 23h-2l-.001-3H13v-2h2.999L16 15zm-7 3v2H3v-2zm10-7v2H3v-2zm0-7v2H3V4z"/>',
       },
