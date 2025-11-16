@@ -58,7 +58,7 @@ Identifier dans l'onglet _réseau_ les téléchargements d'icones :
 https://api.iconify.design/ion.json?icons=close
 ```
 
-Récuperer la reponse :
+Récupérer la réponse :
 
 ```json
 {
