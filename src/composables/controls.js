@@ -165,7 +165,7 @@ export const useControls = {
     disable: true,
     analytic: true,
     default: true,
-    icon: "fr-icon-france-line" 
+    icon: "fr-icon-france-line"
   },
   ElevationPath: {
     id: 'ElevationPath',
