@@ -257,11 +257,16 @@ const scrollDown = () => {
 }
 onMounted(() => {
   let badge = document.querySelector(".fr-header__service-title span")
-    if (badge) {
+  let icon = document.createElement("span")
+  icon.classList.add("fr-icon-road-map-fill")
+  icon.style.scale = "50%"
+    if (badge && parent) {
     badge.innerHTML = "Explorer les cartes"
     badge.classList.remove("fr-badge--green-emeraude")
     badge.classList.add("fr-badge--purple-glycine")
     badge.classList.add("fr-icon-road-map-fill")
+    const textNode = badge.firstChild;
+    badge.insertBefore(icon, textNode)
   }
 })
 </script>
