@@ -31,18 +31,18 @@ export function useHeaderParams() {
         ],
         afterQuickLinks: [
           {
-            title: "Aides",
+            title: "Aide",
             icon: "ri-question-fill",
             links :[
               {
                   text: "Questions Fréquentes",
-                  to: useBaseUrl() + '/faq',
-                  icon: "ri-question-mark"
+                  to: useBaseUrl() + '/aide',
+                  icon: "ri-question-line"
               },
               {
-                  text: "Documentation",
-                  to: useBaseUrl() + '/documentation',
-                  icon: "ri-file-text-line"
+                  text: "Aide",
+                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/',
+                  icon: "ri-book-2-line"
               },
               {
                   text: "Nous contacter",
@@ -56,14 +56,30 @@ export function useHeaderParams() {
             icon: "ri-grid-fill",
             links :[
               {
-                  text: "Offre de service",
-                  to: useBaseUrl() + '/offre',
-                  // icon: "ri-user-line"
+                  text: "Visualiser les cartes",
+                  to: useBaseUrl() + '/explorer-les-cartes',
+                  icon: "ri-road-map-line"
               },
               {
-                  text: "Niveau de service",
-                  to: useBaseUrl() + '/niveau-de-service',
-                  // icon: "ri-dashboard-3-line"
+                  text: "Rechercher une donnée",
+                  to: useBaseUrl() + '/rechercher-une-donnee',
+                  icon: "ri-search-line"
+              },
+              {
+                  text: "Publier une donnée",
+                  to: useBaseUrl() + '/publier-une-donnee',
+                  icon: "ri-database-line"
+              },
+              {
+                  text: "Créer une carte",
+                  to: useBaseUrl() + '/creer-une-carte',
+                  icon: "ri-brush-line"
+              },
+              {
+                  text: "Découvrir cartes.gouv",
+                  to: useBaseUrl() + '/decouvrir',
+                  icon: "fr-icon-external-link-line",
+                  button : true
               }
             ]   
           },  
@@ -74,12 +90,12 @@ export function useHeaderParams() {
             links :[
               {
                   text: "Tableau de bord",
-                  to: useBaseUrl() + '/',
+                  to: useBaseUrl() + '/tableau-de-bord',
                   icon: "ri-dashboard-3-line"
               },
               {
-                  text: "Mon compte",
-                  to: useBaseUrl() + '/',
+                  text: "Paramètres du compte",
+                  to: useBaseUrl() + '/mon-compte',
                   icon: "ri-user-line"
               }
             ]   

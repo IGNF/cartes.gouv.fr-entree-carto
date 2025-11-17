@@ -110,7 +110,13 @@ onMounted(() => {
         :key="idx"
         @click.stop="$emit('toggleId', expandedId)"
       >
-      <div :id="idx" class="fr-container" v-if="link.type && link.type == 'html'" v-html="link.text">
+      <div v-if="link.button" :id="idx" class="fr-container" >
+        <div class="fr-grid-row fr-grid-row--center">
+          <button class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right"
+            :class="link.icon">
+            <a :href="link.to">{{ link.text }}</a>
+          </button>
+        </div>
       </div>
       <a v-else :id="idx" :href="link.to"
         class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
@@ -125,7 +131,7 @@ onMounted(() => {
           <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left">
             <i class="ri-logout-box-line"></i>
               <a v-if="user" :href="useBaseUrl() + '/logout'">Se déconnecter</a>
-              <a v-else :href="useBaseUrl() +  '/login'">Se Connecter</a>
+              <a v-else :href="useBaseUrl() +  '/login'">Se connecter</a>
           </button>
         </div>
       </div>
