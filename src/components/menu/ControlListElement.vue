@@ -28,6 +28,8 @@ const props = defineProps({
 const selectedControlsModel = defineModel({ type: Array, default: () => [] })
 const isActive = ref()
 
+const dsfrIcon = computed(() => typeof props.controlListElementOptions.icon === 'string' && props.controlListElementOptions.icon.startsWith('fr-icon-'))
+
 watch(isActive, (value) => {
   if(value === true && !selectedControlsModel.value.includes(props.controlListElementOptions.name)) {
     selectedControlsModel.value = [...selectedControlsModel.value, props.controlListElementOptions.name]
@@ -56,8 +58,14 @@ onUpdated(() => {})
             v-html="controlListElementOptions.svg"
           />
           <VIcon
-            v-else
+            v-else-if="!dsfrIcon"
+            scale="1.25"
             :name="controlListElementOptions.icon"
+          />
+          <span 
+            v-else
+            :class="controlListElementOptions.icon" 
+            aria-hidden="true"
           />
         </div>
       </DsfrTooltip>
