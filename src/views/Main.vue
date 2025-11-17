@@ -255,7 +255,15 @@ const scrollDown = () => {
     });
   }, 100);
 }
-
+onMounted(() => {
+  let badge = document.querySelector(".fr-header__service-title span")
+    if (badge) {
+    badge.innerHTML = "Explorer les cartes"
+    badge.classList.remove("fr-badge--green-emeraude")
+    badge.classList.add("fr-badge--purple-glycine")
+    badge.classList.add("fr-icon-road-map-fill")
+  }
+})
 </script>
 
 <template>
@@ -280,6 +288,7 @@ const scrollDown = () => {
       :nav-items="headerParams.afterQuickLinks"
     />
     </template>
+
   </DsfrHeader>
   <!-- Notifications
   -->
