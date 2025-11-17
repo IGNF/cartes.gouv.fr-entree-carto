@@ -2,6 +2,8 @@
 import { useRandomId, useCollapsable } from "@gouvminint/vue-dsfr"
 import { useElementSize } from '@vueuse/core'
 import { useBaseUrl } from '@/composables/baseUrl';
+import { useDomStore } from "@/stores/domStore"
+const domStore = useDomStore();
 
 const props = defineProps({
   id: {
@@ -33,6 +35,7 @@ const { width: menuWidth, height: menuHeight } = useElementSize(collapse)
 const marginLeft = computed(() => {
   return `-${menuWidth.value - btnWidth.value - 16}px`
 })
+
 const expanded = computed(() => props.id === props.expandedId)
 
 const service = inject('services');
@@ -84,7 +87,10 @@ onMounted(() => {
     ref="collapse"
     class="fr-collapse fr-menu fr-access_menu"
     data-testid="navigation-menu"
-    :class="{ 'fr-collapse--expanded': cssExpanded, 'fr-collapsing': collapsing }"
+    :class="{
+          'fr-collapse--expanded': cssExpanded,
+          'minimized': domStore.isHeaderCompact
+    }"
     @transitionend="onTransitionEnd(expanded)"
   >
     <ul
@@ -131,7 +137,7 @@ onMounted(() => {
 </nav>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .flex-start {
   justify-content: flex-start;
 }
@@ -142,5 +148,9 @@ onMounted(() => {
 .fr-access_menu {
   margin-left: v-bind(marginLeft);
 }
+.fr-access_menu:not(.minimized) {
+  margin-top: -34px;
 }
+}
+
 </style>
