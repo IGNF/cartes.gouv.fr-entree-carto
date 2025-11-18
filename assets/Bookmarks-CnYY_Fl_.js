@@ -1,0 +1,2 @@
+import{E as n,s as r,f as c,o as l,i as e,j as i,k as _,G as f,ab as d,J as p,Y as u,t as m}from"./index-D5lCu_Jv.js";const k={class:"fr-container fr-p-2w"},B={},j=Object.assign(B,{__name:"Bookmarks",setup(b){u(),m("services");const s="Favoris",t="Not yet implemented !";return n(()=>{}),r(()=>{}),(o,g)=>{const a=d;return l(),c(p,null,[e("div",k,[e("h2",null,f(s)),_(a,{type:"info",title:"Information",description:t,closed:!1,closeable:!1})]),i(o.$slots,"default")],64)}}});export{j as default};
+//# sourceMappingURL=Bookmarks-CnYY_Fl_.js.map
