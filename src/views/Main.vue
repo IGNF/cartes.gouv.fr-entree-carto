@@ -297,6 +297,10 @@ const onCloseAlert = () => {
         :nav-items="navItems"
       />
     </template>
+    <!-- HACK pour l'API Analytics -->
+    <template #default>
+      <div class="fr-header__menu-links" />
+    </template>
   </DsfrHeader>
 
   <!-- Gestion des Notifications -->
