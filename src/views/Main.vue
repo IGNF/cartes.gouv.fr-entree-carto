@@ -297,6 +297,20 @@ const onCloseAlert = () => {
         :nav-items="navItems"
       />
     </template>
+    <!--
+      HACK pour l'API Analytics
+      Contexte : L'API Analytics nécessite la présence d'un élément avec la classe
+      "fr-header__menu-links" dans le header pour correctement détecter et suivre
+      les interactions utilisateur. Sans cet élément, certaines fonctionnalités
+      d'analyse ne sont pas déclenchées.
+      Workaround : Nous ajoutons un <div class="fr-header__menu-links" /> vide dans
+      le slot "default" du DsfrHeader afin de satisfaire cette exigence de l'API.
+      Plan de suppression : Ce hack pourra être retiré lorsque l'API Analytics
+      corrigera ce comportement ou proposera une méthode officielle pour l'intégration.
+    -->
+    <template #default>
+      <div class="fr-header__menu-links" />
+    </template>
   </DsfrHeader>
 
   <!-- Gestion des Notifications -->
