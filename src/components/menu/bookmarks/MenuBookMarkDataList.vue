@@ -135,7 +135,7 @@ const lstMap = computed(() => {
         id : document._id,
         name : document.name,
         type : "carte",
-        type_fr : "", // pas de traduction, sinon ex. "carte", "permalien"
+        type_fr : "", // no translation, otherwise e.g. "carte", "permalien"
         icon : "ri-map-2-line",
       });
     }
