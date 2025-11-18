@@ -406,7 +406,7 @@ const buttonsData = [
     - date?
   -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
-    <span v-if="data.type_fr !== 'permalien'"> {{ data.type_fr }}</span>
+    <span v-if="data.type_fr"> {{ data.type_fr }}</span>
     <span v-if="data.format"> {{ data.format }}</span>
     <span v-if="data.date"> {{ data.date }}</span>
   </div>
