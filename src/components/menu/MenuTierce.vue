@@ -106,7 +106,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
-      icon="mingcute:file-import-line"
+      icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
       Importer des données
@@ -114,7 +114,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
-      icon="ant-design:link-outlined"
+      icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
       Partager, intégrer la carte
@@ -122,7 +122,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
-      icon="material-symbols:print-outline"
+      icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"
     >

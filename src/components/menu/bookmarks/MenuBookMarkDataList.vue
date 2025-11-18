@@ -69,19 +69,19 @@ const icon = (label) => {
   var icon = "";
   if (service.labels.includes(label)) {
       if (label === "drawing") {
-        icon = "fr-icon-edit-line";
+        icon = "ri:pencil-line";
       }
       if (label === "import") {
-        icon = "fr-icon-file-download-line";
+        icon = "ri:file-upload-line";
       }
       if (label === "service") {
-        icon = "fr-icon-cloud-line";
+        icon = "ri:cloud-line";
       }
       if (label === "compute") {
-        icon = "fr-icon-settings-5-line";
+        icon = "ri:settings-5-line";
       }
   } else {
-      icon = "fr-icon-pencil-line";
+      icon = "ri:pencil-line";
   }
   return icon;
 };
@@ -113,7 +113,7 @@ const lstData = computed(() => {
           id : document._id,
           name : (ext) ? document.name.replace(ext, "").slice(0, -1) : document.name,
           type : type,
-          type_fr : i18n(type),
+          type_fr : "", // no translation; if needed, use i18n(type)
           icon : icon(type)
         });
       }
@@ -135,8 +135,8 @@ const lstMap = computed(() => {
         id : document._id,
         name : document.name,
         type : "carte",
-        type_fr : "permalien",
-        icon : "ri-map-2-line", // icon de permalien : fr-icon-link
+        type_fr : "", // no translation, otherwise e.g. "carte", "permalien"
+        icon : "ri-map-2-line",
       });
     }
   }

@@ -26,11 +26,13 @@ import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
+import { useMapStore} from "@/stores/mapStore"
 // others
 import t from '@/features/translation'
 
 useAppStore()
 const domStore = useDomStore();
+const mapStore = useMapStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -269,6 +271,18 @@ onMounted(() => {
     badge.insertBefore(icon, textNode)
   }
 })
+
+const alertClosed = ref(false);
+
+const alertData = {
+    title : "Iframe obsolète",
+    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du xx/xx/202x. Pour le mettre à jour, rendez vous sur notre <a href=\"https://ignf.github.io/permalink-converter/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
+}; 
+
+const onCloseAlert = () => {
+  alertClosed.value = true;
+};
+
 </script>
 
 <template>
@@ -297,6 +311,7 @@ onMounted(() => {
   </DsfrHeader>
   <!-- Notifications
   -->
+  <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
     <Notification
       :item="item"
@@ -305,10 +320,27 @@ onMounted(() => {
     />
   </Notivue>
 
+  <!-- INFO
+    Message d'information sur la redirection issue du geoportail 
+    Le permalien possède la clef/valeur : "fromgpp=1"
+    On informe donc l'utilisateur d'une action à faire.
+  -->
+  <div v-if="mapStore.isRedirect">
+    <DsfrAlert
+      type="warning"
+      :title="alertData.title"
+      :closed="alertClosed"
+      :closeable="true"
+      @close="onCloseAlert()"
+    >
+      <p v-html="alertData.description" />
+    </DsfrAlert>
+  </div>
+  
   <div class="futur-map-container" :class="domStore.isHeaderCompact ? 'minimized': ''">
     <router-view />
   </div>
-
+  
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
@@ -316,7 +348,9 @@ onMounted(() => {
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
-  ><span>Fermer</span></label>
+  >
+    <span>Fermer</span>
+  </label>
   <input
     id="fr-footer-toggle"
     type="checkbox"
@@ -350,9 +384,9 @@ onMounted(() => {
    class="fr-container fr-container--fluid fr-container-md">
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
-
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
+    <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
   </div>
 </template>
@@ -455,6 +489,13 @@ onMounted(() => {
   }
   .fr-footer-toggle-label > span {
     display: none;
+  }
+
+  .fr-footer__logo {
+    max-height: 5.625rem;
+  }
+  .fr-footer__partners-logos {
+    justify-content: flex-start;
   }
 
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
