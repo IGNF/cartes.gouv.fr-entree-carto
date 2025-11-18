@@ -54,7 +54,6 @@ const collections: IconifyJSON[] = [
       "arrow-right-line": {
         body: '<path fill="currentColor" d="m16.172 11l-5.364-5.364l1.414-1.414L20 12l-7.778 7.778l-1.414-1.414L16.172 13H4v-2z"/>',
       },
-      // Icône des enregistrements favoris (bookmark)
       "bookmark-line": {
         body: '<path fill="currentColor" d="M5 2h14a1 1 0 0 1 1 1v19.143a.5.5 0 0 1-.766.424L12 18.03l-7.234 4.536A.5.5 0 0 1 4 22.143V3a1 1 0 0 1 1-1m13 2H6v15.432l6-3.761l6 3.761z"/>',
       },
@@ -62,10 +61,12 @@ const collections: IconifyJSON[] = [
       "close-line": {
         body: '<path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z"/>',
       },
+      "cloud-line": {
+        body: '<path fill="currentColor" d="M12 2a7 7 0 0 1 6.992 7.339A6 6 0 0 1 17 21H7A6 6 0 0 1 5.008 9.339A7 7 0 0 1 12 2m0 2a5 5 0 0 0-4.994 5.243l.07 1.488l-1.404.494A4.002 4.002 0 0 0 7 19h10a4 4 0 1 0-3.796-5.265l-1.898-.633A6 6 0 0 1 17 9a5 5 0 0 0-5-5"/>',
+      },
       "compasses-2-line": {
         body: '<path fill="currentColor" d="M16.33 13.497a6.99 6.99 0 0 0 2.67-5.5h2a8.99 8.99 0 0 1-3.661 7.246l2.527 4.378a2 2 0 0 1-.732 2.732l-3.527-6.108a9 9 0 0 1-3.607.752a9 9 0 0 1-3.607-.752l-3.527 6.108a2 2 0 0 1-.732-2.732l5.064-8.77A4.002 4.002 0 0 1 11 4.123V1.997h2v2.126a4.002 4.002 0 0 1 1.803 6.728zm-1.73 1.001l-1.528-2.646a4 4 0 0 1-2.142 0l-1.528 2.646a7 7 0 0 0 2.599.499a7 7 0 0 0 2.599-.499M12 9.997a2 2 0 1 0 0-4a2 2 0 0 0 0 4"/>',
       },
-      // Icone de l'outil de surface (widget)
       "custom-size": {
         body: '<path fill="currentColor" d="M8 3h7V.5L18.5 4L15 7.5V5H8v2.5L4.5 4L8 .5zM3 17V6.5h2V17a2 2 0 0 0 2 2h10.5v2H7a4 4 0 0 1-4-4m18-1V9h2.5L20 5.5L16.5 9H19v7h-2.5l3.5 3.5l3.5-3.5z"/>',
       },
@@ -126,7 +127,6 @@ const collections: IconifyJSON[] = [
       "map-2-fill": {
         body: '<path fill="currentColor" d="m2 5l7-3l6 3l6.303-2.701a.5.5 0 0 1 .697.46V19l-7 3l-6-3l-6.303 2.701a.5.5 0 0 1-.697-.46zm13 14.764V7.176l-.065.028L9 4.236v12.588l.065-.028z"/>',
       },
-      // Icone du catalogue (widget)
       "map-2-line": {
         body: '<path fill="currentColor" d="m2 5l7-3l6 3l6.303-2.701a.5.5 0 0 1 .697.46V19l-7 3l-6-3l-6.303 2.701a.5.5 0 0 1-.697-.46zm14 14.395l4-1.714V5.033l-4 1.714zm-2-.131V6.736l-4-2v12.528zm-6-2.011V4.605L4 6.319v12.648z"/>',
       },
@@ -159,7 +159,6 @@ const collections: IconifyJSON[] = [
       "navigation-fill": {
         body: '<path fill="currentColor" d="m2.9 2.3l18.805 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.912a.5.5 0 0 1 .638-.612"/>',
       },
-      // Icône de la mini-carte (widget)
       "navigation-line": {
         body: '<path fill="currentColor" d="m4.965 5.096l3.546 12.41l3.04-6.08l5.637-2.255zM2.899 2.3l18.806 6.268a.5.5 0 0 1 .028.939L13 13l-4.425 8.85a.5.5 0 0 1-.928-.086L2.261 2.91a.5.5 0 0 1 .638-.611"/>',
       },
@@ -180,6 +179,9 @@ const collections: IconifyJSON[] = [
       },
       "ruler-line": {
         body: '<path fill="currentColor" d="m6.343 14.728l-2.828 2.829l3.535 3.535L20.485 7.657L16.95 4.121l-2.121 2.122l1.414 1.414l-1.414 1.414l-1.415-1.414l-2.121 2.121l2.121 2.122L12 13.314l-2.12-2.121l-2.122 2.12l1.415 1.415l-1.415 1.414zM17.657 2l4.95 4.95a1 1 0 0 1 0 1.414l-14.85 14.85a1 1 0 0 1-1.414 0l-4.95-4.95a1 1 0 0 1 0-1.415L16.243 2a1 1 0 0 1 1.414 0"/>',
+      },
+      "settings-5-line": {
+        body: '<path fill="currentColor" d="M2.212 14.06a9.95 9.95 0 0 1 .001-4.12c1.11.131 2.079-.236 2.396-1.001s-.109-1.71-.986-2.402a9.95 9.95 0 0 1 2.913-2.914c.692.878 1.637 1.303 2.402.986s1.133-1.286 1.002-2.396a9.95 9.95 0 0 1 4.12 0c-.131 1.11.236 2.08 1.001 2.396c.765.317 1.71-.108 2.402-.985a9.9 9.9 0 0 1 2.914 2.912c-.878.692-1.303 1.638-.986 2.403s1.286 1.132 2.396 1.001a9.95 9.95 0 0 1 0 4.12c-1.11-.13-2.08.237-2.396 1.002c-.317.764.108 1.71.985 2.402a9.95 9.95 0 0 1-2.912 2.914c-.693-.878-1.638-1.304-2.403-.987s-1.132 1.286-1.001 2.397a9.9 9.9 0 0 1-4.12-.001c.13-1.11-.237-2.079-1.002-2.396s-1.71.109-2.402.986a9.9 9.9 0 0 1-2.914-2.913c.878-.692 1.304-1.637.987-2.402s-1.286-1.133-2.397-1.002M4 12.21c1.1.305 2.007 1.002 2.456 2.086c.45 1.085.3 2.22-.262 3.212q.145.153.298.298c.993-.563 2.127-.712 3.212-.262c1.084.449 1.781 1.356 2.085 2.456q.21.006.42 0c.305-1.1 1.002-2.007 2.087-2.456c1.084-.45 2.219-.3 3.212.262q.152-.145.297-.298c-.562-.993-.711-2.127-.262-3.212c.45-1.084 1.357-1.781 2.456-2.085q.006-.21 0-.421c-1.1-.304-2.007-1.001-2.456-2.086c-.45-1.084-.3-2.22.262-3.212a8 8 0 0 0-.297-.297c-.993.562-2.128.711-3.212.262C13.21 6.007 12.514 5.1 12.21 4a8 8 0 0 0-.42 0c-.305 1.1-1.002 2.008-2.086 2.457c-1.085.45-2.22.3-3.212-.262q-.153.144-.298.297c.563.993.712 2.128.262 3.212S5.1 11.485 4 11.79q-.006.21 0 .42M12 15a3 3 0 1 1 0-6a3 3 0 0 1 0 6m0-2a1 1 0 1 0 0-2a1 1 0 0 0 0 2"/>',
       },
       "share-2-fill": {
         body: '<path fill="currentColor" d="M18.414 9L12 2.586L5.586 9H11v7h2V9zM3 14v4a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-4h-2v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4z"/>',
@@ -210,9 +212,74 @@ const collections: IconifyJSON[] = [
       "zoom-in-line": {
         body: '<path fill="currentColor" d="m18.031 16.617l4.283 4.282l-1.415 1.415l-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9s9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617m-2.006-.742A6.98 6.98 0 0 0 18 11c0-3.867-3.133-7-7-7s-7 3.133-7 7s3.133 7 7 7a6.98 6.98 0 0 0 4.875-1.975zM10 10V7h2v3h3v2h-3v3h-2v-3H7v-2z"/>',
       },
-    }
+    },
   }
 ]
+
+/**
+ * Collections d'icônes Iconify pour l'importation (Remixicons)
+ */
+export const ri = {
+  arrowRightLine: "ri:arrow-right-line",
+  bookmarkLine: "ri:bookmark-line",
+  checkLine: "ri:check-line",
+  closeLine: "ri:close-line",
+  cloudLine: "ri:cloud-line",
+  compasses2Line: "ri:compasses-2-line",
+  customSize: "ri:custom-size",
+  dragDropFill: "ri:drag-drop-fill",
+  dragDropLine: "ri:drag-drop-line",
+  draggable: "ri:draggable",
+  earthFill: "ri:earth-fill",
+  earthLine: "ri:earth-line",
+  fileCopyFill: "ri:file-copy-fill",
+  fileCopyLine: "ri:file-copy-line",
+  fileUploadFill: "ri:file-upload-fill",
+  fileUploadLine: "ri:file-upload-line",
+  flowerFill: "ri:flower-fill",
+  flowerLine: "ri:flower-line",
+  fullscreenExitFill: "ri:fullscreen-exit-fill",
+  fullscreenExitLine: "ri:fullscreen-exit-line",
+  fullscreenFill: "ri:fullscreen-fill",
+  fullscreenLine: "ri:fullscreen-line",
+  functionAddFill: "ri:function-add-fill",
+  functionAddLine: "ri:function-add-line",
+  lineChartLine: "ri:line-chart-line",
+  listCheck: "ri:list-check",
+  listIndefinite: "ri:list-indefinite",
+  map2Fill: "ri:map-2-fill",
+  map2Line: "ri:map-2-line",
+  mapPin5Fill: "ri:map-pin-5-fill",
+  mapPin5Line: "ri:map-pin-5-line",
+  mapPinAddFill: "ri:map-pin-add-fill",
+  mapPinAddLine: "ri:map-pin-add-line",
+  mapPinTimeFill: "ri:map-pin-time-fill",
+  mapPinTimeLine: "ri:map-pin-time-line",
+  menu2Line: "ri:menu-2-line",
+  menuAddFill: "ri:menu-add-fill",
+  menuSearchFill: "ri:menu-search-fill",
+  menuSearchLine: "ri:menu-search-line",
+  navigationFill: "ri:navigation-fill",
+  navigationLine: "ri:navigation-line",
+  pencilLine: "ri:pencil-line",
+  playListAddFill: "ri:play-list-add-fill",
+  playListAddLine: "ri:play-list-add-line",
+  routeFill: "ri:route-fill",
+  routeLine: "ri:route-line",
+  rulerLine: "ri:ruler-line",
+  settings5Line: "ri:settings-5-line",
+  share2Fill: "ri:share-2-fill",
+  share2Line: "ri:share-2-line",
+  shining2Fill: "ri:shining-2-fill",
+  shining2Line: "ri:shining-2-line",
+  signpostFill: "ri:signpost-fill",
+  signpostLine: "ri:signpost-line",
+  text: "ri:text",
+  toolsLine: "ri:tools-line",
+  treeFill: "ri:tree-fill",
+  treeLine: "ri:tree-line",
+  zoomInLine: "ri:zoom-in-line",
+} as const;
 
 /**
  * Enregistre les collections d'icônes personnalisées
