@@ -113,7 +113,7 @@ const lstData = computed(() => {
           id : document._id,
           name : (ext) ? document.name.replace(ext, "").slice(0, -1) : document.name,
           type : type,
-          type_fr : "", // pas de traduction, sinon utiliser i18n(type)
+          type_fr : "", // no translation; if needed, use i18n(type)
           icon : icon(type)
         });
       }
