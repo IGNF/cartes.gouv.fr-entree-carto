@@ -37,7 +37,7 @@ export function useHeaderParams() {
               {
                   text: "Questions Fréquentes",
                   to: useBaseUrl() + '/aide',
-                  icon: "ri-question-line"
+                  icon: "ri-question-mark"
               },
               {
                   text: "Aide",
