@@ -149,10 +149,10 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
+      icon="ri:layout-top-line"
       @click="onToggleHeaderCompact"
     >
     <div class="compact-toggle">
-      <span class="fr-icon-layout-top-line fr-link--icon-left" />
       Affichage compact
       <DsfrToggleSwitch
         no-text

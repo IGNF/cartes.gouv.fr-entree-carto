@@ -416,12 +416,12 @@ const onCloseAlert = () => {
 
   @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 168px);
+      height: calc(100vh - 191px);
       margin-bottom: 0px;
 
     }
     .minimized.futur-map-container{
-      height: calc(100vh - 52px);
+      height: calc(100vh - 80px);
       margin-bottom: 0px;
     }
   }

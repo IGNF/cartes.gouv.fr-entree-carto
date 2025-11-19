@@ -33,6 +33,7 @@ const riIconNames = [
   "function-add-fill",
   "function-add-line",
   "grid-fill",
+  "layout-top-line",
   "line-chart-line",
   "list-check",
   "list-indefinite",
