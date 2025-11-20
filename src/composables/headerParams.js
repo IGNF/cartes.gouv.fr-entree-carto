@@ -55,29 +55,29 @@ export function useHeaderParams() {
             title: "Services",
             icon: "ri-grid-fill",
             links :[
-              {
-                  text: "Visualiser les cartes",
-                  to: useBaseUrl() + '/explorer-les-cartes',
-                  icon: "ri-road-map-line"
-              },
+              // {
+              //     text: "Explorer les cartes",
+              //     to: useBaseUrl() + '/cartes',
+              //     icon: "ri-road-map-line"
+              // },
               {
                   text: "Rechercher une donnée",
-                  to: useBaseUrl() + '/rechercher-une-donnee',
+                  to: useBaseUrl() + '/search',
                   icon: "ri-search-line"
               },
               {
                   text: "Publier une donnée",
-                  to: useBaseUrl() + '/publier-une-donnee',
+                  to: useBaseUrl() + '/tableau-de-bord',
                   icon: "ri-database-line"
               },
-              {
-                  text: "Créer une carte",
-                  to: useBaseUrl() + '/creer-une-carte',
-                  icon: "ri-brush-line"
-              },
+              // {
+              //     text: "Créer une carte",
+              //     to: useBaseUrl() + '/creer-une-carte',
+              //     icon: "ri-brush-line"
+              // },
               {
                   text: "Découvrir cartes.gouv",
-                  to: useBaseUrl() + '/decouvrir',
+                  to: useBaseUrl(),
                   icon: "fr-icon-external-link-line",
                   button : true
               }
