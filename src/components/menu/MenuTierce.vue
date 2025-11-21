@@ -138,13 +138,6 @@ onMounted(() => {
       Signaler une anomalie
     </DsfrButton>
     <hr>
-    <DsfrButton
-      tertiary
-      no-outline
-      @click="$emit('onModalThemeOpen')"
-    >
-      <span class="fr-icon-theme-fill fr-link--icon-left" />  Paramètres d'affichage
-    </DsfrButton>
 
     <DsfrButton
       tertiary
