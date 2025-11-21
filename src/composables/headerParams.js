@@ -55,11 +55,11 @@ export function useHeaderParams() {
             title: "Services",
             icon: "ri-grid-fill",
             links :[
-              // {
-              //     text: "Explorer les cartes",
-              //     to: useBaseUrl() + '/cartes',
-              //     icon: "ri-road-map-line"
-              // },
+              {
+                  text: "Explorer les cartes",
+                  to: useBaseUrl() + '/cartes',
+                  icon: "ri-road-map-line"
+              },
               {
                   text: "Rechercher une donnée",
                   to: useBaseUrl() + '/search',
