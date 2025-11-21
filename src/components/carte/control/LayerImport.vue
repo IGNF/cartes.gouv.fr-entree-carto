@@ -35,10 +35,16 @@ const refModalLogin = inject("refModalLogin");
 const refModalSave = inject("refModalSave");
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerImportOptions: Object
+  layerImportOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const mapStore = useMapStore();
@@ -450,7 +456,9 @@ const getDataServiceWMTS = (data) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

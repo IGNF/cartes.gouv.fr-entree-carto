@@ -28,11 +28,14 @@ import { useMapStore} from "@/stores/mapStore"
 import t from '@/features/translation'
 
 useAppStore()
-const mapStore = useMapStore()
 
+const mapStore = useMapStore()
 const route = useRoute()
 const router = useRouter()
 const log = useLogger()
+
+var service :any = inject('services');
+const emitter :any = inject('emitter');
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 useMatchMedia('LG')
@@ -79,8 +82,6 @@ const mandatoryLinks = computed(() => {
   })
 })
 
-var service :any = inject('services');
-
 service.isAuthentificate()
 .then((status:boolean) => {
   // le service renvoie un user 
@@ -105,7 +106,7 @@ service.isAuthentificate()
 // on récupère les informations utilisateurs.
 // Pour les favoris, on récupère aussi les documents.
 service.isAccessValided()
-.then((status:any) => {
+.then((status:string) => {
   if (status === "login") {
     // on met à jour le header en renseignant les informations utilisateurs
     var name = service.getUser();
@@ -114,6 +115,25 @@ service.isAccessValided()
         element.label = name;
       }
     });
+    // on regarde si il y'a un document temporaire à restaurer
+    // on émet un event pour le restaurer
+    var docTemp = mapStore.getDocumentTemporary();
+    if (docTemp) {
+      mapStore.clearDocumentTemporary();
+      var jsonDocTemp = JSON.parse(docTemp);
+      setTimeout(() => {
+        /**
+         * @event document:restore
+         * @description Evenement pour restaurer un document temporaire
+         * @property {Object} data - données du document
+         * @property {String} componentName - nom du component qui emet l'event
+         */
+        emitter.dispatchEvent("document:restore", {
+          data : jsonDocTemp,
+          componentName : "Main"
+        });
+      }, 500);
+    }
   }
   if (status !== "no-auth") {
     router.replace({ query: undefined });
@@ -164,7 +184,7 @@ const navItems: DsfrNavigationProps['navItems'] = [
     },
     links: [
       {
-        to: `${useBaseUrl()}/documentation`,
+        to: `${useBaseUrl()}/aide/`,
         text: 'Documentation',
       },
       {

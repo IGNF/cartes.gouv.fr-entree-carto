@@ -508,9 +508,6 @@ const catalogManagerOptions = {
   }
 };
 
-const refModalPrint = inject("refModalPrint")
-const refModalShare = inject("refModalShare")
-
 const contextMenuOptions = computed(() => {
   return {
     contextMenuItemsOptions : [
@@ -538,6 +535,7 @@ const contextMenuOptions = computed(() => {
 })
 
 onMounted(() => {
+  log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
 })
 </script>

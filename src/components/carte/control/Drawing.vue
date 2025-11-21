@@ -13,6 +13,7 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
 
 import { 
   useCreateDocument, 
@@ -25,6 +26,7 @@ import {
 } from 'geopf-extensions-openlayers';
 
 import { toShare } from '@/features/share';
+import { createVectorLayer } from '@/features/layer';
 
 // lib notification
 import { push } from 'notivue';
@@ -33,14 +35,23 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 var service = inject('services');
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
 const log = useLogger();
 
+log.debug("Drawing component register");
+
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  drawingOptions: Object
+  drawingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const map = inject(props.mapId)
@@ -85,11 +96,14 @@ const btnSave = ref(new ButtonExport({
 }));
 
 /** 
+ * @event vector:edit:clicked
+ * @description
  * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
- * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @property {Object} layer - couche à éditer
+ * @property {Object} options - options de la couche
  * @see LayerSwitcher
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
@@ -117,14 +131,44 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   }
 });
 
-// abonnement sur l'ouverture du controle
+/**
+ * @event drawing:open:clicked
+ * @description Evenement pour ouvrir/fermer le controle de dessin
+ * @property {Boolean} open - ouvrir/fermer le controle
+ */
 emitter.addEventListener("drawing:open:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(!e.open);
   }
 });
 
+/**
+ * l'evenement est déclenché par un outil (ex. dessin) si l'utilisateur
+ * souhaite enregistrer son document alors qu'il n'est pas connecté.
+ * @event document:restore
+ * @description Evenement pour restaurer un document temporaire
+ * @property {Object} data - données du document
+ * @property {String} componentName - nom du component qui emet l'event
+ */
+emitter.addEventListener("document:restore", (e) => {
+  log.debug("Restore drawing document !", e);
+  if (drawing.value && e.data.type === "drawing") {
+    drawing.value.setCollapsed(true);
+    createVectorLayer({
+      name : e.data.name  || "Restored document",
+      description : e.data.description || "Document temporaire restauré depuis une précedente session",
+      type : e.data.type || "drawing",
+      format : e.data.format || "kml",
+      target : e.data.target || "internal",
+      data : e.data.content
+    }).then((layer) => {
+      map.addLayer(layer);
+    });
+  }
+});
+
 onMounted(() => {
+  log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
@@ -219,7 +263,6 @@ const onSaveVector = (e) => {
       title: t.auth.title,
       message: t.auth.not_authentificated
     });
-    return; // pas plus loin...
   }
 
   var gpID = e.layer.gpResultLayerId.toLowerCase();
@@ -235,6 +278,19 @@ const onSaveVector = (e) => {
     type : gpID.split(':')[0].replace("layer", "") // ex. drawing, import, bookmark...
   };
 
+  if (!service.authenticated) {
+    // stockage temporaire dans le localStorage
+    appStore.setDocumentTemporary(JSON.stringify({
+      content : data.content,
+      name : data.name,
+      description : data.description,
+      format : data.format,
+      target : data.target,
+      type : data.type
+    }));
+    return; // pas plus loin...
+  }
+
   var promise;
   if (type !== "bookmark") {
     promise = useCreateDocument(data, emitter, service);
@@ -244,8 +300,8 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = type;
+    var _type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = _type;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }
@@ -294,12 +350,17 @@ const onSaveVector = (e) => {
  * 
  * @param {Object} e
  */
-const onExportVector = (e) => {}
+const onExportVector = (e) => {
+  log.debug(e);
+  // rien de particulier pour l'instant
+}
 
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>
