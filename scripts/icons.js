@@ -7,6 +7,7 @@ import { icons as riCollection } from "@iconify-json/ri";
  * @type {string[]}
  */
 const riIconNames = [
+  "account-circle-fill",
   "arrow-right-line",
   "bookmark-line",
   "check-line",
@@ -31,6 +32,8 @@ const riIconNames = [
   "fullscreen-line",
   "function-add-fill",
   "function-add-line",
+  "grid-fill",
+  "layout-top-line",
   "line-chart-line",
   "list-check",
   "list-indefinite",
@@ -51,6 +54,7 @@ const riIconNames = [
   "pencil-line",
   "play-list-add-fill",
   "play-list-add-line",
+  "question-fill",
   "route-fill",
   "route-line",
   "ruler-line",
