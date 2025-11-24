@@ -100,11 +100,6 @@ const searchEngineOptions = {
   collapsed: false,
   collapsible: false,
   returnTrueGeometry: true,
-  popupButtons : [{
-    label : "Ajouter l'objet à la couche",
-    className : "custom-button",
-    icon : "fr-icon-map-pin-add-line",
-  }],
   autocompleteOptions : {
     serviceOptions : {
         maximumResponses : 10
