@@ -38,6 +38,8 @@ onMounted(() => {
     }
     /* abonnement au widget */
     territories.value.on("territories:change", onChangeTerritories);
+    territories.value.on("territories:add", onAddTerritories);
+    territories.value.on("territories:remove", onRemoveTerritories);
   }
 })
 
@@ -57,6 +59,8 @@ onUpdated(() => {
     }
     /* abonnement au widget */
     territories.value.on("territories:change", onChangeTerritories);
+    territories.value.on("territories:add", onAddTerritories);
+    territories.value.on("territories:remove", onRemoveTerritories);
   }
 })
 
@@ -65,13 +69,21 @@ onUpdated(() => {
  * @description
  * ...
  */
- const onChangeTerritories = (e) => {
+const onChangeTerritories = (e) => {
+  log.debug(e);
+}
+const onAddTerritories = (e) => {
+  log.debug(e);
+}
+const onRemoveTerritories = (e) => {
   log.debug(e);
 }
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

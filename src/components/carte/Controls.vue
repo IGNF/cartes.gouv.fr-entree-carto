@@ -508,9 +508,6 @@ const catalogManagerOptions = {
   }
 };
 
-const refModalPrint = inject("refModalPrint")
-const refModalShare = inject("refModalShare")
-
 const contextMenuOptions = computed(() => {
   return {
     contextMenuItemsOptions : [
