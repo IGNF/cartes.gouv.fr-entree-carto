@@ -99,28 +99,12 @@ const searchEngineOptions = {
   id: "1",
   collapsed: false,
   collapsible: false,
-  displayButtonAdvancedSearch: true,
-  displayButtonGeolocate: true,
-  displayButtonCoordinateSearch: true,
-  coordinateSearchInAdvancedSearch: true,
-  displayButtonClose: false,
-  resources: {
-    search: true
-  },
-  searchOptions: {
-    addToMap: false,
-    filterServices : dataStore.filterServices,
-    filterWMTSPriority : true,
-    filterProjections : dataStore.filterProjections,
-    filterLayersPriority : dataStore.getFeatured().toString(),
-    filterLayers : true,
-    filterTMS : true,
-    filterLayersList : dataStore.getLayersSignatures(),
-    serviceOptions : {
-      maximumResponses : 50
-    },
-    maximumEntries : 5
-  },
+  returnTrueGeometry: true,
+  popupButtons : [{
+    label : "Ajouter l'objet à la couche",
+    className : "custom-button",
+    icon : "fr-icon-map-pin-add-line",
+  }],
   autocompleteOptions : {
     serviceOptions : {
         maximumResponses : 10
