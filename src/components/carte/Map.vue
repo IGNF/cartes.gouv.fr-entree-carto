@@ -114,8 +114,9 @@ onMounted(() => {
  *  Trigerred on mouse over
  */
 const onFocusOnMap = () => {
-  // Si le focus est actuellement sur une balise <input> ou <select>, on ne change pas de focus
-  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
+  console.log(document.activeElement);
+  // Si le focus est actuellement sur une balise <input> ou <select> ou sur la barre de recherche dépliée, on ne change pas de focus
+  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT" && document.querySelector("button[id^=GPSearchEngine-advanced-btn-]").getAttribute("aria-expanded") !== "true") {
     mapRef.value.focus();
   }
 }
