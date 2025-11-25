@@ -14,20 +14,12 @@ export function useHeaderParams() {
         serviceDescription: 'Le service public des cartes et données du territoire',
         logoText: ['république', 'française'],
         quickLinks: [
-            // {
-            //   label: 'Accueil',
-            //   to: '/',
-            //   href: useBaseUrl() + '/',
-            //   icon: 'ri-arrow-right-line',
-            //   iconRight: true
-            // },
-            // {
-            //   label: 'Catalogue',
-            //   to: '/catalogue',
-            //   href: useBaseUrl() + '/catalogue',
-            //   icon: 'ri-arrow-right-line',
-            //   iconRight: true,
-            // }
+          // hack : doit être complété pour pouvoir utiliser le slot afterQuickLinks
+          {
+            label: '',
+            to: '/',
+            href: '#',
+          }
         ],
         afterQuickLinks: [
           {
@@ -82,52 +74,29 @@ export function useHeaderParams() {
                   button : true
               }
             ]   
-          },  
-        {
-            title: "Mon espace",
-            icon: "ri-account-circle-fill",
-            connexionMenu: true,
-            links :[
-              {
-                  text: "Tableau de bord",
-                  to: useBaseUrl() + '/tableau-de-bord',
-                  icon: "ri-dashboard-3-line"
-              },
-              {
-                  text: "Paramètres du compte",
-                  to: useBaseUrl() + '/mon-compte',
-                  icon: "ri-user-line"
-              }
-            ]   
-          }
-        ],
-        searchQuery: ref('')
+          }       
+        ]
     };
 
-    // activation de la connexion aux favoris
     if (import.meta.env.IAM_DISABLE === '0') {
-      headerParams.value.quickLinks.push({
-        label: '',
-        to: '#',
-        class: '',
-        authenticated: false, // information pour l'authentification
-        onClick: (e) => {}
-      });
-      // headerParams.value.quickLinks.push({
-      //   label: 'Se déconnecter',
-      //   to: '/logout',
-      //   class: 'fr-icon-logout-box-r-line',
-      //   authenticated: true, // information pour l'authentification
-      //   onClick: (e) => {}
-      // });
-      // headerParams.value.quickLinks.push({
-      //   label: "...", 
-      //   // to: '/bookmarks',
-      //   href: useBaseUrl() + '/tableau-de-bord',
-      //   class: 'fr-icon-account-fill',
-      //   authenticated: true, // information pour l'authentification
-      //   onClick: (e) => {}
-      // });
+      headerParams.value.afterQuickLinks.push(
+        {
+          title: "Mon espace",
+          icon: "ri-account-circle-fill",
+          connexionMenu: true,
+          links :[
+            {
+                text: "Tableau de bord",
+                to: useBaseUrl() + '/tableau-de-bord',
+                icon: "ri-dashboard-3-line"
+            },
+            {
+                text: "Paramètres du compte",
+                to: useBaseUrl() + '/mon-compte',
+                icon: "ri-user-line"
+            }
+          ]   
+        });
     }
 
     return headerParams;
