@@ -54,7 +54,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Rechercher une donnée",
-                  to: useBaseUrl() + '/search',
+                  to: useBaseUrl() + '/catalogue/search',
                   icon: "ri-search-line"
               },
               {
