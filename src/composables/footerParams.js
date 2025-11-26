@@ -45,13 +45,12 @@ export function useFooterParams() {
         ],
         partners: {
             title: "Nos partenaires",
-            mainPartner: {},
+            mainPartner: {
+              href: "https://www.ign.fr/",
+              logo: "https://data.geopf.fr/annexes/ressources/footer/ign.png",
+              name: "IGN"
+          },
             subPartners: [
-                {
-                    href: "https://www.ign.fr/",
-                    logo: "https://data.geopf.fr/annexes/ressources/footer/ign.png",
-                    name: "IGN"
-                },
                 {
                     href: "https://www.transformation.gouv.fr/",
                     logo: "https://data.geopf.fr/annexes/ressources/footer/min_fp.jpg",

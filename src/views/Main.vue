@@ -508,9 +508,20 @@ const onCloseAlert = () => {
   .fr-footer__logo {
     max-height: 5.625rem;
   }
-  .fr-footer__partners-logos {
-    justify-content: flex-start;
+
+  .fr-footer__body {
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      top: calc(100% + 18px);
+      width: 100%;
+      height: 1px;
+      background: var(--border-default-grey);
   }
+  }
+
+
 
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
     display: inline-block;
