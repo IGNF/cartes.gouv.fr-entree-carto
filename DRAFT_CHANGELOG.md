@@ -29,6 +29,8 @@ Mise en place d'un mécanisme d'icônes personnalisés :
 
 #### 🔥 [Suppression]
 
+  - Cartalogue : suppression du filtre de couches par services (#802)
+
 #### 🐛 [Correction]
 
 #### 🔒 [Sécurité]

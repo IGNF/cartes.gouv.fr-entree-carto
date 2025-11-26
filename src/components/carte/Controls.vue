@@ -455,7 +455,8 @@ const catalogManagerOptions = {
             field : "producer",
             value : "*"
           }
-        },
+        }
+        /*,
         {
           title : "Service",
           section : true,
@@ -465,6 +466,7 @@ const catalogManagerOptions = {
             value : "*"
           }
         },
+        */
         // {
         //   title : "Tout",
         //   section : false,

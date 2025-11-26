@@ -358,7 +358,7 @@ const onCloseAlert = () => {
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <!-- <label
+  <label
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
@@ -368,7 +368,7 @@ const onCloseAlert = () => {
   <input
     id="fr-footer-toggle"
     type="checkbox"
-  > -->
+  >
   <!-- INFO
       On retire les valeurs par defaut pour ajouter
       des valeurs customisées de mandatoryLinks.
@@ -508,9 +508,20 @@ const onCloseAlert = () => {
   .fr-footer__logo {
     max-height: 5.625rem;
   }
-  .fr-footer__partners-logos {
-    justify-content: flex-start;
+
+  .fr-footer__body {
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      top: calc(100% + 18px);
+      width: 100%;
+      height: 1px;
+      background: var(--border-default-grey);
   }
+  }
+
+
 
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
     display: inline-block;
