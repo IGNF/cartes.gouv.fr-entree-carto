@@ -358,7 +358,7 @@ const onCloseAlert = () => {
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <!-- <label
+  <label
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
@@ -368,7 +368,7 @@ const onCloseAlert = () => {
   <input
     id="fr-footer-toggle"
     type="checkbox"
-  > -->
+  >
   <!-- INFO
       On retire les valeurs par defaut pour ajouter
       des valeurs customisées de mandatoryLinks.
