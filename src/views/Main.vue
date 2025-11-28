@@ -359,13 +359,15 @@ const onCloseAlert = () => {
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
   <label
-    class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
+  v-show="!largeScreen"
+  class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
   >
     <span>Fermer</span>
   </label>
   <input
+    v-show="!largeScreen"
     id="fr-footer-toggle"
     type="checkbox"
   >
@@ -408,20 +410,20 @@ const onCloseAlert = () => {
 <style lang="scss">
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 172.5px);
+    height: calc(100vh - 168.5px);
   }
   .minimized.futur-map-container{
-    height: calc(100vh - 108.5px);
+    height: calc(100vh - 91.5px);
   }
 
   @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 191px);
+      height: calc(100vh - 194px);
       margin-bottom: 0px;
 
     }
     .minimized.futur-map-container{
-      height: calc(100vh - 80px);
+      height: calc(100vh - 77px);
       margin-bottom: 0px;
     }
   }
@@ -570,6 +572,7 @@ const onCloseAlert = () => {
       .fr-header__service::before {
       display: none;
       }
+      
     }
 
     /* mini footer */
@@ -614,9 +617,20 @@ const onCloseAlert = () => {
 .fr-header__body-row {
     padding: 0;
   }
+  @media (min-width: 991px){
+    .fr-enlarge-link {
+    max-height: 2.5rem;
+  }
+}
 }
 
 .flex-start {
   justify-content: flex-start;
+}
+
+.fr-header__tools-links {
+  .fr-nav__btn {
+    padding: 8px;
+  }
 }
 </style>

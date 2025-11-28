@@ -33,7 +33,7 @@ const { width: menuWidth, height: menuHeight } = useElementSize(collapse)
 
 // 16px déduit de la classe .fr-menu
 const marginLeft = computed(() => {
-  return `-${menuWidth.value - btnWidth.value - 16}px`
+  return `-${menuWidth.value - btnWidth.value}px`
 })
 
 const expanded = computed(() => props.id === props.expandedId)
@@ -110,9 +110,9 @@ onMounted(() => {
         :key="idx"
         @click.stop="$emit('toggleId', expandedId)"
       >
-      <div v-if="link.button" :id="idx" class="fr-container" >
-        <div class="fr-grid-row fr-grid-row--center">
-          <button class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right"
+      <div v-if="link.button" :id="idx" class="w100" >
+        <div class="fr-grid-row fr-grid-row--center w100">
+          <button class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right w100 justify-center"
             :class="link.icon">
             <a :href="link.to">{{ link.text }}</a>
           </button>
@@ -126,9 +126,9 @@ onMounted(() => {
       </a>
       </DsfrNavigationMenuItem>
       <DsfrNavigationMenuItem v-if="menu.connexionMenu">
-      <div class="fr-container">
-        <div class="fr-grid-row fr-grid-row--center">
-          <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left">
+      <div class="flex">
+        <div class="fr-grid-row fr-grid-row--center w100">
+          <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center">
             <i class="ri-logout-box-line"></i>
               <a v-if="user" :href="useBaseUrl() + '/logout'">Se déconnecter</a>
               <a v-else :href="useBaseUrl() +  '/login'">Se connecter</a>
@@ -147,6 +147,9 @@ onMounted(() => {
 .flex-start {
   justify-content: flex-start;
 }
+.justify-center {
+  justify-content: center;
+}
 .fr-nav__list {
   position: relative;
 }
@@ -155,8 +158,14 @@ onMounted(() => {
   margin-left: v-bind(marginLeft);
 }
 .fr-access_menu:not(.minimized) {
-  margin-top: -34px;
+  margin-top: -44px;
 }
+}
+.w100 {
+  width: 100%;
+}
+.flex {
+  display: flex;
 }
 
 </style>

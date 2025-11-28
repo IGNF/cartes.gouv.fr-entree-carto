@@ -59,7 +59,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Publier une donnée",
-                  to: useBaseUrl() + '/tableau-de-bord',
+                  to: useBaseUrl() + '/publier-une-donnee',
                   icon: "ri-database-line"
               },
               // {
