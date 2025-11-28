@@ -106,17 +106,7 @@ const onClickSearchGeolocationRemove = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
 <style>
-/* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
-  div[id^="GPsearchEngine-"] {
-    position: relative;
-    /* FIXME repasser à 480px quand fusion des boutons rech avancée et rech par coords */
-    width: 550px;
-    margin: 0 auto;
-    left: unset;
-  }
-
 </style>
