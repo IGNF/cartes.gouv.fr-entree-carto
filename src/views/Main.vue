@@ -264,7 +264,7 @@ onMounted(() => {
   icon.classList.add("fr-icon-road-map-fill")
   icon.style.scale = "50%"
     if (badge && parent) {
-    badge.innerHTML = "Explorer les cartes"
+    badge.innerHTML = "Explorer"
     badge.classList.remove("fr-badge--green-emeraude")
     badge.classList.add("fr-badge--purple-glycine")
     badge.classList.add("fr-icon-road-map-fill")
