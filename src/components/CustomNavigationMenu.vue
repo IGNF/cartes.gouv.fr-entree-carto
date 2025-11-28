@@ -41,8 +41,9 @@ const expanded = computed(() => props.id === props.expandedId)
 const service = inject('services');
 
 const user = computed(() => {
+  console.log(service)
   if (service.authenticated) {
-    return service.getUser()
+    return service.user
   }
   return null
 });
@@ -72,7 +73,15 @@ onMounted(() => {
     :id="menu.title.trim().toLowerCase().replaceAll(' ', '-')"
   > 
   <div class="fr-nav__item">
+    <DsfrButton
+    v-if="menu.connexionMenu && !user"
+    ref="button"
+    icon="ri-logout-box-r-line"
+    class="fr-nav__btn fr-nav__btn-no-dropdown">
+    <a :href="useBaseUrl() +  '/login'">Se connecter</a>
+  </DsfrButton>
   <DsfrButton
+    v-else
     ref="button"
     :label="menu.title"
     :icon="menu.icon"
@@ -80,7 +89,6 @@ onMounted(() => {
     :aria-expanded="expanded"
     :aria-controls="id"
     @click.stop="$emit('toggleId', id)">
-
   </DsfrButton>
     <div
     :id="id"
@@ -99,8 +107,13 @@ onMounted(() => {
     <DsfrNavigationMenuItem v-if="menu.connexionMenu && user">
       <div class="fr-container">  
         <div class="fr-grid-row fr-grid-row--left">
-          <div class="fr-m-3v fr-description__info fr-text--xs fr-text-mention--grey">
-            {{ user }}
+          <div class="fr-mt-1v fr-mb-2v fr-description__info fr-text--xs">
+            <b>{{ user.first_name }} {{ user.last_name }}</b>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--left">
+          <div class="fr-mb-2v fr-description__info fr-text--xs fr-text-mention--grey">
+            {{ user.email }}
           </div>
         </div>
       </div>
@@ -166,6 +179,10 @@ onMounted(() => {
 }
 .flex {
   display: flex;
+}
+
+.fr-nav__btn-no-dropdown::after {
+  display: none;
 }
 
 </style>
