@@ -60,7 +60,7 @@
       "id": "REU",
       "title": "Réunion",
       "description": "",
-      "zoom": 10,
+      "zoom": null,
       "bbox": [
         55.07,
         -21.46,
@@ -88,7 +88,7 @@
       "id": "IDF",
       "title": "Paris petite couronne",
       "description": "",
-      "zoom": 12,
+      "zoom": null,
       "bbox": [
         2.18,
         48.77,

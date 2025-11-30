@@ -6,6 +6,10 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { Territories } from 'geopf-extensions-openlayers';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
@@ -15,7 +19,6 @@ const props = defineProps({
 
 const log = useLogger();
 const store = useDataStore();
-
 
 const map = inject(props.mapId)
 const territories = ref(new Territories(props.territoriesOptions));
@@ -71,12 +74,24 @@ onUpdated(() => {
  */
 const onChangeTerritories = (e) => {
   log.debug(e);
+  // push.info({
+  //   title: t.territories.title,
+  //   message: t.territories.change(e.territory.title),
+  // });
 }
 const onAddTerritories = (e) => {
   log.debug(e);
+  push.info({
+    title: t.territories.title,
+    message: t.territories.add(e.territory.title),
+  });
 }
 const onRemoveTerritories = (e) => {
   log.debug(e);
+  push.info({
+    title: t.territories.title,
+    message: t.territories.remove(e.territory.title),
+  });
 }
 </script>
 
