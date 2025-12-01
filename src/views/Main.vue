@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
-
+import CustomNavigation from '@/components/CustomNavigation.vue'
+import CustomNavigationMenu from '@/components/CustomNavigationMenu.vue'
 import { inject, markRaw } from 'vue'
+
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue';
 import NotificationSuccess from '@/icons/NotificationSuccess.vue';
@@ -23,12 +25,14 @@ import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
 // stores
 import { useAppStore } from "@/stores/appStore"
+import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 // others
 import t from '@/features/translation'
 
 useAppStore()
 
+const domStore = useDomStore();
 const mapStore = useMapStore()
 const route = useRoute()
 const router = useRouter()
@@ -38,7 +42,7 @@ var service :any = inject('services');
 const emitter :any = inject('emitter');
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-useMatchMedia('LG')
+const largeScreen = useMatchMedia('LG')
 
 // paramètres pour le Header
 const headerParams = useHeaderParams()
@@ -152,23 +156,7 @@ service.isAccessValided()
 // INFO
 // on met à jour les quickLinks pour la connexion
 const quickLinks = computed(() => {
-  return headerParams.value.quickLinks.filter((element: any) => {
-    // INFO
-    // en cas de refresh de la page...
-    if (service.authenticated && element.label === "...") {
-      if (Object.keys(service.user).length) {
-        var name = service.getUser();
-        element.label = name;
-      } else {
-        // si il y'a un souci pour récuperer des informations,
-        // on n'affiche pas l'utilisateur...
-        return false;
-      }
-    }
-    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
-      return true;
-    }
-  });
+  return headerParams.value.quickLinks
 })
 
 // paramètre pour la barre de navigations
@@ -289,6 +277,31 @@ const scrollDown = () => {
     });
   }, 100);
 }
+onMounted(() => {
+  // Badge header
+  let badge = document.querySelector(".fr-header__service-title span")
+  let icon = document.createElement("span")
+  icon.classList.add("fr-icon-road-map-fill")
+  icon.style.scale = "50%"
+    if (badge && parent) {
+    badge.innerHTML = "Explorer"
+    badge.classList.remove("fr-badge--green-emeraude")
+    badge.classList.add("fr-badge--purple-glycine")
+    badge.classList.add("fr-icon-road-map-fill")
+    const textNode = badge.firstChild;
+    badge.insertBefore(icon, textNode)
+  }
+  // Logo header
+  // let logoDiv = document.querySelector(".fr-header__logo")
+  // let scndLogo = document.createElement("div")
+  // scndLogo.classList.add("header-second-logo")
+  // let img = document.createElement("img")
+  // scndLogo.append(img);
+  // img.classList.add("entree-carto-logo")
+  // img.src = "https://upload.wikimedia.org/wikipedia/commons/2/22/Flag_map_of_France.svg"
+  // logoDiv?.insertAdjacentElement('afterend', scndLogo)
+
+})
 
 const alertClosed = ref(false);
 
@@ -308,17 +321,41 @@ const onCloseAlert = () => {
     v-model="headerParams.serviceTitle"
     :service-title="headerParams.serviceTitle"
     :show-beta="true"
-    :service-description="headerParams.serviceDescription"
-    :logo-text="headerParams.logoText"
+    :service-description="domStore.isHeaderCompact ? '' : headerParams.serviceDescription"
+    :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
     :quick-links="quickLinks"
+    :class="domStore.isHeaderCompact ? 'minimized': ''"
   >
-    <template #mainnav>
+    <!-- <template #mainnav>
       <DsfrNavigation
         :nav-items="navItems"
       />
+    </template> -->
+    <template #after-quick-links>
+      <CustomNavigation
+        id="main-navigation"
+        :label="'Menu principal'"
+        :nav-items="headerParams.afterQuickLinks"
+      />
+    </template>
+    <!--
+      HACK pour l'API Analytics
+      Contexte : L'API Analytics nécessite la présence d'un élément avec la classe
+      "fr-header__menu-links" dans le header pour correctement détecter et suivre
+      les interactions utilisateur. Sans cet élément, certaines fonctionnalités
+      d'analyse ne sont pas déclenchées.
+      Workaround : Nous ajoutons un <div class="fr-header__menu-links" /> vide dans
+      le slot "default" du DsfrHeader afin de satisfaire cette exigence de l'API.
+      Plan de suppression : Ce hack pourra être retiré lorsque l'API Analytics
+      corrigera ce comportement ou proposera une méthode officielle pour l'intégration.
+    -->
+    <template #default>
+      <div class="fr-header__menu-links" />
     </template>
   </DsfrHeader>
 
+  <!-- Notifications
+  -->
   <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
     <Notification
@@ -345,7 +382,8 @@ const onCloseAlert = () => {
     </DsfrAlert>
   </div>
   
-  <div class="futur-map-container">
+  <div class="futur-map-container"
+:class="domStore.isHeaderCompact ? 'minimized': ''">
     <router-view />
   </div>
   
@@ -353,6 +391,7 @@ const onCloseAlert = () => {
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
   <label
+    v-show="!largeScreen"
     class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
@@ -360,6 +399,7 @@ const onCloseAlert = () => {
     <span>Fermer</span>
   </label>
   <input
+    v-show="!largeScreen"
     id="fr-footer-toggle"
     type="checkbox"
   >
@@ -373,6 +413,7 @@ const onCloseAlert = () => {
         :a11y-compliance-link="footerParams.a11yComplianceLink"
   -->
   <DsfrFooter
+    v-show="!largeScreen"
     :before-mandatory-links="footerParams.beforeMandatoryLinks"
     :after-mandatory-links="afterMandatoryLinks"
     :logo-text="footerParams.logoText"
@@ -387,7 +428,9 @@ const onCloseAlert = () => {
     :mandatory-links="mandatoryLinks"
   />
 
-  <div class="fr-container fr-container--fluid fr-container-md">
+  <div
+    class="fr-container fr-container--fluid fr-container-md"
+>
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
@@ -397,15 +440,23 @@ const onCloseAlert = () => {
   </div>
 </template>
 
-<style>
+<style lang="scss">
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 222.5px);
+    height: calc(100vh - 168.5px);
+  }
+  .minimized.futur-map-container{
+    height: calc(100vh - 91.5px);
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 131px);
+      height: calc(100vh - 194px);
+      margin-bottom: 0px;
+
+    }
+    .minimized.futur-map-container{
+      height: calc(100vh - 77px);
       margin-bottom: 0px;
     }
   }
@@ -492,9 +543,20 @@ const onCloseAlert = () => {
   .fr-footer__logo {
     max-height: 5.625rem;
   }
-  .fr-footer__partners-logos {
-    justify-content: flex-start;
+
+  .fr-footer__body {
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      top: calc(100% + 18px);
+      width: 100%;
+      height: 1px;
+      background: var(--border-default-grey);
   }
+  }
+
+
 
   .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
     display: inline-block;
@@ -530,18 +592,22 @@ const onCloseAlert = () => {
     display: inline-block;
   }
 
-  @media (max-width: 576px){
+  @media (max-width: 991px){
     /* mini header */
-    .fr-header__service-tagline {
+    .minimized {
+      .fr-header__service-tagline {
       display: none;
     }
     .fr-header__service {
       position: absolute;
       left: 100px;
     }
-    .fr-header__service::before {
+      .fr-header__service::before {
       display: none;
+      }
+      
     }
+
     /* mini footer */
     .fr-footer {
       padding: 0.5rem 0;
@@ -570,5 +636,76 @@ const onCloseAlert = () => {
     }
   }
 
+/* Surcharge du logo DSFR */
+.minimized {
+  .fr-logo::after {
+    content: none !important; /* Supprime complètement le pseudo-élément */
+    background: none !important;
+    display: none !important;
+}
+  .fr-logo {
+    padding-top: 1rem !important;
+    scale: 1.3 !important;
+}
+.fr-header__body-row {
+    padding: 0;
+  }
+  @media (min-width: 991px){
+    .fr-enlarge-link {
+    max-height: 2.5rem;
+  }
+}
 
+  .fr-header__logo::after {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+  @media (max-width: 991px){
+  .fr-header__logo::after {
+    left: 4.5rem;
+    top: 0.9rem;
+  }
+}
+.fr-header__logo {
+  width: 9rem;
+}
+}
+
+.entree-carto-logo {
+  max-height: 65px;
+}
+.fr-header__logo {
+  position: relative;
+  width: 12rem;
+}
+.fr-header__logo::after {
+  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg");
+  content: "";
+  display: block;
+  height: 4rem;
+  width: 4rem;
+  background-size: contain; /* pour que l’image soit visible */
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 60%;
+  top: 1rem;
+}
+:root[data-fr-theme="dark"] .fr-header__logo::after  {
+  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
+}
+
+
+// .fr-header__service {
+//   margin-left: 65px;
+// }
+
+.flex-start {
+  justify-content: flex-start;
+}
+
+.fr-header__tools-links {
+  .fr-nav__btn {
+    padding: 8px;
+  }
+}
 </style>

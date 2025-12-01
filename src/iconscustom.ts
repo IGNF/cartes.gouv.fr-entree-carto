@@ -1,5 +1,5 @@
-import type { IconifyJSON } from '@iconify/vue'
-import { addCollection } from '@iconify/vue'
+import type { IconifyJSON } from "@iconify/vue";
+import { addCollection } from "@iconify/vue";
 
 /**
  * Collections d'icônes personnalisées utilisées dans l'application
@@ -13,13 +13,13 @@ import { addCollection } from '@iconify/vue'
  * - Nom de l'icône : "icon-catalog", "icon-menu-tools", etc.
  *
  * Chaque icône est définie par un objet contenant une propriété `body`
- * qui inclut le SVG de l'icône. Les icônes peuvent être utilisées dans 
+ * qui inclut le SVG de l'icône. Les icônes peuvent être utilisées dans
  * les composants en spécifiant le nom complet de l'icône, y compris le
  * préfixe de la collection.
  *
- * Pour l'ajout dans le registre d'Iconify, on appelle `registeredIconCollections()` 
- * dans le fichier `src/main.ts` 
- * 
+ * Pour l'ajout dans le registre d'Iconify, on appelle `registeredIconCollections()`
+ * dans le fichier `src/main.ts`
+ *
  * La couleur par défaut des icônes peut être personnalisée via la variable CSS.
  * @see src/iconscustom.css
  * @see https://iconify.design/docs/icon-components/ pour plus d'informations sur Iconify
@@ -117,6 +117,12 @@ const collections: IconifyJSON[] = [
       "function-add-line": {
         body: '<path fill="currentColor" d="M4 3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm0 10a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm10 0a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm1 6v-4h4v4zM5 9V5h4v4zm0 10v-4h4v4zm11-8V8h-3V6h3V3h2v3h3v2h-3v3z"/>',
       },
+      "grid-fill": {
+        body: '<path fill="currentColor" d="M14 10v4h-4v-4zm2 0h5v4h-5zm-2 11h-4v-5h4zm2 0v-5h5v4a1 1 0 0 1-1 1zM14 3v5h-4V3zm2 0h4a1 1 0 0 1 1 1v4h-5zm-8 7v4H3v-4zm0 11H4a1 1 0 0 1-1-1v-4h5zM8 3v5H3V4a1 1 0 0 1 1-1z"/>',
+      },
+      "layout-top-line": {
+        body: '<path fill="currentColor" d="M21 3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM4 10v9h16v-9zm0-2h16V5H4z"/>',
+      },
       "line-chart-line": {
         body: '<path fill="currentColor" d="M5 3v16h16v2H3V3zm15.293 3.293l1.414 1.414L16 13.414l-3-2.999l-4.293 4.292l-1.414-1.414L13 7.586l3 2.999z"/>',
       },
@@ -171,6 +177,9 @@ const collections: IconifyJSON[] = [
       "play-list-add-line": {
         body: '<path fill="currentColor" d="M2 18h10v2H2zm0-7h20v2H2zm0-7h20v2H2zm16 14v-3h2v3h3v2h-3v3h-2v-3h-3v-2z"/>',
       },
+      "question-fill": {
+        body: '<path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10m-1-7v2h2v-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.5 3.5 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2z"/>',
+      },
       "route-fill": {
         body: '<path fill="currentColor" d="M4 15V8.5a4.5 4.5 0 0 1 9 0v7a2.5 2.5 0 0 0 5 0V8.83a3.001 3.001 0 1 1 2 0v6.67a4.5 4.5 0 1 1-9 0v-7a2.5 2.5 0 0 0-5 0V15h3l-4 5l-4-5z"/>',
       },
@@ -212,9 +221,9 @@ const collections: IconifyJSON[] = [
       "zoom-in-line": {
         body: '<path fill="currentColor" d="m18.031 16.617l4.283 4.282l-1.415 1.415l-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9s9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617m-2.006-.742A6.98 6.98 0 0 0 18 11c0-3.867-3.133-7-7-7s-7 3.133-7 7s3.133 7 7 7a6.98 6.98 0 0 0 4.875-1.975zM10 10V7h2v3h3v2h-3v3h-2v-3H7v-2z"/>',
       },
-    },
-  }
-]
+    }
+  },
+];
 
 /**
  * Collections d'icônes Iconify pour l'importation (Remixicons)
@@ -287,10 +296,8 @@ export const ri = {
 const registeredIconCollections = () => {
   // https://vue-ds.fr/guide/icones#eviter-les-appels-reseaux-optionnel-pour-les-applications-internes
   for (const collection of collections) {
-    addCollection(collection)
+    addCollection(collection);
   }
-}
+};
 
-export { 
-  registeredIconCollections
-}
+export { registeredIconCollections };

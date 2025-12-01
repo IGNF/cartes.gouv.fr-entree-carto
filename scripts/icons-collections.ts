@@ -3,6 +3,9 @@ const collections: IconifyJSON[] = [
   {
     prefix: "ri",
     icons: {
+      "account-circle-fill": {
+        body: '<path fill="currentColor" d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2M6.023 15.416C7.491 17.606 9.695 19 12.16 19s4.669-1.393 6.136-3.584A8.97 8.97 0 0 0 12.16 13a8.97 8.97 0 0 0-6.137 2.416M12 11a3 3 0 1 0 0-6a3 3 0 0 0 0 6"/>',
+      },
       "arrow-right-line": {
         body: '<path fill="currentColor" d="m16.172 11l-5.364-5.364l1.414-1.414L20 12l-7.778 7.778l-1.414-1.414L16.172 13H4v-2z"/>',
       },
@@ -69,6 +72,12 @@ const collections: IconifyJSON[] = [
       "function-add-line": {
         body: '<path fill="currentColor" d="M4 3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm0 10a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm10 0a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm1 6v-4h4v4zM5 9V5h4v4zm0 10v-4h4v4zm11-8V8h-3V6h3V3h2v3h3v2h-3v3z"/>',
       },
+      "grid-fill": {
+        body: '<path fill="currentColor" d="M14 10v4h-4v-4zm2 0h5v4h-5zm-2 11h-4v-5h4zm2 0v-5h5v4a1 1 0 0 1-1 1zM14 3v5h-4V3zm2 0h4a1 1 0 0 1 1 1v4h-5zm-8 7v4H3v-4zm0 11H4a1 1 0 0 1-1-1v-4h5zM8 3v5H3V4a1 1 0 0 1 1-1z"/>',
+      },
+      "layout-top-line": {
+        body: '<path fill="currentColor" d="M21 3a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM4 10v9h16v-9zm0-2h16V5H4z"/>',
+      },
       "line-chart-line": {
         body: '<path fill="currentColor" d="M5 3v16h16v2H3V3zm15.293 3.293l1.414 1.414L16 13.414l-3-2.999l-4.293 4.292l-1.414-1.414L13 7.586l3 2.999z"/>',
       },
@@ -123,6 +132,9 @@ const collections: IconifyJSON[] = [
       "play-list-add-line": {
         body: '<path fill="currentColor" d="M2 18h10v2H2zm0-7h20v2H2zm0-7h20v2H2zm16 14v-3h2v3h3v2h-3v3h-2v-3h-3v-2z"/>',
       },
+      "question-fill": {
+        body: '<path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10m-1-7v2h2v-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.5 3.5 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2z"/>',
+      },
       "route-fill": {
         body: '<path fill="currentColor" d="M4 15V8.5a4.5 4.5 0 0 1 9 0v7a2.5 2.5 0 0 0 5 0V8.83a3.001 3.001 0 1 1 2 0v6.67a4.5 4.5 0 1 1-9 0v-7a2.5 2.5 0 0 0-5 0V15h3l-4 5l-4-5z"/>',
       },
@@ -170,6 +182,7 @@ const collections: IconifyJSON[] = [
   },
 ];
 export const ri = {
+  accountCircleFill: "ri:account-circle-fill",
   arrowRightLine: "ri:arrow-right-line",
   bookmarkLine: "ri:bookmark-line",
   checkLine: "ri:check-line",
@@ -194,6 +207,8 @@ export const ri = {
   fullscreenLine: "ri:fullscreen-line",
   functionAddFill: "ri:function-add-fill",
   functionAddLine: "ri:function-add-line",
+  gridFill: "ri:grid-fill",
+  layoutTopLine: "ri:layout-top-line",
   lineChartLine: "ri:line-chart-line",
   listCheck: "ri:list-check",
   listIndefinite: "ri:list-indefinite",
@@ -214,6 +229,7 @@ export const ri = {
   pencilLine: "ri:pencil-line",
   playListAddFill: "ri:play-list-add-fill",
   playListAddLine: "ri:play-list-add-line",
+  questionFill: "ri:question-fill",
   routeFill: "ri:route-fill",
   routeLine: "ri:route-line",
   rulerLine: "ri:ruler-line",

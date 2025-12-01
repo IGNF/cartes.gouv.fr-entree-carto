@@ -21,11 +21,14 @@ Mise en place d'un mécanisme d'icônes personnalisés :
 
 #### 🔨 [Evolution]
 
-- Icones : mécanisme pour les icones personnalisés (#777)
+  - Icones : mécanisme pour les icones personnalisés (#777)
+  - Header : réduction de la taille du header et bouton pour le passer en mode compact (#715) 
 
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
+
+  - Cartalogue : suppression du filtre de couches par services (#802)
 
 #### 🐛 [Correction]
 
