@@ -5,7 +5,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
 
-class ServiceBase {
+class ServiceBase extends EventTarget {
 
   #fetch
   #pending
@@ -24,13 +24,35 @@ class ServiceBase {
    * if access is valid, getting login/logout information, and retrieving access tokens.
    */
   constructor(options) {
+    super();
     options = options || {};
 
     /** authentification */
     this.authenticated = options.authenticated || false;
+
     
     /** user */
-    this.user = options.user || {};
+    let _user = options.user || {};
+
+    Object.defineProperty(this, "user", {
+      get() {
+        return _user;
+      },
+      set(value) {
+        const oldValue = _user;
+        _user = value;
+    
+        // Ne déclenche l'événement que si la valeur a changé
+        if (oldValue !== value) {
+          this.dispatchEvent(
+            new CustomEvent("user-changed", {
+              detail: { value },
+              bubbles: false,
+            })
+          );
+        }
+      },
+    });
     /** documents */
     this.documents = options.documents || {};
     /** erreurs IAM */
