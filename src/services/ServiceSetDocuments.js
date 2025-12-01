@@ -122,15 +122,15 @@ var SetDocuments = {
         this.labelsTarget.find((e) => obj.target.toLowerCase().includes(e))
       ];
       if (obj.kind) {
-        var value = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
-        if (value) {
-          labels.push(value);
+        var valueService = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
+        if (valueService) {
+          labels.push(valueService);
         }
       }
       if (obj.compute) {
-        var value = this.labelsCompute.find((e) => obj.compute.toLowerCase().includes(e));
-        if (value) {
-          labels.push(value);
+        var valueCompute = this.labelsCompute.find((e) => obj.compute.toLowerCase().includes(e));
+        if (valueCompute) {
+          labels.push(valueCompute);
         }
       }
       formData.append("labels", labels.join(","));

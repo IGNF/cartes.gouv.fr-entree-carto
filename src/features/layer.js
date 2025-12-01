@@ -137,7 +137,26 @@ const createVectorLayer = (options) => {
       throw new Error(t.ol.failed_layer("vecteur"));
     }
   
-    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
+    if (options.id) {
+      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
+    } else {
+      // la structure d'un ID issu d'un dessin ou d'un import (widget) est fixée
+      // cf. onClickEditLayer dans LayerSwitcher.vue
+      switch (options.type) {
+        case "drawing":
+          vectorLayer.gpResultLayerId = options.type;
+          break;
+        case "import":
+          vectorLayer.gpResultLayerId = "layer" + options.type + ":" + options.format.toLowerCase();
+          break;
+        case "bookmark":
+        case "compute":
+          throw new Error("Type not yet implemented : " + options.type);
+        default:
+          vectorLayer.gpResultLayerId = options.type;
+          break;
+      }
+    }
   
     return Promise.resolve(vectorLayer);
   } catch (error) {

@@ -13,7 +13,7 @@ const storeData = useDataStore()
 // avant d'initialiser la carte.
 const { fetchData } = storeData;
 const res = await fetchData();
-log.debug(res);
+log.debug("StoreData Component result", res);
 </script>
 
 <template>
