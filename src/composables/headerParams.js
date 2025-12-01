@@ -33,7 +33,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Guide d'utilisation",
-                  to: useBaseUrl() + '/decouvrir',
+                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/',
                   icon: "ri-book-2-line"
               },
               {
