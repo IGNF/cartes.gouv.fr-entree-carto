@@ -39,6 +39,10 @@ watch(isActive, (value) => {
   }
 })
 
+const onClick = () => {
+  isActive.value = !isActive.value
+}
+
 onMounted(() => {})
 onUpdated(() => {})
 
@@ -50,6 +54,7 @@ onUpdated(() => {})
       <DsfrTooltip
         on-hover
         :content="controlListElementOptions.tooltip"
+        @click="onClick()"
       >
         <div>
           <span

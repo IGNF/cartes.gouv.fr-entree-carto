@@ -258,18 +258,29 @@ const scrollDown = () => {
   }, 100);
 }
 onMounted(() => {
+  // Badge header
   let badge = document.querySelector(".fr-header__service-title span")
   let icon = document.createElement("span")
   icon.classList.add("fr-icon-road-map-fill")
   icon.style.scale = "50%"
     if (badge && parent) {
-    badge.innerHTML = "Explorer les cartes"
+    badge.innerHTML = "Explorer"
     badge.classList.remove("fr-badge--green-emeraude")
     badge.classList.add("fr-badge--purple-glycine")
     badge.classList.add("fr-icon-road-map-fill")
     const textNode = badge.firstChild;
     badge.insertBefore(icon, textNode)
   }
+  // Logo header
+  // let logoDiv = document.querySelector(".fr-header__logo")
+  // let scndLogo = document.createElement("div")
+  // scndLogo.classList.add("header-second-logo")
+  // let img = document.createElement("img")
+  // scndLogo.append(img);
+  // img.classList.add("entree-carto-logo")
+  // img.src = "https://upload.wikimedia.org/wikipedia/commons/2/22/Flag_map_of_France.svg"
+  // logoDiv?.insertAdjacentElement('afterend', scndLogo)
+
 })
 
 const alertClosed = ref(false);
@@ -359,13 +370,15 @@ const onCloseAlert = () => {
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
   <label
-    class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
+  v-show="!largeScreen"
+  class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
     for="fr-footer-toggle"
     @click="scrollDown"
   >
     <span>Fermer</span>
   </label>
   <input
+    v-show="!largeScreen"
     id="fr-footer-toggle"
     type="checkbox"
   >
@@ -408,20 +421,20 @@ const onCloseAlert = () => {
 <style lang="scss">
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 172.5px);
+    height: calc(100vh - 168.5px);
   }
   .minimized.futur-map-container{
-    height: calc(100vh - 108.5px);
+    height: calc(100vh - 91.5px);
   }
 
   @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 191px);
+      height: calc(100vh - 194px);
       margin-bottom: 0px;
 
     }
     .minimized.futur-map-container{
-      height: calc(100vh - 80px);
+      height: calc(100vh - 77px);
       margin-bottom: 0px;
     }
   }
@@ -570,6 +583,7 @@ const onCloseAlert = () => {
       .fr-header__service::before {
       display: none;
       }
+      
     }
 
     /* mini footer */
@@ -614,9 +628,62 @@ const onCloseAlert = () => {
 .fr-header__body-row {
     padding: 0;
   }
+  @media (min-width: 991px){
+    .fr-enlarge-link {
+    max-height: 2.5rem;
+  }
 }
+
+  .fr-header__logo::after {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+  @media (max-width: 991px){
+  .fr-header__logo::after {
+    left: 4.5rem;
+    top: 0.9rem;
+  }
+}
+.fr-header__logo {
+  width: 9rem;
+}
+}
+
+.entree-carto-logo {
+  max-height: 65px;
+}
+.fr-header__logo {
+  position: relative;
+  width: 12rem;
+}
+.fr-header__logo::after {
+  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg");
+  content: "";
+  display: block;
+  height: 4rem;
+  width: 4rem;
+  background-size: contain; /* pour que l’image soit visible */
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 60%;
+  top: 1rem;
+}
+:root[data-fr-theme="dark"] .fr-header__logo::after  {
+  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
+}
+
+
+// .fr-header__service {
+//   margin-left: 65px;
+// }
 
 .flex-start {
   justify-content: flex-start;
+}
+
+.fr-header__tools-links {
+  .fr-nav__btn {
+    padding: 8px;
+  }
 }
 </style>

@@ -32,7 +32,7 @@ export function useHeaderParams() {
                   icon: "ri-question-mark"
               },
               {
-                  text: "Aide",
+                  text: "Guide d'utilisation",
                   to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/',
                   icon: "ri-book-2-line"
               },
@@ -59,7 +59,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Publier une donnée",
-                  to: useBaseUrl() + '/tableau-de-bord',
+                  to: useBaseUrl() + '/publier-une-donnee',
                   icon: "ri-database-line"
               },
               // {
@@ -69,7 +69,7 @@ export function useHeaderParams() {
               // },
               {
                   text: "Découvrir cartes.gouv",
-                  to: useBaseUrl(),
+                  to: useBaseUrl() + '/decouvrir',
                   icon: "fr-icon-external-link-line",
                   button : true
               }

@@ -39,7 +39,7 @@ const view = new View({
   zoom: props.zoom, 
   center: fromLonLatProj(props.center),
   minZoom : 0,
-  maxZoom : 21,
+  maxZoom : 19,
   projection : "EPSG:3857"
 });
 
