@@ -38,15 +38,9 @@ const marginLeft = computed(() => {
 
 const expanded = computed(() => props.id === props.expandedId)
 
+let handler;
 const service = inject('services');
-
-const user = computed(() => {
-  console.log(service)
-  if (service.authenticated) {
-    return service.user
-  }
-  return null
-});
+const user = ref()
 
 watch(expanded, (newValue, oldValue) => {
   // @see https://github.com/GouvernementFR/dsfr/blob/main/src/core/script/collapse/collapse.js
@@ -61,8 +55,17 @@ onMounted(() => {
   if (expanded.value) {
     doExpand(true)
   }
+
+  handler = (e) => {
+     user.value =  e.detail.value
+    };
+  service.addEventListener("user-changed", handler);
+
 })
 
+onBeforeUnmount(() => {
+  service.removeEventListener("user-changed", handler);
+});
 </script>
 
 <template>     
