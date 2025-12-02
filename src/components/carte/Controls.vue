@@ -700,7 +700,7 @@ onMounted(() => {
 }
 
 .gpf-widget[id^="GPlayerSwitcher-"] {
-  margin-bottom: 60px;
+  margin-bottom: 44px;
 }
 
 button[id^="GPgetFeatureInfoPicto-"] {
@@ -997,10 +997,10 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 299px;
   }
   .position-container-top-right{
-    top: 257px;
+    top: 103px;
   }
   .GPpanel {
-    margin-top : -259px !important;
+    margin-top : -103px !important;
   }
 
   .position-container-bottom-left,
@@ -1050,10 +1050,10 @@ button[id^="GPgetFeatureInfoPicto-"] {
 }
 
 @media (max-width: 627px) and (min-width: 576px){
-  .position-container-top-right,
+  /* .position-container-top-right,
   .position-container-top-left {
     top: 124px;
-  }
+  } */
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,
