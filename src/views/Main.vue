@@ -421,7 +421,7 @@ const onCloseAlert = () => {
 <style lang="scss">
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 168.5px);
+    height: calc(100vh - 169px);
   }
   .minimized.futur-map-container{
     height: calc(100vh - 91.5px);
@@ -429,12 +429,12 @@ const onCloseAlert = () => {
 
   @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 194px);
+      height: calc(100vh - 169px);
       margin-bottom: 0px;
 
     }
     .minimized.futur-map-container{
-      height: calc(100vh - 77px);
+      height: calc(100vh - 53px);
       margin-bottom: 0px;
     }
   }
@@ -670,6 +670,10 @@ const onCloseAlert = () => {
 }
 :root[data-fr-theme="dark"] .fr-header__logo::after  {
   background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
+}
+
+.fr-header__menu-links {
+  display: none;
 }
 
 

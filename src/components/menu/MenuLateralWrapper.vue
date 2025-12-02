@@ -220,7 +220,7 @@ En mode petit écran on le positionne tout en haut en attendant mieux */
 
 @media (max-width: 576px){
   .menu-logo-list {
-    margin-top: 56px;
+    margin-top: 63px;
   }
 }
 

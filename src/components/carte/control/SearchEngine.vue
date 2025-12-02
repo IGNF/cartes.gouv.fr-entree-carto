@@ -114,10 +114,13 @@ const onClickSearchGeolocationRemove = (e) => {
     left: 50px;
   }
 }
-div[id^="GPsearchEngine-Advanced"] {
+@media (max-width: 576px){
+  div[id^="GPsearchEngine-Advanced"] {
+    margin-top: 3px;
     max-width: calc(100% - 16px);
-    margin-left: 1px;
+    margin-left: 1px
   }
+}
 /* Uniformisation avec les taille de bouton entrée carto */
 form.GPSearchBar>button[id^=GPshowSearchEnginePicto-].fr-btn {
     width: 44px;

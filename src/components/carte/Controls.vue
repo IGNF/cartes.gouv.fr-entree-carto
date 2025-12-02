@@ -997,7 +997,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 299px;
   }
   .position-container-top-right{
-    top: 103px;
+    top: 110px;
   }
   .GPpanel {
     margin-top : -103px !important;
