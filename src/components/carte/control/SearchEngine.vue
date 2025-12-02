@@ -123,6 +123,14 @@ const onClickSearchGeolocationRemove = (e) => {
 }
 /* Uniformisation avec les taille de bouton entrée carto */
 form.GPSearchBar>button[id^=GPshowSearchEnginePicto-].fr-btn {
-    width: 44px;
+    width: 43px;
+}
+/* Permet de placer le menu déroulant de la barre de recherche par dessus les boutons menu
+  côté entrée carto
+*/
+@media (max-width: 576px) {
+.ol-overlaycontainer-stopevent {
+  z-index: 3000 !important;
+}
 }
 </style>

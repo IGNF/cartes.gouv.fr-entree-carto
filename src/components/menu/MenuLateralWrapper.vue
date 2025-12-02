@@ -177,10 +177,11 @@ defineExpose({
     height: calc(76.8vh - 24px);
     z-index: 1;
     &.is_expanded {
+      // passe par dessus les controls openlayers
+      z-index: 4000;
       .menu-content-list {
         width: v-bind(cssWidthMenu);
       }
-
     }
 }
 

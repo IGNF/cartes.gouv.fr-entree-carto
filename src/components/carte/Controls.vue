@@ -781,7 +781,8 @@ button[id^="GPgetFeatureInfoPicto-"] {
 
   .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget[id^="GPcontrolList-"] {
     padding: 2px;
-  }
+    padding-top: 12px;
+}
 }
 
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
@@ -1000,7 +1001,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 110px;
   }
   .GPpanel {
-    margin-top : -103px !important;
+    margin-top : -106px !important;
   }
 
   .position-container-bottom-left,
