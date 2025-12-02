@@ -109,4 +109,11 @@ const onClickSearchGeolocationRemove = (e) => {
 </template>
 
 <style>
+@media (min-width: 576px){
+  div[id^="GPsearchEngine-"] {
+    left: 50px;
+    max-width: calc(100% - 16px);
+    margin-left: 5px;
+  }
+}
 </style>
