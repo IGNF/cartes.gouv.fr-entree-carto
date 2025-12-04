@@ -176,6 +176,7 @@ watch(() => domStore.getleftControlMenu(), (newVal) => {
       <MenuLateralNavButton
         v-for="tab in tabArray"
         :id="tab.componentName"
+        :key="tab.componentName"
         ref="tabs"
         :side="side"
         :icon="tab.icon"
