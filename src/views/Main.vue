@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
 import CustomNavigation from '@/components/CustomNavigation.vue'
-import CustomNavigationMenu from '@/components/CustomNavigationMenu.vue'
 import { inject, markRaw } from 'vue'
 
 // icones
@@ -23,6 +22,7 @@ import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} 
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
+import ModalWelcome from '../components/modals/ModalWelcome.vue';
 // stores
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
@@ -415,6 +415,7 @@ const onCloseAlert = () => {
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
+    <ModalWelcome/>
   </div>
 </template>
 
