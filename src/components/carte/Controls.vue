@@ -438,6 +438,7 @@ const catalogManagerOptions = {
   layerLabel : "title",
   layerThumbnail : true,
   size : "xl",
+  tabHeightAuto : false,
   addToMap : false,
   optimisation : "on-demand",
   search : {

@@ -28,9 +28,10 @@ const map = inject(props.mapId);
 const catalog = ref(new Catalog(props.catalogManagerOptions));
 
 // abonnement sur l'ouverture du controle
-emitter.addEventListener("catalog:open:clicked", (e) => {
+emitter.addEventListener("catalog:open:clicked", () => {
   if (catalog.value) {
-    catalog.value.setCollapsed(!e.open);
+    var collapsed = catalog.value.getCollapsed();
+    catalog.value.setCollapsed(!collapsed);
   }
 });
 
