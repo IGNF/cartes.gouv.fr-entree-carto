@@ -658,7 +658,10 @@ const footerToggle = ref(false);
   background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
 }
 
-.fr-header__menu-links {
+/* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
+Et de l'afficher en mode mobile 
+*/
+header:not(:has(#header-navigation)) .fr-header__menu-links {
   display: none;
 }
 
