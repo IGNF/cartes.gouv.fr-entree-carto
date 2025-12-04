@@ -91,7 +91,7 @@ export function useHeaderParams() {
                 icon: "ri-dashboard-3-line"
             },
             {
-                text: "Paramètres du compte",
+                text: "Mon compte",
                 to: useBaseUrl() + '/mon-compte',
                 icon: "ri-user-line"
             }
