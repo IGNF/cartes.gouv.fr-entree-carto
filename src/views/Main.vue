@@ -668,6 +668,12 @@ const footerToggle = ref(false);
   background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
 }
 
+/*
+  en mode mobile place le menu bruger du header par dessus les control openlayer
+*/
+header {
+  z-index: 9000;
+}
 /* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
 Et de l'afficher en mode mobile 
 */
