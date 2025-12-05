@@ -250,6 +250,7 @@ const notificationsTheme = computed(() => {
 
 const scrollDown = () => {
   // on scroll down pour afficher le footer
+  footerToggle.value = true;
   setTimeout(() => {
     window.scrollTo({
       top: document.body.scrollHeight,
@@ -293,6 +294,8 @@ const alertData = {
 const onCloseAlert = () => {
   alertClosed.value = true;
 };
+
+const footerToggle = ref(false);
 
 </script>
 
@@ -369,28 +372,17 @@ const onCloseAlert = () => {
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <label
-  v-show="!largeScreen"
-  class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline fr-btn--close"
-    for="fr-footer-toggle"
-    @click="scrollDown"
-  >
+  <div class="footer-toggle" :class="footerToggle ? 'footer-toggle-true': ''" v-show="!largeScreen">
+    <i class="footer-open fr-icon-arrow-up-s-line" @click="scrollDown"></i>
+    <label
+      v-show="!largeScreen"
+      class="fr-footer-toggle-label footer-close fr-btn fr-btn--tertiary-no-outline fr-btn--close"
+      for="fr-footer-toggle"
+      @click="footerToggle ? footerToggle = false : ''"
+    > 
     <span>Fermer</span>
-  </label>
-  <input
-    v-show="!largeScreen"
-    id="fr-footer-toggle"
-    type="checkbox"
-  >
-  <!-- INFO
-      On retire les valeurs par defaut pour ajouter
-      des valeurs customisées de mandatoryLinks.
-        :a11y-compliance="footerParams.a11yCompliance"
-        :legal-link="footerParams.legalLink"
-        :personal-data-link="footerParams.personalDataLink"
-        :cookies-link="footerParams.cookiesLink"
-        :a11y-compliance-link="footerParams.a11yComplianceLink"
-  -->
+    </label>
+  </div>
   <DsfrFooter
     v-show="!largeScreen"
     :before-mandatory-links="footerParams.beforeMandatoryLinks"
@@ -405,6 +397,7 @@ const onCloseAlert = () => {
     :licence-link-props="footerParams.licenceLinkProps"
     :ecosystem-links="footerParams.ecosystemLinks"
     :mandatory-links="mandatoryLinks"
+    ::class="footerToggle ? 'footer-toggle-true': ''"
   />
 
   <div
@@ -421,20 +414,20 @@ const onCloseAlert = () => {
 <style lang="scss">
   .futur-map-container{
     width: 100%;
-    height: calc(100vh - 168.5px);
+    height: calc(100vh - 169px);
   }
   .minimized.futur-map-container{
-    height: calc(100vh - 91.5px);
+    height: calc(100vh - 108.5px);
   }
 
   @media (max-width: 991px) {
     .futur-map-container{
-      height: calc(100vh - 194px);
+      height: calc(100vh - 165px);
       margin-bottom: 0px;
 
     }
     .minimized.futur-map-container{
-      height: calc(100vh - 77px);
+      height: calc(100vh - 56px);
       margin-bottom: 0px;
     }
   }
@@ -497,25 +490,29 @@ const onCloseAlert = () => {
   #fr-footer-toggle {
     display: none;
   }
-  .fr-footer-toggle-label {
-    display: block;
+  
+  .footer-toggle {
     position: absolute;
     right: 0;
-    width: 32px;
-    min-height: 32px;
-    padding: 8px;
-    background-image: url(../assets/arrow-down.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: translate(-15px, 10px);
-    caret-color: transparent;
+  }
+  .footer-open {
+    position: relative;
+    right: 22px;
+    top: 12px;
   }
 
-  .fr-footer-toggle-label::after {
-    display: none;
-  }
-  .fr-footer-toggle-label > span {
-    display: none;
+  .footer-close {
+      display: none;
+    }
+  .footer-toggle-true {
+    i {
+      display: none;
+    }
+    .footer-close {
+      display: block;
+      position: relative;
+      top: 12pxw;
+    }
   }
 
   .fr-footer__logo {
@@ -534,39 +531,28 @@ const onCloseAlert = () => {
   }
   }
 
-
-
-  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked)::after {
-    display: inline-block;
+  .footer-toggle-true + .fr-footer {
+    padding-top: 4rem !important;
   }
 
-  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked) {
-    background-image: unset;
-    width: 100px;
-  }
-
-  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked) > span {
-    display: inline;
-  }
-
-  #fr-footer-toggle:checked + .fr-footer {
+  .footer-toggle-true + .fr-footer {
     padding-top: 4rem;
   }
 
-  #fr-footer-toggle:checked + .fr-footer .fr-footer__body {
+  .footer-toggle-true + .fr-footer .fr-footer__body {
     display: flex;
   }
 
-  #fr-footer-toggle:checked + .fr-footer .fr-footer__partners,
-  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > div {
+  .footer-toggle-true + .fr-footer .fr-footer__partners,
+  .footer-toggle-true + .fr-footer .fr-footer__bottom > div {
     display: unset;
   }
 
-  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
+  .footer-toggle-true + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
     display: inline-block;
   }
 
-  #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
+  .footer-toggle-true + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
     display: inline-block;
   }
 
@@ -583,8 +569,8 @@ const onCloseAlert = () => {
       .fr-header__service::before {
       display: none;
       }
-      
     }
+
 
     /* mini footer */
     .fr-footer {
@@ -625,13 +611,20 @@ const onCloseAlert = () => {
     padding-top: 1rem !important;
     scale: 1.3 !important;
 }
-.fr-header__body-row {
-    padding: 0;
+
+  .fr-header__navbar {
+    padding: .25rem;
   }
   @media (min-width: 991px){
     .fr-enlarge-link {
     max-height: 2.5rem;
   }
+  .fr-header__body-row {
+    padding: 0.51rem;
+  }
+  .fr-header__service {
+      padding-left: 0;
+    }
 }
 
   .fr-header__logo::after {
@@ -643,9 +636,12 @@ const onCloseAlert = () => {
     left: 4.5rem;
     top: 0.9rem;
   }
+  .fr-header__brand {
+    padding: 0.13rem;
+  }
 }
 .fr-header__logo {
-  width: 9rem;
+  width: 7rem;
 }
 }
 
@@ -672,10 +668,18 @@ const onCloseAlert = () => {
   background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
 }
 
-
-// .fr-header__service {
-//   margin-left: 65px;
-// }
+/*
+  en mode mobile place le menu bruger du header par dessus les control openlayer
+*/
+header {
+  z-index: 9000;
+}
+/* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
+Et de l'afficher en mode mobile 
+*/
+header:not(:has(#header-navigation)) .fr-header__menu-links {
+  display: none;
+}
 
 .flex-start {
   justify-content: flex-start;
