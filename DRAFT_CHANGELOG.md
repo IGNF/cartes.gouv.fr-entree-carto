@@ -32,6 +32,10 @@ Mise en place d'un mécanisme d'icônes personnalisés :
   - Cartalogue : suppression du filtre de couches par services (#802)
 
 #### 🐛 [Correction]
+  
+  - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
+  - Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760)
+  - Recherche d'adresse : correction de l'affichage des résultats en mode mobile (https://github.com/IGNF/geopf-extensions-openlayers/pull/456)
 
 #### 🔒 [Sécurité]
 
