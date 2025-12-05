@@ -511,7 +511,7 @@ const footerToggle = ref(false);
     .footer-close {
       display: block;
       position: relative;
-      top: 12px
+      top: 12pxw;
     }
   }
 
@@ -637,7 +637,7 @@ const footerToggle = ref(false);
     top: 0.9rem;
   }
   .fr-header__brand {
-    padding: 0.13rem
+    padding: 0.13rem;
   }
 }
 .fr-header__logo {

@@ -1050,11 +1050,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 }
 
-@media (max-width: 627px) and (min-width: 576px){
-  /* .position-container-top-right,
-  .position-container-top-left {
-    top: 124px;
-  } */
+@media (max-width: 627px) and (min-width: 576px) {
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,

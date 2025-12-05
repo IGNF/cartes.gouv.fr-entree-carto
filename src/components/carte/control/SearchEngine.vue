@@ -7,7 +7,6 @@ import { useMapStore } from '@/stores/mapStore';
 
 import {
   toLonLat as toLonLatProj,
-  // fromLonLat as fromLonLatProj
 } from "ol/proj";
 
 import {
@@ -118,7 +117,7 @@ const onClickSearchGeolocationRemove = (e) => {
   div[id^="GPsearchEngine-Advanced"] {
     margin-top: 3px;
     max-width: calc(100% - 16px);
-    margin-left: 1px
+    margin-left: 1px;
   }
 }
 /* Uniformisation avec les taille de bouton entrée carto */
