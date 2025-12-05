@@ -111,7 +111,7 @@ function tabClicked(newTab) {
 
 // fonction qui verifie si l'onglet est actif
 function tabIsActive(componentName) {
-    return activeTab.value.replace("Content" , '') === componentName ? true : false;
+  return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
 
 </script>
