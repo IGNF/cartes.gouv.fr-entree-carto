@@ -72,4 +72,8 @@ function onToggleGetFeatureInfo (e) {
   font-size: 1.25rem;
 }
 
+dialog[id^="GPgetFeatureInfoPanel-"] {
+  top: -36px !important;
+  left: 44px !important;
+}
 </style>

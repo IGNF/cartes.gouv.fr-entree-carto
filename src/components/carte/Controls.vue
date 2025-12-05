@@ -99,28 +99,7 @@ const searchEngineOptions = {
   id: "1",
   collapsed: false,
   collapsible: false,
-  displayButtonAdvancedSearch: true,
-  displayButtonGeolocate: true,
-  displayButtonCoordinateSearch: true,
-  coordinateSearchInAdvancedSearch: true,
-  displayButtonClose: false,
-  resources: {
-    search: true
-  },
-  searchOptions: {
-    addToMap: false,
-    filterServices : dataStore.filterServices,
-    filterWMTSPriority : true,
-    filterProjections : dataStore.filterProjections,
-    filterLayersPriority : dataStore.getFeatured().toString(),
-    filterLayers : true,
-    filterTMS : true,
-    filterLayersList : dataStore.getLayersSignatures(),
-    serviceOptions : {
-      maximumResponses : 50
-    },
-    maximumEntries : 5
-  },
+  returnTrueGeometry: true,
   autocompleteOptions : {
     serviceOptions : {
         maximumResponses : 10
@@ -722,7 +701,7 @@ onMounted(() => {
 }
 
 .gpf-widget[id^="GPlayerSwitcher-"] {
-  margin-bottom: 60px;
+  margin-bottom: 44px;
 }
 
 button[id^="GPgetFeatureInfoPicto-"] {
@@ -803,7 +782,8 @@ button[id^="GPgetFeatureInfoPicto-"] {
 
   .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget[id^="GPcontrolList-"] {
     padding: 2px;
-  }
+    padding-top: 12px;
+}
 }
 
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
@@ -1019,10 +999,10 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 299px;
   }
   .position-container-top-right{
-    top: 257px;
+    top: 110px;
   }
   .GPpanel {
-    margin-top : -259px !important;
+    margin-top : -106px !important;
   }
 
   .position-container-bottom-left,
@@ -1071,11 +1051,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 }
 
-@media (max-width: 627px) and (min-width: 576px){
-  .position-container-top-right,
-  .position-container-top-left {
-    top: 124px;
-  }
+@media (max-width: 627px) and (min-width: 576px) {
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,

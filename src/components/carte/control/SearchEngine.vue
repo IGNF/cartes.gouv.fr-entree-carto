@@ -1,16 +1,20 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
+
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
 
 import {
   toLonLat as toLonLatProj,
-  fromLonLat as fromLonLatProj
 } from "ol/proj";
 
 import {
-  SearchEngine
+    SearchEngineAdvanced,
+    InseeAdvancedSearch,
+    LocationAdvancedSearch,
+    CoordinateAdvancedSearch,
+    ParcelAdvancedSearch
 } from 'geopf-extensions-openlayers';
 
 const emitter = inject('emitter');
@@ -32,48 +36,49 @@ const dataStore = useDataStore();
 
 
 const map = inject(props.mapId);
-const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
+const insee = ref(new InseeAdvancedSearch());
+const location = ref(new LocationAdvancedSearch());
+const coordinates = ref(new CoordinateAdvancedSearch());
+const parcels = ref(new ParcelAdvancedSearch());
+
+const advancedSearchEngineOptions = computed(() => {
+    return Object.assign(props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
+});
+
+const searchEngineAdvanced = ref(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(searchEngine.value)
+    map.addControl(searchEngineAdvanced.value)
     /** abonnement au widget */
-    searchEngine.value.on("searchengine:search:click", onClickSearch);
-    searchEngine.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
-    searchEngine.value.on("searchengine:geocode:click", onClickGeocodeResult);
-    searchEngine.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
-    searchEngine.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
-    searchEngine.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
+    searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
+    searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
+    searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
+    searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
+    searchEngineAdvanced.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
+    searchEngineAdvanced.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
   }
 })
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(searchEngine.value)
+    map.removeControl(searchEngineAdvanced.value)
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(searchEngine.value)
+    map.addControl(searchEngineAdvanced.value)
   }
 })
 
 onUnmounted(() => {})
 
-// abonnement
-emitter.addEventListener("searchengine:open:displayed", (e) => {
-  if (searchEngine.value) {
-    var coordinates = e.position;
-    var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
-    searchEngine.value._setMarker(fromLonLatProj(e.position), info);
-  }
-});
-
 /**
  * Gestionnaire d'evenement sur l'abonnement
  * à la recherche de couche
  */
+
 const onClickSearch = (e) => {
   var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
   mapStore.addLayer(id);
@@ -100,42 +105,31 @@ const onClickSearchGeolocationRemove = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
 </template>
 
 <style>
-/* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
-  div[id^="GPsearchEngine-"] {
-    position: relative;
-    /* FIXME repasser à 480px quand fusion des boutons rech avancée et rech par coords */
-    width: 550px;
-    margin: 0 auto;
-    left: unset;
+@media (min-width: 576px){
+  div[id^="GPsearchEngine-Advanced"] {
+    left: 50px;
   }
-
-  /* pas de scrollbar sur les panneaux de recherche avancée */
-  form[id^="GPadvancedSearchForm"],
-  form[id^="GPcoordinateSearchForm"] {
-    max-height: unset;
+}
+@media (max-width: 576px){
+  div[id^="GPsearchEngine-Advanced"] {
+    margin-top: 3px;
+    max-width: calc(100% - 16px);
+    margin-left: 1px;
   }
-
-  /* FIXME l'affichage ne se fait pas comme sur les extensions... Pourquoi ??*/
-  dialog[id^=GPadvancedSearchPanel] {
-    max-height: 50vh;
-    overflow: auto;
-  }
-
-  /* MODE MOBILE : les boutons sont en dessous de la barre de recherche qui prend toute la largeur */
-  @media (max-width: 576px){
-    div[id^=GPsearchEngine-]{
-      top: unset;
-      left: unset;
-      width: 100%;
-    }
-
-    [id^="GPautocompleteResults-"] {
-      height: 76.8vh;
-    }
-  }
-
+}
+/* Uniformisation avec les taille de bouton entrée carto */
+form.GPSearchBar>button[id^=GPshowSearchEnginePicto-].fr-btn {
+    width: 43px;
+}
+/* Permet de placer le menu déroulant de la barre de recherche par dessus les boutons menu
+  côté entrée carto
+*/
+@media (max-width: 576px) {
+.ol-overlaycontainer-stopevent {
+  z-index: 3000 !important;
+}
+}
 </style>

@@ -40,6 +40,11 @@ onBeforeUpdate(() => {
   transform: translate(62px, 79px) !important;
 }
 
+div[id^="GPpointInfo-"] {
+  top: 62px;
+  left: 50px;
+}
+
 @media (max-width: 627px) and (min-width: 576px) {
   .ol-overlay-container:has(.gp-label-div),
   .ol-overlay-container:has(.gp-styling-div) {
@@ -51,6 +56,10 @@ onBeforeUpdate(() => {
   .ol-overlay-container:has(.gp-label-div),
   .ol-overlay-container:has(.gp-styling-div) {
     transform: translate(62px, 235px) !important;
+  }
+
+  div[id^="GPpointInfo-"] {
+    top: 168px;
   }
 }
 

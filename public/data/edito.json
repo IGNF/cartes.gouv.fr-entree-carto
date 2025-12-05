@@ -283,8 +283,56 @@
     "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
       "base": true
     },
+    "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCELS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "BDTOPO$GEOPORTAIL:GPP:TMS": {
+      "base": true
+    },
+    "LANDCOVER.FORESTINVENTORY.V2$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "DEBROUSSAILLEMENT$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "dgac_peb_plan_wmsv$GEOPORTAIL:OGC:WMS": {
+      "base": true
+    },
+    "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
     "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
-      "base": true,
+      "base": false,
       "legends": [
         {
           "format": "image/png",
