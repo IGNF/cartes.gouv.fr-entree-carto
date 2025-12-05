@@ -30,7 +30,7 @@ import { useMapStore} from "@/stores/mapStore"
 // others
 import t from '@/features/translation'
 
-useAppStore()
+const appStore = useAppStore()
 const domStore = useDomStore();
 const mapStore = useMapStore()
 
@@ -294,6 +294,9 @@ const onCloseAlert = () => {
   alertClosed.value = true;
 };
 
+onMounted(() => {
+  appStore.detectFirstOpen()
+})
 </script>
 
 <template>
@@ -415,7 +418,7 @@ const onCloseAlert = () => {
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
-    <ModalWelcome/>
+    <ModalWelcome v-if="appStore.siteOpened"/>
   </div>
 </template>
 

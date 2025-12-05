@@ -2,10 +2,10 @@
 // plugin local
 import { useBaseUrl } from '@/composables/baseUrl';
 
-const themeModalOpened = ref(true);
+const welcomeModalOpened = ref(true);
 
-const onModalThemeClose = () => {
-  themeModalOpened.value = false;
+const onWelcomeModalClose = () => {
+  welcomeModalOpened.value = false;
 }
 
 const size = "lg";
@@ -19,9 +19,9 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
   <!-- Modale : Paramètres d’affichage -->
   <DsfrModal 
     ref="modal" 
-    :opened="themeModalOpened" 
+    :opened="welcomeModalOpened" 
     :size="size" 
-    @close="onModalThemeClose"
+    @close="onWelcomeModalClose"
   >
   <div class="fr-container">
     <div class="fr-grid-row logo-row">
@@ -49,7 +49,7 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
             primary 
             icon="fr-icon-arrow-right-s-line"
             icon-right
-            @click="onModalThemeClose"
+            @click="onWelcomeModalClose"
         >
         Accéder aux cartes
         </DsfrButton>
