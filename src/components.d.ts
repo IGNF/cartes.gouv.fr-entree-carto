@@ -29,6 +29,7 @@ declare module 'vue' {
     DsfrFooter: typeof import('@gouvminint/vue-dsfr')['DsfrFooter']
     DsfrHeader: typeof import('@gouvminint/vue-dsfr')['DsfrHeader']
     DsfrInput: typeof import('@gouvminint/vue-dsfr')['DsfrInput']
+    DsfrLogo: typeof import('@gouvminint/vue-dsfr')['DsfrLogo']
     DsfrModal: typeof import('@gouvminint/vue-dsfr')['DsfrModal']
     DsfrNavigationMenuItem: typeof import('@gouvminint/vue-dsfr')['DsfrNavigationMenuItem']
     DsfrRadioButtonSet: typeof import('@gouvminint/vue-dsfr')['DsfrRadioButtonSet']
@@ -75,6 +76,7 @@ declare module 'vue' {
     ModalReportingSuccessSent: typeof import('./components/modals/ModalReportingSuccessSent.vue')['default']
     ModalSave: typeof import('./components/modals/ModalSave.vue')['default']
     ModalTheme: typeof import('./components/modals/ModalTheme.vue')['default']
+    ModalWelcome: typeof import('./components/modals/ModalWelcome.vue')['default']
     MousePosition: typeof import('./components/carte/control/MousePosition.vue')['default']
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
@@ -93,6 +95,7 @@ declare module 'vue' {
     StoreData: typeof import('./components/StoreData.vue')['default']
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
     TextCopyToClipboard: typeof import('./components/utils/TextCopyToClipboard.vue')['default']
+    VIcon: typeof import('@gouvminint/vue-dsfr')['VIcon']
     View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }
