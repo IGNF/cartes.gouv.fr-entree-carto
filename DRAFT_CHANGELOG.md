@@ -19,6 +19,8 @@ Mise en place d'un mécanisme d'icônes personnalisés :
 
 #### ✨ [Ajout]
 
+  - Accueil : affichage d'une modale à la première ouverture sur un onglet (#824)
+
 #### 🔨 [Evolution]
 
   - Icones : mécanisme pour les icones personnalisés (#777)
