@@ -92,7 +92,7 @@ div > span {
     border-radius: 50%;
     height: 34px;
     width: 34px;
-    i::before, :first-child {
+    i::before, svg:first-child {
         scale: 0.9;
     }
 }
