@@ -76,12 +76,12 @@ export const useAppStore = defineStore('app', () => {
   const siteOpened = ref(false);
 
   function detectFirstOpen() {
-    if (!sessionStorage.getItem("siteOpened")) {
+    if (!sessionStorage.getItem(ns("siteOpened"))) {
       // 👉 Première ouverture dans un nouvel onglet
       siteOpened.value = true;
 
       // On marque que l’onglet est déjà passé ici
-      sessionStorage.setItem("siteOpened", "true");
+      sessionStorage.setItem(ns("siteOpened"), "true");
     } else {
       // 👉 Reload / Retour redirection → false
       siteOpened.value = false;
