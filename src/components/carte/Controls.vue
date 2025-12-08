@@ -428,6 +428,7 @@ const catalogManagerOptions = {
     {
       title : "Cartes de référence",
       id : "base",
+      order : false,
       filter : {
         field : "base",
         value : "true"
@@ -441,6 +442,7 @@ const catalogManagerOptions = {
         {
           title : "Thème",
           default : true,
+          order : true,
           section : true,
           icon : true,
           filter : {
@@ -450,6 +452,7 @@ const catalogManagerOptions = {
         },
         {
           title : "Producteur",
+          order : true,
           section : true,
           icon : false,
           filter : {
@@ -460,6 +463,7 @@ const catalogManagerOptions = {
         /*,
         {
           title : "Service",
+          order : true,
           section : true,
           icon : true,
           filter : {
