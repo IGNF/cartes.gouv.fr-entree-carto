@@ -90,7 +90,10 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     siteOpened,
-    detectFirstOpen
+    detectFirstOpen,
+    scheme,
+    theme,
+    setScheme
   }
 
 });
