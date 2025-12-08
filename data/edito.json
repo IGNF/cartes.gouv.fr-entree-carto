@@ -284,7 +284,8 @@
       "base": true
     },
     "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
-      "base": true
+      "base": true,
+      "title": "Plan IGN personnalisable"
     },
     "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
       "base": true
@@ -302,7 +303,8 @@
       "base": true
     },
     "BDTOPO$GEOPORTAIL:GPP:TMS": {
-      "base": true
+      "base": true,
+      "title": "BDTOPO® personnalisable"
     },
     "LANDCOVER.FORESTINVENTORY.V2$GEOPORTAIL:OGC:WMTS": {
       "base": true
@@ -340,6 +342,24 @@
           "url": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.png"
         }
       ]
+    },
+    "ADMIN_EXPRESS$GEOPORTAIL:GPP:TMS" : {
+      "title": "Limites administratives des collectivités territoriales (ADMIN EXPRESS)"
+    },
+    "ISOHYPSE$GEOPORTAIL:GPP:TMS" : {
+      "title": "Courbes de niveau (ISOHYPSE)"
+    },
+    "OCSGE_2016$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2016 (OCSGE)"
+    },
+    "OCSGE_2019$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2019 (OCSGE)"
+    },
+    "PCI$GEOPORTAIL:GPP:TMS" : {
+      "title": "Parcellaire Express (PCI)"
+    },
+    "PLAN.OSM$GEOPORTAIL:GPP:TMS" : {
+      "title": "Plan avec OpenStreetMap (PLAN OSM)"
     }
   }
 }
