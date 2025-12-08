@@ -73,4 +73,28 @@ export const useAppStore = defineStore('app', () => {
     localStorage.setItem(SCHEME_KEY_LS_MAIN, scheme.value);
   })
 
+  // INFO détection première ouverture
+  // variable de contrôle de la première ouverture
+  // choix d'utiliser sessionStorage pour ne pas persister au delà de la session
+  
+  const siteOpened = ref(false);
+
+  function detectFirstOpen() {
+    if (!sessionStorage.getItem(ns("siteOpened"))) {
+      // 👉 Première ouverture dans un nouvel onglet
+      siteOpened.value = true;
+
+      // On marque que l’onglet est déjà passé ici
+      sessionStorage.setItem(ns("siteOpened"), "true");
+    } else {
+      // 👉 Reload / Retour redirection → false
+      siteOpened.value = false;
+    }
+  }
+
+  return {
+    siteOpened,
+    detectFirstOpen
+  }
+
 });
