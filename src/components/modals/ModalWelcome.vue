@@ -1,4 +1,4 @@
-<script setup lang="js">
+<script setup lang="ts">
 // plugin local
 import { useBaseUrl } from '@/composables/baseUrl';
 
