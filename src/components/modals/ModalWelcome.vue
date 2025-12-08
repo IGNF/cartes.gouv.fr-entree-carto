@@ -92,8 +92,6 @@ div > span {
     border-radius: 50%;
     height: 34px;
     width: 34px;
-}
-div > span {
     i::before, :first-child {
         scale: 0.9;
     }
