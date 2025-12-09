@@ -18,9 +18,12 @@ import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuControl from '@/components/menu/MenuControl.vue';
 // import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue';
+import { inject } from 'vue';
 
 // import { useDataStore } from "@/stores/dataStore"
-import { inject } from 'vue';
+import { useDomStore } from '@/stores/domStore';
+
+const domStore = useDomStore();
 
 const props = defineProps({
   selectedControls: {
@@ -54,26 +57,15 @@ const props = defineProps({
 
 // position du menu lateral
 const side = "right";
+const is_expanded = ref();
 
 // abonnement sur l'ouverture du catalogue sur un evenement emis
-const emitter = inject('emitter');
+const rightControls = ref(null)
+
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
-        {
-            componentName : "MenuCatalogue",
-            icon : "ri:map-2-line",
-            title : "Catalogue de données",
-            visibility : true,
-            secondary : false,
-            onClick: () => {
-              emitter.dispatchEvent("catalog:open:clicked", {
-                open : true,
-                componentName: "MenuCatalogue"
-              })
-            }
-        },
         {
             componentName : "MenuControl",
             icon : "ri:tools-line",
@@ -88,24 +80,22 @@ const tabArray = computed(() => {
 
 // onglet actif
 const activeTab = ref("MenuControlContent");
-// etat d'ouverture du menu lateral
-const is_expanded = ref();
-// reference vers le wrapper du menu lateral
 const wrapper = ref(null);
+const width = 500;
 
-// gestion de l'ouverture/fermeture du menu lateral
+// Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
-  const tab = tabArray.value.find(t => t.componentName === newTab);
-  if (!tab) {
-    return;
-  }
   if (tabIsActive(newTab) && is_expanded.value) {
-      wrapper.value.closeMenu();
+    wrapper.value.closeMenu();
   } else {
-      activeTab.value = newTab + "Content";
-      if (!Object.prototype.hasOwnProperty.call(tab, 'onClick') || tab.onClick === null) {
-        wrapper.value.openMenu();
-      }
+    activeTab.value = newTab + "Content";
+    // on change la largeur du menu pour les favoris
+    if (newTab === "MenuBookMarks") {
+      wrapper.value.widthMenu = 400;
+    } else {
+      wrapper.value.widthMenu = width;
+    }
+    wrapper.value.openMenu();
   }
 }
 
@@ -114,6 +104,18 @@ function tabIsActive(componentName) {
   return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
 
+/**
+ * Réinitialise le menu à "fermé" quand on ouvre un control extension
+ * Excpetion pour l'overviewmap
+ */
+ watch(() => domStore.getrightControlMenu(), (newVal) => {
+  rightControls.value = newVal
+  rightControls.value?.addEventListener("click", function (e) {
+  if (e.target.ariaPressed == "true") {
+    is_expanded.value = false;
+  }
+})
+}, { immediate: true })
 </script>
 
 <template>

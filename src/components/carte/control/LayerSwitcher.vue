@@ -486,7 +486,6 @@ const onClickEditLayer = (e) => {
 
 <style>
 button[id^="GPshowLayersListPicto-"] {
-  border-bottom-left-radius: 4px !important;
-  border-bottom-right-radius: 4px !important;
+  border-radius: 4px !important;
 }
 </style>
