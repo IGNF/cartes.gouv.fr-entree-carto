@@ -38,7 +38,7 @@ services:
         env_file:
             - ../env/.env.docker-local
         volumes:
-          - envdata:/usr/share/nginx/html/cartes/env:rw
+          - envdata:/usr/share/nginx/html/explorer-les-cartes/env:rw
         ports:
         # - HOST:CONTAINER
           - 8082:8082
