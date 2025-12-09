@@ -148,7 +148,10 @@ defineExpose({
     right: 16px;
   // hack pour positionnement du layer switcher
     ::v-deep(div:has(> #MenuControl)) {
-      padding-top: 53px; /* ajoute un grand espace avant MenuControl */
+      padding-top: 106px; /* ajoute un grand espace avant MenuControl */
+      @media (max-width: 576px){
+        padding-top: 102px; /* ajoute un grand espace avant MenuControl */
+      }
       }
     ::v-deep(button[id="MenuControl"]) {
           border-bottom-left-radius: v-bind("hasControls ? '0px' : '4px'");
@@ -223,6 +226,7 @@ En mode petit écran on le positionne tout en haut en attendant mieux */
   .menu-logo-list {
     margin-top: 63px;
   }
+
 }
 
 /* Petits écrans */

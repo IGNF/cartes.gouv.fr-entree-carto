@@ -18,6 +18,7 @@ export const useDomStore = defineStore('dom', () => {
   var menuCatalogueButton = ref();
   var BookmarksButton = ref();
   var leftControlMenu = ref();
+  var rightControlMenu = ref();
   var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
 
   watch(isHeaderCompact, () => {
@@ -42,8 +43,14 @@ export const useDomStore = defineStore('dom', () => {
     return leftControlMenu.value;
   }
   function setleftControlMenu (m) {
-    console.log('setleftControlMenu', m);
     leftControlMenu.value = m;
+  }
+
+  function getrightControlMenu () {
+    return rightControlMenu.value;
+  }
+  function setrightControlMenu (m) {
+    rightControlMenu.value = m;
   }
 
   function getIsHeaderCompact () {
@@ -57,11 +64,14 @@ export const useDomStore = defineStore('dom', () => {
     isHeaderCompact,
     menuCatalogueButton,
     leftControlMenu,
+    rightControlMenu,
     BookmarksButton,
     getmenuCatalogueButton,
     setmenuCatalogueButton,
     getBookmarksButton,
     setBookmarksButton,
+    getrightControlMenu,
+    setrightControlMenu,
     getleftControlMenu,
     setleftControlMenu,
     getIsHeaderCompact,

@@ -206,6 +206,14 @@ export const useControls = {
     analytic: true,
     default: true,
     icon: "fr-icon-feedback-line" // ri:feedback-line
+  },
+  Catalog: {
+    id: 'Catalog',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-feedback-line"
   }
 }
 
@@ -443,6 +451,15 @@ export function useControlsMenuOptions() {
       disabled: useControls.Reporting.disable,
       tooltip: "",
       icon: "fr-icon-feedback-line"
+    },
+    {
+      label: 'Catalogue',
+      id: 'catalog',
+      name: useControls.Catalog.id,
+      hint: '',
+      disabled: useControls.Catalog.disable,
+      tooltip: "",
+      icon: "ri:map-2-line"
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
@@ -474,7 +491,8 @@ export function useControlsExtensionPosition() {
     layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
-    reportingOptions : 'top-left'
+    reportingOptions : 'top-left',
+    catalogOptions : 'top-right'
   }
 }
 
@@ -575,7 +593,10 @@ export function useControlsPosition() {
     leftC.push(useControls.Reporting.id)
   if (useControlsExtensionPosition().reportingOptions.includes("right"))
     rightC.push(useControls.Reporting.id)
-
+  if (useControlsExtensionPosition().catalogOptions.includes("right"))
+    rightC.push(useControls.Catalog.id)
+  if (useControlsExtensionPosition().catalogOptions.includes("left"))
+    leftC.push(useControls.Catalog.id)
   return {
     left : leftC,
     right : rightC
