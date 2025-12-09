@@ -40,9 +40,10 @@ onMounted(() => {
     map.addControl(catalog.value);
     log.info("CatalogManager mounted", catalog.value);
     var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
-    el.classList.remove('fr-btn--tertiary')
-    el.classList.remove('gpf-btn--tertiary')
-    el.classList.remove('gpf-btn--icon')
+    el.classList.remove('fr-btn--tertiary');
+    el.classList.remove('gpf-btn--tertiary');
+    el.classList.remove('gpf-btn--icon');
+    el.classList.add('gpf-btn--primary');
     if (props.analytic) {
       useActionButtonEulerian(el);
     }
