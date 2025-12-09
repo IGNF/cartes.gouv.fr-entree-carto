@@ -21,7 +21,7 @@ FROM node:23-alpine AS builder
 # - BASE_URL : URL de base de l'application
 # - MODE_ENV : mode de construction (production, development, demo, qualif)
 # - SOURCE_MAP : génère les fichiers de source map (true/false)
-ARG BASE_URL="/cartes"
+ARG BASE_URL="/explorer-les-cartes"
 ARG MODE_ENV="production"
 ARG SOURCE_MAP="false"
 

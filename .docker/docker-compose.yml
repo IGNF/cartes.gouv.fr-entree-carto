@@ -23,7 +23,7 @@ services:
             dockerfile: ./.docker/Dockerfile
             args:
               # MODE_ENV: "docker-local"
-              BASE_URL: "/cartes"
+              BASE_URL: "/explorer-les-cartes"
               SOURCE_MAP: "true"
               USER_ENV: "root"
               HTTP_PROXY: "http://proxy.ign.fr:3128"

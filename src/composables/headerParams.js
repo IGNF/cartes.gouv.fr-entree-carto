@@ -49,7 +49,7 @@ export function useHeaderParams() {
             links :[
               {
                   text: "Explorer les cartes",
-                  to: useBaseUrl() + '/cartes',
+                  to: useBaseUrl() + '/explorer-les-cartes',
                   icon: "ri-road-map-line"
               },
               {
