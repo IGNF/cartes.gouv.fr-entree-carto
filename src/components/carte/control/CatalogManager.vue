@@ -39,8 +39,11 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(catalog.value);
     log.info("CatalogManager mounted", catalog.value);
+    var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
+    el.classList.remove('fr-btn--tertiary')
+    el.classList.remove('gpf-btn--tertiary')
+    el.classList.remove('gpf-btn--icon')
     if (props.analytic) {
-      var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget 
@@ -111,18 +114,9 @@ const onCatalogLayerRemove = (e) => {
 </template>
 
 <style>
-button[id^=GPshowCatalogPicto-] {
-  display: none;
-}
-.gpf-widget-button[id^=GPcatalog-]:has(>.gpf-btn-icon[aria-pressed=true]):after {
-  display: none;
-}
-dialog[id^=GPcontrolListPanel-] button[id^=GPshowCatalogPicto-]{
-  display: block;
-}
-
-dialog[id^=GPcatalogPanel-] {
-  top: -47px !important;
+button[id^=GPshowCatalogPicto-]{
+  border-radius: 4px !important;
+  border-radius: 4px !important;
 }
 
 @media (max-width: 576px) {
