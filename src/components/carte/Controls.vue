@@ -419,7 +419,7 @@ const catalogOptions = {
   layerThumbnail : true,
   size : "xl",
   tabHeightAuto : false,
-  addToMap : true,
+  addToMap : false,
   optimisation : "on-demand",
   search : {
     display : false,
@@ -473,6 +473,7 @@ const catalogOptions = {
           }
         },
         */
+        // Ex. de configuration de clustering à réactiver si besoin
         // {
         //   title : "Tout",
         //   section : false,
@@ -494,9 +495,6 @@ const catalogOptions = {
     }
   }
 };
-
-const refModalPrint = inject("refModalPrint")
-const refModalShare = inject("refModalShare")
 
 const contextMenuOptions = computed(() => {
   return {
@@ -534,7 +532,7 @@ onMounted(() => {
 >>> sinon, visibility:false
 -->
 <template>
-    <CatalogManager
+  <CatalogManager
     :visibility="true"
     :analytic="false"
     :catalog-manager-options="catalogOptions"

@@ -18,41 +18,46 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
 <template>
   <!-- Modale : Paramètres d’affichage -->
   <DsfrModal 
-    ref="modal" 
+    ref="modal"
+    title=""
     :opened="welcomeModalOpened" 
     :size="size" 
     @close="onWelcomeModalClose"
   >
-  <div class="fr-container">
-    <div class="fr-grid-row logo-row">
+    <div class="fr-container">
+      <div class="fr-grid-row logo-row">
         <DsfrLogo
-            :logo-text="logoText"
-            data-testid="header-logo"
-            class="maxwidth"
+          :logo-text="logoText"
+          data-testid="header-logo"
+          class="maxwidth"
         />
-        <img src="https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg" alt="">
-    </div>
-    <div class="fr-grid-row content">
+        <img
+          src="https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg"
+          alt=""
+        >
+      </div>
+      <div class="fr-grid-row content">
         <h2>Bienvenue sur cartes.gouv.fr</h2>
         <p>Retrouvez ici la référence de la cartographie publique pour explorer, connaître et piloter le territoire :</p>
-        <div><span class="icon vicon purple-glycine"><VIcon v-bind="iconProps"/></span>Accédez à une vaste bibliothèque de cartes et de données</div>
-        <div><span class="icon yellow-tournesol"><i class="fr-icon-brush-line"></i></span>Créez et partagez vos propres cartes</div>
-        <div><span class="icon green-archipel"><i class="fr-icon-database-line"></i></span>Hébergez vos données et vos cartes en toute autonomie</div>
+        <div><span class="icon vicon purple-glycine"><VIcon v-bind="iconProps" /></span>Accédez à une vaste bibliothèque de cartes et de données</div>
+        <div><span class="icon yellow-tournesol"><i class="fr-icon-brush-line" /></span>Créez et partagez vos propres cartes</div>
+        <div><span class="icon green-archipel"><i class="fr-icon-database-line" /></span>Hébergez vos données et vos cartes en toute autonomie</div>
+      </div>
     </div>
-  </div>
     <div class="fr-grid-row flex-end">
-        <DsfrButton 
-        secondary>
-            <a :href="useBaseUrl() + '/decouvrir'">En savoir plus</a>
-        </DsfrButton>
-        <DsfrButton 
-            primary 
-            icon="fr-icon-arrow-right-s-line"
-            icon-right
-            @click="onWelcomeModalClose"
-        >
+      <DsfrButton 
+        secondary
+      >
+        <a :href="useBaseUrl() + '/decouvrir'">En savoir plus</a>
+      </DsfrButton>
+      <DsfrButton 
+        primary 
+        icon="fr-icon-arrow-right-s-line"
+        icon-right
+        @click="onWelcomeModalClose"
+      >
         Accéder aux cartes
-        </DsfrButton>
+      </DsfrButton>
     </div>
   </DsfrModal>
 </template>

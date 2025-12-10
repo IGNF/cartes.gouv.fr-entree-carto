@@ -27,6 +27,7 @@ const emitter = inject('emitter');
 const map = inject(props.mapId);
 const catalog = ref(new Catalog(props.catalogManagerOptions));
 
+// FIXME non utilisé ?
 // abonnement sur l'ouverture du controle
 emitter.addEventListener("catalog:open:clicked", () => {
   if (catalog.value) {
