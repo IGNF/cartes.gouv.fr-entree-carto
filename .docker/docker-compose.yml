@@ -23,7 +23,7 @@ services:
             dockerfile: ./.docker/Dockerfile
             args:
               # MODE_ENV: "docker-local"
-              BASE_URL: "/cartes"
+              BASE_URL: "/explorer-les-cartes"
               SOURCE_MAP: "true"
               USER_ENV: "root"
               HTTP_PROXY: "http://proxy.ign.fr:3128"
@@ -38,7 +38,7 @@ services:
         env_file:
             - ../env/.env.docker-local
         volumes:
-          - envdata:/usr/share/nginx/html/cartes/env:rw
+          - envdata:/usr/share/nginx/html/explorer-les-cartes/env:rw
         ports:
         # - HOST:CONTAINER
           - 8082:8082

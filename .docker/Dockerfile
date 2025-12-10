@@ -21,7 +21,7 @@ FROM node:23-alpine AS builder
 # - BASE_URL : URL de base de l'application
 # - MODE_ENV : mode de construction (production, development, demo, qualif)
 # - SOURCE_MAP : génère les fichiers de source map (true/false)
-ARG BASE_URL="/cartes"
+ARG BASE_URL="/explorer-les-cartes"
 ARG MODE_ENV="production"
 ARG SOURCE_MAP="false"
 
@@ -54,7 +54,7 @@ FROM nginxinc/nginx-unprivileged:alpine
 # Utilisateur par défaut pour nginx
 ARG USER_ENV=nginx
 
-COPY --from=builder /app/dist /usr/share/nginx/html/cartes/
+COPY --from=builder /app/dist /usr/share/nginx/html/explorer-les-cartes/
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 
 USER ${USER_ENV}
@@ -64,7 +64,7 @@ COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers
 
 # On prevoit de monter un volume sous k8s 
 # pour écriture du fichier d'environnement de la webapp
-VOLUME ["/usr/share/nginx/html/cartes/env"]
+VOLUME ["/usr/share/nginx/html/explorer-les-cartes/env"]
 
 # On copie le fichier de configuration de l'environnement
 COPY --from=builder /app/dist/env /app/dist/env

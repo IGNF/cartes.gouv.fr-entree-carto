@@ -30,17 +30,23 @@ Etapes par étapes :
 * `docker network create web_dev` (facultatif)
   > tous les containers sont sur le même réseau
 
-* dans le dossier du projet **cartes.gouv.fr** : `docker compose -f docker-compose.yml up -d --build`
+* dans le dossier du projet **cartes.gouv.fr-entree/.docker-dev/cartes** : `docker compose -f docker-compose.yml up -d --build`
   > creation du container : `cartesgouvfr-dev:8000`
   > exposé sur <http://localhost:9092>
 
-* dans le dossier du projet **cartes.gouv.fr-entree-carto** :`docker compose -f docker-compose.yml watch`
+:warning: Il faut le fichier .env de cartes.gouv.fr !!!
+
+* dans le dossier du projet **cartes.gouv.fr-entree/.docker-dev/carto** :`docker compose -f docker-compose.yml watch`
   > creation du container : `cartesgouvfr-entree_carto-dev:8083`
   > exposé sur <http://localhost:8083/cartes>
 
-* dans le dossier **reverse-proxy-nginx** du projet **cartes.gouv.fr-entree-carto** : `docker compose -f docker-compose.yml up --build`
+* dans le dossier **racine** du projet **cartes.gouv.fr-entree/.docker-dev/proxy** : `docker compose -f .docker-dev/carto/docker-compose.yml up --build`
   > creation du container : `cartesgouvfr-nginx_proxy:80`
   > exposé sur <http://localhost:1235>
+
+**INFO**
+> pour obtenir la mise à jour des images du projet **cartes.gouv.fr**
+> `docker pull ghcr.io/ignf/cartes.gouv.fr:latest`
 
 ## Env
 
