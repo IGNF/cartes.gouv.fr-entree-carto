@@ -430,6 +430,7 @@ const catalogOptions = {
       title : "Cartes de référence",
       id : "base",
       order : false,
+      featured : true,
       filter : {
         field : "base",
         value : "true"
