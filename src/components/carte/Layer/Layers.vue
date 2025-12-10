@@ -1,4 +1,5 @@
 <script setup lang="js">
+import { computed, toRaw } from 'vue'
 import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
 
@@ -22,12 +23,14 @@ var layers = computed(() => {
       name : layer.name,
       service : layer.service || layer.serviceParams.id.split(":")[1], // HACK !
       key : layer.key,
-      position : layer.hasOwnProperty("position") ? layer.position : -1,
-      opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
-      visible : layer.hasOwnProperty("visible") ? layer.visible : true,
-      grayscale : layer.hasOwnProperty("grayscale") ? layer.grayscale : false
+      position : Object.prototype.hasOwnProperty.call(layer, "position") ? layer.position : -1,
+      opacity : Object.prototype.hasOwnProperty.call(layer, "opacity") ? layer.opacity : 1,
+      visible : Object.prototype.hasOwnProperty.call(layer, "visible") ? layer.visible : true,
+      grayscale : Object.prototype.hasOwnProperty.call(layer, "grayscale") ? layer.grayscale : false
     };
-    (layer.hasOwnProperty("style")) ? properties.style = layer.style : null;
+    if (Object.prototype.hasOwnProperty.call(layer, "style")) {
+      properties.style = layer.style;
+    }
     return properties;
   })
 });
@@ -38,10 +41,10 @@ var bookmarks = computed(() => {
   return toRaw(props.selectedBookmarks).map(bookmark => {
     log.debug(bookmark.name, bookmark.position);
     return {
-      position : bookmark.hasOwnProperty("position") ? bookmark.position : -1,
-      opacity : bookmark.hasOwnProperty("opacity") ? bookmark.opacity : 1,
-      visible : bookmark.hasOwnProperty("visible") ? bookmark.visible : true,
-      grayscale : bookmark.hasOwnProperty("grayscale") ? bookmark.grayscale : false,
+      position : Object.prototype.hasOwnProperty.call(bookmark, "position") ? bookmark.position : -1,
+      opacity : Object.prototype.hasOwnProperty.call(bookmark, "opacity") ? bookmark.opacity : 1,
+      visible : Object.prototype.hasOwnProperty.call(bookmark, "visible") ? bookmark.visible : true,
+      grayscale : Object.prototype.hasOwnProperty.call(bookmark, "grayscale") ? bookmark.grayscale : false,
       ...bookmark
     };
   })
