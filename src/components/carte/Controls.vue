@@ -852,6 +852,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   .position-container-top-right > div:nth-child(n+6) {
     padding: 0;
     margin: 0;
+    padding-left: 2px;
   }
 
   .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7):has(> div[id^="GPcontrolList-"])  {
@@ -865,7 +866,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 
   .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7)[id^="GPcontrolList-"] {
-    padding: 2px;
+    /*padding: 2px;*/
   }
 }
 
@@ -928,6 +929,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   .position-container-top-right > div:nth-child(n+10) {
     padding: 0;
     margin: 0;
+    padding-left: 2px;
   }
 
   .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+10):has(> div[id^="GPcontrolList-"])  {

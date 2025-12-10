@@ -79,7 +79,8 @@ onUpdated(() => {
 VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
 */
 dialog[id^=GPterritoriesPanel-] {
-  top : -85px !important;
+  top : -90px !important;
+  left : 46px !important;
 }
 
   @media (max-width: 576px){

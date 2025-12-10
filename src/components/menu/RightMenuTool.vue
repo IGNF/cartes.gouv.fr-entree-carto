@@ -69,7 +69,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuControl",
             icon : "ri:tools-line",
-            title : "Catalogue d'outils",
+            title : "Choisir mes outils",
             visibility : true,
             secondary : true
         }
