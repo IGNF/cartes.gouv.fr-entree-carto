@@ -33,6 +33,7 @@ Nouvelle barre de recherche, évolutions sur le cartalogue, et mise en place d'u
   - Partage : gestion de permalien spéciaux en cas de redirection (#693)
   - DSFR : mise à jour des dépendances à DSFR et Vue-DSFR (#789)
   - Footer : réorganisation de la disposition des logos partenaires (#805)
+  - Cartalogue : mise en avant de couches spécifiques en début de la liste des cartes de référence (#473)
 
 #### 🔥 [Obsolète]
 
@@ -51,6 +52,7 @@ Nouvelle barre de recherche, évolutions sur le cartalogue, et mise en place d'u
   - Footer : correction de l'interaction de dépliage (#803)
   - Header : correction et evolutions- sur l'UI de l'entête (#811)
   - Cartalogue : mise à jour des fichiers de configuration pour tri automatique des couches et génération automatique des vignettes (752be0d088f91f173aa2ebb4dc26226a774917ff)
+  - Cartalogue : theme sombre géré pour tous les composants du cartalogue (#473)
  
 #### 🔒 [Sécurité]
 
