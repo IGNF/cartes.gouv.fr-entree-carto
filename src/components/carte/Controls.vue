@@ -413,7 +413,6 @@ const catalogOptions = {
   position: useControlsExtensionPosition().catalogOptions,
   gutter: false,
   listable: true,
-
   titlePrimary : "Catalogue de cartes",
   layerLabel : "title",
   layerThumbnail : true,
@@ -430,6 +429,7 @@ const catalogOptions = {
       title : "Cartes de référence",
       id : "base",
       order : false,
+      featured : true,
       filter : {
         field : "base",
         value : "true"
@@ -491,7 +491,8 @@ const catalogOptions = {
     type : "json",
     data : {
       layers : dataStore.getLayers(),
-      topics : dataStore.getTopics()
+      topics : dataStore.getTopics(),
+      featured : dataStore.getFeatured()
     }
   }
 };
