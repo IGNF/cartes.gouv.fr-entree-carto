@@ -23,6 +23,7 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
     :opened="welcomeModalOpened" 
     :size="size" 
     @close="onWelcomeModalClose"
+    class="welcome-modal"
   >
     <div class="fr-container">
       <div class="fr-grid-row logo-row">
@@ -62,6 +63,9 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
   </DsfrModal>
 </template>
 <style scoped lang="scss">
+.welcome-modal {
+  z-index: 10000;
+}
 .fr-container {
     padding-left: 3rem;
     padding-right: 3rem;  
