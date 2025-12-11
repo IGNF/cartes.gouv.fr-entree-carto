@@ -1,0 +1,9 @@
+////
+/// Summary Print
+/// @group summary
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

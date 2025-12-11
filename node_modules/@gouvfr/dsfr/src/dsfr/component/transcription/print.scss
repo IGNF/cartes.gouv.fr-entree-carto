@@ -1,0 +1,9 @@
+////
+/// Transcription Print
+/// @group transcription
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

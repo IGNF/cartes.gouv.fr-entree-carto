@@ -1,0 +1,14 @@
+<%
+const toggle = locals.toggle || {};
+
+const data = {
+  label: 'Libellé de l\'interrupteur',
+  id: uniqueId('toggle'),
+  ...toggle,
+  hint: hintData(toggle.hint),
+  valid: validData(toggle.valid),
+  error: errorData(toggle.error)
+}
+%>
+
+<%- include('../../template/ejs/toggle', {toggle: data}); %>

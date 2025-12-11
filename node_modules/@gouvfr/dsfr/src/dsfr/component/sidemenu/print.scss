@@ -1,0 +1,9 @@
+////
+/// Sidemenu Print
+/// @group sidemenu
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

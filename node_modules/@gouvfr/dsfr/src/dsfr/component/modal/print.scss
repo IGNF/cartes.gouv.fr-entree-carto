@@ -1,0 +1,9 @@
+////
+/// Modal Print
+/// @group modal
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

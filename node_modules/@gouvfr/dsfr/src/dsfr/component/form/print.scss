@@ -1,0 +1,9 @@
+////
+/// Form Print
+/// @group form
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

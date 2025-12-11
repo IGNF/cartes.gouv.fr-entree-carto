@@ -1,0 +1,9 @@
+////
+/// Content Print
+/// @group content
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

@@ -1,0 +1,9 @@
+////
+/// Toggle Print
+/// @group toggle
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

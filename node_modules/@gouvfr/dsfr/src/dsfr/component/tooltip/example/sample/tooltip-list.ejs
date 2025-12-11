@@ -1,0 +1,15 @@
+<%
+let tooltip = locals.tooltip || {};
+let tooltipId = uniqueId('tooltip');
+let tooltipData = {
+  id: tooltipId,
+  content: lorem(),
+  ...tooltip
+};
+
+let shareData = {};
+shareData = JSON.parse(include('../../../share/example/data/share.json.ejs'));
+shareData.share.buttons[0].tooltip = tooltipData;
+%>
+
+<%- include('../../../share/template/ejs/share', shareData); %>

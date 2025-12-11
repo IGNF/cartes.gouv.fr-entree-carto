@@ -1,0 +1,10 @@
+<%
+
+let data = {
+  ...locals.highlight || {},
+  text: lorem('', 180),
+}
+
+%>
+
+<%- include('../../template/ejs/highlight', {highlight: data}); %>

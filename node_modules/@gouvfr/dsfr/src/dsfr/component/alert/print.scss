@@ -1,0 +1,9 @@
+////
+/// Alert Print
+/// @group alert
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

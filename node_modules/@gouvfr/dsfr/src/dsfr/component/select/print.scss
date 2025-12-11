@@ -1,0 +1,9 @@
+////
+/// Select Print
+/// @group select
+////
+
+@media print {
+  @import 'index';
+  @import 'style/print';
+}

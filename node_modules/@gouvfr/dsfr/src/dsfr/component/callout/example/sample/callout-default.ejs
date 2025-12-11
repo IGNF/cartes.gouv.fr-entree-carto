@@ -1,0 +1,9 @@
+<%
+ let data = {
+   id: uniqueId('callout'),
+   text: lorem('', 180),
+    ...locals.callout,
+  };
+ %>
+
+<%- include('../../template/ejs/callout.ejs', {callout:data}); %>

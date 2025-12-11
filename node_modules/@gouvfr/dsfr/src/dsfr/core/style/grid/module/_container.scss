@@ -1,0 +1,16 @@
+////
+/// Core Module : Grid container
+/// @group core
+////
+
+$containers: ns('container');
+@each $breakpoint, $limit in $breakpoints {
+  @if $breakpoint != 'xs' {
+    $containers: append($containers, ns('container-#{$breakpoint}'), 'comma');
+  }
+}
+
+#{$containers} {
+  @include size(100%);
+  @include margin-x(auto);
+}
