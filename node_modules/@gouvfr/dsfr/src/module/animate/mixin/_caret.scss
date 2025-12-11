@@ -1,5 +1,0 @@
-@use 'rotate';
-
-@mixin caret() {
-  @include rotate.rotate('&[aria-expanded="true"]', '-180', 'after');
-}

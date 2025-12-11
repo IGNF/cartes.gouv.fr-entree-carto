@@ -1,9 +1,0 @@
-
-<%
-  eval(include('../../../../core/index.ejs'));
-  const data = JSON.parse(include('../../../../component/table/example/data/data-simple.json.ejs', {table: {caption: 'tableau analytics', id: 'table'}})) || [];
-%>
-
-<div class="<%= prefix %>-container">
-  <%- include('../../../../component/table/template/ejs/table-wrapper', { table: data }); %>
-</div>
