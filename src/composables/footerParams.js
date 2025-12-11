@@ -78,6 +78,10 @@ export function useFooterParams() {
             href: useBaseUrl() + '/mentions-legales'
           },
           {
+            label: 'Conditions générales d’utilisation',
+            href: useBaseUrl() + '/cgu'
+          },
+          {
             label: 'Données personnelles',
             href: useBaseUrl() + '/donnees-personnelles'
           },
