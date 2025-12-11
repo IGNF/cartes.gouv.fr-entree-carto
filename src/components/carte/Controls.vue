@@ -412,7 +412,7 @@ const catalogOptions = {
   id: "22",
   position: useControlsExtensionPosition().catalogOptions,
   gutter: false,
-  listable: true,
+  listable: false,
   titlePrimary : "Catalogue de cartes",
   layerLabel : "title",
   layerThumbnail : true,
