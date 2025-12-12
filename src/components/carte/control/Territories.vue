@@ -6,6 +6,10 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { Territories } from 'geopf-extensions-openlayers';
 
+// lib notification
+import { push } from 'notivue';
+import t from '@/features/translation';
+
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
@@ -15,7 +19,6 @@ const props = defineProps({
 
 const log = useLogger();
 const store = useDataStore();
-
 
 const map = inject(props.mapId)
 const territories = ref(new Territories(props.territoriesOptions));
@@ -38,6 +41,8 @@ onMounted(() => {
     }
     /* abonnement au widget */
     territories.value.on("territories:change", onChangeTerritories);
+    territories.value.on("territories:add", onAddTerritories);
+    territories.value.on("territories:remove", onRemoveTerritories);
   }
 })
 
@@ -57,6 +62,8 @@ onUpdated(() => {
     }
     /* abonnement au widget */
     territories.value.on("territories:change", onChangeTerritories);
+    territories.value.on("territories:add", onAddTerritories);
+    territories.value.on("territories:remove", onRemoveTerritories);
   }
 })
 
@@ -65,13 +72,33 @@ onUpdated(() => {
  * @description
  * ...
  */
- const onChangeTerritories = (e) => {
+const onChangeTerritories = (e) => {
   log.debug(e);
+  // push.info({
+  //   title: t.territories.title,
+  //   message: t.territories.change(e.territory.title),
+  // });
+}
+const onAddTerritories = (e) => {
+  log.debug(e);
+  push.info({
+    title: t.territories.title,
+    message: t.territories.add(e.territory.title),
+  });
+}
+const onRemoveTerritories = (e) => {
+  log.debug(e);
+  push.info({
+    title: t.territories.title,
+    message: t.territories.remove(e.territory.title),
+  });
 }
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>
