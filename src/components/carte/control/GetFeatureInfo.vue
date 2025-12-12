@@ -57,8 +57,8 @@ function onToggleGetFeatureInfo (e) {
 }
 
 dialog[id^="GPgetFeatureInfoPanel-"] {
-  top: 49px !important;
-  left: 44px !important;
+  top: -6px !important;
+  left: 47px !important;
 }
 
 @media (max-width: 576px) {

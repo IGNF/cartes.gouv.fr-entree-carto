@@ -38,8 +38,8 @@ onBeforeUpdate(() => {
 }
 
 div[id^="GPpointInfo-"] {
-  top: 62px;
-  left: 50px;
+  top: 6px;
+  left: 53px;
 }
 
 @media (max-width: 627px) and (min-width: 576px) {
