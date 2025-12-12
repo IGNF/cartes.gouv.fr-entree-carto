@@ -476,7 +476,7 @@ export function useControlsExtensionPosition() {
     territoriesOptions : 'bottom-left',
     layerSwitcherOptions : "top-right",
     legendsOptions : "bottom-left",
-    getFeatureInfoOptions : 'bottom-left',
+    getFeatureInfoOptions : 'top-left',
     overviewMapOptions : 'bottom-left',
     zoomOptions : 'bottom-right',
     controlListOptions : 'top-right',

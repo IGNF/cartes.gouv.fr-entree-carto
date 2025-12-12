@@ -1,6 +1,5 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin';
-import { useMatchMedia } from '@/composables/matchMedia';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { GetFeatureInfo } from 'geopf-extensions-openlayers';
@@ -18,23 +17,8 @@ const log = useLogger();
 const map = inject(props.mapId);
 const getFeatureInfo = ref(new GetFeatureInfo(props.getFeatureInfoOptions));
 
-const isSmallScreen = useMatchMedia('SM')
-
-watch(isSmallScreen, () => {
-  if (props.visibility && !isSmallScreen.value) {
-    map.addControl(getFeatureInfo.value);
-    if (props.analytic) {
-      var el = getFeatureInfo.value.element.querySelector("button[id^=GPgetFeatureInfoPicto-]");
-      useActionButtonEulerian(el);
-    }
-  }
-  else {
-    map.removeControl(getFeatureInfo.value);
-  }
-})
-
 onMounted(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(getFeatureInfo.value);
     getFeatureInfo.value.on('GetFeatureInfo:toggle', onToggleGetFeatureInfo);
     if (props.analytic) {
@@ -45,7 +29,7 @@ onMounted(() => {
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(getFeatureInfo.value);
     if (props.analytic) {
       var el = getFeatureInfo.value.element.querySelector("button[id^=GPgetFeatureInfoPicto-]");
@@ -73,7 +57,14 @@ function onToggleGetFeatureInfo (e) {
 }
 
 dialog[id^="GPgetFeatureInfoPanel-"] {
-  top: -36px !important;
+  top: 49px !important;
   left: 44px !important;
+}
+
+@media (max-width: 576px) {
+  dialog[id^="GPgetFeatureInfoPanel-"] {
+    top: -132px !important;
+    left: 2px !important;
+  }
 }
 </style>

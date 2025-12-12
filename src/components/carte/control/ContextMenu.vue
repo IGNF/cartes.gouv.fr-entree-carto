@@ -1,8 +1,5 @@
 <script setup lang="js">
 import { ContextMenu } from 'geopf-extensions-openlayers';
-import { useMatchMedia } from '@/composables/matchMedia';
-
-const isSmallScreen = useMatchMedia('SM')
 
 const props = defineProps({
   mapId: String,
@@ -15,13 +12,13 @@ const map = inject(props.mapId)
 const contextMenu = ref(new ContextMenu(props.contextMenuOptions));
 
 onMounted(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(contextMenu.value);
   }
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(contextMenu.value);
   }
   else {
@@ -59,7 +56,8 @@ div[id^="GPpointInfo-"] {
   }
 
   div[id^="GPpointInfo-"] {
-    top: 168px;
+    top: 165px !important;
+    left: 8px !important;
   }
 }
 
