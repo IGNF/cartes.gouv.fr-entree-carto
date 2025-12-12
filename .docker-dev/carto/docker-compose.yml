@@ -12,7 +12,7 @@ services:
         container_name: cartesgouvfr-entree_carto-dev
         tty: true
         environment:
-            - BASE_URL=/cartes
+            - BASE_URL=/explorer-les-cartes
             - SOURCE_MAP=true
             - HTTP_PROXY=${HTTP_PROXY}
             - HTTPS_PROXY=${HTTPS_PROXY}

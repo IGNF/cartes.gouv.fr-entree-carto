@@ -27,6 +27,7 @@ const emitter = inject('emitter');
 const map = inject(props.mapId);
 const catalog = ref(new Catalog(props.catalogManagerOptions));
 
+// FIXME non utilisé ?
 // abonnement sur l'ouverture du controle
 emitter.addEventListener("catalog:open:clicked", () => {
   if (catalog.value) {
@@ -39,8 +40,12 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(catalog.value);
     log.info("CatalogManager mounted", catalog.value);
+    var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
+    el.classList.remove('fr-btn--tertiary');
+    el.classList.remove('gpf-btn--tertiary');
+    el.classList.remove('gpf-btn--icon');
+    el.classList.add('gpf-btn--primary');
     if (props.analytic) {
-      var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
       useActionButtonEulerian(el);
     }
     /** abonnement au widget 
@@ -111,18 +116,9 @@ const onCatalogLayerRemove = (e) => {
 </template>
 
 <style>
-button[id^=GPshowCatalogPicto-] {
-  display: none;
-}
-.gpf-widget-button[id^=GPcatalog-]:has(>.gpf-btn-icon[aria-pressed=true]):after {
-  display: none;
-}
-dialog[id^=GPcontrolListPanel-] button[id^=GPshowCatalogPicto-]{
-  display: block;
-}
-
-dialog[id^=GPcatalogPanel-] {
-  top: -47px !important;
+button[id^=GPshowCatalogPicto-]{
+  border-radius: 4px !important;
+  border-radius: 4px !important;
 }
 
 @media (max-width: 576px) {

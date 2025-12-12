@@ -148,7 +148,10 @@ defineExpose({
     right: 16px;
   // hack pour positionnement du layer switcher
     ::v-deep(div:has(> #MenuControl)) {
-      padding-top: 68px; /* ajoute un grand espace avant MenuControl */
+      padding-top: 106px; /* ajoute un grand espace avant MenuControl */
+      @media (max-width: 576px){
+        padding-top: 102px; /* ajoute un grand espace avant MenuControl */
+      }
       }
     ::v-deep(button[id="MenuControl"]) {
           border-bottom-left-radius: v-bind("hasControls ? '0px' : '4px'");
@@ -177,11 +180,11 @@ defineExpose({
     height: calc(76.8vh - 24px);
     z-index: 1;
     &.is_expanded {
+      // passe par dessus les controls openlayers
+      z-index: 4000;
       .menu-content-list {
         width: v-bind(cssWidthMenu);
-        margin-top: 12px;
       }
-
     }
 }
 
@@ -219,17 +222,13 @@ En mode petit écran on le positionne tout en haut en attendant mieux */
   }
 }
 
-@media (max-width: 576px) and (min-width: 382px) {
+@media (max-width: 576px){
   .menu-logo-list {
-    margin-top: 210px;
+    margin-top: 63px;
   }
+
 }
 
-@media (max-width: 627px) and (min-width: 576px){
-  .menu-logo-list {
-    top : 228px;
-  }
-}
 /* Petits écrans */
 @media (max-width: 576px) {
   // FIXME : on cache les bouton "rouage" et "catalogue" si la recherche avancée est ouverte ou si les résultats d'autocompletion sont visibles

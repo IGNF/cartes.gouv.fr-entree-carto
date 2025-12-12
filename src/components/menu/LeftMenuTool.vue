@@ -35,7 +35,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuTierce",
             icon : "ri-menu-add-fill",
-            title : "Menu carte",
+            title : "Accéder à d'autres outils",
             visibility: true,
             secondary: true
         },

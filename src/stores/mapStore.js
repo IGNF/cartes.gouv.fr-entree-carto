@@ -20,7 +20,7 @@ import { useDefaultControls } from '@/composables/controls';
 var defaultControls = useDefaultControls();
 
 const DEFAULT = {
-  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)",
+  LAYERS: "PLAN.IGN$GEOPORTAIL:GPP:TMS(1;1;1;0;standard)",
   CONTROLS: defaultControls.toString(),
   X: 289739.8968702704,
   Y: 5859851.607344459,

@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
     <DsfrButton
     v-if="menu.connexionMenu && !user"
     ref="button"
-    icon="ri-logout-box-r-line"
+    icon="ri-account-circle-fill"
     class="fr-nav__btn fr-nav__btn-no-dropdown">
     <a :href="useBaseUrl() +  '/login'">Se connecter</a>
   </DsfrButton>
@@ -108,9 +108,9 @@ onBeforeUnmount(() => {
       class="fr-menu__list"
     >
     <DsfrNavigationMenuItem v-if="menu.connexionMenu && user">
-      <div class="fr-container">  
+      <div class="fr-container  fr-pt-2v">  
         <div class="fr-grid-row fr-grid-row--left">
-          <div class="fr-mt-1v fr-mb-2v fr-description__info fr-text--xs">
+          <div class="fr-description__info fr-text--xs">
             <b>{{ user.first_name }} {{ user.last_name }}</b>
           </div>
         </div>

@@ -99,28 +99,7 @@ const searchEngineOptions = {
   id: "1",
   collapsed: false,
   collapsible: false,
-  displayButtonAdvancedSearch: true,
-  displayButtonGeolocate: true,
-  displayButtonCoordinateSearch: true,
-  coordinateSearchInAdvancedSearch: true,
-  displayButtonClose: false,
-  resources: {
-    search: true
-  },
-  searchOptions: {
-    addToMap: false,
-    filterServices : dataStore.filterServices,
-    filterWMTSPriority : true,
-    filterProjections : dataStore.filterProjections,
-    filterLayersPriority : dataStore.getFeatured().toString(),
-    filterLayers : true,
-    filterTMS : true,
-    filterLayersList : dataStore.getLayersSignatures(),
-    serviceOptions : {
-      maximumResponses : 50
-    },
-    maximumEntries : 5
-  },
+  returnTrueGeometry: true,
   autocompleteOptions : {
     serviceOptions : {
         maximumResponses : 10
@@ -429,11 +408,11 @@ const reportingOptions = {
   format : "kml"
 };
 
-const catalogManagerOptions = {
+const catalogOptions = {
   id: "22",
-  position: "top-right",
+  position: useControlsExtensionPosition().catalogOptions,
   gutter: false,
-  listable: true,
+  listable: false,
   titlePrimary : "Catalogue de cartes",
   layerLabel : "title",
   layerThumbnail : true,
@@ -449,6 +428,8 @@ const catalogManagerOptions = {
     {
       title : "Cartes de référence",
       id : "base",
+      order : false,
+      featured : true,
       filter : {
         field : "base",
         value : "true"
@@ -462,6 +443,7 @@ const catalogManagerOptions = {
         {
           title : "Thème",
           default : true,
+          order : true,
           section : true,
           icon : true,
           filter : {
@@ -471,6 +453,7 @@ const catalogManagerOptions = {
         },
         {
           title : "Producteur",
+          order : true,
           section : true,
           icon : false,
           filter : {
@@ -481,6 +464,7 @@ const catalogManagerOptions = {
         /*,
         {
           title : "Service",
+          order : true,
           section : true,
           icon : true,
           filter : {
@@ -489,6 +473,7 @@ const catalogManagerOptions = {
           }
         },
         */
+        // Ex. de configuration de clustering à réactiver si besoin
         // {
         //   title : "Tout",
         //   section : false,
@@ -506,7 +491,8 @@ const catalogManagerOptions = {
     type : "json",
     data : {
       layers : dataStore.getLayers(),
-      topics : dataStore.getTopics()
+      topics : dataStore.getTopics(),
+      featured : dataStore.getFeatured()
     }
   }
 };
@@ -539,6 +525,7 @@ const contextMenuOptions = computed(() => {
 
 onMounted(() => {
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
+  domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
 })
 </script>
 <!-- INFO : Affichage du contrôle
@@ -546,6 +533,12 @@ onMounted(() => {
 >>> sinon, visibility:false
 -->
 <template>
+  <CatalogManager
+    :visibility="true"
+    :analytic="false"
+    :catalog-manager-options="catalogOptions"
+    :map-id="mapId"
+  />
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
@@ -700,12 +693,6 @@ onMounted(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
-  <CatalogManager
-    :visibility="true"
-    :analytic="false"
-    :catalog-manager-options="catalogManagerOptions"
-    :map-id="mapId"
-  />
 </template>
 
 <style>
@@ -719,7 +706,8 @@ onMounted(() => {
 }
 
 .gpf-widget[id^="GPlayerSwitcher-"] {
-  margin-bottom: 60px;
+  margin-bottom: 47px;
+  margin-top: 12px;
 }
 
 button[id^="GPgetFeatureInfoPicto-"] {
@@ -732,38 +720,38 @@ button[id^="GPgetFeatureInfoPicto-"] {
 }
 
 /* 12 boutons */
-.position-container-top-right > .gpf-widget:nth-child(n+15) > button {
+.position-container-top-right > .gpf-widget:nth-child(n+16) > button {
   display: none;
 }
 
-.position-container-top-right:has(.gpf-widget:nth-child(16)) > .gpf-widget:nth-child(n+14) > button {
+.position-container-top-right:has(.gpf-widget:nth-child(17)) > .gpf-widget:nth-child(n+15) > button {
   display: none;
 }
 
-.position-container-top-right:not(:has(.gpf-widget:nth-child(16))) > .gpf-widget[id^="GPcontrolList-"] > button {
+.position-container-top-right:not(:has(.gpf-widget:nth-child(17))) > .gpf-widget[id^="GPcontrolList-"] > button {
   display: none;
 }
 
-.position-container-top-right:has(.gpf-widget:nth-child(16)) > .gpf-widget:nth-child(n+14)[id^="GPcontrolList-"] > button {
+.position-container-top-right:has(.gpf-widget:nth-child(17)) > .gpf-widget:nth-child(n+15)[id^="GPcontrolList-"] > button {
   display: inline-flex;
 }
 
-.position-container-top-right > div:nth-child(n+15) {
+.position-container-top-right > div:nth-child(n+16) {
   padding: 0;
   margin: 0;
 }
 
-.position-container-top-right:has(div:nth-child(16)) > div:nth-child(n+14) {
+.position-container-top-right:has(div:nth-child(17)) > div:nth-child(n+15) {
   margin: 0;
   padding: 0;
 }
 
-.position-container-top-right:not(:has(div:nth-child(16))) > div[id^="GPcontrolList-"] {
+.position-container-top-right:not(:has(div:nth-child(17))) > div[id^="GPcontrolList-"] {
   margin: 0;
   padding: 0;
 }
 
-.position-container-top-right:has(div:nth-child(16)) > div:nth-child(n+14)[id^="GPcontrolList-"] {
+.position-container-top-right:has(div:nth-child(17)) > div:nth-child(n+15)[id^="GPcontrolList-"] {
   padding: 2px;
 }
 
@@ -774,77 +762,39 @@ button[id^="GPgetFeatureInfoPicto-"] {
 /* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
 /* Que le menu ... (1 seul bouton) */
 @media (max-height: 639px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
     display: none;
   }
 
-  .position-container-top-right > div:nth-child(n+3) {
+  .position-container-top-right > div:nth-child(n+4) {
     margin: 0;
     padding: 0;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+2) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+2) {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) {
     margin: 0;
     padding: 0;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: inline-flex;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(4)) > .gpf-widget[id^="GPcontrolList-"] {
+  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
     padding: 2px;
-  }
+    padding-top: 12px;
+}
 }
 
 /* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
 /* 4 boutons */
 @media (min-height: 640px) and (max-height: 679px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+6) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(7)) > .gpf-widget:nth-child(n+5) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(6))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(7)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+5) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(6)) > div:nth-child(n+5):has(> div[id^="GPcontrolList-"]) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(6))) > div[id^="GPcontrolList-"] {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(6)) > div:nth-child(n+5)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
-/* 5 boutons */
-@media (min-height: 680px) and (max-height: 759px) {
   .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
     display: none;
   }
@@ -862,18 +812,18 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 
   .position-container-top-right > div:nth-child(n+6) {
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"])  {
-    padding: 0;
+  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"]) {
     margin: 0;
+    padding: 0;
   }
 
   .position-container-top-right:not(:has(div:nth-child(7))) > div[id^="GPcontrolList-"] {
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
 
   .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
@@ -881,46 +831,48 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 }
 
-/* 7 boutons */
-@media (min-height: 760px) and (max-height: 799px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
+/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
+/* 5 boutons */
+@media (min-height: 680px) and (max-height: 759px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+8) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(9)) > .gpf-widget:nth-child(n+7) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(9))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+9)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(9)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+8) {
+  .position-container-top-right > div:nth-child(n+6) {
+    padding: 0;
+    margin: 0;
+    padding-left: 2px;
+  }
+
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(9)) > div:nth-child(n+8):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(9))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(9)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
-    padding: 2px;
+  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7)[id^="GPcontrolList-"] {
+    /*padding: 2px;*/
   }
 }
 
-/* 8 boutons */
-@media (min-height: 800px) and (max-height: 879px) {
+/* 7 boutons */
+@media (min-height: 760px) and (max-height: 799px) {
   .position-container-top-right > .gpf-widget:nth-child(n+10) > button {
     display: none;
   }
@@ -957,40 +909,79 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 }
 
-/* 10 boutons */
-@media (min-height: 880px) and (max-height: 959px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+12) > button {
+/* 8 boutons */
+@media (min-height: 800px) and (max-height: 879px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(13)) > .gpf-widget:nth-child(n+11) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
     display: none;
   }
 
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(11))) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(13)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+11)[id^="GPcontrolList-"] > button {
     display: inline-flex;
   }
 
-  .position-container-top-right > div:nth-child(n+11) {
+  .position-container-top-right > div:nth-child(n+10) {
+    padding: 0;
+    margin: 0;
+    padding-left: 2px;
+  }
+
+  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+10):has(> div[id^="GPcontrolList-"])  {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+11):has(> div[id^="GPcontrolList-"])  {
+  .position-container-top-right:not(:has(div:nth-child(11))) > div[id^="GPcontrolList-"] {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
+    padding: 2px;
+  }
+}
+
+/* 10 boutons */
+@media (min-height: 880px) and (max-height: 959px) {
+  .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
+    display: none;
+  }
+
+  .position-container-top-right:not(:has(.gpf-widget:nth-child(13))) > .gpf-widget[id^="GPcontrolList-"] > button {
+    display: none;
+  }
+
+  .position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+13)[id^="GPcontrolList-"] > button {
+    display: inline-flex;
+  }
+
+  .position-container-top-right > div:nth-child(n+12) {
     padding: 0;
     margin: 0;
   }
 
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+11)[id^="GPcontrolList-"] {
+  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+13):has(> div[id^="GPcontrolList-"])  {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:not(:has(div:nth-child(13))) > div[id^="GPcontrolList-"] {
+    padding: 0;
+    margin: 0;
+  }
+
+  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
     padding: 2px;
   }
 }
@@ -1004,7 +995,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 
   .position-container-top-right {
-      top: 58px;
+      top: 13px;
   }
 /* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
   .position-container-top-left {
@@ -1016,10 +1007,10 @@ button[id^="GPgetFeatureInfoPicto-"] {
     top: 299px;
   }
   .position-container-top-right{
-    top: 257px;
+    top: 60px;
   }
   .GPpanel {
-    margin-top : -259px !important;
+    margin-top : -56px !important;
   }
 
   .position-container-bottom-left,
@@ -1037,11 +1028,11 @@ button[id^="GPgetFeatureInfoPicto-"] {
     max-height: calc(100% + 302px);
   }
 
-  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
+  .position-container-top-right > .gpf-widget:nth-child(n+5) > button {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+4) > button {
     display: none;
   }
 
@@ -1049,13 +1040,13 @@ button[id^="GPgetFeatureInfoPicto-"] {
     display: none;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
+  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget[id^="GPcontrolList-"] > button {
     display: inline-flex;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
   }
 
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
+  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget[id^="GPcontrolList-"] {
     padding: 2px;
   }
 
@@ -1068,11 +1059,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
   }
 }
 
-@media (max-width: 627px) and (min-width: 576px){
-  .position-container-top-right,
-  .position-container-top-left {
-    top: 124px;
-  }
+@media (max-width: 627px) and (min-width: 576px) {
   .position-container-bottom-left,
   .position-container-bottom-right,
   .position-container-top-left,

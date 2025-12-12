@@ -165,11 +165,22 @@
     "version": 1
   },
   "featured": [
-    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
-    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+    "ORTHOIMAGERY.ORTHOPHOTOS",
     "PLAN.IGN",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS",
     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
-    "ORTHOIMAGERY.ORTHOPHOTOS"
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCEL",
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW",
+    "BDTOPO",
+    "LANDCOVER.FORESTINVENTORY.V2",
+    "DEBROUSSAILLEMENT",
+    "dgac_peb_plan_wmsv",
+    "TRANSPORTS.DRONES.RESTRICTIONS",
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965",
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI"
   ],
   "topics": {
     "thematic" : [
@@ -251,7 +262,7 @@
         { 
             "id" : "society",
             "name" : "Société",
-            "icon" : "fr-icon-capsule-fill"
+            "icon" : "fr-icon-team-fill"
         },
         { 
             "id" : "structure",
@@ -283,8 +294,58 @@
     "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
       "base": true
     },
-    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
+    "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
       "base": true,
+      "title": "Plan IGN personnalisable"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCELS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "BDTOPO$GEOPORTAIL:GPP:TMS": {
+      "base": true,
+      "title": "BDTOPO® personnalisable"
+    },
+    "LANDCOVER.FORESTINVENTORY.V2$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "DEBROUSSAILLEMENT$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "dgac_peb_plan_wmsv$GEOPORTAIL:OGC:WMS": {
+      "base": true
+    },
+    "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI$GEOPORTAIL:OGC:WMTS": {
+      "base": true
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
+      "base": false,
       "legends": [
         {
           "format": "image/png",
@@ -292,6 +353,24 @@
           "url": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.png"
         }
       ]
+    },
+    "ADMIN_EXPRESS$GEOPORTAIL:GPP:TMS" : {
+      "title": "Limites administratives des collectivités territoriales (ADMIN EXPRESS)"
+    },
+    "ISOHYPSE$GEOPORTAIL:GPP:TMS" : {
+      "title": "Courbes de niveau (ISOHYPSE)"
+    },
+    "OCSGE_2016$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2016 (OCSGE)"
+    },
+    "OCSGE_2019$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2019 (OCSGE)"
+    },
+    "PCI$GEOPORTAIL:GPP:TMS" : {
+      "title": "Parcellaire Express (PCI)"
+    },
+    "PLAN.OSM$GEOPORTAIL:GPP:TMS" : {
+      "title": "Plan avec OpenStreetMap (PLAN OSM)"
     }
   }
 }
