@@ -1,6 +1,8 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
+import { useMatchMedia } from '@/composables/matchMedia';
+
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
 import ReportingSuccessSentModal from '@/components/modals/ModalReportingSuccessSent.vue';
@@ -23,6 +25,8 @@ const log = useLogger();
 
 const map = inject(props.mapId)
 const reporting = ref(new Reporting(props.reportingOptions));
+
+const isSmallScreen = useMatchMedia('SM')
 
 const refModalReportingSent = ref({});
 const refModalReportingStart = ref({});
@@ -105,8 +109,20 @@ const onSendingReporting = (e) => {
 button[id^="GPshowReportingPicto-"] {
   display: none;
 }
+
 div[id^="GPreporting-"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
   display: none;
 }
- 
+
+dialog[id^="GPreportingPanel-"] {
+  top: -5px !important;
+  left: 47px !important;
+}
+
+@media (max-width: 576px) {
+  dialog[id^="GPreportingPanel-"] {
+    /* HACK : surcharge de la propriété de position top de gpf-mobile-fullscreen deja en important */
+    margin-top : -295px !important;
+  }
+}
 </style>

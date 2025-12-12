@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+  - Mobile : réactivation du menu contextuel en mode mobile (#846)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
