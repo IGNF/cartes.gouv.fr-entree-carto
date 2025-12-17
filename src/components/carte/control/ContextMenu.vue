@@ -56,8 +56,8 @@ div[id^="GPpointInfo-"] {
   }
 
   div[id^="GPpointInfo-"] {
-    top: 165px !important;
-    left: 8px !important;
+    top: 165px;
+    left: 8px;
   }
 }
 

@@ -26,8 +26,6 @@ const log = useLogger();
 const map = inject(props.mapId)
 const reporting = ref(new Reporting(props.reportingOptions));
 
-const isSmallScreen = useMatchMedia('SM')
-
 const refModalReportingSent = ref({});
 const refModalReportingStart = ref({});
 
