@@ -145,6 +145,11 @@ const territoriesOptions = {
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
   tiles : 3,
+  view : {
+    active : true,
+    title : "Modifier les territoires",
+    description : "Modifier la vue"
+  }
 };
 
 // actif par défaut
