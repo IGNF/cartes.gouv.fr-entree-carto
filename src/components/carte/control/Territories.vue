@@ -110,9 +110,13 @@ dialog[id^=GPterritoriesPanel-] {
   left : 46px !important;
 }
 
-  @media (max-width: 576px){
-    .gpf-panel__body_territories {
-      max-height: calc(100vh - 92.5px - 56px);
-    }
+#add-view-form-fieldset {
+  margin-bottom: unset;
+}
+
+@media (max-width: 576px){
+  .gpf-panel__body_territories {
+    max-height: calc(100vh - 92.5px - 56px);
   }
+}
 </style>

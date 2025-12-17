@@ -147,7 +147,7 @@ const territoriesOptions = {
   tiles : 3,
   view : {
     active : true,
-    title : "Gérer les vues",
+    title : "Modifier les territoires",
     description : "Modifier la vue"
   }
 };
