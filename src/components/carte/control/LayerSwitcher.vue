@@ -146,12 +146,18 @@ const onAddLayer = (e) => {
   }
 
   log.debug("onAddLayer", id);
+  var permalink = lyr.layer.get("permalink") || false;
   if (id) {
+    if (permalink) {
+      // on ne notifie pas l'ajout d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,
       message: t.layerswitcher.add_success
     });
+
   } else {
     push.warning({
       title: t.layerswitcher.title,
@@ -218,7 +224,12 @@ const onRemoveLayer = (e) => {
     }
   }
   log.debug("onRemoveLayer", id);
+  var permalink = lyr.layer.get("permalink") || false;
   if (id) {
+    if (permalink) {
+      // on ne notifie pas la suppression d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,

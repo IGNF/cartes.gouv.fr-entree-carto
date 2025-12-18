@@ -139,7 +139,9 @@ const createVectorLayer = (options) => {
     }
   
     vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
-  
+    // permalink
+    vectorLayer.set("permalink", options.permalink || false);
+
     return Promise.resolve(vectorLayer);
   } catch (error) {
     return Promise.reject(error);

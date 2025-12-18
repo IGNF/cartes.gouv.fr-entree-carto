@@ -26,8 +26,9 @@ export default {
 
 <script setup lang="js">
 
-import { getLayersFromPermalink } from '@/features/permalink.js';
+import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 
+import { getLayersFromPermalink } from '@/features/permalink.js';
 import { toShare } from '@/features/share.js';
 
 // lib notification
@@ -36,8 +37,10 @@ import t from '@/features/translation';
 
 import { useClipboard } from '@vueuse/core'
 import { useMapStore } from "@/stores/mapStore";
+import { useLogger } from 'vue-logger-plugin';
 
 const mapStore = useMapStore();
+const log = useLogger();
 
 const clipboardSource = ref('');
 const { copy } = useClipboard({ clipboardSource });
@@ -48,8 +51,14 @@ const { copy } = useClipboard({ clipboardSource });
  * - data : {id, name, type, type_fr, icon, date}
  */
 const props = defineProps({
-  type : String,
-  data : Object
+  type :  {
+    type: String,
+    default: ''
+  },
+  data : {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const service = inject('services');
@@ -252,7 +261,7 @@ const onClickButtonCopyPermalink = (e) => {
 }
 
 const onClickButtonValidateRename = (e) => {
-  console.debug(e);
+  log.debug(e);
   var data = {
     uuid : props.data.id,
     type : props.data.type,
@@ -285,6 +294,7 @@ const onClickButtonValidateRename = (e) => {
 
 };
 const onClickButtonCancelRename  = (e) => {
+  log.debug(e);
   refDivRename.value.classList.toggle("fr-hidden");
 };
 

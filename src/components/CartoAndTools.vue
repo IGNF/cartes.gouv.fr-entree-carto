@@ -11,15 +11,16 @@ import SaveModal from "@/components/modals/ModalSave.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
+import { useLogger } from 'vue-logger-plugin';
 
 import { fromShare } from '@/features/share';
 
 // lib notification
 import { push } from 'notivue';
-import t from '@/features/translation';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+const log = useLogger();
 
 const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})
@@ -78,6 +79,7 @@ const notifyAndCleanBookmark = (id: string) => {
 const selectedLayers = computed(() => {
   var layersValided: any = [];
   var layers = mapStore.getLayers();
+  var permalink = mapStore.isPermalink();
   for (let i = 0; i < layers.length; i++) {
     var layerId = layers[i];
     var layer = dataStore.getLayerByID(layerId);
@@ -93,6 +95,7 @@ const selectedLayers = computed(() => {
     layer.opacity = props.opacity;
     layer.visible = props.visible;
     layer.grayscale = props.grayscale;
+    layer.permalink = permalink;
     if (props.style) {
       // INFO
       // on ajoute le style de la couche si il est défini
@@ -109,6 +112,7 @@ const selectedLayers = computed(() => {
 const selectedBookmarks = computed(() => {
   var bookmarksValided: any = [];
   var bookmarks = mapStore.getBookmarks();
+  var permalink = mapStore.isPermalink();
   for (let i = 0; i < bookmarks.length; i++) {
     var bookmark = bookmarks[i];
     // transformer un partage d'URL en un objet
@@ -127,6 +131,7 @@ const selectedBookmarks = computed(() => {
     if (!obj.stop) {
       // on ajoute une clef unique... c'est un besoin interne
       obj.key = obj.id;
+      obj.permalink = permalink;
       /*
       * Liste des paramètres utiles (liste non exhaustive):
       * - url

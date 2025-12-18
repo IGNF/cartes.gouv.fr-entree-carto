@@ -35,7 +35,8 @@ var layers = computed(() => {
       position : Object.prototype.hasOwnProperty.call(layer, "position") ? layer.position : -1,
       opacity : Object.prototype.hasOwnProperty.call(layer, "opacity") ? layer.opacity : 1,
       visible : Object.prototype.hasOwnProperty.call(layer, "visible") ? layer.visible : true,
-      grayscale : Object.prototype.hasOwnProperty.call(layer, "grayscale") ? layer.grayscale : false
+      grayscale : Object.prototype.hasOwnProperty.call(layer, "grayscale") ? layer.grayscale : false,
+      permalink : layer.permalink || false
     };
     if (Object.prototype.hasOwnProperty.call(layer, "style")) {
       properties.style = layer.style;
@@ -54,6 +55,7 @@ var bookmarks = computed(() => {
       opacity : Object.prototype.hasOwnProperty.call(bookmark, "opacity") ? bookmark.opacity : 1,
       visible : Object.prototype.hasOwnProperty.call(bookmark, "visible") ? bookmark.visible : true,
       grayscale : Object.prototype.hasOwnProperty.call(bookmark, "grayscale") ? bookmark.grayscale : false,
+      permalink : bookmark.permalink || false,
       ...bookmark
     };
   })
