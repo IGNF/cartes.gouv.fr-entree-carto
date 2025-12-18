@@ -318,11 +318,11 @@ const footerToggle = ref(false);
       />
     </template> -->
     <template #after-quick-links>
-    <CustomNavigation
-      id="main-navigation"
-      :label="'Menu principal'"
-      :nav-items="headerParams.afterQuickLinks"
-    />
+      <CustomNavigation
+        id="main-navigation"
+        :label="'Menu principal'"
+        :nav-items="headerParams.afterQuickLinks"
+      />
     </template>
     <!--
       HACK pour l'API Analytics
@@ -368,22 +368,32 @@ const footerToggle = ref(false);
     </DsfrAlert>
   </div>
   
-  <div class="futur-map-container" :class="domStore.isHeaderCompact ? 'minimized': ''">
+  <div 
+    class="futur-map-container"
+    :class="domStore.isHeaderCompact ? 'minimized': ''"
+  >
     <router-view />
   </div>
   
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <div class="footer-toggle" :class="footerToggle ? 'footer-toggle-true': ''" v-show="!largeScreen">
-    <i class="footer-open fr-icon-arrow-up-s-line" @click="scrollDown"></i>
+  <div 
+    v-show="!largeScreen"
+    class="footer-toggle" 
+    :class="footerToggle ? 'footer-toggle-true': ''"
+  >
+    <i 
+      class="footer-open fr-icon-arrow-up-s-line"
+      @click="scrollDown"
+    />
     <label
       v-show="!largeScreen"
       class="fr-footer-toggle-label footer-close fr-btn fr-btn--tertiary-no-outline fr-btn--close"
       for="fr-footer-toggle"
       @click="footerToggle ? footerToggle = false : ''"
     > 
-    <span>Fermer</span>
+      <span>Fermer</span>
     </label>
   </div>
   <DsfrFooter
@@ -404,14 +414,15 @@ const footerToggle = ref(false);
   />
 
   <div
-   class="fr-container fr-container--fluid fr-container-md">
+    class="fr-container fr-container--fluid fr-container-md"
+  >
     <!-- Modale : Paramètres d’affichage -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
-    <ModalWelcome v-if="appStore.siteOpened"/>
+    <ModalWelcome v-if="appStore.siteOpened" />
   </div>
 </template>
 

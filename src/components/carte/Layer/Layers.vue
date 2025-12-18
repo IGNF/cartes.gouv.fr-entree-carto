@@ -4,9 +4,18 @@ import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
 
 const props = defineProps({
-  selectedLayers: Object,
-  selectedBookmarks: Object,
-  mapId: String
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 })
 
 // INFO

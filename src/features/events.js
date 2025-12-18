@@ -18,7 +18,8 @@ var EVENTS = {
 
   /**
    * Liste des evenements
-   * @fixme convention d'écriture ? ex. componentname:eventtype
+   * On utilise une convention d'écriture
+   *   ex. componentname:eventtype
    */
   eventsName: [
     "test:clicked",

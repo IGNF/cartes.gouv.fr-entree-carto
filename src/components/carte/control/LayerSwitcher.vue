@@ -16,10 +16,16 @@ import { push } from 'notivue';
 import t from '@/features/translation';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerSwitcherOptions: Object
+  layerSwitcherOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
@@ -481,7 +487,9 @@ const onClickEditLayer = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

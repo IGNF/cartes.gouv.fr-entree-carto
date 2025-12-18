@@ -83,12 +83,12 @@ const pinia = createPinia()
 
 const notivue = createNotivue({
   position: 'bottom-center',
-  limit: 10,
+  limit: 3,
   enqueue: true,
   avoidDuplicates: false,
   notifications: {
     global: {
-      duration: 3000
+      duration: 2000
     }
   }
 })

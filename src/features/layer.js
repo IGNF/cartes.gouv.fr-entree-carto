@@ -25,6 +25,7 @@ import {
 } from 'geopf-extensions-openlayers';
 
 import { DEFAULT_STYLE } from './style';
+import t from './translation';
 
 /**
  * INFO
@@ -299,6 +300,7 @@ const createServiceLayer = (options) => {
     if (typeof options.data === 'string') {
       options.data = JSON.parse(options.data);
     }
+
     if (options.kind === "wmts") {
       const tileGrid = new WMTSTileGrid({
         origin: [
@@ -319,53 +321,28 @@ const createServiceLayer = (options) => {
         tileGrid: tileGrid,
         style: options.data.styleName,
         attributions: '',
-      }); var tileLayer = null;
-
-      if (typeof options.data === 'string') {
-        options.data = JSON.parse(options.data);
+      });
+    
+      if (!sourceWMTS) {
+        throw new Error(t.ol.failed_source("service wmts"));
       }
-      if (options.kind === "wmts") {
-        const tileGrid = new WMTSTileGrid({
-          origin: [
-            options.data.topLeftCorner.x,
-            options.data.topLeftCorner.y
-          ],
-          resolutions: options.data.resolutions,
-          matrixIds: options.data.matrixIds,
-        });
-      
-        var sourceWMTS = new WMTS({
-          url: options.data.url,
-          version: options.data.version,
-          layer: options.data.layer,
-          matrixSet: options.data.tileMatrixSet,
-          format: options.data.outputFormat,
-          projection: 'EPSG:3857',
-          tileGrid: tileGrid,
-          style: options.data.styleName,
-          attributions: '',
-        });
     
-        if (!sourceWMTS) {
-          throw new Error(t.ol.failed_source("service wmts"));
-        }
-    
-        sourceWMTS._title = options.data.name || options.name;
-        sourceWMTS._description = options.data.description || options.description;
+      sourceWMTS._title = options.data.name || options.name;
+      sourceWMTS._description = options.data.description || options.description;
       
-        tileLayer = new TileLayer({
-          // minResolution
-          // maxResolution
-          // extent
-          source: sourceWMTS,
-        });
+      tileLayer = new TileLayer({
+        // minResolution
+        // maxResolution
+        // extent
+        source: sourceWMTS,
+      });
     
-        if (!tileLayer) {
-          throw new Error(t.ol.failed_layer("service wmts"));
-        }
+      if (!tileLayer) {
+        throw new Error(t.ol.failed_layer("service wmts"));
+      }
       
-      } else if (options.kind === "wms") {
-        var sourceTileWMS = new TileWMSSource({
+    } else if (options.kind === "wms") {
+      var sourceTileWMS = new TileWMSSource({
           url : options.data.url,
           params: {
             "LAYERS": options.data.layers,    // array ?
@@ -375,102 +352,50 @@ const createServiceLayer = (options) => {
           },
           projection : options.data.projection || 'EPSG:3857',
           attributions: ''
-        });
-    
-        if (!sourceTileWMS) {
-          throw new Error(t.ol.failed_source("service wms"));
-        }
-        
-        sourceTileWMS._title = options.data.name || options.name;
-        sourceTileWMS._description = options.data.description || options.description;
-        
-        tileLayer = new TileLayer({
-          // minResolution
-          // maxResolution
-          // extent
-          source: sourceTileWMS
-        });
-    
-        if (!tileLayer) {
-          throw new Error(t.ol.failed_layer("service wms"));
-        }
-    
-        // fonctionnalité pour la gpf ?
-        tileLayer.gpGFIparams = {
-            queryable : options.data.queryable,
-            formats : options.data.gfiFormat
-        };
-        
-      } else {
-        throw new Error(t.ol.failed_source("service non reconnu"));
-      }
-    
-      // extent par defaut
-      if (tileLayer && !tileLayer.getExtent()) {
-        const projection = getProjection('EPSG:3857');
-        tileLayer.setExtent(projection.getExtent());
-      }
-      // id
-      if (tileLayer) {
-        tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
-      }
-      
-      tileLayer.setVisible(getVisible(options.visible));
-      tileLayer.setOpacity(getOpacity(options.opacity));
-      return tileLayer;
-  
-    
-    } else if (options.kind === "wms") {
-      var sourceTileWMS = new TileWMSSource({
-        url : options.data.url,
-        params: {
-          "LAYERS": options.data.layers,    // array ?
-          "SERVICE": options.data.format,
-          "VERSION": options.data.version,
-          "STYLES": options.data.stylesName // array ?
-        },
-        projection : options.data.projection || 'EPSG:3857',
-        attributions: ''
       });
-  
+    
       if (!sourceTileWMS) {
         throw new Error(t.ol.failed_source("service wms"));
       }
-      
+        
       sourceTileWMS._title = options.data.name || options.name;
       sourceTileWMS._description = options.data.description || options.description;
-      
+        
       tileLayer = new TileLayer({
         // minResolution
         // maxResolution
         // extent
         source: sourceTileWMS
       });
-  
+    
       if (!tileLayer) {
         throw new Error(t.ol.failed_layer("service wms"));
       }
-  
+    
       // fonctionnalité pour la gpf ?
       tileLayer.gpGFIparams = {
-          queryable : options.data.queryable,
-          formats : options.data.gfiFormat
+        queryable : options.data.queryable,
+        formats : options.data.gfiFormat
       };
-      
+        
     } else {
       throw new Error(t.ol.failed_source("service non reconnu"));
     }
-  
+    
     // extent par defaut
     if (tileLayer && !tileLayer.getExtent()) {
       const projection = getProjection('EPSG:3857');
       tileLayer.setExtent(projection.getExtent());
     }
+      
     // id
     if (tileLayer) {
       tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
     }
-    
+      
+    tileLayer.setVisible(getVisible(options.visible));
+    tileLayer.setOpacity(getOpacity(options.opacity));
+
     return tileLayer;
   }
 
