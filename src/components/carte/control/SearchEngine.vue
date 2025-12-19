@@ -129,7 +129,7 @@ form.GPSearchBar>button[id^=GPshowSearchEnginePicto-].fr-btn {
 */
 @media (max-width: 576px) {
 .ol-overlaycontainer-stopevent {
-  z-index: 3000 !important;
+  z-index: 1002 !important;
 }
 }
 </style>

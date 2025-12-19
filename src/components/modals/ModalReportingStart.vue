@@ -67,7 +67,8 @@ defineExpose({
 </script>
 
 <template>
-  <DsfrModal 
+  <DsfrModal
+    id="reporting-modal" 
     :opened="opened" 
     :title="title"
     size="md" 
@@ -93,4 +94,9 @@ defineExpose({
   </DsfrModal>
 </template>
 
-<style></style>
+<style>
+  /* par dessus la barre de recherche et les boutons ajouté entrée carto (z-index 1000 - 1002) */
+  dialog[id^="reporting-modal"] {
+    z-index: 1003;
+  }
+</style>

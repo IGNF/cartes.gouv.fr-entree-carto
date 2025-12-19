@@ -1,6 +1,10 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useMatchMedia } from '@/composables/matchMedia';
+
 import { Legends } from 'geopf-extensions-openlayers';
+
+const isSmallScreen = useMatchMedia('SM')
 
 const props = defineProps({
   mapId: String,
@@ -13,7 +17,7 @@ const map = inject(props.mapId);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(legends.value);
     if (props.analytic) {
       var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
@@ -23,7 +27,7 @@ onMounted(() => {
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility) {
+  if (props.visibility && !isSmallScreen.value) {
     map.addControl(legends.value);
     if (props.analytic) {
       var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
@@ -45,6 +49,7 @@ onBeforeUpdate(() => {
 VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
 */
 dialog[id^=GPlegendsPanel-] {
-  top : -85px !important;
+  top : -90px !important;
+  left : 47px !important;
 }
 </style>
