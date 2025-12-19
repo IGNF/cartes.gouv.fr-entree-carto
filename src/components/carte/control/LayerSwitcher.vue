@@ -16,10 +16,16 @@ import { push } from 'notivue';
 import t from '@/features/translation';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerSwitcherOptions: Object
+  layerSwitcherOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
@@ -140,12 +146,18 @@ const onAddLayer = (e) => {
   }
 
   log.debug("onAddLayer", id);
+  // var permalink = lyr.layer.get("permalink") || false;
   if (id) {
+    if (mapStore.isPermalink()) {
+      // on ne notifie pas l'ajout d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,
       message: t.layerswitcher.add_success
     });
+
   } else {
     push.warning({
       title: t.layerswitcher.title,
@@ -213,6 +225,10 @@ const onRemoveLayer = (e) => {
   }
   log.debug("onRemoveLayer", id);
   if (id) {
+    if (mapStore.isPermalink()) {
+      // on ne notifie pas la suppression d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,
@@ -481,7 +497,9 @@ const onClickEditLayer = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

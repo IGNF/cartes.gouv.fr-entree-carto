@@ -11,7 +11,9 @@ import {
   MarkersUtils as Markers
 } from 'geopf-extensions-openlayers';
 
-
+/**
+ * Style par défaut pour les entités géométriques
+ */
 export const DEFAULT_STYLE = new Style({
   image :  new Icon({
       src : Markers["lightOrange"],

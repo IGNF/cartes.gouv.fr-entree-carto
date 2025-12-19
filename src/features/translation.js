@@ -11,69 +11,69 @@
 
 export default {
   auth: {
-    title: 'Authentification',
-    not_authentificated: 'Vous devez vous authentifier',
+    title: "Authentification",
+    not_authentificated: "Vous devez vous authentifier",
     failed: (value) => { return `Exception sur l'authentication : ${value}` }
   },
   bookmark: {
-    title: 'Espace personnel',
+    title: "Espace personnel",
     failed: (value) => { return `Exception sur l'espace personnel : ${value}` },
     success_add_data: (value) => { return `Ajout sur la carte de la donnée de type ${value}` },
     failed_add_data: (value) => { return `Erreur sur l'ajout de la donnée : ${value}` },
-    success_save_map: 'La carte est enregistrée dans l\'espace personnel',
-    failed_save_map: 'Une erreur est survenue sur l\'enregistrement de la carte',
-    success_copy_permalink: 'Le permalien est copié',
+    success_save_map: "La carte est enregistrée dans l'espace personnel",
+    failed_save_map: "Une erreur est survenue sur l'enregistrement de la carte",
+    success_copy_permalink: "Le permalien est copié",
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
   },
   drawing: {
-    title: 'Croquis',
-    save_success: 'Le croquis est enregistré dans l\'espace personnel',
-    save_failed: 'Une erreur est survenue sur l\'enregistrement du croquis'
+    title: "Croquis",
+    save_success: "Le croquis est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement du croquis"
   },
   layerimport: {
-    title: 'Import de couche',
-    save_success: 'L\'import est enregistré dans l\'espace personnel',
-    save_failed: 'Une erreur est survenue sur l\'enregistrement de l\'import',
+    title: "Import de couche",
+    save_success: "L'import est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement de l'import",
     add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
-    add_failed_service: (value) => { return `Une erreur est survenue dans l\'ajout de la couche ${value} !` },
-    add_success_mapbox: 'La couche MapBox est ajoutée à la carte',
-    add_failed_mapbox: 'Une erreur est survenue dans l\'ajout de la couche MapBox !',
+    add_failed_service: (value) => { return `Une erreur est survenue dans l'ajout de la couche ${value} !` },
+    add_success_mapbox: "La couche MapBox est ajoutée à la carte",
+    add_failed_mapbox: "Une erreur est survenue dans l'ajout de la couche MapBox !",
   },
   layerswitcher: {
-    title: 'Gestionnaire de couche',
-    add_success: 'La couche est ajoutée à la carte',
-    add_failed: 'Une erreur est survenue dans l\'ajout de la couche',
-    remove_success: 'La couche est supprimé de la carte',
-    remove_failed: 'Une erreur est survenue dans la suppression de la couche',
-    failed_not_yet_implemented: 'L\'édition de ce type de données n\'est pas encore gérée !',
+    title: "Gestionnaire de couche",
+    add_success: "La couche est ajoutée à la carte",
+    add_failed: "Une erreur est survenue dans l'ajout de la couche",
+    remove_success: "La couche est supprimée de la carte",
+    remove_failed: "Une erreur est survenue dans la suppression de la couche",
+    failed_not_yet_implemented: "L'édition de ce type de données n'est pas encore gérée !",
   },
   route: {
-    title: 'Itinéraire',
-    failed_import: "La couche importée ne semble pas être un calcul d`itinéraire !",
-    save_already: 'Le calcul d\'itinéraire a déjà été enregistré dans l\'espace personnel',
-    save_success: 'Le calcul d\'itinéraire est enregistré dans l\'espace personnel',
-    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d`itinéraire'
+    title: "Itinéraire",
+    failed_import: "La couche importée ne semble pas être un calcul d'itinéraire !",
+    save_already: "Le calcul d'itinéraire a déjà été enregistré dans l'espace personnel",
+    save_success: "Le calcul d'itinéraire est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement du calcul d'itinéraire"
   },
   iso: {
-    title: 'Isochrone',
-    failed_import: "La couche importée ne semble pas être un calcul d\'isochrone !",
-    save_already: 'Le calcul d\'isochrone a déjà été enregistré dans l\'espace personnel',
-    save_success: 'Le calcul d\'isochrone est enregistré dans l\'espace personnel',
-    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul d\'isochrone'
+    title: "Isochrone",
+    failed_import: "La couche importée ne semble pas être un calcul d'isochrone !",
+    save_already: "Le calcul d'isochrone a déjà été enregistré dans l'espace personnel",
+    save_success: "Le calcul d'isochrone est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement du calcul d'isochrone"
   },
   profil: {
-    title: 'Profil altimétrique',
+    title: "Profil altimétrique",
     failed_import: "La couche importée ne semble pas être un calcul de profil !",
-    save_already: 'Le calcul de profil a déjà été enregistré dans l\'espace personnel',
-    save_success: 'Le calcul de profil est enregistré dans l\'espace personnel',
-    save_failed: 'Une erreur est survenue sur l\'enregistrement du calcul de profil'
+    save_already: "Le calcul de profil a déjà été enregistré dans l'espace personnel",
+    save_success: "Le calcul de profil est enregistré dans l'espace personnel",
+    save_failed: "Une erreur est survenue sur l'enregistrement du calcul de profil"
   },
   searchengine: {
-    title: 'Recherche de couche'
+    title: "Recherche de couche"
   },
   ol: {
-    title: 'OpenLayers',
+    title: "OpenLayers",
     failed: (value) => { return `Exception sur OpenLayers : ${value}` },
     failed_format: (value) => { return `Le format n'est pas reconnu : ${value}` },
     failed_source: (value) => { return `Exception sur l'initialisation de la source de type ${value} !` },

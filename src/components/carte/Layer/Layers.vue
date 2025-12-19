@@ -2,11 +2,21 @@
 import { computed, toRaw } from 'vue'
 import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
+import { removePermalink } from '@/features/permalink.js';
 
 const props = defineProps({
-  selectedLayers: Object,
-  selectedBookmarks: Object,
-  mapId: String
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 })
 
 // INFO
@@ -50,13 +60,30 @@ var bookmarks = computed(() => {
   })
 });
 
+function onLayerMounted(layer, index) {
+  var allLayers = [...layers.value, ...bookmarks.value];
+  log.error(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
+  if (allLayers.length - 1 === index) {
+    setTimeout(() => {
+      log.error(`Layer last : ${layer.name} (${index})`);
+      removePermalink();
+    });
+  }
+}
+
+function onLayerUnMounted(layer, index) {
+  log.error(`Layer unmounted : ${layer.name} (${index})`);
+}
+
 </script>
 
 <template>
   <Layer
-    v-for="layer in [...layers, ...bookmarks]"
+    v-for="layer, index in [...layers, ...bookmarks]"
     :key="layer.key"
     :layer-options="layer"
     :map-id="mapId"
+    @mounted="onLayerMounted(layer, index)"
+    @unmounted="onLayerUnMounted(layer, index)"
   />
 </template>

@@ -11,15 +11,16 @@ import SaveModal from "@/components/modals/ModalSave.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
+import { useLogger } from 'vue-logger-plugin';
 
 import { fromShare } from '@/features/share';
 
 // lib notification
 import { push } from 'notivue';
-import t from '@/features/translation';
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+const log = useLogger();
 
 const refModalTheme: ThemeModal = ref({})
 const refModalLogin: LoginModal = ref({})

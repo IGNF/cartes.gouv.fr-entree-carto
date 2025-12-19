@@ -211,9 +211,9 @@ export const useMapStore = defineStore('map', () => {
     return (location.search.includes("fromgpp=1") || location.search.includes("redirect=geoide"));
   });
 
-  var isPermalink = computed(() => {
-    return (location.search.includes("permalink=yes"));
-  });
+  var isPermalink = () => {
+    return location.search.includes("permalink=yes");
+  };
   
   var permalink = computed(() => {
     // INFO
@@ -275,10 +275,10 @@ export const useMapStore = defineStore('map', () => {
     });
     for (let i = 0; i < l.length; i++) {
       const regex = /\(.*\)/gm;
-      var id = l[i].replace(regex, "");
-      var props = l[i].match(regex) || null;
-      if (id) {
-        addLayer(id, props);
+      var idLayer = l[i].replace(regex, "");
+      var properties = l[i].match(regex) || null;
+      if (idLayer) {
+        addLayer(idLayer, properties);
       }
     }
   }

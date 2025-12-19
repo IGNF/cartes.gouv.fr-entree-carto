@@ -1,5 +1,6 @@
 <script setup lang="js">
 
+import { inject, onMounted, onUnmounted } from 'vue';
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
@@ -19,8 +20,14 @@ import {
 
 
 const props = defineProps({
-  layerOptions: Object,
-  mapId : String
+  layerOptions: {
+    type: Object,
+    default: () => ({})
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 });
 
 const log = useLogger();
@@ -28,6 +35,8 @@ log.debug(props.layerOptions);
 
 const dataStore = useDataStore();
 const mapStore = useMapStore();
+
+const emit = defineEmits(['mounted', 'unmounted']);
 
 const map = inject(props.mapId);
 var layer = null;
@@ -56,7 +65,8 @@ onMounted(() => {
       visible : props.layerOptions.visible,
       opacity : props.layerOptions.opacity,
       grayscale : props.layerOptions.grayscale,
-      sourceParams : {crossOrigin : 'anonymous'}
+      sourceParams : {crossOrigin : 'anonymous'},
+      permalink : props.layerOptions.permalink || false
     };
     // ajout des options de preload par defaut
     var preload = {
@@ -136,7 +146,6 @@ onMounted(() => {
         break;
       case "carte":
         throw "Not yet implemented !";
-        break;
       case "compute":
         promise = createComputeLayer(props.layerOptions);  
         break;
@@ -214,6 +223,9 @@ onMounted(() => {
       });
     }
   }
+
+  // informe le parent que la couche est montée
+  emit('mounted');
 })
 
 /**
@@ -222,6 +234,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (map && layer) {
     map.removeLayer(layer)
+    emit('unmounted');
   }
 })
 
