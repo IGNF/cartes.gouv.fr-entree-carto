@@ -36,6 +36,8 @@ log.debug(props.layerOptions);
 const dataStore = useDataStore();
 const mapStore = useMapStore();
 
+const emit = defineEmits(['mounted', 'unmounted']);
+
 const map = inject(props.mapId);
 var layer = null;
 
@@ -221,6 +223,9 @@ onMounted(() => {
       });
     }
   }
+
+  // informe le parent que la couche est montée
+  emit('mounted');
 })
 
 /**
@@ -229,6 +234,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (map && layer) {
     map.removeLayer(layer)
+    emit('unmounted');
   }
 })
 

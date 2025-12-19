@@ -1,21 +1,26 @@
 import { useUrlParams } from "@/composables/urlParams";
 import { useMapStore } from "@/stores/mapStore";
 
-// on ajoute le paramètre permalink=yes dans l'URL
-const applyPermalink = () => {
+/** 
+ * Ajoute le paramètre permalink=yes dans l'URL
+ */
+export const addPermalink = () => {
   const params = new URLSearchParams(window.location.search);
   params.set('permalink', 'yes');
-  window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  var newUrlwithParam = `${window.location.pathname}?${params.toString()}`;
+  window.history.pushState({}, '', newUrlwithParam);
 };
 
-// on retire le paramètre permalink=yes de l'URL
-const removePermalink = () => {
+/**
+ * Retire le paramètre permalink=yes de l'URL
+ */
+export const removePermalink = () => {
   const params = new URLSearchParams(window.location.search);
   params.delete('permalink');
-  const newUrl = params.toString() 
+  const newUrlwithoutParam = params.toString() 
   ? `${window.location.pathname}?${params.toString()}` 
   : window.location.pathname;
-  window.history.pushState({}, '', newUrl);
+  window.history.pushState({}, '', newUrlwithoutParam);
 }
 
 /**
@@ -25,7 +30,7 @@ const removePermalink = () => {
 */
 export const getLayersFromPermalink = (url) => {
   const store = useMapStore();
-  applyPermalink();
+  addPermalink();
   // gestion des KVP dans l'URL (permalink)
   var params = useUrlParams(url);
   for (const key in params) {
@@ -45,6 +50,5 @@ export const getLayersFromPermalink = (url) => {
     var map = store.map;
     map.getView().setZoom(store.zoom);
     map.getView().setCenter([store.x, store.y]);
-    removePermalink();
   },100);
 };

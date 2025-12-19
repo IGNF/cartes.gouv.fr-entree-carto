@@ -142,6 +142,10 @@ const onAddData = (data) => {
       }
     })
     .then(() => {
+      if (mapStore.isPermalink()) {
+        // on ne notifie pas l'ajout d'une couche du permalien
+        return;
+      }
       push.success({
         title: t.bookmark.title,
         message: t.bookmark.success_add_data(document.extra.format),

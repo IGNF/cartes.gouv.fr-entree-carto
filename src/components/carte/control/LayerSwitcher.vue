@@ -146,9 +146,9 @@ const onAddLayer = (e) => {
   }
 
   log.debug("onAddLayer", id);
-  var permalink = lyr.layer.get("permalink") || false;
+  // var permalink = lyr.layer.get("permalink") || false;
   if (id) {
-    if (permalink) {
+    if (mapStore.isPermalink()) {
       // on ne notifie pas l'ajout d'une couche du permalien
       return;
     }
@@ -224,9 +224,8 @@ const onRemoveLayer = (e) => {
     }
   }
   log.debug("onRemoveLayer", id);
-  var permalink = lyr.layer.get("permalink") || false;
   if (id) {
-    if (permalink) {
+    if (mapStore.isPermalink()) {
       // on ne notifie pas la suppression d'une couche du permalien
       return;
     }
