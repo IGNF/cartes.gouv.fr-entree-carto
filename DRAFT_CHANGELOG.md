@@ -15,6 +15,7 @@
 #### 🔨 [Evolution]
 
   - Territoires : ajout d'une fonctionnalité d'enregistrement de territoires "custom" définis par l'utilisateur (#799)
+  - Mobile : réactivation du menu contextuel en mode mobile (#846)
 
 #### 🔥 [Obsolète]
 
