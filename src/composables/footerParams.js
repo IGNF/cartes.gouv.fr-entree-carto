@@ -35,8 +35,8 @@ export function useFooterParams() {
                 href: 'https://service-public.gouv.fr',
             },
             {
-                label: 'numerique.gouv.fr',
-                href: 'https://numerique.gouv.fr',
+                label: 'legifrance.gouv.fr',
+                href: 'https://legifrance.gouv.fr',
             },
             {
                 label: 'data.gouv.fr',
