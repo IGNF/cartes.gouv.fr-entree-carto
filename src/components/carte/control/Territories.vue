@@ -26,6 +26,10 @@ const territories = ref(new Territories(props.territoriesOptions));
 function addTerritories () {
   var t = store.getTerritories();
   for (let i = 0; i < t.length; i++) {
+    // exclude : ATF, IDF
+    if (t[i].id === 'ATF' || t[i].id === 'IDF') {
+      continue;
+    }
     const territory = t[i];
     territories.value.setTerritory(territory);
   }
