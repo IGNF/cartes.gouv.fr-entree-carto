@@ -19,7 +19,7 @@ export function useFooterParams() {
         personalDataLink: '/donnees-personnelles',
         cookiesLink: '/cookies',
         a11yComplianceLink: '/accessibilite',
-        descText: 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.',
+        descText: 'Cartes.gouv.fr est le service public des cartes et données du territoire français. Porté par l’IGN et ses partenaires, il offre à tous un accès à la référence de la cartographie publique et permet à chacun de créer, d’héberger et de publier ses propres données et représentations.',
         homeLink: '/',
         licenceText: undefined,
         licenceTo: undefined,
@@ -35,8 +35,8 @@ export function useFooterParams() {
                 href: 'https://service-public.gouv.fr',
             },
             {
-                label: 'legifrance.gouv.fr',
-                href: 'https://legifrance.gouv.fr',
+                label: 'numerique.gouv.fr',
+                href: 'https://numerique.gouv.fr',
             },
             {
                 label: 'data.gouv.fr',
