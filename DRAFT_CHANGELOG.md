@@ -22,7 +22,9 @@
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
- 
+
+  - Footer : modification de la description et remplacement du lien legifrance.gouv.fr par numerique.gouv.fr (#853)
+
 #### 🔒 [Sécurité]
 
 ---
