@@ -5,7 +5,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
 
-class ServiceBase extends EventTarget {
+class ServiceBase {
 
   #fetch
   #pending
@@ -24,7 +24,6 @@ class ServiceBase extends EventTarget {
    * if access is valid, getting login/logout information, and retrieving access tokens.
    */
   constructor(options) {
-    super();
     options = options || {};
 
     /** authentification */
@@ -32,27 +31,7 @@ class ServiceBase extends EventTarget {
 
     
     /** user */
-    let _user = options.user || {};
-
-    Object.defineProperty(this, "user", {
-      get() {
-        return _user;
-      },
-      set(value) {
-        const oldValue = _user;
-        _user = value;
-    
-        // Ne déclenche l'événement que si la valeur a changé
-        if (oldValue !== value) {
-          this.dispatchEvent(
-            new CustomEvent("user-changed", {
-              detail: { value },
-              bubbles: false,
-            })
-          );
-        }
-      },
-    });
+    this.user = options.user || {};
     /** documents */
     this.documents = options.documents || {};
     /** erreurs IAM */
@@ -171,6 +150,9 @@ class ServiceBase extends EventTarget {
    * @returns {Boolean} - True if authentificate
    */
   async isAuthentificate () {
+    if (this.authenticated && Object.keys(this.user).length > 0) {
+      return true;
+    }
     // only for remote mode !
     if (this.mode === "local") {
       return false;
