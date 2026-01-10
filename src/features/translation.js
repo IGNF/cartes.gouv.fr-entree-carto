@@ -72,6 +72,12 @@ export default {
   searchengine: {
     title: "Recherche de couche"
   },
+  territories: {
+    title: 'Territoires',
+    change: (value) => { return `Le territoire ${value} a été modifié` },
+    remove: (value) => { return `Le territoire ${value} a été supprimé` },
+    add: (value) => { return `Le territoire ${value} a été ajouté` }
+  },
   ol: {
     title: "OpenLayers",
     failed: (value) => { return `Exception sur OpenLayers : ${value}` },
