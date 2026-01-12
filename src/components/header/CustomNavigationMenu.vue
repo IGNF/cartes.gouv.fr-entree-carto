@@ -34,6 +34,12 @@ const props = defineProps({
   }
 })
 
+// INFO
+// Émettre l'événement toggleId au parent
+const emit = defineEmits(['toggleId'])
+const toggleId = (id) => emit('toggleId', id)
+
+const button = ref(null)
 const {
   collapse,
   collapsing,
@@ -41,12 +47,6 @@ const {
   doExpand,
   onTransitionEnd,
 } = useCollapsable()
-
-const emit = defineEmits(['toggleId'])
-const toggleId = (id) => emit('toggleId', id)
-
-const url = useBaseUrl() + import.meta.env.BASE_URL;
-const button = ref(null)
 
 const { width: btnWidth } = useElementSize(button)
 const { width: menuWidth } = useElementSize(collapse)
@@ -57,7 +57,6 @@ const marginLeft = computed(() => {
 })
 
 const expanded = computed(() => props.id === props.expandedId)
-
 watch(expanded, (newValue, oldValue) => {
   // @see https://github.com/GouvernementFR/dsfr/blob/main/src/core/script/collapse/collapse.js
   if (newValue !== oldValue) {
@@ -65,8 +64,12 @@ watch(expanded, (newValue, oldValue) => {
   }
 })
 
+
 var service = inject('services');
-const user = ref(service.user); // variable locale pour stocker l'utilisateur
+// variable locale pour stocker l'utilisateur
+const user = ref(service.user);
+// Base URL pour les routes login/logout
+const url = useBaseUrl() + import.meta.env.BASE_URL;
 
 // INFO
 // Écouter l'événement service:user:loaded pour mettre à jour l'utilisateur

@@ -25,8 +25,10 @@ const props = defineProps({
 
 const log = useLogger();
 const router = useRouter();
-const expandedMenuId = ref(undefined)
 
+const expandedMenuId = ref(undefined)
+// INFO
+// Afficher/masquer le menu dont l'id est passé en paramètre
 const toggle = (id) => {
   if (id === expandedMenuId.value) {
     expandedMenuId.value = undefined
@@ -34,7 +36,6 @@ const toggle = (id) => {
   }
   expandedMenuId.value = id
 }
-
 const handleElementClick = (el) => {
   if (el === document.getElementById(props.id)) {
     return
@@ -47,11 +48,9 @@ const handleElementClick = (el) => {
 
   handleElementClick(el.parentNode)
 }
-
 const onDocumentClick = (e) => {
   handleElementClick(e.target)
 }
-
 const onKeyDown = (e) => {
   if (e.key === 'Escape') {
     toggle(expandedMenuId.value)
@@ -59,12 +58,12 @@ const onKeyDown = (e) => {
 }
 
 var service = inject('services');
-
 // INFO
 // on teste si on est authentifié ou pas, et on synchronise l'état
 // de l'application en conséquence.
 service.isAuthentificate()
   .then((status) => {
+    log.debug(`isAuthentificate() status : ${status} !`);
     // le service renvoie un user 
     // mais on n'est pas authentifié sur la carto
     // --> sync
@@ -93,6 +92,7 @@ service.isAuthentificate()
 service.isAccessValided()
   .then((status) => {
     if (status !== "no-auth") {
+      log.debug(`Access validated : ${status} !`);
       router.replace({ path : '/', query: undefined });
     }
   })
