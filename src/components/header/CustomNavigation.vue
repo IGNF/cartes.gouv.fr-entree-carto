@@ -78,7 +78,9 @@ service.isAuthentificate()
       router.push({ path : '/logout?success=1' });
     }
   })
-  .catch()
+  .catch((e) => {
+    console.warn(e);
+  })
   .finally(() => {
     log.debug("isAuthentificate() finished !");
   });

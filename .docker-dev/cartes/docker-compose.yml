@@ -6,7 +6,7 @@ networks:
 
 services:
     app_dev:
-        image: ghcr.io/ignf/cartes.gouv.fr:0.8.5-beta.12
+        image: ghcr.io/ignf/cartes.gouv.fr:0.10.5-beta.2
         container_name: cartesgouvfr-dev
         env_file:
             - .env.local

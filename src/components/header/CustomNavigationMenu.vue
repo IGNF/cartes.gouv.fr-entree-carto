@@ -45,6 +45,7 @@ const {
 const emit = defineEmits(['toggleId'])
 const toggleId = (id) => emit('toggleId', id)
 
+const url = useBaseUrl() + import.meta.env.BASE_URL;
 const button = ref(null)
 
 const { width: btnWidth } = useElementSize(button)
@@ -106,7 +107,7 @@ onBeforeUnmount(() => {});
         class="fr-nav__btn fr-nav__btn-no-dropdown"
       >
         <a
-          :href="useBaseUrl() + '/login'"
+          :href="url + '/login'"
         >Se connecter</a>
       </DsfrButton>
       <DsfrButton
@@ -184,11 +185,11 @@ onBeforeUnmount(() => {});
                   <i class="ri-logout-box-line" />
                   <a 
                     v-if="service.authenticated"
-                    :href="useBaseUrl() + '/logout'"
+                    :href="url + '/logout'"
                   >Se déconnecter</a>
                   <a 
                     v-else 
-                    :href="useBaseUrl() + '/login'"
+                    :href="url + '/login'"
                   >Se connecter</a>
                 </button>
               </div>
