@@ -24,6 +24,7 @@
 #### 🐛 [Correction]
 
   - Footer : modification de la description (#853)
+  - LayerSwitcher : mise à jour du compteur de couches (#810)
 
 #### 🔒 [Sécurité]
 
