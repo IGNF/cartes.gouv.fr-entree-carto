@@ -35,6 +35,9 @@ emitter.addEventListener("reporting:open:clicked", (e) => {
     reporting.value.setCollapsed(!e.open);
   }
 });
+emitter.addEventListener("modalreporting:open:clicked", (e) => {
+  refModalReportingStart.value.openModalReportingStart(true);
+});
 
 function addThematics () {
   // TODO 
@@ -52,7 +55,6 @@ onMounted(() => {
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
-    reporting.value.on("reporting:opened", onOpenPanelInformation);
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
@@ -72,21 +74,10 @@ onUpdated(() => {
       var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
       useActionButtonEulerian(el);
     }
-    /* abonnement au widget */
-    reporting.value.on("reporting:opened", onOpenPanelInformation);
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
 
-/** 
- * gestionnaire d'evenement sur les abonnements
- * @description
- * ...
- */
-const onOpenPanelInformation = (e) => {
-  log.debug(e);
-  refModalReportingStart.value.openModalReportingStart(true);
-}
 /** 
  * gestionnaire d'evenement sur les abonnements
  * @description
@@ -104,23 +95,13 @@ const onSendingReporting = (e) => {
 </template>
 
 <style>
-button[id^="GPshowReportingPicto-"] {
-  display: none;
-}
-
-div[id^="GPreporting-"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
-  display: none;
-}
-
-dialog[id^="GPreportingPanel-"] {
-  top: -5px !important;
-  left: 47px !important;
-}
-
-@media (max-width: 576px) {
+  div[id^="GPreporting-"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+    display: none;
+  }
+ @media (max-width: 576px) {
   dialog[id^="GPreportingPanel-"] {
     /* HACK : surcharge de la propriété de position top de gpf-mobile-fullscreen deja en important */
-    margin-top : -295px !important;
+    /* margin-top : -295px !important; */
   }
 }
 </style>

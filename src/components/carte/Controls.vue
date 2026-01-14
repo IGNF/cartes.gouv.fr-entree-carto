@@ -508,13 +508,11 @@ const contextMenuOptions = computed(() => {
       {
         text : "Signaler une anomalie",
         callback : () => {
-          // on active le controle
-          mapStore.addControl("Reporting");
           setTimeout(() => {
             // envoi d'un evenement pour l'ouverture du contrôle
-            emitter.dispatchEvent("reporting:open:clicked", {
+            emitter.dispatchEvent("modalreporting:open:clicked", {
               open : true,
-              componentName: "Reporting"
+              componentName: "ModalReportingStart"
             });
             // envoi d'un evenement pour la fermeture du menu de gauche
             emitter.dispatchEvent("leftmenu:close", {
