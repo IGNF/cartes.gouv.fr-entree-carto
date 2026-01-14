@@ -15,6 +15,8 @@ import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from "@/stores/dataStore";
 import { useBaseUrl } from '@/composables/baseUrl';
 
+const emitter = inject('emitter');
+
 const eulerian = useEulerian();
 const router = useRouter();
 const mapStore = useMapStore();
@@ -27,14 +29,14 @@ const actions = [
   {
     label: 'J\'ai compris',
     onClick () {
-      opened.value = false;
+      onModalReportingStartClose()
     }
   },
   {
     label: 'Afficher Plan IGN J+1',
     tertiary: true,
     onClick () {
-      opened.value = false;
+      onModalReportingStartClose()
       var id = dataStore.getLayerIdByName("GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1", "WMTS");
       mapStore.addLayer(id);
     }
@@ -57,7 +59,12 @@ const openModalReportingStart = (active) => {
 const onModalReportingStartClose = () => {
   opened.value = false;
   eulerian.resume();
+  emitter.dispatchEvent("reporting:open:clicked", {
+              open : true,
+              componentName: "Reporting"
+  });
 };
+
 
 defineExpose({
   openModalReportingStart,
@@ -99,4 +106,5 @@ defineExpose({
   dialog[id^="reporting-modal"] {
     z-index: 1003;
   }
+
 </style>
