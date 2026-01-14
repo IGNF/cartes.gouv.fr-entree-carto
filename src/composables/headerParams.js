@@ -68,7 +68,7 @@ export function useHeaderParams() {
               //     icon: "ri-brush-line"
               // },
               {
-                  text: "Découvrir cartes.gouv",
+                  text: "Découvrir cartes.gouv.fr",
                   to: useBaseUrl() + '/decouvrir',
                   icon: "fr-icon-external-link-line",
                   button : true
