@@ -2,6 +2,7 @@
   
 import { ref, onMounted, onBeforeMount, onUnmounted, inject } from 'vue'
 
+import { useServiceStore } from '@/stores/serviceStore';
 import { useRandomId } from "@gouvminint/vue-dsfr"
 import { useLogger } from 'vue-logger-plugin'
 import { useRouter } from 'vue-router';
@@ -25,6 +26,7 @@ const props = defineProps({
 
 const log = useLogger();
 const router = useRouter();
+const serviceStore = useServiceStore();
 
 const expandedMenuId = ref(undefined)
 // INFO
@@ -59,30 +61,33 @@ const onKeyDown = (e) => {
 
 var service = inject('services');
 // INFO
-// on teste si on est authentifié ou pas, et on synchronise l'état
-// de l'application en conséquence.
-service.isAuthentificate()
-  .then((status) => {
-    log.debug(`isAuthentificate() status : ${status} !`);
-    // le service renvoie un user 
-    // mais on n'est pas authentifié sur la carto
-    // --> sync
-    if (status && !service.authenticated && service.mode === "remote") {
-      router.push({ path : '/login?success=1' });
-    }
-    // le service ne renvoie rien (401 Unauthorized)
-    // mais, on est encore enregistré comme authentifié
-    // --> sync
-    if (!status && service.authenticated && service.mode === "remote") {
-      router.push({ path : '/logout?success=1' });
-    }
-  })
-  .catch((e) => {
-    console.warn(e);
-  })
-  .finally(() => {
-    log.debug("isAuthentificate() finished !");
-  });
+// on teste si on est déjà authentifié ou pas, 
+// et si oui, on synchronise l'état.
+if (service.isAlreadyAuthentificate()) {
+  // le portail renvoie un user authentifié
+  // mais on doit vérifier que le token est encore valide
+  // sinon, on demande une sync vers la page de login
+  log.debug("User already authentificate, checking token validity...");
+  service.isAuthentificate()
+    .then((status) => {
+      log.debug(`Checking token validity : ${status} !`);
+      // le service ne renvoie rien (401 Unauthorized)
+      // mais, on est encore enregistré comme authentifié
+      // --> demande de sync à faire !
+      if (!status && service.authenticated) {
+        serviceStore.setAuthentificateSyncNeeded(true);
+      }
+    })
+    .catch((e) => {
+      console.warn(e);
+    })
+    .finally(() => {
+      log.debug("isAuthentificate() finished !");
+    });
+} else {
+  log.debug("User not authentificate.");
+  serviceStore.setAuthentificateSyncNeeded(false);
+}
 
 // INFO
 // on teste si une demande de connexion (ou de deconnexion) a été faite,
@@ -93,6 +98,7 @@ service.isAccessValided()
   .then((status) => {
     if (status !== "no-auth") {
       log.debug(`Access validated : ${status} !`);
+      serviceStore.setAuthentificateSyncNeeded(false);
       router.replace({ path : '/', query: undefined });
     }
   })

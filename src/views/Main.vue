@@ -12,6 +12,7 @@ import NotificationClose from '@/icons/NotificationClose.vue'
 import { useMatchMedia } from '@/composables/matchMedia'
 import { useHeaderParams } from '@/composables/headerParams'
 import { useFooterParams } from '@/composables/footerParams'
+import { useBaseUrl } from '@/composables/baseUrl'
   
 // library
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
@@ -27,10 +28,12 @@ import ModalWelcome from '../components/modals/ModalWelcome.vue'
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
+import { useServiceStore } from '@/stores/serviceStore'
 
 const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
+const serviceStore = useServiceStore()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia('LG')
@@ -141,6 +144,20 @@ const onCloseAlert = () => {
   alertClosed.value = true;
 };
 
+// Base URL pour les routes login/logout
+const url = useBaseUrl() + import.meta.env.BASE_URL;
+
+const sessionExpiredClosed = ref(false);
+// gestion de l'alerte de session expirée
+const sessionExpiredData = {
+    title : "Session expirée",
+    description : "Votre session a expirée. Veuillez vous reconnecter.",
+    action : `<a href="${url}login">Se reconnecter</a>`
+};
+const onCloseSessionExpired = () => {
+  sessionExpiredClosed.value = true;
+};
+
 // Badge header
 const addBadgeHeader = () => {
   let badge = document.querySelector(".fr-header__service-title span");
@@ -227,11 +244,25 @@ onMounted(() => {
     <DsfrAlert
       type="warning"
       :title="alertData.title"
-      :closed="alertClosed"
       :closeable="true"
+      :closed="alertClosed"
       @close="onCloseAlert()"
     >
       <p v-html="alertData.description" />
+    </DsfrAlert>
+  </div>
+
+  <div v-if="serviceStore.getAuthentificateSyncNeeded()">
+    <DsfrAlert
+      type="error"
+      :title="sessionExpiredData.title"
+      :small="true"
+      :closeable="true"
+      :closed="sessionExpiredClosed"
+      @close="onCloseSessionExpired()"
+    >
+      <p>{{ sessionExpiredData.description }}</p>
+      <p v-html="sessionExpiredData.action" />
     </DsfrAlert>
   </div>
   

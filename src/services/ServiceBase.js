@@ -146,19 +146,26 @@ class ServiceBase {
     Promise.reject('this must be overridden !');
   }
   /**
+   * Check if the authentificate is already done
+   * @returns {Boolean} - True if authentificate
+   */
+  isAlreadyAuthentificate () {
+    if (this.authenticated && Object.keys(this.user).length > 0) {
+      return true;
+    }
+    return false;
+  }
+  /**
    * Check if the authentificate is done
    * @returns {Boolean} - True if authentificate
    */
   async isAuthentificate () {
-    if (this.authenticated && Object.keys(this.user).length > 0) {
-      return true;
-    }
-    // only for remote mode !
-    if (this.mode === "local") {
+    try {
+      var data = await this.getUserMe();
+      return (data !== null);
+    } catch {
       return false;
     }
-    var data = await this.getUserMe();
-    return (data !== null);
   }
 }
 
