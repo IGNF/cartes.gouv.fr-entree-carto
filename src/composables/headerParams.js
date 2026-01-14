@@ -28,12 +28,12 @@ export function useHeaderParams() {
             links :[
               {
                   text: "Questions Fréquentes",
-                  to: useBaseUrl() + '/aide',
+                  to: useBaseUrl() + '/aide/fr/',
                   icon: "ri-question-mark"
               },
               {
                   text: "Guide d'utilisation",
-                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/',
+                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/presentation-utilisateur/generalites-utilisateur/',
                   icon: "ri-book-2-line"
               },
               {
@@ -54,7 +54,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Rechercher une donnée",
-                  to: useBaseUrl() + '/catalogue/search',
+                  to: useBaseUrl() + '/rechercher-une-donnee/search',
                   icon: "ri-search-line"
               },
               {
