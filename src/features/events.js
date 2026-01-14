@@ -40,6 +40,7 @@ var EVENTS = {
     "layerimport:open:clicked",
     "searchengine:open:displayed",
     "reporting:open:clicked",
+    "modalreporting:open:clicked",
     // edition
     "vector:edit:clicked",
     "mapbox:edit:clicked",

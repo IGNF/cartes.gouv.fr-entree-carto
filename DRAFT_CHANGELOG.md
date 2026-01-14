@@ -16,6 +16,7 @@
 
   - Territoires : ajout d'une fonctionnalité d'enregistrement de territoires "custom" définis par l'utilisateur (#799)
   - Mobile : réactivation du menu contextuel en mode mobile (#846)
+  - Gestionnaire de couches : les titres peuvent s'afficher sur deux lignes (#869)
 
 #### 🔥 [Obsolète]
 
@@ -24,6 +25,7 @@
 #### 🐛 [Correction]
 
   - Footer : modification de la description (#853)
+  - LayerSwitcher : mise à jour du compteur de couches (#810)
 
 #### 🔒 [Sécurité]
 
