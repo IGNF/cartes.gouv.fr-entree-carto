@@ -30,6 +30,26 @@ services:
         networks:
           - web_dev
 
+    catalog_dev:
+        image: ghcr.io/ignf/geonetwork-ui:v1.4.2
+        container_name: cartesgouvfr-catalog-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./catalog/conf:/opt/rechercher-une-donnee/assets/configuration
+        networks:
+            - web_dev
+        # labels:
+        #     - "traefik.enable=true"
+        #     - "traefik.http.routers.cartesgouvfr-catalog.rule=Host(`cartesgouvfr-catalog.docker.localhost`) && PathPrefix(`/catalogue`)"
+        #     - "traefik.http.routers.cartesgouvfr-catalog.entrypoints=websecure"
+        #     - "traefik.http.services.cartesgouvfr-catalog.loadbalancer.server.port=8080"
+
     doc_dev:
         image: ghcr.io/ignf/cartes.gouv.fr-documentation:latest
         container_name: cartesgouvfr-documentation-dev
@@ -81,6 +101,7 @@ services:
           - entree_carto_dev
           - app_dev
           - doc_dev
+          - catalog_dev
         container_name: cartesgouvfr-nginx_proxy-dev
         environment:
             - HTTP_PROXY=${HTTP_PROXY}
