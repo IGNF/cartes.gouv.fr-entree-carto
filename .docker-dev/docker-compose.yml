@@ -30,8 +30,26 @@ services:
         networks:
           - web_dev
 
+    doc_dev:
+        image: ghcr.io/ignf/cartes.gouv.fr-documentation:latest
+        container_name: cartesgouvfr-documentation-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+            - "8082:8082"
+        networks:
+            - web_dev
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cartesgouvfr-documentation.rule=Host(`cartesgouvfr-documentation.docker.localhost`) && PathPrefix(`/aide`)"
+            - "traefik.http.routers.cartesgouvfr-documentation.entrypoints=websecure"
+            - "traefik.http.services.cartesgouvfr-documentation.loadbalancer.server.port=8082"
+
     app_dev:
-        image: ghcr.io/ignf/cartes.gouv.fr:0.10.5-beta.2
+        image: ghcr.io/ignf/cartes.gouv.fr:latest
         container_name: cartesgouvfr-dev
         env_file:
             - ./cartes/.env.local
@@ -62,6 +80,7 @@ services:
         depends_on:
           - entree_carto_dev
           - app_dev
+          - doc_dev
         container_name: cartesgouvfr-nginx_proxy-dev
         environment:
             - HTTP_PROXY=${HTTP_PROXY}
