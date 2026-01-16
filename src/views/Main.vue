@@ -22,7 +22,7 @@ import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} 
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-import ModalWelcome from '../components/modals/ModalWelcome.vue';
+// import ModalWelcome from '../components/modals/ModalWelcome.vue';
 // stores
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
@@ -68,6 +68,7 @@ const afterMandatoryLinks = computed(() => {
 // ref sur le component ModalConsent
 const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
 const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
+// const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null)
 
 // INFO
 // on met à jour les mandatoryLinks pour y ajouter des
@@ -295,9 +296,16 @@ const onCloseAlert = () => {
   alertClosed.value = true;
 };
 
-onMounted(() => {
+onBeforeMount(() => {
+  // Welcome Page !
   appStore.detectFirstOpen()
 })
+
+// onMounted(() => {
+//   if (appStore.siteOpened && refModalWelcome.value) {
+//     refModalWelcome.value.openModalWelcome();
+//   }
+// });
 const footerToggle = ref(false);
 
 </script>
@@ -318,11 +326,11 @@ const footerToggle = ref(false);
       />
     </template> -->
     <template #after-quick-links>
-    <CustomNavigation
-      id="main-navigation"
-      :label="'Menu principal'"
-      :nav-items="headerParams.afterQuickLinks"
-    />
+      <CustomNavigation
+        id="main-navigation"
+        :label="'Menu principal'"
+        :nav-items="headerParams.afterQuickLinks"
+      />
     </template>
     <!--
       HACK pour l'API Analytics
@@ -368,22 +376,32 @@ const footerToggle = ref(false);
     </DsfrAlert>
   </div>
   
-  <div class="futur-map-container" :class="domStore.isHeaderCompact ? 'minimized': ''">
+  <div
+    class="futur-map-container"
+    :class="domStore.isHeaderCompact ? 'minimized': ''"
+  >
     <router-view />
   </div>
   
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <div class="footer-toggle" :class="footerToggle ? 'footer-toggle-true': ''" v-show="!largeScreen">
-    <i class="footer-open fr-icon-arrow-up-s-line" @click="scrollDown"></i>
+  <div
+    v-show="!largeScreen"
+    class="footer-toggle"
+    :class="footerToggle ? 'footer-toggle-true': ''"
+  >
+    <i
+      class="footer-open fr-icon-arrow-up-s-line"
+      @click="scrollDown"
+    />
     <label
       v-show="!largeScreen"
       class="fr-footer-toggle-label footer-close fr-btn fr-btn--tertiary-no-outline fr-btn--close"
       for="fr-footer-toggle"
       @click="footerToggle ? footerToggle = false : ''"
     > 
-    <span>Fermer</span>
+      <span>Fermer</span>
     </label>
   </div>
   <DsfrFooter
@@ -404,18 +422,25 @@ const footerToggle = ref(false);
   />
 
   <div
-   class="fr-container fr-container--fluid fr-container-md">
-    <!-- Modale : Paramètres d’affichage -->
+    class="fr-container fr-container--fluid fr-container-md"
+  >
+    <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
-    <ModalWelcome v-if="appStore.siteOpened"/>
+    <!-- Modale : Welcome (+ Eulerian) -->
+    <!-- <ModalWelcome ref="refModalWelcome" /> -->
   </div>
 </template>
 
 <style lang="scss">
+/* HACK Surcharge API Analytics */
+  body.modal-open {
+    overflow: unset;
+  }
+  
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);
