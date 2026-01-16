@@ -17,6 +17,7 @@
   - Territoires : ajout d'une fonctionnalité d'enregistrement de territoires "custom" définis par l'utilisateur (#799)
   - Mobile : réactivation du menu contextuel en mode mobile (#846)
   - Gestionnaire de couches : les titres peuvent s'afficher sur deux lignes (#869)
+  - Notifications : réduction du nombre de notifications affichées à l'écran lors du chargement de couches via permalien ou le cartalogue (#851)
 
 #### 🔥 [Obsolète]
 
