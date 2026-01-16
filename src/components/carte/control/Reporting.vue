@@ -95,6 +95,11 @@ const onSendingReporting = (e) => {
 </template>
 
 <style>
+
+  button[id^="GPshowReportingPicto-"] {
+    display: none;
+  }
+  
   div[id^="GPreporting-"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
     display: none;
   }
