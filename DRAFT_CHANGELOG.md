@@ -26,6 +26,9 @@
 
   - Footer : modification de la description (#853)
   - LayerSwitcher : mise à jour du compteur de couches (#810)
+  - Référencement  : amélioration du contenu meta pour le référencement naturel du site (80a34b37e)
+  - Signalement et Annoter la carte : correction de la superposition de modales d'annotation (#854)
+  - Cartalogue : les vignettes renseignées par les producteurs de données s'affichent correctement (#859)
 
 #### 🔒 [Sécurité]
 
