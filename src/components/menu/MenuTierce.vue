@@ -27,7 +27,6 @@ const emit = defineEmits([
   'openControl',
   'onModalShareOpen',
   'onModalPrintOpen',
-  'onModalThemeOpen',
   'onBookMarksOpen'
 ]);
 
@@ -145,16 +144,16 @@ onMounted(() => {
       icon="ri:layout-top-line"
       @click="onToggleHeaderCompact"
     >
-    <div class="compact-toggle">
-      Affichage compact
-      <DsfrToggleSwitch
-        no-text
-        label-left
-        v-model="isCompact"
-        @click.stop
-        @click="domStore.setIsHeaderCompact(!isCompact)"
-      />
-    </div>
+      <div class="compact-toggle">
+        Affichage compact
+        <DsfrToggleSwitch
+          v-model="isCompact"
+          no-text
+          label-left
+          @click.stop
+          @click="domStore.setIsHeaderCompact(!isCompact)"
+        />
+      </div>
     </DsfrButton>
   </div>
 </template>

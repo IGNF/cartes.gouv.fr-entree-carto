@@ -9,7 +9,7 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useRouter } from 'vue-router';
+
 import { useEulerian } from '@/plugins/Eulerian';
 import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from "@/stores/dataStore";
@@ -18,7 +18,6 @@ import { useBaseUrl } from '@/composables/baseUrl';
 const emitter = inject('emitter');
 
 const eulerian = useEulerian();
-const router = useRouter();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
@@ -60,8 +59,8 @@ const onModalReportingStartClose = () => {
   opened.value = false;
   eulerian.resume();
   emitter.dispatchEvent("reporting:open:clicked", {
-              open : true,
-              componentName: "Reporting"
+    open : true,
+    componentName: "Reporting"
   });
 };
 
@@ -87,7 +86,10 @@ defineExpose({
     <template #default>
       <p>
         Avant de débuter, nous vous recommandons de prendre connaissance de 
-        notre <a :href="faq" target="_blank">foire aux questions</a> dédiée et d'afficher la carte la plus à jour,
+        notre <a 
+          :href="faq" 
+          target="_blank"
+        >foire aux questions</a> dédiée et d'afficher la carte la plus à jour,
         afin de vérifier que l'anomalie n'a pas déjà été prise en compte.
       </p>
     </template>
