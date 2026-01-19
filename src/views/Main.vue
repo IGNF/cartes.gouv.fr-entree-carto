@@ -65,6 +65,7 @@ const afterMandatoryLinks = computed(() => {
 // ref sur le component ModalConsent
 const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
 const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
+// const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null)
 
 // INFO
 // on met à jour les mandatoryLinks pour y ajouter des
@@ -314,18 +315,23 @@ onMounted(() => {
   <div
     class="fr-container fr-container--fluid fr-container-md"
   >
-    <!-- Modale : Paramètres d’affichage -->
+    <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
-    <!-- Modale : Welcome -->
-    <ModalWelcome v-if="appStore.siteOpened" />
+    <!-- Modale : Welcome (+ Eulerian) -->
+    <!-- <ModalWelcome ref="refModalWelcome" /> -->
   </div>
 </template>
 
 <style lang="scss">
+/* HACK Surcharge API Analytics */
+  body.modal-open {
+    overflow: unset;
+  }
+  
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);

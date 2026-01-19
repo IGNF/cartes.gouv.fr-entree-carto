@@ -1,18 +1,37 @@
 <script setup lang="ts">
 // plugin local
 import { useBaseUrl } from '@/composables/baseUrl';
+// plugin local
+import { useEulerian } from '@/plugins/Eulerian';
 
-const welcomeModalOpened = ref(true);
+const eulerian = useEulerian();
+
+const welcomeModalOpened = ref(false);
+
+const openModalWelcome = () => {
+  welcomeModalOpened.value = true;
+  eulerian.pause();
+}
 
 const onWelcomeModalClose = () => {
   welcomeModalOpened.value = false;
+  eulerian.resume();
 }
+
+defineExpose({
+  openModalWelcome,
+  onWelcomeModalClose
+});
 
 const size = "lg";
 
 const logoText = "République Française";
 
 const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
+
+onMounted(() => {
+});
+
 </script>
 
 <template>
@@ -22,8 +41,8 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
     title=""
     :opened="welcomeModalOpened" 
     :size="size" 
-    @close="onWelcomeModalClose"
     class="welcome-modal"
+    @close="onWelcomeModalClose"
   >
     <div class="fr-container">
       <div class="fr-grid-row logo-row">
