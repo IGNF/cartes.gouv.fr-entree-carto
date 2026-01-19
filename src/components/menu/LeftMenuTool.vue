@@ -124,7 +124,6 @@ const tabRefs = useTemplateRef('tabs')
 const emit = defineEmits([
   'onModalShareOpen',
   'onModalPrintOpen',
-  'onModalThemeOpen',
   'onModalLoginOpen'
 ])
 
@@ -160,7 +159,6 @@ watch(() => domStore.getleftControlMenu(), (newVal) => {
         <MenuTierce
           @on-modal-share-open="$emit('onModalShareOpen')"
           @on-modal-print-open="$emit('onModalPrintOpen')"
-          @on-modal-theme-open="$emit('onModalThemeOpen')"
           @on-book-marks-open="onBookMarksOpen"
           @open-control="onOpenControl"
         />

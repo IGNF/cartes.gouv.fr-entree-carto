@@ -22,7 +22,7 @@ import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} 
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-import ModalWelcome from '../components/modals/ModalWelcome.vue';
+// import ModalWelcome from '../components/modals/ModalWelcome.vue';
 // stores
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
@@ -68,6 +68,7 @@ const afterMandatoryLinks = computed(() => {
 // ref sur le component ModalConsent
 const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
 const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
+// const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null)
 
 // INFO
 // on met à jour les mandatoryLinks pour y ajouter des
@@ -295,9 +296,16 @@ const onCloseAlert = () => {
   alertClosed.value = true;
 };
 
-onMounted(() => {
+onBeforeMount(() => {
+  // Welcome Page !
   appStore.detectFirstOpen()
 })
+
+// onMounted(() => {
+//   if (appStore.siteOpened && refModalWelcome.value) {
+//     refModalWelcome.value.openModalWelcome();
+//   }
+// });
 const footerToggle = ref(false);
 
 </script>
@@ -368,7 +376,7 @@ const footerToggle = ref(false);
     </DsfrAlert>
   </div>
   
-  <div 
+  <div
     class="futur-map-container"
     :class="domStore.isHeaderCompact ? 'minimized': ''"
   >
@@ -378,12 +386,12 @@ const footerToggle = ref(false);
   <!-- INFO
       Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
   -->
-  <div 
+  <div
     v-show="!largeScreen"
-    class="footer-toggle" 
+    class="footer-toggle"
     :class="footerToggle ? 'footer-toggle-true': ''"
   >
-    <i 
+    <i
       class="footer-open fr-icon-arrow-up-s-line"
       @click="scrollDown"
     />
@@ -416,17 +424,24 @@ const footerToggle = ref(false);
   <div
     class="fr-container fr-container--fluid fr-container-md"
   >
-    <!-- Modale : Paramètres d’affichage -->
+
+    <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsent ref="refModalConsent" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
     <ModalConsentCustom ref="refModalConsentCustom" />
-    <ModalWelcome v-if="appStore.siteOpened" />
+    <!-- Modale : Welcome (+ Eulerian) -->
+    <!-- <ModalWelcome ref="refModalWelcome" /> -->
   </div>
 </template>
 
 <style lang="scss">
+/* HACK Surcharge API Analytics */
+  body.modal-open {
+    overflow: unset;
+  }
+  
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);

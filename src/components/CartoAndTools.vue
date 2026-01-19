@@ -3,15 +3,17 @@ import Carto from '@/components/carte/Carto.vue'
 import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
 import RightMenuTool from '@/components/menu/RightMenuTool.vue'
 
-import ThemeModal from '@/components/modals/ModalTheme.vue'
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from '@/components/carte/control/ShareModal.vue'
 import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 
+import ModalWelcome from '../components/modals/ModalWelcome.vue';
+
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
 import { useLogger } from 'vue-logger-plugin';
+import { useAppStore } from "@/stores/appStore"
 
 import { fromShare } from '@/features/share';
 
@@ -21,25 +23,24 @@ import { push } from 'notivue';
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 const log = useLogger();
+const appStore = useAppStore();
 
-const refModalTheme: ThemeModal = ref({})
-const refModalLogin: LoginModal = ref({})
-const refModalShare: ShareModal = ref({})
-const refModalPrint: PrintModal = ref({})
-const refModalSave: SaveModal = ref({})
+const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
+const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
+const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
+const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
+
+const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
 provide("refModalPrint", refModalPrint)
 provide("refModalShare", refModalShare)
-provide("refModalTheme", refModalTheme)
 provide("refModalLogin", refModalLogin)
 provide("refModalSave", refModalSave)
+provide("refModalWelcome", refModalWelcome)
 
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
-}
-const onModalThemeOpen = () => {
-  refModalTheme.value.openModalTheme()
 }
 const onModalPrintOpen = () => {
   refModalPrint.value.onModalPrintOpen()
@@ -158,6 +159,12 @@ const selectedControls = computed(() => {
 
 const cartoRef = ref(null)
 
+onMounted(() => {
+  if (appStore.siteOpened && refModalWelcome.value) {
+    refModalWelcome.value.openModalWelcome();
+  }
+});
+
 provide("selectedLayers", selectedLayers);
 </script>
 
@@ -170,7 +177,6 @@ provide("selectedLayers", selectedLayers);
     <LeftMenuTool
       @on-modal-share-open="onModalShareOpen"
       @on-modal-print-open="onModalPrintOpen"
-      @on-modal-theme-open="onModalThemeOpen"
       @on-modal-login-open="onModalLoginOpen"
     />
 
@@ -192,7 +198,6 @@ provide("selectedLayers", selectedLayers);
     />
     <!-- Liste des modales -->
     <div class="modal-container">
-      <ThemeModal ref="refModalTheme" />
       <PrintModal
         ref="refModalPrint"
         :selected-bookmarks="selectedBookmarks"
@@ -200,6 +205,8 @@ provide("selectedLayers", selectedLayers);
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
       <SaveModal ref="refModalSave" />
+      <!-- Modale : Welcome (+ Eulerian) -->
+      <ModalWelcome ref="refModalWelcome" />
     </div>
   </div>
 </template>
