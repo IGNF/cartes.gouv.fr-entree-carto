@@ -116,6 +116,8 @@ onMounted(() => {
           }
       }
       map.addLayer(layer);
+      // informe le parent que la couche est montée
+      emit('mounted');
     }
   }
   
@@ -191,6 +193,10 @@ onMounted(() => {
         layer = l;
       })
       .then(() => {
+        // informe le parent que la couche est montée
+        emit('mounted');
+      })
+      .then(() => {
         // zoom sur la couche
         // sauf si la couche vient du permalien !
         if (mapStore.isPermalink) {
@@ -223,9 +229,6 @@ onMounted(() => {
       });
     }
   }
-
-  // informe le parent que la couche est montée
-  emit('mounted');
 })
 
 /**

@@ -62,17 +62,17 @@ var bookmarks = computed(() => {
 
 function onLayerMounted(layer, index) {
   var allLayers = [...layers.value, ...bookmarks.value];
-  log.error(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
+  log.debug(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
   if (allLayers.length - 1 === index) {
     setTimeout(() => {
-      log.error(`Layer last : ${layer.name} (${index})`);
+      log.debug(`Layer last : ${layer.name} (${index})`);
       removePermalink();
     });
   }
 }
 
 function onLayerUnMounted(layer, index) {
-  log.error(`Layer unmounted : ${layer.name} (${index})`);
+  log.debug(`Layer unmounted : ${layer.name} (${index})`);
 }
 
 </script>
