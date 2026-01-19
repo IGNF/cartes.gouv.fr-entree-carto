@@ -22,7 +22,7 @@ import CustomNavigation from '@/components/header/CustomNavigation.vue'
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-import ModalWelcome from '../components/modals/ModalWelcome.vue'
+// import ModalWelcome from '@/components/modals/ModalWelcome.vue'
 
 // stores
 import { useAppStore } from "@/stores/appStore"
