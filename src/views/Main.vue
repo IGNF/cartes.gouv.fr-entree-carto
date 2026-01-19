@@ -1,42 +1,39 @@
 <script setup lang="ts">
-import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
-import CustomNavigation from '@/components/CustomNavigation.vue'
-import { inject, markRaw } from 'vue'
-
+import { markRaw } from 'vue'
+  
 // icones
-import NotificationInfo from '@/icons/NotificationInfo.vue';
-import NotificationSuccess from '@/icons/NotificationSuccess.vue';
-import NotificationError from '@/icons/NotificationError.vue';
-import NotificationWarning from '@/icons/NotificationWarning.vue';
-import NotificationClose from '@/icons/NotificationClose.vue';
+import NotificationInfo from '@/icons/NotificationInfo.vue'
+import NotificationSuccess from '@/icons/NotificationSuccess.vue'
+import NotificationError from '@/icons/NotificationError.vue'
+import NotificationWarning from '@/icons/NotificationWarning.vue'
+import NotificationClose from '@/icons/NotificationClose.vue'
+  
 // composables
-import { useRoute, useRouter } from 'vue-router'
-import { useLogger } from 'vue-logger-plugin'
 import { useMatchMedia } from '@/composables/matchMedia'
 import { useHeaderParams } from '@/composables/headerParams'
 import { useFooterParams } from '@/composables/footerParams'
 import { useBaseUrl } from '@/composables/baseUrl'
+  
 // library
-import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
+import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
+  
 // components
+import CustomNavigation from '@/components/header/CustomNavigation.vue'
 import ModalConsent from '@/components/modals/ModalConsent.vue'
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
 import ModalTheme from '@/components/modals/ModalTheme.vue'
-// import ModalWelcome from '../components/modals/ModalWelcome.vue';
+// import ModalWelcome from '@/components/modals/ModalWelcome.vue'
+
 // stores
 import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
-// others
-import t from '@/features/translation'
+import { useServiceStore } from '@/stores/serviceStore'
 
 const appStore = useAppStore()
-const domStore = useDomStore();
+const domStore = useDomStore()
 const mapStore = useMapStore()
-
-const route = useRoute()
-const router = useRouter()
-const log = useLogger()
+const serviceStore = useServiceStore()
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const largeScreen = useMatchMedia('LG')
@@ -84,130 +81,6 @@ const mandatoryLinks = computed(() => {
   })
 })
 
-var service :any = inject('services');
-
-service.isAuthentificate()
-.then((status:boolean) => {
-  // le service renvoie un user 
-  // mais on n'est pas authentifié sur la carto
-  // --> sync
-  if (status && !service.authenticated && service.mode === "remote") {
-    router.push({ path : '/login?success=1' });
-  }
-  // le service ne renvoie rien (401 Unauthorized)
-  // mais, on est encore enregistré comme authentifié
-  // --> sync
-  if (!status && service.authenticated && service.mode === "remote") {
-    router.push({ path : '/logout?success=1' });
-  }
-})
-.catch()
-.finally();
-
-// INFO
-// on teste si une demande de connexion (ou de deconnexion) a été faite,
-// et si elle est valide, on demande le jeton de connexion, puis,
-// on récupère les informations utilisateurs.
-// Pour les favoris, on récupère aussi les documents.
-service.isAccessValided()
-.then((status:any) => {
-  if (status === "login") {
-    // on met à jour le header en renseignant les informations utilisateurs
-    var name = service.getUser();
-    headerParams.value.quickLinks.forEach((element:any) => {
-      if (element.label === "...") {
-        element.label = name;
-      }
-    });
-  }
-  if (status !== "no-auth") {
-    router.replace({ query: undefined });
-  }
-})
-.catch((e:any) => {
-  console.error(e);
-  push.error({
-    title: t.auth.title,
-    message: t.auth.failed(e.message || e)
-  });
-})
-.finally(() => {
-});
-
-// INFO
-// on met à jour les quickLinks pour la connexion
-const quickLinks = computed(() => {
-  return headerParams.value.quickLinks
-})
-
-// paramètre pour la barre de navigations
-const navItems: DsfrNavigationProps['navItems'] = [
-  {
-    title: 'Commencer avec cartes.gouv',
-    get active () {
-      return [
-        'Documentation',
-        'Offre',
-        'Nous rejoindre'
-      ].includes(route.name as string)
-    },
-    links: [
-      {
-        to: `${useBaseUrl()}/documentation`,
-        text: 'Documentation',
-      },
-      {
-        to: `${useBaseUrl()}/offre`,
-        text: 'Offre',
-      },
-      {
-        to: `${useBaseUrl()}/nous-rejoindre`,
-        text: 'Nous rejoindre',
-      },
-    ],
-  },
-  {
-    to: `${useBaseUrl()}/catalogue`,
-    text: 'Catalogue',
-  },
-  {
-    to: `/`,
-    text: 'Cartes',
-  },
-  {
-    to: `${useBaseUrl()}/actualites`,
-    text: 'Actualités',
-  },
-  {
-    title: 'Assistance',
-    get active () {
-      return [
-        'Questions fréquentes',
-        'Nous écrire',
-        'Niveau de service'
-      ].includes(route.name as string)
-    },
-    links: [
-      {
-        to: `${useBaseUrl()}/faq`,
-        text: 'Questions fréquentes',
-      },
-      {
-        to: `${useBaseUrl()}/nous-ecrire`,
-        text: 'Nous écrire',
-      },
-      {
-        to: `${useBaseUrl()}/niveau-de-service`,
-        text: 'Niveau de service',
-      },
-    ],
-  },
-  {
-    to: `${useBaseUrl()}/a-propos`,
-    text: '\u00C0 propos',
-  }
-]
-
 // customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
   warning : markRaw(NotificationWarning),
@@ -249,6 +122,8 @@ const notificationsTheme = computed(() => {
   };
 });
 
+const footerToggle = ref(false);
+// fonction pour scroller en bas de page (afficher le footer)
 const scrollDown = () => {
   // on scroll down pour afficher le footer
   footerToggle.value = true;
@@ -259,19 +134,44 @@ const scrollDown = () => {
     });
   }, 100);
 }
-onMounted(() => {
-  // Badge header
-  let badge = document.querySelector(".fr-header__service-title span")
-  let icon = document.createElement("span")
-  icon.classList.add("fr-icon-road-map-fill")
-  icon.style.scale = "50%"
-    if (badge && parent) {
-    badge.innerHTML = "Explorer"
-    badge.classList.remove("fr-badge--green-emeraude")
-    badge.classList.add("fr-badge--purple-glycine")
-    badge.classList.add("fr-icon-road-map-fill")
+
+const alertClosed = ref(false);
+// gestion de l'alerte d'information sur la redirection depuis le geoportail
+const alertData = {
+    title : "Iframe obsolète",
+    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 20/06/2025. Pour le mettre à jour, rendez vous sur notre <a href=\"https://ignf.github.io/permalink-converter/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
+}; 
+const onCloseAlert = () => {
+  alertClosed.value = true;
+};
+
+// Base URL pour les routes login/logout
+const url = useBaseUrl() + import.meta.env.BASE_URL;
+
+const sessionExpiredClosed = ref(false);
+// gestion de l'alerte de session expirée
+const sessionExpiredData = {
+    title : "Session expirée",
+    description : "Votre session a expirée. Veuillez vous reconnecter.",
+    action : `<a href="${url}login">Se reconnecter</a>`
+};
+const onCloseSessionExpired = () => {
+  sessionExpiredClosed.value = true;
+};
+
+// Badge header
+const addBadgeHeader = () => {
+  let badge = document.querySelector(".fr-header__service-title span");
+  let icon = document.createElement("span");
+  icon.classList.add("fr-icon-road-map-fill");
+  icon.style.scale = "50%";
+  if (badge && parent) {
+    badge.innerHTML = "Explorer";
+    badge.classList.remove("fr-badge--green-emeraude");
+    badge.classList.add("fr-badge--purple-glycine");
+    badge.classList.add("fr-icon-road-map-fill");
     const textNode = badge.firstChild;
-    badge.insertBefore(icon, textNode)
+    badge.insertBefore(icon, textNode);
   }
   // Logo header
   // let logoDiv = document.querySelector(".fr-header__logo")
@@ -282,31 +182,13 @@ onMounted(() => {
   // img.classList.add("entree-carto-logo")
   // img.src = "https://upload.wikimedia.org/wikipedia/commons/2/22/Flag_map_of_France.svg"
   // logoDiv?.insertAdjacentElement('afterend', scndLogo)
+}
 
-})
-
-const alertClosed = ref(false);
-
-const alertData = {
-    title : "Iframe obsolète",
-    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 20/06/2025. Pour le mettre à jour, rendez vous sur notre <a href=\"https://ignf.github.io/permalink-converter/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
-}; 
-
-const onCloseAlert = () => {
-  alertClosed.value = true;
-};
-
-onBeforeMount(() => {
-  // Welcome Page !
+onMounted(() => {
+  addBadgeHeader()
   appStore.detectFirstOpen()
 })
 
-// onMounted(() => {
-//   if (appStore.siteOpened && refModalWelcome.value) {
-//     refModalWelcome.value.openModalWelcome();
-//   }
-// });
-const footerToggle = ref(false);
 
 </script>
 
@@ -317,14 +199,9 @@ const footerToggle = ref(false);
     :show-beta="true"
     :service-description="domStore.isHeaderCompact ? '' : headerParams.serviceDescription"
     :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
-    :quick-links="quickLinks"
+    :quick-links="headerParams.quickLinks"
     :class="domStore.isHeaderCompact ? 'minimized': ''"
   >
-    <!-- <template #mainnav>
-      <DsfrNavigation
-        :nav-items="navItems"
-      />
-    </template> -->
     <template #after-quick-links>
       <CustomNavigation
         id="main-navigation"
@@ -368,11 +245,25 @@ const footerToggle = ref(false);
     <DsfrAlert
       type="warning"
       :title="alertData.title"
-      :closed="alertClosed"
       :closeable="true"
+      :closed="alertClosed"
       @close="onCloseAlert()"
     >
       <p v-html="alertData.description" />
+    </DsfrAlert>
+  </div>
+
+  <div v-if="serviceStore.getAuthentificateSyncNeeded()">
+    <DsfrAlert
+      type="error"
+      :title="sessionExpiredData.title"
+      :small="true"
+      :closeable="true"
+      :closed="sessionExpiredClosed"
+      @close="onCloseSessionExpired()"
+    >
+      <p>{{ sessionExpiredData.description }}</p>
+      <p v-html="sessionExpiredData.action" />
     </DsfrAlert>
   </div>
   
@@ -445,7 +336,7 @@ const footerToggle = ref(false);
     width: 100%;
     height: calc(100vh - 169px);
   }
-  .minimized.futur-map-container{
+  .minimized.futur-map-container {
     height: calc(100vh - 108.5px);
   }
 
@@ -455,7 +346,7 @@ const footerToggle = ref(false);
       margin-bottom: 0px;
 
     }
-    .minimized.futur-map-container{
+    .minimized.futur-map-container {
       height: calc(100vh - 56px);
       margin-bottom: 0px;
     }
@@ -532,7 +423,7 @@ const footerToggle = ref(false);
 
   .footer-close {
       display: none;
-    }
+  }
   .footer-toggle-true {
     i {
       display: none;
@@ -585,7 +476,8 @@ const footerToggle = ref(false);
     display: inline-block;
   }
 
-  @media (max-width: 991px){
+  @media (max-width: 991px) {
+
     /* mini header */
     .minimized {
       .fr-header__service-tagline {
@@ -599,7 +491,6 @@ const footerToggle = ref(false);
       display: none;
       }
     }
-
 
     /* mini footer */
     .fr-footer {
@@ -629,94 +520,94 @@ const footerToggle = ref(false);
     }
   }
 
-/* Surcharge du logo DSFR */
-.minimized {
-  .fr-logo::after {
-    content: none !important; /* Supprime complètement le pseudo-élément */
-    background: none !important;
-    display: none !important;
-}
-  .fr-logo {
-    padding-top: 1rem !important;
-    scale: 1.3 !important;
-}
-
-  .fr-header__navbar {
-    padding: .25rem;
-  }
-  @media (min-width: 991px){
-    .fr-enlarge-link {
-    max-height: 2.5rem;
-  }
-  .fr-header__body-row {
-    padding: 0.51rem;
-  }
-  .fr-header__service {
-      padding-left: 0;
+  /* Surcharge du logo DSFR */
+  .minimized {
+    .fr-logo::after {
+      content: none !important; /* Supprime complètement le pseudo-élément */
+      background: none !important;
+      display: none !important;
     }
-}
+    .fr-logo {
+      padding-top: 1rem !important;
+      scale: 1.3 !important;
+    }
 
+    .fr-header__navbar {
+      padding: .25rem;
+    }
+    @media (min-width: 991px) {
+      .fr-enlarge-link {
+        max-height: 2.5rem;
+      }
+      .fr-header__body-row {
+        padding: 0.51rem;
+      }
+      .fr-header__service {
+        padding-left: 0;
+      }
+    }
+
+    .fr-header__logo::after {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+    @media (max-width: 991px) {
+      .fr-header__logo::after {
+        left: 4.5rem;
+        top: 0.9rem;
+      }
+      .fr-header__brand {
+        padding: 0.13rem;
+      }
+    }
+    .fr-header__logo {
+      width: 7rem;
+    }
+  }
+
+  .entree-carto-logo {
+    max-height: 65px;
+  }
+  .fr-header__logo {
+    position: relative;
+    width: 12rem;
+  }
   .fr-header__logo::after {
-  height: 1.5rem;
-  width: 1.5rem;
-}
-  @media (max-width: 991px){
-  .fr-header__logo::after {
-    left: 4.5rem;
-    top: 0.9rem;
+    background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg");
+    content: "";
+    display: block;
+    height: 4rem;
+    width: 4rem;
+    background-size: contain; /* pour que l’image soit visible */
+    background-repeat: no-repeat;
+    position: absolute;
+    left: 60%;
+    top: 1rem;
   }
-  .fr-header__brand {
-    padding: 0.13rem;
+  :root[data-fr-theme="dark"] .fr-header__logo::after  {
+    background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
   }
-}
-.fr-header__logo {
-  width: 7rem;
-}
-}
 
-.entree-carto-logo {
-  max-height: 65px;
-}
-.fr-header__logo {
-  position: relative;
-  width: 12rem;
-}
-.fr-header__logo::after {
-  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg");
-  content: "";
-  display: block;
-  height: 4rem;
-  width: 4rem;
-  background-size: contain; /* pour que l’image soit visible */
-  background-repeat: no-repeat;
-  position: absolute;
-  left: 60%;
-  top: 1rem;
-}
-:root[data-fr-theme="dark"] .fr-header__logo::after  {
-  background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
-}
-
-/*
-  en mode mobile place le menu bruger du header par dessus les control openlayer
-*/
-header {
-  z-index: 9000;
-}
-/* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
-Et de l'afficher en mode mobile 
-*/
-header:not(:has(#header-navigation)) .fr-header__menu-links {
-  display: none;
-}
-
-.flex-start {
-  justify-content: flex-start;
-}
-
-.fr-header__tools-links {
-  .fr-nav__btn {
-    padding: 8px;
+  /*
+    en mode mobile place le menu bruger du header par dessus les control openlayer
+  */
+  header {
+    z-index: 9000;
   }
-}
+  /* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
+  Et de l'afficher en mode mobile 
+  */
+  header:not(:has(#header-navigation)) .fr-header__menu-links {
+    display: none;
+  }
+
+  .flex-start {
+    justify-content: flex-start;
+  }
+
+  .fr-header__tools-links {
+    .fr-nav__btn {
+      padding: 8px;
+    }
+  }
 </style>

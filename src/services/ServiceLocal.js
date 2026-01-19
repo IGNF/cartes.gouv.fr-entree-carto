@@ -90,6 +90,7 @@ class ServiceLocal extends ServiceBase {
       },
       onError: (e) => {
         console.error(e);
+        this.error = e;
       }
     });
 
@@ -189,7 +190,7 @@ class ServiceLocal extends ServiceBase {
         })
     }
     // IAM logout local
-    if (!code && session && session === this.session) {
+    if (!code && (session !== null || session === this.session)) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
@@ -203,7 +204,7 @@ class ServiceLocal extends ServiceBase {
       });
     }
 
-    // FIXME Error ?
+    // FIXME on ne traite pas les erreurs !?
     if (error) {
       this.error = {
         name: error,

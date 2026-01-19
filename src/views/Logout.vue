@@ -31,7 +31,10 @@ onMounted(() => {
   // IAM de deconnexion redirige vers la route '/logout' aprés validation
   // Et, elle fournit la 'session' en mode 'local' ou 'success' pour le mode 'remote'
   var value = 0;
-  if (service.mode === "local" && session) {
+  if (service.mode === "local" && session !== null) {
+    // HACK
+    // On considere que si on a une session, la deconnexion a reussi, 
+    // même si on ne peut pas le verifier
     value = 1;
   } else if (service.mode === "remote" && success !== null) {
     value = parseInt(success, 10);

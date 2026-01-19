@@ -1,7 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  },
   "emmet.includeLanguages": {
     "postcss": "css"
   },
@@ -30,5 +27,5 @@
   "css.validate": false,
   "scss.validate": false,
   "[vue]": { "editor.defaultFormatter": "stylelint.vscode-stylelint" },
-  "[css]": { "editor.defaultFormatter": "stylelint.vscode-stylelint" },
+  "[css]": { "editor.defaultFormatter": "stylelint.vscode-stylelint" }
 }

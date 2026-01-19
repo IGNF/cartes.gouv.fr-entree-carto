@@ -222,7 +222,8 @@ export const useMapStore = defineStore('map', () => {
     var optionalControls = controls.value.split(",").filter((c) => !defaultControls.includes(c)).toString();
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
-    var url = location.origin + path.replace("/embed", "");
+    var realpath = path.replace(/\/logout|\/login/, "");
+    var url = location.origin + realpath.replace("/embed", "");
     permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
@@ -241,7 +242,8 @@ export const useMapStore = defineStore('map', () => {
     var permalinkShareUrl = "";
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
-    var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
+    var realpath = path.replace(/\/logout|\/login/, "");
+    var url = location.origin + (realpath.includes("/embed") ? realpath : realpath + "/embed");
     permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule

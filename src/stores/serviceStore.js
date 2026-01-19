@@ -23,6 +23,12 @@ export const useServiceStore = defineStore({
     },
     setService (s) {
       this.connexion = serviceFactotyCreate(s);
+    },
+    setAuthentificateSyncNeeded (b) {
+      this.connexion.authentificateSyncNeeded = b;
+    },
+    getAuthentificateSyncNeeded () {
+      return this.connexion.authentificateSyncNeeded || false;
     }
   }
 });
