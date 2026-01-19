@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import Carto from '@/components/carte/Carto.vue'
-import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
-import RightMenuTool from '@/components/menu/RightMenuTool.vue'
+import Carto from "@/components/carte/Carto.vue";
+import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
+import RightMenuTool from "@/components/menu/RightMenuTool.vue";
 
 import LoginModal from "@/components/modals/ModalLogin.vue";
-import ShareModal from '@/components/carte/control/ShareModal.vue'
+import ShareModal from "@/components/carte/control/ShareModal.vue";
 import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 
-import ModalWelcome from '../components/modals/ModalWelcome.vue';
+import ModalWelcome from "@/components/modals/ModalWelcome.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
 import { useLogger } from 'vue-logger-plugin';
 import { useAppStore } from "@/stores/appStore"
 
-import { fromShare } from '@/features/share';
+import { fromShare } from "@/features/share";
 
 // lib notification
-import { push } from 'notivue';
+import { push } from "notivue";
+import t from "@/features/translation";
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
@@ -32,12 +33,11 @@ const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
-provide("refModalPrint", refModalPrint)
-provide("refModalShare", refModalShare)
-provide("refModalLogin", refModalLogin)
-provide("refModalSave", refModalSave)
-provide("refModalWelcome", refModalWelcome)
-
+provide("refModalPrint", refModalPrint);
+provide("refModalShare", refModalShare);
+provide("refModalLogin", refModalLogin);
+provide("refModalSave", refModalSave);
+provide("refModalWelcome", refModalWelcome);
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
@@ -157,7 +157,7 @@ const selectedControls = computed(() => {
   return controls;
 });
 
-const cartoRef = ref(null)
+const cartoRef = ref(null); // FIXME Référence au composant Carto utilisée ?
 
 onMounted(() => {
   if (appStore.siteOpened && refModalWelcome.value) {

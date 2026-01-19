@@ -30,8 +30,46 @@ services:
         networks:
           - web_dev
 
+    catalog_dev:
+        image: ghcr.io/ignf/geonetwork-ui:v1.4.2
+        container_name: cartesgouvfr-catalog-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./catalog/conf:/opt/rechercher-une-donnee/assets/configuration
+        networks:
+            - web_dev
+        # labels:
+        #     - "traefik.enable=true"
+        #     - "traefik.http.routers.cartesgouvfr-catalog.rule=Host(`cartesgouvfr-catalog.docker.localhost`) && PathPrefix(`/catalogue`)"
+        #     - "traefik.http.routers.cartesgouvfr-catalog.entrypoints=websecure"
+        #     - "traefik.http.services.cartesgouvfr-catalog.loadbalancer.server.port=8080"
+
+    doc_dev:
+        image: ghcr.io/ignf/cartes.gouv.fr-documentation:latest
+        container_name: cartesgouvfr-documentation-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+            - "8082:8082"
+        networks:
+            - web_dev
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cartesgouvfr-documentation.rule=Host(`cartesgouvfr-documentation.docker.localhost`) && PathPrefix(`/aide`)"
+            - "traefik.http.routers.cartesgouvfr-documentation.entrypoints=websecure"
+            - "traefik.http.services.cartesgouvfr-documentation.loadbalancer.server.port=8082"
+
     app_dev:
-        image: ghcr.io/ignf/cartes.gouv.fr:latest
+        image: ghcr.io/ignf/cartes.gouv.fr:0.10.5
         container_name: cartesgouvfr-dev
         env_file:
             - ./cartes/.env.local
@@ -53,8 +91,8 @@ services:
 
     nginx_proxy:
         build:
-            context: ..
-            dockerfile: ./.docker-dev/proxy/Dockerfile
+            context: ./proxy
+            dockerfile: Dockerfile
             args:
               HTTP_PROXY: "http://proxy.ign.fr:3128"
               HTTPS_PROXY: "http://proxy.ign.fr:3128"
@@ -62,6 +100,8 @@ services:
         depends_on:
           - entree_carto_dev
           - app_dev
+          - doc_dev
+          - catalog_dev
         container_name: cartesgouvfr-nginx_proxy-dev
         environment:
             - HTTP_PROXY=${HTTP_PROXY}

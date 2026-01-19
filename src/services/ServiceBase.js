@@ -5,7 +5,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
 
-class ServiceBase extends EventTarget {
+class ServiceBase {
 
   #fetch
   #pending
@@ -24,7 +24,6 @@ class ServiceBase extends EventTarget {
    * if access is valid, getting login/logout information, and retrieving access tokens.
    */
   constructor(options) {
-    super();
     options = options || {};
 
     /** authentification */
@@ -32,27 +31,7 @@ class ServiceBase extends EventTarget {
 
     
     /** user */
-    let _user = options.user || {};
-
-    Object.defineProperty(this, "user", {
-      get() {
-        return _user;
-      },
-      set(value) {
-        const oldValue = _user;
-        _user = value;
-    
-        // Ne déclenche l'événement que si la valeur a changé
-        if (oldValue !== value) {
-          this.dispatchEvent(
-            new CustomEvent("user-changed", {
-              detail: { value },
-              bubbles: false,
-            })
-          );
-        }
-      },
-    });
+    this.user = options.user || {};
     /** documents */
     this.documents = options.documents || {};
     /** erreurs IAM */
@@ -167,16 +146,26 @@ class ServiceBase extends EventTarget {
     Promise.reject('this must be overridden !');
   }
   /**
+   * Check if the authentificate is already done
+   * @returns {Boolean} - True if authentificate
+   */
+  isAlreadyAuthentificate () {
+    if (this.authenticated && Object.keys(this.user).length > 0) {
+      return true;
+    }
+    return false;
+  }
+  /**
    * Check if the authentificate is done
    * @returns {Boolean} - True if authentificate
    */
   async isAuthentificate () {
-    // only for remote mode !
-    if (this.mode === "local") {
+    try {
+      var data = await this.getUserMe();
+      return (data !== null);
+    } catch {
       return false;
     }
-    var data = await this.getUserMe();
-    return (data !== null);
   }
 }
 

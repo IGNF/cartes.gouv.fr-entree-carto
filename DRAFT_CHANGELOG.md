@@ -30,6 +30,7 @@
   - Référencement  : amélioration du contenu meta pour le référencement naturel du site (80a34b37e)
   - Signalement et Annoter la carte : correction de la superposition de modales d'annotation (#854)
   - Cartalogue : les vignettes renseignées par les producteurs de données s'affichent correctement (#859)
+  - Connexion : mise à jour du header et de la connexion pour meilleure gestion de l'expiration de la sessions utilisateur (#863)
   - Modale de bienvenue : affichage correct de la modale de bienvenue quand le suivi Eulerian est activé (#872)
 
 #### 🔒 [Sécurité]
