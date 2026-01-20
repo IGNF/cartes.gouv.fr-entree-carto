@@ -57,6 +57,9 @@ if (isProduction) {
   LoggerUtils.disableAll();
 } else {
   LoggerUtils.enableAll();
+  // Orienté maintenance et débogage !
+  // Expose LoggerUtils sur window pour le débogage en console
+  window.LoggerUtils = LoggerUtils;
 }
 
 const props = defineProps({
