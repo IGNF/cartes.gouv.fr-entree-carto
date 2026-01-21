@@ -1,0 +1,2 @@
+import{H as n,t as r,e as l,o as c,h as e,i,j as f,J as _,af as d,M as p,Y as u,x as m}from"./index-BCkSWMw0.js";const B={class:"fr-container fr-p-2w"},h={},v=Object.assign(h,{__name:"Bookmarks",setup(k){u(),m("services");const t="Favoris",s="Not yet implemented !";return n(()=>{}),r(()=>{}),(o,g)=>{const a=d;return c(),l(p,null,[e("div",B,[e("h2",null,_(t)),f(a,{type:"info",title:"Information",description:s,closed:!1,closeable:!1})]),i(o.$slots,"default")],64)}}});export{v as default};
+//# sourceMappingURL=Bookmarks-DDvPj4jt.js.map
