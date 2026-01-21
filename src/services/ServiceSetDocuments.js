@@ -315,7 +315,8 @@ var SetDocuments = {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
@@ -385,7 +386,8 @@ var SetDocuments = {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ public_url : true })
       });
@@ -467,7 +469,8 @@ var SetDocuments = {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
