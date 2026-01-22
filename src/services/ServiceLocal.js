@@ -4,6 +4,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 import { OAuth2Client, OAuth2Fetch } from '@badgateway/oauth2-client';
 import { generateCodeVerifier } from '@badgateway/oauth2-client';
+import Keycloak from "keycloak-js";
 
 import { inject } from 'vue';
 
@@ -119,13 +120,42 @@ class ServiceLocal extends ServiceBase {
     return null;
   }
 
-  async checkKeycloakSession () {
+  async checkKeycloakSession (adapter) {
+    if (!adapter) {
+      adapter = 'natif';
+    }
+    if (adapter !== 'keycloak') {
+      return this.#checkKeycloakSessionAdapter1();
+    } else {
+      return this.#checkKeycloakSessionAdapter2();
+    }
+  }
+
+  async #checkKeycloakSessionAdapter2 () {
+    console.warn("use checkKeycloakSessionAdapter keycloak");
+    const keycloak = new Keycloak({
+      url: IAM_URL,
+      realm: IAM_REALM,
+      clientId: 'cartes-gouv-public'
+    });
+
+    return keycloak.init({ 
+        onLoad: 'check-sso', 
+        flow: "standard",
+        pkceMethod: "S256",
+        checkLoginIframe: false,
+        silentCheckSsoRedirectUri: this.url + '/silent-check-sso2.html'
+    });
+  }
+
+  async #checkKeycloakSessionAdapter1 () {
+    console.warn("use checkKeycloakSessionAdapter natif");
     return new Promise((resolve) => {
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         
         const checkUrl = new URL(this.#client.settings.server + this.#client.settings.authorizationEndpoint);
-        checkUrl.searchParams.set('client_id', this.#client.settings.clientId); // cartes-gouv-public
+        checkUrl.searchParams.set('client_id', this.#client.settings.clientId);
         checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso.html');
         checkUrl.searchParams.set('response_type', 'code');
         checkUrl.searchParams.set('scope', 'openid');
