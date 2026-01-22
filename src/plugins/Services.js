@@ -5,14 +5,25 @@ import { serviceFactotyCreate } from '@/services/ServiceFactory';
 const servicesSymbol = Symbol('vue-services-plugin');
 
 export class PluginServices {
-
+  
   /**
    * constructeur
    * @param {*} options
-   */
-  constructor(options) {
+  */
+ constructor(options) {
     console.debug("connexion", options);
     this.instance = serviceFactotyCreate(options);
+    this.instance.checkKeycloakSession()
+    .then((session) => {
+      if (session) {
+        console.warn('✓ Session Keycloak détectée');
+      } else {
+        console.warn('✗ Pas de session Keycloak');
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+    })
   }
 
   /**
