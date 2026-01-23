@@ -29,16 +29,19 @@ export function useHeaderParams() {
               {
                   text: "Questions Fréquentes",
                   to: useBaseUrl() + '/aide/fr/',
+                  target: "_blank",
                   icon: "ri-question-mark"
               },
               {
                   text: "Guide d'utilisation",
                   to: useBaseUrl() + '/aide/fr/guides-utilisateur/presentation-utilisateur/generalites-utilisateur/',
+                  target: "_blank",
                   icon: "ri-book-2-line"
               },
               {
                   text: "Nous contacter",
                   to: useBaseUrl() + '/nous-ecrire',
+                  target: "_blank",
                   icon: "ri-mail-line"
               }
             ]   
