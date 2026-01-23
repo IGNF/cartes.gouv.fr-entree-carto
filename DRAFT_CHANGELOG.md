@@ -15,6 +15,7 @@
 #### 🔨 [Evolution]
 
   - partage : les permaliens de type "ajout de données" filtrent les couches en doublon (#893)
+  - carte : possibilité d'activer du zoom-client pour certaines des couches de référence et activation du zoom max 21 (#892)
 
 #### 🔥 [Obsolète]
 
