@@ -14,11 +14,15 @@
 
 #### 🔨 [Evolution]
 
+  - partage : les permaliens de type "ajout de données" filtrent les couches en doublon (#893)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
+
+  - Entête : correction des liens vers l'aide et la documentation pour qu'ils ouvrent un nouvel onglet (#891)
 
 #### 🔒 [Sécurité]
 
