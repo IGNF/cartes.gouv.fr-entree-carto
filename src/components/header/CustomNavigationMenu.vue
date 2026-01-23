@@ -166,7 +166,7 @@ onBeforeUnmount(() => {});
                   class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right w100 justify-center"
                   :class="link.icon"
                 >
-                  <a :href="link.to">{{ link.text }}</a>
+                  <a :href="link.to" :target="link.target">{{ link.text }}</a>
                 </button>
               </div>
             </div>
@@ -174,6 +174,7 @@ onBeforeUnmount(() => {});
               v-else 
               :id="idx"
               :href="link.to"
+              :target="link.target"
               class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
               :class="'fr-icon' + link.icon?.replace('ri', '')"
             >
@@ -231,6 +232,10 @@ onBeforeUnmount(() => {});
 
 .fr-nav__btn-no-dropdown::after {
   display: none;
+}
+
+a[target=_blank]::after {
+  margin-left: auto;
 }
 
 </style>
