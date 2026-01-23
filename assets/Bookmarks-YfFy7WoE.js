@@ -1,0 +1,2 @@
+import{H as n,t as r,o as l,e as c,f as e,J as i,h as f,af as _,r as d,M as p,Y as u,x as m}from"./index-NKLPLTvx.js";const B={class:"fr-container fr-p-2w"},h={},y=Object.assign(h,{__name:"Bookmarks",setup(k){u(),m("services");const t="Favoris",s="Not yet implemented !";return n(()=>{}),r(()=>{}),(o,g)=>{const a=_;return l(),c(p,null,[e("div",B,[e("h2",null,i(t)),f(a,{type:"info",title:"Information",description:s,closed:!1,closeable:!1})]),d(o.$slots,"default")],64)}}});export{y as default};
+//# sourceMappingURL=Bookmarks-YfFy7WoE.js.map
