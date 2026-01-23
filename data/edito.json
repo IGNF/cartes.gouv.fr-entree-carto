@@ -292,57 +292,99 @@
   },
   "layers": {
     "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
       "base": true,
       "title": "Plan IGN personnalisable"
     },
     "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "CADASTRALPARCELS.HISTO.2008-2013.PARCELS$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "BDTOPO$GEOPORTAIL:GPP:TMS": {
       "base": true,
       "title": "BDTOPO® personnalisable"
     },
     "LANDCOVER.FORESTINVENTORY.V2$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "DEBROUSSAILLEMENT$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "dgac_peb_plan_wmsv$GEOPORTAIL:OGC:WMS": {
       "base": true
     },
     "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI$GEOPORTAIL:OGC:WMTS": {
-      "base": true
+      "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
       "base": false,
@@ -352,7 +394,10 @@
           "minScaleDenominator": "200",
           "url": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/img/legends/GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2.png"
         }
-      ]
+      ],
+      "globalConstraint": {
+          "noConstraint": true
+      }
     },
     "ADMIN_EXPRESS$GEOPORTAIL:GPP:TMS" : {
       "title": "Limites administratives des collectivités territoriales (ADMIN EXPRESS)"
