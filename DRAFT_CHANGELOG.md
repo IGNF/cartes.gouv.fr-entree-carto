@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+  - partage : les permaliens de type "ajout de données" filtrent les couches en doublon (#893)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
