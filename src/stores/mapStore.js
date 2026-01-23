@@ -145,21 +145,42 @@ export const useMapStore = defineStore('map', () => {
           // - permalink = yes : remplace la conf
           // - permalink = no  : complete la conf
           if (type === "no") {
-            // on modifier la position des nouvelles couches
+            // on modifie la position des nouvelles couches
             // à ajouter pour qu'elle soit toujours au dessus
-            var curLyr = localStorage.getItem(ns(key));
-            var posLyr = curLyr.split(",").length + 1;
-            var newsLyr = value.split(",");
-            for (let i = 0; i < newsLyr.length; i++) {
-              const lyr = newsLyr[i];
+            var lyrs = localStorage.getItem(ns(key));
+            var curLyr = lyrs.split(",").filter(l => l !== "");
+            var newsLyr = value.split(",").filter(l => l !== "");
+            
+            // Extraire les IDs des nouvelles couches
+            var newIds = newsLyr.map(lyr => lyr.substring(0, lyr.indexOf("(")));
+            
+            // Supprimer les doublons des couches existantes
+            curLyr = curLyr.filter(lyr => {
+              var id = lyr.substring(0, lyr.indexOf("("));
+              return !newIds.includes(id);
+            });
+            
+            // Recalculer les positions des couches existantes
+            var updatedCurLyr = curLyr.map((lyr, index) => {
+              var id = lyr.substring(0, lyr.indexOf("("));
+              var opts = lyr.substring(lyr.indexOf("(") + 1, lyr.indexOf(")"));
+              var props = opts.split(";");
+              props[0] = index + 1;
+              return id + "(" + props.join(";") + ")";
+            });
+            
+            // Ajouter les nouvelles couches avec leurs positions
+            var posLyr = updatedCurLyr.length + 1;
+            var updatedNewsLyr = newsLyr.map((lyr, i) => {
               var id = lyr.substring(0, lyr.indexOf("("));
               var opts = lyr.substring(lyr.indexOf("(") + 1, lyr.indexOf(")"));
               var props = opts.split(";");
               props[0] = posLyr + i;
-              var newVal = id + "(" + props.join(";") + ")";
-              curLyr = curLyr.concat(",", newVal);
-            }
-            value = curLyr;
+              return id + "(" + props.join(";") + ")";
+            });
+            
+            // Combiner les couches
+            value = updatedCurLyr.concat(updatedNewsLyr).join(",");
           }
         }
         localStorage.setItem(ns(key), value);
