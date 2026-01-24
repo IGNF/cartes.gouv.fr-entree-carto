@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>silent-check-sso</title>
+    </head>
+    <body>
+        <script>
+            // keycloak-js : utilisé pour le check-sso sans rediriger l'utilisateur.
+            parent.postMessage(location.href, location.origin);
+        </script>
+    </body>
+</html>

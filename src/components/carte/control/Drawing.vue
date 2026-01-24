@@ -37,10 +37,16 @@ const mapStore = useMapStore();
 const log = useLogger();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  drawingOptions: Object
+  drawingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const map = inject(props.mapId)
@@ -244,8 +250,8 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = type;
+    var soustype = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = soustype;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }
@@ -299,7 +305,9 @@ const onExportVector = (e) => {}
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

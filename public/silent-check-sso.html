@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SSO Check</title>
+  </head>
+  <body>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      const error = params.get("error");
+
+      parent.postMessage(
+        {
+          code: code,
+          error: error,
+        },
+        window.location.origin,
+      );
+    </script>
+  </body>
+</html>
