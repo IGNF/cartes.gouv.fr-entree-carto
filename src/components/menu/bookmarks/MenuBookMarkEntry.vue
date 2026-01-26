@@ -277,9 +277,9 @@ const onClickButtonCancelRename  = (e) => {
 
 const modelValue = ref();
 const exportFormatValues = [
-  { label: 'KML', value: 'kml', class: "radio-button-export-format" },
-  { label: 'GeoJSON', value: 'geojson', class: "radio-button-export-format" },
-  { label: 'GPX', value: 'gpx', class: "radio-button-export-format" }
+  { label: 'kml', value: 'kml', class: "radio-button-export-format" },
+  { label: 'geojson', value: 'geojson', class: "radio-button-export-format" },
+  { label: 'gpx', value: 'gpx', class: "radio-button-export-format" }
 ];
 const onClickButtonCancelExport  = (e) => {
   log.debug(e);
@@ -557,7 +557,9 @@ const buttonsData = [
 }
 .container-bookmark-entry-export-format {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
 }
 .container-bookmark-entry-buttons-rename {
   display: flex;
@@ -572,6 +574,7 @@ const buttonsData = [
 }
 .radio-button-export-format {
   margin: 0;
+  padding-right: 0.15rem;
 }
 
 
