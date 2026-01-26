@@ -35,6 +35,8 @@ import { toShare } from '@/features/share.js';
 import { push } from 'notivue'
 import t from '@/features/translation';
 
+import { convert } from '@/features/format';
+
 import { useClipboard } from '@vueuse/core'
 import { useMapStore } from "@/stores/mapStore";
 import { useLogger } from 'vue-logger-plugin';
@@ -169,6 +171,7 @@ onBeforeMount(() => {});
 onMounted(() => {});
 
 const refDivRename = useTemplateRef('div-rename');
+const refDivExportFormat = useTemplateRef('div-export-format');
 const rename = ref('');
 
 const onClickButtonRename = (e) => {
@@ -200,42 +203,12 @@ const onClickButtonDelete = (e) => {
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
-  var data = {
-    uuid : props.data.id,
-    type : props.data.type
-  };
-  service.exportDocument(data)
-  .then((o) => {
-    // emettre un event pour prévenir de l'export d'un document
-    // au composant des favoris
-    emitter.dispatchEvent("document:exported", {
-      uuid : o.uuid,
-      action : o.action // added, updated, deleted
-    });
-    return o;
-  })
-  .then((o) => {
-    var mimeType = o.extra.mimeType;
-    var content = o.extra.content;
-    var name = o.extra.name;
-    var ext = o.extra.ext;
-  
-    // au cas où...
-    var filename = (name.includes(ext)) ? name : name + "." + ext;
-  
-    var link = document.createElement("a");
-    // determiner le bon charset !
-    var charset = "utf-8";
-    link.setAttribute("href", "data:" + mimeType + ";charset=" + charset + "," + encodeURIComponent(content));
-    link.setAttribute("download", filename);
-    if (document.createEvent) {
-      var event = document.createEvent("MouseEvents");
-      event.initEvent("click", true, true);
-      link.dispatchEvent(event);
-    } else {
-      link.click();
-    }
-  });
+  refDivExportFormat.value.classList.toggle("fr-hidden");
+  // si c'est un service, on passe directement à la validation
+  // pas de choix de format !
+  if (props.data.type === 'service') {
+    onClickButtonValidateExport(e, false);
+  }
 };
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
@@ -300,6 +273,77 @@ const onClickButtonValidateRename = (e) => {
 const onClickButtonCancelRename  = (e) => {
   log.debug(e);
   refDivRename.value.classList.toggle("fr-hidden");
+};
+
+const modelValue = ref();
+const exportFormatValues = [
+  { label: 'KML', value: 'kml', class: "radio-button-export-format" },
+  { label: 'GeoJSON', value: 'geojson', class: "radio-button-export-format" },
+  { label: 'GPX', value: 'gpx', class: "radio-button-export-format" }
+];
+const onClickButtonCancelExport  = (e) => {
+  log.debug(e);
+  refDivExportFormat.value.classList.toggle("fr-hidden");
+};
+const onClickButtonValidateExport  = (e, value) => {
+  // si value est à false, on exporte dans le format natif
+  // ex. service mapbox
+  if (value === undefined) {
+    value = true;
+  }
+  log.debug(e, value);
+  refDivExportFormat.value.classList.toggle("fr-hidden");
+
+  var data = {
+    uuid : props.data.id,
+    type : props.data.type
+  };
+  service.exportDocument(data)
+  .then((o) => {
+    // emettre un event pour prévenir de l'export d'un document
+    // au composant des favoris
+    emitter.dispatchEvent("document:exported", {
+      uuid : o.uuid,
+      action : o.action // added, updated, deleted
+    });
+    return o;
+  })
+  .then((o) => {
+    var mimeType = o.extra.mimeType;
+    var content = o.extra.content;
+    var name = o.extra.name;
+    var ext = o.extra.ext;
+  
+    // si on doit convertir dans un autre format
+    if (value && modelValue.value) {
+      // conversion
+      // retourne { mimeType, content, ext }
+      var converted = convert(content, o.extra.ext, modelValue.value);
+      mimeType = converted.mimeType;
+      content = converted.content;
+      ext = converted.ext;
+    }
+    
+    // au cas où...
+    var filename = (name.includes(ext)) ? name : name + "." + ext;
+
+    var link = document.createElement("a");
+    // determiner le bon charset !
+    var charset = "utf-8";
+    link.setAttribute("href", "data:" + mimeType + ";charset=" + charset + "," + encodeURIComponent(content));
+    link.setAttribute("download", filename);
+    if (document.createEvent) {
+      var event = document.createEvent("MouseEvents");
+      event.initEvent("click", true, true);
+      link.dispatchEvent(event);
+    } else {
+      link.click();
+    }
+  });
+};
+const onChangeExportFormat = (value) => {
+  log.debug(value);
+  modelValue.value = value;
 };
 
 // INFO
@@ -453,6 +497,40 @@ const buttonsData = [
       />
     </div>
   </div>
+  <!-- Menu choix du format d'export -->
+  <div
+    ref="div-export-format"
+    class="container-bookmark-entry-export-format fr-hidden"
+  >
+    <DsfrRadioButtonSet
+      v-model="modelValue"
+      :options="exportFormatValues"
+      :selected-value="exportFormatValues[0].value"
+      name="exportFormatNames"
+      :small="true"
+      :inline="true"
+      class="radios-button-export-format"
+      @update:model-value="onChangeExportFormat"
+    />
+    <div class="container-bookmark-entry-buttons-export">
+      <DsfrButton
+        size="sm"
+        icon="ri:close-line"
+        tertiary
+        no-outline
+        class="fr-p-1w"
+        @click="onClickButtonCancelExport"
+      />
+      <DsfrButton
+        size="sm"
+        icon="ri:check-line"
+        tertiary
+        no-outline
+        class="fr-p-1w"
+        @click="onClickButtonValidateExport"
+      />
+    </div>
+  </div>
   <slot />
 </template>
 
@@ -477,8 +555,23 @@ const buttonsData = [
 .container-bookmark-entry-rename {
   display: flex;
 }
+.container-bookmark-entry-export-format {
+  display: flex;
+  flex-direction: column;
+}
 .container-bookmark-entry-buttons-rename {
   display: flex;
+}
+.container-bookmark-entry-buttons-export {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.radios-button-export-format {
+  margin: 0.5rem 0 0 0;
+}
+.radio-button-export-format {
+  margin: 0;
 }
 
 
