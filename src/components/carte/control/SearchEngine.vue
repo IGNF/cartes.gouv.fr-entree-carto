@@ -75,15 +75,10 @@ onUpdated(() => {
 onUnmounted(() => {})
 
 /**
- * Gestionnaire d'evenement sur l'abonnement
- * à la recherche de couche
+ * Gestionnaire d'evenement sur les abonnements
  */
 
-const onClickSearch = (e) => {
-  var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
-  mapStore.addLayer(id);
-  log.debug("onClickSearch", id);
-}
+const onClickSearch = (e) => {}
 const onClickAutocompletResult = (e) => {}
 const onClickGeocodeResult = (e) => {}
 const onClickSeachByCoordinates = (e) => {}
