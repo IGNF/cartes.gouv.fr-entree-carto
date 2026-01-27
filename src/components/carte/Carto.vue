@@ -40,6 +40,9 @@ const props = defineProps({
 })
 
 const mapStore = useMapStore()
+const emitter = inject('emitter');
+
+const refModalPrint = ref(null);
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
@@ -60,6 +63,12 @@ const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
 
+
+emitter.addEventListener('printmodal:open', onModalPrintOpen);
+
+function onModalPrintOpen() {
+  refModalPrint.value.onModalPrintOpen();
+}
 </script>
 
 <template>
@@ -85,6 +94,10 @@ const mapIsReady = computed(() => {
       :map-id="mainMap"
       :selected-layers="props.selectedLayers"
       :selected-bookmarks="props.selectedBookmarks"
+    />
+    <PrintModal
+        ref="refModalPrint"
+        :selected-bookmarks="selectedBookmarks"
     />
   </Map>
 </template>

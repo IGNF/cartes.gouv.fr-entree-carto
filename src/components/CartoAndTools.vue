@@ -19,21 +19,17 @@ import { fromShare } from "@/features/share";
 
 // lib notification
 import { push } from "notivue";
-import t from "@/features/translation";
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
-const log = useLogger();
 const appStore = useAppStore();
 
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
-const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
-provide("refModalPrint", refModalPrint);
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
@@ -42,8 +38,10 @@ provide("refModalWelcome", refModalWelcome);
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
+
+const emitter = inject('emitter') as any;
 const onModalPrintOpen = () => {
-  refModalPrint.value.onModalPrintOpen()
+  emitter.dispatchEvent('printmodal:open');
 }
 const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin(false)
@@ -198,10 +196,6 @@ provide("selectedLayers", selectedLayers);
     />
     <!-- Liste des modales -->
     <div class="modal-container">
-      <PrintModal
-        ref="refModalPrint"
-        :selected-bookmarks="selectedBookmarks"
-      />
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
       <SaveModal ref="refModalSave" />
