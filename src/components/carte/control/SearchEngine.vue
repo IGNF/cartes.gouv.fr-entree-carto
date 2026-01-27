@@ -51,6 +51,7 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value)
     /** abonnement au widget */
+    searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
     searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
     searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
@@ -73,6 +74,11 @@ onUpdated(() => {
 
 onUnmounted(() => {})
 
+/**
+ * Gestionnaire d'evenement sur les abonnements
+ */
+
+const onClickSearch = (e) => {}
 const onClickAutocompletResult = (e) => {}
 const onClickGeocodeResult = (e) => {}
 const onClickSeachByCoordinates = (e) => {}
