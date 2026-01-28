@@ -405,8 +405,8 @@ const scaleLineOptions = {
               :zoom="mapStore.zoom"
             />
             <PrintLayers
-            :main-map-id="mainMapId"
-            :print-map-id="printMapId"
+              :main-map-id="mainMapId"
+              :print-map-id="printMapId"
             />
             <ScaleLine
               :visibility="hasScale"
