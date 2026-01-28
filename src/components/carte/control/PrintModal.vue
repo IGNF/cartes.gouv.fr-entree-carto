@@ -19,17 +19,15 @@ import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
-import { mainMap as mainMapKey, printMap as printMapKey } from "@/composables/keys"
+import { mainMap as mainMapId, printMap as printMapId } from "@/composables/keys"
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 const props = defineProps({
   visibility: Boolean,
-  printOptions: Object,
-  selectedBookmarks : Array
 });
 const emitter = inject('emitter');
-const map = inject(mainMapKey);
+const map = inject(mainMapId);
 
 /**
  * Paramètres du composant de la modale
@@ -407,8 +405,8 @@ const scaleLineOptions = {
               :zoom="mapStore.zoom"
             />
             <PrintLayers
-            :main-map-id="mainMapKey"
-            :print-map-id="printMapKey"
+            :main-map-id="mainMapId"
+            :print-map-id="printMapId"
             />
             <ScaleLine
               :visibility="hasScale"
