@@ -17,7 +17,8 @@ onMounted(async () => {
 const layers = mainMap.getLayers();
 
 layers.forEach(layer => {
-  printMap.addLayer(layer);
+  const clonedLayer = typeof layer.clone === 'function' ? layer.clone() : layer;
+  printMap.addLayer(clonedLayer);
 });
  await nextTick(); // 👈 attendre que Vue ait fini
   printMap.renderSync();
