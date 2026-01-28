@@ -64,7 +64,7 @@ const onModalPrintOpen = () => {
 const onModalPrintClose = () => {
   printModalOpened.value = false;
   eulerian.resume();
-  map.renderSync()
+  map.renderSync();
 };
 
 defineExpose({
