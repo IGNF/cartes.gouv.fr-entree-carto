@@ -529,6 +529,13 @@ const contextMenuOptions = computed(() => {
   }
 })
 
+/** Print Control */
+emitter.addEventListener('printmodal:open', onModalPrintOpen);
+const refModalPrint = ref(null);
+
+function onModalPrintOpen() {
+  refModalPrint.value.onModalPrintOpen();
+}
 onMounted(() => {
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
   domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
@@ -699,6 +706,7 @@ onMounted(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
+  <PrintModal ref="refModalPrint"/>
 </template>
 
 <style>

@@ -15,18 +15,19 @@ import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
 import View from '../View.vue';
+import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
+import { mainMap as mainMapId, printMap as printMapId } from "@/composables/keys"
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 const props = defineProps({
   visibility: Boolean,
-  printOptions: Object,
-  selectedBookmarks : Array
 });
-const selectedLayers = inject('selectedLayers');
+const emitter = inject('emitter');
+const map = inject(mainMapId);
 
 /**
  * Paramètres du composant de la modale
@@ -56,12 +57,14 @@ const size = "xl";
  */
 const printModalOpened = ref(false);
 const onModalPrintOpen = () => {
+  emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
   eulerian.pause();
 };
 const onModalPrintClose = () => {
   printModalOpened.value = false;
   eulerian.resume();
+  map.renderSync();
 };
 
 defineExpose({
@@ -401,10 +404,9 @@ const scaleLineOptions = {
               :center="mapStore.center"
               :zoom="mapStore.zoom"
             />
-            <Layers
-              :map-id="printMap"
-              :selected-layers="selectedLayers"
-              :selected-bookmarks="selectedBookmarks"
+            <PrintLayers
+              :main-map-id="mainMapId"
+              :print-map-id="printMapId"
             />
             <ScaleLine
               :visibility="hasScale"
