@@ -40,7 +40,6 @@ const props = defineProps({
 })
 
 const mapStore = useMapStore()
-
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
 // Ces listes sont reactives car le parent les produit via des 
@@ -59,7 +58,6 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
-
 </script>
 
 <template>
