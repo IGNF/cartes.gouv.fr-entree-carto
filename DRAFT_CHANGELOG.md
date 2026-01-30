@@ -24,6 +24,7 @@
 #### 🐛 [Correction]
 
   - Entête : correction des liens vers l'aide et la documentation pour qu'ils ouvrent un nouvel onglet (#891)
+  - Impression : toutes les couches (calcul, imports, tms, vecteur) se retrouvent bien dans la carte à imprimer (#902)
 
 #### 🔒 [Sécurité]
 
