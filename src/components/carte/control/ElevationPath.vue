@@ -44,7 +44,7 @@ const btnExport = ref(new ButtonExport({
   menuOptions : {
     outside: true,
     above: true,
-    selectFormat: false,
+    selectFormat: true,
     labelDesc: false
   },
   direction : "column",
