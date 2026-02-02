@@ -90,7 +90,7 @@ const onClickGeocodeResult = (e) => {
   log.debug("SearchEngineAdvanced - onClickGeocodeResult", e);
 }
 const onClickSeachByCoordinates = (e) => {
-  log.debug("SearchEngineAdvanced - onClickSeachByCoordinates", e);
+  log.debug("SearchEngineAdvanced - onClickSearchByCoordinates", e);
 }
 const onClickSearchGeolocationOpen = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
