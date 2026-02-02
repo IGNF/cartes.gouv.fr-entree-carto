@@ -1,9 +1,9 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-
-import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
+
+import { shallowRef, markRaw } from 'vue';
 
 import {
   toLonLat as toLonLatProj,
@@ -23,17 +23,20 @@ const emitter = inject('emitter');
 // choisir où placer le tracker Eulerian sur ce widget !
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  searchEngineOptions: Object
+  searchEngineOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
-
 const mapStore = useMapStore();
-const dataStore = useDataStore();
-
 
 const map = inject(props.mapId);
 const insee = ref(new InseeAdvancedSearch());
@@ -42,14 +45,15 @@ const coordinates = ref(new CoordinateAdvancedSearch());
 const parcels = ref(new ParcelAdvancedSearch());
 
 const advancedSearchEngineOptions = computed(() => {
-    return Object.assign(props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
+    return Object.assign({}, props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
 });
 
-const searchEngineAdvanced = ref(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
+// const searchEngineAdvanced = ref(markRaw(new SearchEngineAdvanced(advancedSearchEngineOptions.value)));
+const searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(searchEngineAdvanced.value)
+    map.addControl(searchEngineAdvanced.value);
     /** abonnement au widget */
     searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
     searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
@@ -62,44 +66,56 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(searchEngineAdvanced.value)
+    map.removeControl(searchEngineAdvanced.value);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(searchEngineAdvanced.value)
+    map.addControl(searchEngineAdvanced.value);
   }
 })
-
-onUnmounted(() => {})
 
 /**
  * Gestionnaire d'evenement sur les abonnements
  */
 
-const onClickSearch = (e) => {}
-const onClickAutocompletResult = (e) => {}
-const onClickGeocodeResult = (e) => {}
-const onClickSeachByCoordinates = (e) => {}
+const onClickSearch = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearch", e);
+}
+const onClickAutocompletResult = (e) => {
+  log.debug("SearchEngineAdvanced - onClickAutocompletResult", e);
+}
+const onClickGeocodeResult = (e) => {
+  log.debug("SearchEngineAdvanced - onClickGeocodeResult", e);
+}
+const onClickSeachByCoordinates = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSeachByCoordinates", e);
+}
 const onClickSearchGeolocationOpen = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
   // geolocalisation demandée :
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
   // on passe en geographique
   mapStore.geolocation = toLonLatProj(e.coordinates).toString();
+  emitter.emit("searchengine:geolocation:clicked", e.coordinates);
 }
 const onClickSearchGeolocationRemove = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearchGeolocationRemove", e);
   // geolocalisation demandée :
   // on enlève l'information dans le permalien...
   // on passe par le mapStore
   mapStore.geolocation = "";
+  emitter.emit("searchengine:geolocation:removed");
 }
-
 
 </script>
 
 <template>
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>
