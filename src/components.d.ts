@@ -81,6 +81,7 @@ declare module 'vue' {
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
     Print: typeof import('./components/carte/control/Print.vue')['default']
+    PrintLayers: typeof import('./components/carte/Layer/PrintLayers.vue')['default']
     PrintModal: typeof import('./components/carte/control/PrintModal.vue')['default']
     Reporting: typeof import('./components/carte/control/Reporting.vue')['default']
     ReverseGeocode: typeof import('./components/carte/control/ReverseGeocode.vue')['default']
