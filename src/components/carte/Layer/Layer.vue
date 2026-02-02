@@ -136,11 +136,15 @@ onMounted(() => {
     log.debug("layer to add (bookmark)", name, type, format);
     // liste des types de couches à traiter
     switch (type) {
+      case "wms":
+      case "wmts":
       case "service":
         var kind = props.layerOptions.kind.toLowerCase();
         if (kind === "mapbox") {
           promise = createMapBoxLayer(props.layerOptions);
-        } else if (kind === "wmts" || kind === "wms") {
+        } else if (kind === "wmts" || type === "wms") {
+          promise = createServiceLayer(props.layerOptions);
+        } else if (kind === "wmts" || type === "wmts") {
           promise = createServiceLayer(props.layerOptions);
         } else {
           throw new Error("Le service est inconnu !");
@@ -151,11 +155,19 @@ onMounted(() => {
       case "compute":
         promise = createComputeLayer(props.layerOptions);  
         break;
+      case "url-mapbox":
+      case "mapbox":
+      case "url-kml":
+      case "kml":
+      case "url-gpx":
+      case "gpx":
+      case "url-geojson":
+      case "geojson":
       case "import":
         // url de partage contient toujours un contenu
         // - soit pour un import ou croquis passant par l'outil d'édition
         // - soit pour un fichier de style mapbox par l'outil d'édition
-        if (format.toLowerCase() === "mapbox") {
+        if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
           promise = createMapBoxLayer(props.layerOptions);
         } else {
           promise = createVectorLayer(props.layerOptions);  
