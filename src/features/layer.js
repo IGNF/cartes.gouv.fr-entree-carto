@@ -291,6 +291,7 @@ const createComputeLayer = (options) => {
  * @property {*} options.description
  * @property {*} options.format
  * @property {*} options.kind
+ * @property {*} options.type
  * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer dans les getCapabilities ?
  */
@@ -303,7 +304,7 @@ const createServiceLayer = (options) => {
       options.data = JSON.parse(options.data);
     }
 
-    if (options.kind === "wmts") {
+    if (options.kind === "wmts" || options.type === "wmts") {
       const tileGrid = new WMTSTileGrid({
         origin: [
           options.data.topLeftCorner.x,
@@ -343,7 +344,7 @@ const createServiceLayer = (options) => {
         throw new Error(t.ol.failed_layer("service wmts"));
       }
       
-    } else if (options.kind === "wms") {
+    } else if (options.kind === "wms" || options.type === "wms") {
       var sourceTileWMS = new TileWMSSource({
           url : options.data.url,
           params: {
