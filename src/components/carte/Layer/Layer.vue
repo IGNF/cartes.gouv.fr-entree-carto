@@ -141,19 +141,22 @@ onMounted(() => {
       case "wmts":
       case "service":
 
-        var kind = props.layerOptions.kind.toLowerCase();
-        if (kind === "mapbox") {
-          promise = createMapBoxLayer(...opts, {
+        var kind = props.layerOptions.kind ? props.layerOptions.kind.toLowerCase() : null;
+        if (kind === "mapbox" || type === "mapbox") {
+          promise = createMapBoxLayer({
+            ...opts,
             type: "service",
             kind: "mapbox"
           });
         } else if (kind === "wms" || type === "wms") {
-          promise = createServiceLayer(...opts, {
+          promise = createServiceLayer({
+            ...opts,
             type: "service",
             kind: "wms"
           });
         } else if (kind === "wmts" || type === "wmts") {
-          promise = createServiceLayer(...opts, {
+          promise = createServiceLayer({
+            ...opts,
             type: "service",
             kind: "wmts"
           });
@@ -181,7 +184,8 @@ onMounted(() => {
         if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
           promise = createMapBoxLayer(props.layerOptions);
         } else {
-          promise = createVectorLayer(...opts, {
+          promise = createVectorLayer({
+            ...opts,
             type: "import",
             format: format || type.replace("url-", "") // au cas où format n'est plus défini
           });  
