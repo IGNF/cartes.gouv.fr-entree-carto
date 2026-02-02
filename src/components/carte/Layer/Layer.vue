@@ -134,18 +134,29 @@ onMounted(() => {
     const type = props.layerOptions.type.toLowerCase();
 
     log.debug("layer to add (bookmark)", name, type, format);
+    var opts = props.layerOptions;
     // liste des types de couches à traiter
     switch (type) {
       case "wms":
       case "wmts":
       case "service":
+
         var kind = props.layerOptions.kind.toLowerCase();
         if (kind === "mapbox") {
-          promise = createMapBoxLayer(props.layerOptions);
-        } else if (kind === "wmts" || type === "wms") {
-          promise = createServiceLayer(props.layerOptions);
+          promise = createMapBoxLayer(...opts, {
+            type: "service",
+            kind: "mapbox"
+          });
+        } else if (kind === "wms" || type === "wms") {
+          promise = createServiceLayer(...opts, {
+            type: "service",
+            kind: "wms"
+          });
         } else if (kind === "wmts" || type === "wmts") {
-          promise = createServiceLayer(props.layerOptions);
+          promise = createServiceLayer(...opts, {
+            type: "service",
+            kind: "wmts"
+          });
         } else {
           throw new Error("Le service est inconnu !");
         }
@@ -170,7 +181,10 @@ onMounted(() => {
         if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
           promise = createMapBoxLayer(props.layerOptions);
         } else {
-          promise = createVectorLayer(props.layerOptions);  
+          promise = createVectorLayer(...opts, {
+            type: "import",
+            format: format || type.replace("url-", "") // au cas où format n'est plus défini
+          });  
         }
         break;
       case "drawing":
