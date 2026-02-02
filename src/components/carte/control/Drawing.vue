@@ -55,15 +55,16 @@ const btnExport = ref(new ButtonExport({
   name: "Mon croquis",
   description: "",
   control: drawing.value,
+  direction : "column", // row
   menu : true,
   menuOptions : {
-    outside: true,
-    above: true,
-    selectFormat: true,
-    labelDesc: false,
-    labelName: false
+    name : "Options", // nom du menu, null affiche uniquement le curseur
+    position : "bottom", // bottom, right, left, ...
+    outside : true, // menu accordéon ou non
+    labelName : true, // afficher le nom de l'export
+    labelDesc : false, // afficher la description
+    selectFormat : true // afficher la liste des types d'export
   },
-  direction : "column",
   format : formatByDefault,
   icons : {
     menu : "",
