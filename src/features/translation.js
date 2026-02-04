@@ -13,6 +13,7 @@ export default {
   auth: {
     title: "Authentification",
     not_authentificated: "Vous devez vous authentifier",
+    need_authentification: "Veuillez vous reconnecter pour sauvegarder votre document",
     failed: (value) => { return `Exception sur l'authentication : ${value}` }
   },
   bookmark: {
@@ -29,7 +30,8 @@ export default {
   drawing: {
     title: "Croquis",
     save_success: "Le croquis est enregistré dans l'espace personnel",
-    save_failed: "Une erreur est survenue sur l'enregistrement du croquis"
+    save_failed: "Une erreur est survenue sur l'enregistrement du croquis",
+    restore_failed : "Une erreur est survenue lors de la restauration du document"
   },
   layerimport: {
     title: "Import de couche",

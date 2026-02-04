@@ -3,6 +3,7 @@
 import { ref, onMounted, onBeforeMount, onUnmounted, inject } from 'vue'
 
 import { useServiceStore } from '@/stores/serviceStore';
+import { useAppStore } from '@/stores/appStore';
 import { useRandomId } from "@gouvminint/vue-dsfr"
 import { useLogger } from 'vue-logger-plugin'
 import { useRouter } from 'vue-router';
@@ -27,6 +28,7 @@ const props = defineProps({
 const log = useLogger();
 const router = useRouter();
 const serviceStore = useServiceStore();
+const appStore = useAppStore();
 
 const expandedMenuId = ref(undefined)
 // INFO
@@ -59,6 +61,7 @@ const onKeyDown = (e) => {
   }
 }
 
+const emitter = inject('emitter');
 var service = inject('services');
 // INFO
 // on teste si on est déjà authentifié ou pas, 
@@ -100,6 +103,33 @@ service.isAccessValided()
       log.debug(`Access validated : ${status} !`);
       serviceStore.setAuthentificateSyncNeeded(false);
       router.replace({ path : '/', query: undefined });
+    }
+    if (status === "login") {
+      log.debug("User connected.");
+      // on regarde si il y'a un document temporaire à restaurer
+      // on émet un event pour le restaurer
+      var docTemp = appStore.getDocumentTemporary();
+      if (docTemp) {
+        appStore.clearDocumentTemporary();
+        var jsonDocTemp = JSON.parse(docTemp);
+        setTimeout(() => {
+          /**
+           * @event document:restore
+           * @description Evenement pour restaurer un document temporaire
+           * @property {Object} data - données du document
+           * @property {String} componentName - nom du component qui emet l'event
+           */
+          emitter.dispatchEvent("document:restore", {
+            data : jsonDocTemp,
+            componentName : "Main"
+          });
+        }, 500);
+      }
+    }
+    if (status === "logout") {
+      log.debug("User disconnected.");
+      // on supprime le document temporaire
+      appStore.clearDocumentTemporary();
     }
   })
   .catch((e) => {

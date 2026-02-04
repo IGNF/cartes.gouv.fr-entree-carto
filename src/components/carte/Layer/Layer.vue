@@ -148,6 +148,7 @@ onMounted(() => {
         break;
       case "carte":
         throw "Not yet implemented !";
+        break;
       case "compute":
         promise = createComputeLayer(props.layerOptions);  
         break;

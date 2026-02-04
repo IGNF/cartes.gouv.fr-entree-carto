@@ -23,6 +23,7 @@ import Layers from '@/components/carte/Layer/Layers.vue'
 
 import { useMapStore } from "@/stores/mapStore";
 import { mainMap } from "@/composables/keys"
+import { useLogger } from "vue-logger-plugin";
 
 const props = defineProps({
   selectedControls: {
@@ -40,6 +41,8 @@ const props = defineProps({
 })
 
 const mapStore = useMapStore()
+const log = useLogger()
+
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
 // Ces listes sont reactives car le parent les produit via des 
@@ -58,6 +61,11 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
+
+onMounted(() => {
+  log.debug("Carto component mounted") 
+})
+
 </script>
 
 <template>

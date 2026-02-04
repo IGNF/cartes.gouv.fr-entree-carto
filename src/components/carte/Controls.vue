@@ -537,6 +537,7 @@ function onModalPrintOpen() {
   refModalPrint.value.onModalPrintOpen();
 }
 onMounted(() => {
+  log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
   domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
 })
