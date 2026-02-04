@@ -479,8 +479,8 @@ const scaleLineOptions = {
         />
         <DsfrButton
           id="print-page-export"
-          label="Export Carte"
-          title="Export Carte"
+          label="Imprimer la carte"
+          title="Imprimer la carte"
           icon=""
           no-outline
           @click="exportMap"
