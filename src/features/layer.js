@@ -242,7 +242,11 @@ const createComputeLayer = (options) => {
       throw new Error(t.ol.failed_layer("compute"));
     }
   
-    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
+    if (options.compute) {
+      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
+    } else {
+      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + ":" + options.id;
+    }
     
     const failedLoadData = () => {
       throw new Error(t.ol.failed_layer("compute"));
@@ -254,7 +258,7 @@ const createComputeLayer = (options) => {
         throw new Error(t.ol.failed_layer("compute"));
       }
       // type de controle
-      vectorLayer.set("control", options.compute); // ex. route ou isocurve
+      vectorLayer.set("control", config.type.toLowerCase()); // ex. route ou isocurve
       // on enregistre la configuration
       vectorLayer.set("data", config);
       // on reecrit un geojson proprement sans la configuration

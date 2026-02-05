@@ -265,6 +265,7 @@ onMounted(() => {
       })
       .catch((e) => {
         log.warn("Exception sur la couche " + name + " !");
+        console.warn(e);
         push.warning({
           title: t.notification.title,
           message: t.notification.exception_add_layer(name, e.message)
