@@ -156,8 +156,8 @@ emitter.addEventListener("document:restore", (e) => {
   log.debug("Restore document !", e);
   if (drawing.value) {
     createVectorLayer({
-      name : e.data.name  || "Restored document",
-      description : e.data.description || "Document temporaire restauré depuis une précedente session",
+      name : e.data.name || "Document restauré",
+      description : e.data.description || "Document temporaire restauré depuis une précédente session",
       type : e.data.type || "drawing",
       format : e.data.format || "kml",
       target : e.data.target || "internal",
@@ -167,9 +167,9 @@ emitter.addEventListener("document:restore", (e) => {
       // puis l'afficher
       drawing.value.setCollapsed(false);
       drawing.value.setLayer(layer);
-      btnExport.value.setName(e.data.name || "Restored document");
+      btnExport.value.setName(e.data.name || "Document restauré");
       btnExport.value.setFormat(e.data.format);
-      btnSave.value.setName(e.data.name || "Restored document");
+      btnSave.value.setName(e.data.name || "Document restauré");
       btnSave.value.setFormat(e.data.format);
 
     }).then(() => {
