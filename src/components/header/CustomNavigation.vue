@@ -63,7 +63,15 @@ const onKeyDown = (e) => {
 
 const emitter = inject('emitter');
 var service = inject('services');
+
 // INFO
+// Délai (en ms) avant la restauration d'un document temporaire
+// du localStorage après la connexion de l'utilisateur.
+// Ce délai permet de s'assurer que les composants sont bien montés
+// avant de tenter de restaurer le document.
+const DOCUMENT_RESTORE_DELAY = 500;
+
+ // INFO
 // on teste si on est déjà authentifié ou pas, 
 // et si oui, on synchronise l'état.
 if (service.isAlreadyAuthentificate()) {
@@ -123,7 +131,7 @@ service.isAccessValided()
             data : jsonDocTemp,
             componentName : "Main"
           });
-        }, 500);
+        }, DOCUMENT_RESTORE_DELAY);
       }
     }
     if (status === "logout") {
