@@ -438,6 +438,11 @@ const createServiceLayer = (options) => {
 /**
  * Creation d'un couche mapbox
  * 
+ * INFO
+ * On ne gère que les styles de type vector avec des sources de type vector 
+ * et des tuiles (tiles).
+ * Les autres cas ne sont pas gérés pour le moment (raster, geojson, etc.).
+ * 
  * On transmet soit :
  * - une url pour le type external
  * - un fichier de style pour le type internal
@@ -465,7 +470,7 @@ const createMapBoxLayer = (options) => {
     if (_glType === "vector") {
       var _glTiles = _glSource.tiles; // tiles only !
       if (!_glTiles) {
-        throw new Error("Source 'tiles' uniquement !");
+        throw new Error("Source 'tiles' uniquement sur le format mapbox !");
       }
 
       var vectorFormat = new MVT({
@@ -517,23 +522,58 @@ const createMapBoxLayer = (options) => {
     return vectorLayer;
   };
 
-  if (options.url) {
-    return fetch(options.url)
+  const getStyle = (url) => {
+    return fetch(url)
     .then((response) => {
       if (response.ok) {
         return response.json()
           .then((data) => {
-            return createLayer({
-              ...options,
-              ...{
-                data : data
-              }
-            });
+            // La réponse est soit 
+            // - un style (json)
+            // - une url de style
+            if (data && data.sources) {
+              return data;
+            } else if (data && data.url) {
+              return fetch(data.url)
+                .then((response) => {
+                  if (response.ok) {
+                    return response.json()
+                      .then((style) => {
+                        return style;
+                      })
+                      .catch((e) => {
+                        throw e;
+                      });
+                  } else {
+                    throw new Error(t.ol.failed_mapbox("style mapbox"));
+                  }
+                })
+                .catch((e) => {
+                  throw e;
+                });
+            } else {
+              throw new Error(t.ol.failed_mapbox("style mapbox"));
+            }
           })
           .catch((e) => {
             throw e;
           });
       }
+    })
+    .catch((e) => {
+      throw e;
+    });
+  };
+
+  if (options.url) {
+    return getStyle(options.url)
+    .then((style) => {
+      return createLayer({
+        ...options,
+        ...{
+          data : style
+        }
+      });
     })
     .catch((e) => {
       throw e;

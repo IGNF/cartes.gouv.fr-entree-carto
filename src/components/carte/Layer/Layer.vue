@@ -18,6 +18,9 @@ import {
   createComputeLayer
 } from '@/features/layer.js';
 
+// lib notification
+import { push } from 'notivue'
+import t from '@/features/translation';
 
 const props = defineProps({
   layerOptions: {
@@ -118,6 +121,12 @@ onMounted(() => {
       map.addLayer(layer);
       // informe le parent que la couche est montée
       emit('mounted');
+    } else {
+      log.warn("La couche n'est pas reconnue !");
+      push.warning({
+          title: t.notification.title,
+          message: t.notification.unknown_add_layer(name, service)
+        });
     }
   }
   
@@ -187,7 +196,7 @@ onMounted(() => {
           promise = createVectorLayer({
             ...opts,
             type: "import",
-            format: format || type.replace("url-", "") // au cas où format n'est plus défini
+            format: format || (type && type.startsWith("url-") ? type.slice(4) : type) // au cas où format n'est plus défini
           });  
         }
         break;
@@ -255,7 +264,11 @@ onMounted(() => {
         }
       })
       .catch((e) => {
-        throw e;
+        log.warn("Exception sur la couche " + name + " !");
+        push.warning({
+          title: t.notification.title,
+          message: t.notification.exception_add_layer(name, e.message)
+        });
       });
     }
   }
