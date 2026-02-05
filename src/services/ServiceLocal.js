@@ -4,6 +4,7 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 import { OAuth2Client, OAuth2Fetch } from '@badgateway/oauth2-client';
 import { generateCodeVerifier } from '@badgateway/oauth2-client';
+import Keycloak from "keycloak-js";
 
 import { inject } from 'vue';
 
@@ -117,6 +118,79 @@ class ServiceLocal extends ServiceBase {
       return service.connexion.token;
     }
     return null;
+  }
+
+  async checkKeycloakSession (adapter) {
+    if (!adapter) {
+      adapter = 'natif';
+    }
+    if (adapter !== 'keycloak') {
+      return this.#checkKeycloakSessionAdapter1();
+    } else {
+      return this.#checkKeycloakSessionAdapter2();
+    }
+  }
+
+  async #checkKeycloakSessionAdapter2 () {
+    console.warn("use checkKeycloakSessionAdapter keycloak");
+    const keycloak = new Keycloak({
+      url: IAM_URL,
+      realm: IAM_REALM,
+      clientId: 'cartes-gouv-public'
+    });
+
+    return keycloak.init({ 
+        onLoad: 'check-sso', 
+        flow: "standard",
+        pkceMethod: "S256",
+        checkLoginIframe: false,
+        silentCheckSsoRedirectUri: this.url + '/silent-check-sso2.html'
+    });
+  }
+
+  async #checkKeycloakSessionAdapter1 () {
+    console.warn("use checkKeycloakSessionAdapter natif");
+    return new Promise((resolve) => {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        
+        const checkUrl = new URL(this.#client.settings.server + this.#client.settings.authorizationEndpoint);
+        checkUrl.searchParams.set('client_id', this.#client.settings.clientId);
+        checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso.html');
+        checkUrl.searchParams.set('response_type', 'code');
+        checkUrl.searchParams.set('scope', 'openid');
+        checkUrl.searchParams.set('prompt', 'none'); // ← CRUCIAL
+        
+        iframe.src = checkUrl.toString();
+        document.body.appendChild(iframe);
+        
+        const timeout = setTimeout(() => {
+          cleanup();
+          resolve(false); // Timeout = pas de session
+        }, 5000);
+        
+        function cleanup() {
+          clearTimeout(timeout);
+          window.removeEventListener('message', handleMessage);
+          iframe.remove();
+        }
+        
+        function handleMessage(event) {
+          if (event.origin !== window.location.origin) return;
+          
+          cleanup();
+          
+          if (event.data.code) {
+            // Session Keycloak active !
+            resolve(true);
+          } else {
+            // Pas de session
+            resolve(false);
+          }
+        }
+        
+        window.addEventListener('message', handleMessage);
+    });
   }
 
   async isAccessValided () {
