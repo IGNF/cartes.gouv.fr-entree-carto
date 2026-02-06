@@ -85,5 +85,10 @@ export default {
     failed_source: (value) => { return `Exception sur l'initialisation de la source de type ${value} !` },
     failed_layer: (value) => { return `Exception sur l'initialisation de la couche de type ${value} !` },
     failed_mapbox: (value) => { return `Exception de la couche MapBox : ${value} !` }
+  },
+  notification: {
+    title: "Ajout de couche",
+    unknown_add_layer: (name, service) => { return `La couche ${name} du service ${service} n'est pas reconnue dans le catalogue !` },
+    exception_add_layer: (name, message) => { return `Exception lors de l'ajout de la couche ${name} : ${message}` }
   }
 }

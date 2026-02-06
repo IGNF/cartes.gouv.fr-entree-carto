@@ -18,6 +18,9 @@ import {
   createComputeLayer
 } from '@/features/layer.js';
 
+// lib notification
+import { push } from 'notivue'
+import t from '@/features/translation';
 
 const props = defineProps({
   layerOptions: {
@@ -118,6 +121,12 @@ onMounted(() => {
       map.addLayer(layer);
       // informe le parent que la couche est montée
       emit('mounted');
+    } else {
+      log.warn("La couche n'est pas reconnue !");
+      push.warning({
+          title: t.notification.title,
+          message: t.notification.unknown_add_layer(name, service)
+        });
     }
   }
   
@@ -134,14 +143,32 @@ onMounted(() => {
     const type = props.layerOptions.type.toLowerCase();
 
     log.debug("layer to add (bookmark)", name, type, format);
+    var opts = props.layerOptions;
     // liste des types de couches à traiter
     switch (type) {
+      case "wms":
+      case "wmts":
       case "service":
-        var kind = props.layerOptions.kind.toLowerCase();
-        if (kind === "mapbox") {
-          promise = createMapBoxLayer(props.layerOptions);
-        } else if (kind === "wmts" || kind === "wms") {
-          promise = createServiceLayer(props.layerOptions);
+
+        var kind = props.layerOptions.kind ? props.layerOptions.kind.toLowerCase() : null;
+        if (kind === "mapbox" || type === "mapbox") {
+          promise = createMapBoxLayer({
+            ...opts,
+            type: "service",
+            kind: "mapbox"
+          });
+        } else if (kind === "wms" || type === "wms") {
+          promise = createServiceLayer({
+            ...opts,
+            type: "service",
+            kind: "wms"
+          });
+        } else if (kind === "wmts" || type === "wmts") {
+          promise = createServiceLayer({
+            ...opts,
+            type: "service",
+            kind: "wmts"
+          });
         } else {
           throw new Error("Le service est inconnu !");
         }
@@ -151,14 +178,26 @@ onMounted(() => {
       case "compute":
         promise = createComputeLayer(props.layerOptions);  
         break;
+      case "url-mapbox":
+      case "mapbox":
+      case "url-kml":
+      case "kml":
+      case "url-gpx":
+      case "gpx":
+      case "url-geojson":
+      case "geojson":
       case "import":
         // url de partage contient toujours un contenu
         // - soit pour un import ou croquis passant par l'outil d'édition
         // - soit pour un fichier de style mapbox par l'outil d'édition
-        if (format.toLowerCase() === "mapbox") {
+        if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
           promise = createMapBoxLayer(props.layerOptions);
         } else {
-          promise = createVectorLayer(props.layerOptions);  
+          promise = createVectorLayer({
+            ...opts,
+            type: "import",
+            format: format || (type && type.startsWith("url-") ? type.slice(4) : type) // au cas où format n'est plus défini
+          });  
         }
         break;
       case "drawing":
@@ -225,7 +264,12 @@ onMounted(() => {
         }
       })
       .catch((e) => {
-        throw e;
+        log.warn("Exception sur la couche " + name + " !");
+        console.warn(e);
+        push.warning({
+          title: t.notification.title,
+          message: t.notification.exception_add_layer(name, e.message)
+        });
       });
     }
   }
