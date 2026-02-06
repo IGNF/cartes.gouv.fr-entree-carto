@@ -17,7 +17,7 @@ const map = inject(props.mapId);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(legends.value);
     if (props.analytic) {
       var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
@@ -27,7 +27,7 @@ onMounted(() => {
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(legends.value);
     if (props.analytic) {
       var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
@@ -48,8 +48,16 @@ onBeforeUpdate(() => {
 /*
 VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
 */
-dialog[id^=GPlegendsPanel-] {
-  top : -90px !important;
-  left : 47px !important;
+@media (min-width: 576px) {
+  dialog[id^=GPlegendsPanel-] {
+    top : -90px !important;
+    left : 47px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .position-container-bottom-left .gpf-mobile-fullscreen>button[aria-pressed=true]~dialog[id^=GPlegendsPanel-] {
+    top : -243px !important;
+  }
 }
 </style>
