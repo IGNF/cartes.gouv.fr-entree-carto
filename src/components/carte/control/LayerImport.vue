@@ -13,6 +13,8 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
+import { useServiceStore } from '@/stores/serviceStore';
 
 import {
   useCreateDocument
@@ -35,13 +37,21 @@ const refModalLogin = inject("refModalLogin");
 const refModalSave = inject("refModalSave");
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerImportOptions: Object
+  layerImportOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const mapStore = useMapStore();
+const appStore = useAppStore();
+const serviceStore = useServiceStore();
 const log = useLogger();
 
 const map = inject(props.mapId);
@@ -96,14 +106,22 @@ onUpdated(() => {
  * @param e - donnée de sauvegarde de l'import
  */
 const onOpenModalLogin = (e) => {
-  // FIXME
-  // Si je decide de me connecter, je perds mon import
-  // car il n'est pas enregistré !
-  // On peut deleguer une action de sauvegarde ou emettre un evenement
-  // aprés la validation de la connexion
-  // Pour garder les informations de sauvegarde temporaire,
-  // on les stocke dans le localStorage
   log.debug(e);
+  if (e.layer) {
+    // INFO
+    // Uniquement pour les imports de type vecteur, 
+    // les autres types ne sont pas encore concernés par la sauvegarde
+    // Pour garder les informations de sauvegarde temporaire,
+    // on les stocke dans le localStorage
+      appStore.setDocumentTemporary(JSON.stringify({
+        content : e.data,
+        name : e.name,
+        description : e.description,
+        format : e.format,
+        target : "internal",
+        type : "import",
+      }));
+    }
   if (refModalLogin) {
     // true pour proposer le message 'Ne plus afficher le message'
     refModalLogin.value.openModalLogin(true);
@@ -202,8 +220,9 @@ const saveImportVector = (e) => {
 const onSaveImportVector = (e) => {
   log.debug(e);
 
+  var bNeedAuthentication = !service.authenticated || (service.authenticated && serviceStore.getAuthentificateSyncNeeded());
   // on n'est pas connecté, on propose le choix de se connecter ou pas
-  if (!service.authenticated) {
+  if (bNeedAuthentication) {
     // si la case 'Ne plus afficher ce message' est cochée,
     // on n'affiche plus la boite de dialogue de connexion
     if (!mapStore.noLoginInformation) {
@@ -215,10 +234,8 @@ const onSaveImportVector = (e) => {
       saveImportVector(e);
     });
 
-    // si on est authentifié, on propose la possibilité de sauvegarder ou pas
-    if (service.authenticated) {
-      onOpenModalSave();
-    }
+    // si on est authentifié, on propose le choix de sauvegarder ou pas
+    onOpenModalSave();
   }
 };
 const onSaveImportService = (e) => {
@@ -450,7 +467,9 @@ const getDataServiceWMTS = (data) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

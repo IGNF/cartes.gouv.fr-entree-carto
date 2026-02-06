@@ -18,8 +18,15 @@ var EVENTS = {
 
   /**
    * Liste des evenements
-   * On utilise une convention d'écriture
-   *   ex. componentname:eventtype
+   * @description 
+   * Adopter une convention d'écriture
+   * ex. 
+   * { 
+   *   type : "document",
+   *   action : "saved",
+   *   value : "...",
+   *   componentName : "Drawing"
+   * }
    */
   eventsName: [
     "test:clicked",
@@ -33,6 +40,7 @@ var EVENTS = {
     "document:deleted",
     "document:exported",
     "document:shared",
+    "document:restore",
     // widgets
     "catalog:open:clicked",
     "leftmenu:close",

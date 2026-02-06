@@ -3,10 +3,16 @@ import {
 } from 'pinia';
 
 /**
- * Store des couches
- * - branchement sur l'aggregation des GetCapabilities
- * - utilisation des informations éditoriales : fonds de carte, thématique...
- * - ressources additionnelles : metadonnées, vignettes, ...
+ * @description
+ * Store des données
+ * - les couches : layers filtrées ex. par type de service et projection
+ * - les options générales
+ * - tileMatrixSets
+ * - contacts
+ * - territoires : zones géographiques
+ * - featured : c'est la mise en avant de certaines couches
+ * - alertes
+ * - topics : thématiques / producteurs
  */
 export const useDataStore = defineStore('data', () => {
   const m_layers = ref({});
