@@ -31,7 +31,7 @@ const DEFAULT = {
 }
 
 /**
- * Espace de noms des clefs du localStorage
+ * Espace de noms des clefs du localStorage (persistantes)
  */
 const NAMESPACE = "cartes.gouv.fr";
 
@@ -121,6 +121,14 @@ export const useMapStore = defineStore('map', () => {
     var params = useUrlParams();
     var defaultControls = DEFAULT.CONTROLS.split(",");
     const type = params.permalink;
+    if (type === "yes") {
+      // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
+      Object.keys(localStorage).forEach(function(key) {
+        if (key.startsWith(NAMESPACE)) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage

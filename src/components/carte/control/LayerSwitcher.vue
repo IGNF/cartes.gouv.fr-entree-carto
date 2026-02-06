@@ -434,6 +434,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-route") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "route") ||
           gpId.toLowerCase().includes("compute:pieton$ogc:openls;itineraire") ||
           gpId.toLowerCase().includes("compute:voiture$ogc:openls;itineraire") ||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "route")
@@ -453,6 +454,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-isocurve") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "isocurve") ||
           gpId.toLowerCase().includes("compute:pieton$geoportail:gpp:isocurve") ||
           gpId.toLowerCase().includes("compute:voiture$geoportail:gpp:isocurve")||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "isocurve")) {
@@ -471,6 +473,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-profil") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "elevationpath") ||
           gpId.toLowerCase().includes("measure:profil") ||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "elevationpath")) {
 

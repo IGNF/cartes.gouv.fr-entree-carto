@@ -13,6 +13,8 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
+import { useServiceStore } from '@/stores/serviceStore';
 
 import { 
   useCreateDocument, 
@@ -26,6 +28,8 @@ import {
 
 import { toShare } from '@/features/share';
 
+import { createVectorLayer } from '@/features/layer';
+
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
@@ -33,14 +37,22 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 var service = inject('services');
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
+const serviceStore = useServiceStore();
 const log = useLogger();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  drawingOptions: Object
+  drawingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const map = inject(props.mapId)
@@ -88,19 +100,23 @@ const btnSave = ref(new ButtonExport({
 }));
 
 /** 
+ * @event vector:edit:clicked
+ * @description
  * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
  * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @property {Object} layer - couche à éditer
+ * @property {Object} options - options de la couche
  * @see LayerSwitcher
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
-    btnExport.value.setName(e.options.title || e.options.name || nameByDefault);
-
+    btnExport.value.setName(e.options.title || "");
+    btnSave.value.setName(e.options.title || "");
   }
   // INFO
   // on sauvegarde / exporte au format natif
@@ -121,14 +137,59 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   }
 });
 
-// abonnement sur l'ouverture du controle
+/**
+ * @event drawing:open:clicked
+ * @description Evenement pour ouvrir/fermer le controle de dessin
+ * @property {Boolean} open - ouvrir/fermer le controle
+ */
 emitter.addEventListener("drawing:open:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(!e.open);
   }
 });
 
+/**
+ * @event document:restore
+ * @description Evenement pour restaurer un document temporaire déclenché 
+ * par la demande de connexion réussie
+ * @property {Object} data - données du document
+ * @property {String} componentName - nom du component qui emet l'event
+ */
+emitter.addEventListener("document:restore", (e) => {
+  log.debug("Restore document !", e);
+  if (drawing.value) {
+    createVectorLayer({
+      name : e.data.name || "Document restauré",
+      description : e.data.description || "Document temporaire restauré depuis une précédente session",
+      type : e.data.type || "drawing",
+      format : e.data.format || "kml",
+      target : e.data.target || "internal",
+      data : e.data.content
+    }).then((layer) => {
+      // restaurer le croquis dans le widget
+      // puis l'afficher
+      drawing.value.setCollapsed(false);
+      drawing.value.setLayer(layer);
+      btnExport.value.setName(e.data.name || "Document restauré");
+      btnExport.value.setFormat(e.data.format);
+      btnSave.value.setName(e.data.name || "Document restauré");
+      btnSave.value.setFormat(e.data.format);
+
+    }).then(() => {
+      // et, l'enregistrer définitivement
+      btnSave.value.button.click();
+    }).catch((error) => {
+      console.error(error);
+      push.error({
+        title: t.drawing.title,
+        message: t.drawing.restore_failed
+      });
+    });
+  }
+});
+
 onMounted(() => {
+  log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
@@ -218,13 +279,6 @@ const onToggleShowVector = (e) => {
  */
 const onSaveVector = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
-    push.warning({
-      title: t.auth.title,
-      message: t.auth.not_authentificated
-    });
-    return; // pas plus loin...
-  }
 
   var gpID = e.layer.gpResultLayerId.toLowerCase();
   var type = gpID.split(':')[0];
@@ -239,6 +293,41 @@ const onSaveVector = (e) => {
     type : gpID.split(':')[0].replace("layer", "") // ex. drawing, import, bookmark...
   };
 
+  var bSaveDocumentTemporary = false;
+  // notification d'une authentification nécessaire
+  if (!service.authenticated) {
+    bSaveDocumentTemporary = true;
+    push.warning({
+      title: t.auth.title,
+      message: t.auth.not_authentificated
+    });
+  }
+
+  // notification d'une reconnection nécessaire
+  if (serviceStore.getAuthentificateSyncNeeded()) {
+    bSaveDocumentTemporary = true;
+    push.warning({
+      title: t.auth.title,
+      message: t.auth.need_authentification
+    });
+  }
+  
+  // stockage temporaire dans le localStorage
+  // car l'utilisateur demande une sauvegarde sans etre authentifié !
+  if (bSaveDocumentTemporary) {
+    if (data.layer) {
+      appStore.setDocumentTemporary(JSON.stringify({
+        content : data.content,
+        name : data.name,
+        description : data.description,
+        format : data.format,
+        target : data.target,
+        type : data.type
+      }));
+    }
+    return; // pas plus loin...
+  }
+
   var promise;
   if (type !== "bookmark") {
     promise = useCreateDocument(data, emitter, service);
@@ -248,8 +337,8 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = type;
+    var _type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = _type;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }
@@ -258,22 +347,33 @@ const onSaveVector = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { 
-        opacity: data.layer.get('opacity'), 
-        visible: data.layer.get('visible'),
-        grayscale: data.layer.get('grayscale'),
-        stop: 1 // HACK !
-      });
+      var url = null;
       // nouvelle donnée à ajouter ou mise à jour au permalien
       if (o.action === "added") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale'),
+          stop: 1 // HACK croquis déjà présent sur la carte via le widget !
+        });
         mapStore.addBookmark(url);
       }
       else if (o.action === "updated") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale')
+        });
         mapStore.updateBookmark(url);
       } else {
         throw new Error("Action not yet implemented !");
       }
     }
+  })
+  .then(() => {
+    // mise à jour du titre de la couche 
+    // ceci déclenche un evenement pour le gestionnaire de couche
+    data.layer.set('title', data.name);
   })
   .then(() => {
     // notification
@@ -298,12 +398,17 @@ const onSaveVector = (e) => {
  * 
  * @param {Object} e
  */
-const onExportVector = (e) => {}
+const onExportVector = (e) => {
+  log.debug(e);
+  // rien de particulier pour l'instant
+}
 
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div>
+    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  </div>
 </template>
 
 <style>

@@ -159,7 +159,7 @@ var Documents = {
         }
       });
       var data = await response.json();
-      this.documents[label] = data;
+      this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, 'fr', { sensitivity: 'base' }));
   
       this.saveStore();
   
