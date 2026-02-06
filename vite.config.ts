@@ -9,7 +9,7 @@ import EnvRuntime from 'vite-plugin-env-runtime';
 // INFO 
 // mode https avec certificats unsecure (dev)
 // import basicSsl from '@vitejs/plugin-basic-ssl'
-
+import { compression, defineAlgorithm } from 'vite-plugin-compression2'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {
@@ -63,6 +63,15 @@ export default defineConfig({
       name: '__ENV__',
       filename: 'env/env.js'
     }),
+    // Options de compression pour les fichiers de production
+    compression({
+      exclude: [/\.(br)$/, /\.(gz)$/],
+      algorithms: [
+        'gzip',
+        'brotliCompress',
+        defineAlgorithm('deflate', { level: 9 })
+      ]
+    })
   ],
   // INFO
   // pour tester la collecte des statistiques en local, il faut modifier l'URL (filtre Eulerian) :

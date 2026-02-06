@@ -11,6 +11,7 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+  - Impression : possibilité de choisir son format image d'impression (#905)
 
 #### 🔨 [Evolution]
 
