@@ -164,8 +164,7 @@ const saveImportVector = (e) => {
       var url = toShare(document, {
         opacity: data.layer.get('opacity'),
         visible: data.layer.get('visible'),
-        grayscale: data.layer.get('grayscale'),
-        stop: 1 // HACK !
+        grayscale: data.layer.get('grayscale')
       });
       // nouvelle donnée à ajouter
       if (o.action === "added") {
@@ -177,6 +176,8 @@ const saveImportVector = (e) => {
   })
   .then(() => {
     layerImport.value.setCollapsed(true);
+    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
+    map.removeLayer(data.layer); 
   })
   .then(() => {
     // notification
