@@ -1,0 +1,2 @@
+import{H as n,t as r,o as l,h as c,i as e,J as i,j as _,aa as f,r as d,M as p,Y as u,x as m}from"./index-CAVYfdDR.js";const B={class:"fr-container fr-p-2w"},h={},v=Object.assign(h,{__name:"Bookmarks",setup(k){u(),m("services");const t="Favoris",s="Not yet implemented !";return n(()=>{}),r(()=>{}),(o,g)=>{const a=f;return l(),c(p,null,[e("div",B,[e("h2",null,i(t)),_(a,{type:"info",title:"Information",description:s,closed:!1,closeable:!1})]),d(o.$slots,"default")],64)}}});export{v as default};
+//# sourceMappingURL=Bookmarks-cmQkb92u.js.map
