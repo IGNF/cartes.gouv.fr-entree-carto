@@ -254,22 +254,33 @@ const onSaveVector = (e) => {
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { 
-        opacity: data.layer.get('opacity'), 
-        visible: data.layer.get('visible'),
-        grayscale: data.layer.get('grayscale'),
-        stop: 1 // HACK !
-      });
+      var url = null;
       // nouvelle donnée à ajouter ou mise à jour au permalien
       if (o.action === "added") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale'),
+          stop: 1 // HACK croquis déjà présent sur la carte via le widget !
+        });
         mapStore.addBookmark(url);
       }
       else if (o.action === "updated") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale')
+        });
         mapStore.updateBookmark(url);
       } else {
         throw new Error("Action not yet implemented !");
       }
     }
+  })
+  .then(() => {
+    // mise à jour du titre de la couche 
+    // ceci déclenche un evenement pour le gestionnaire de couche
+    data.layer.set('title', data.name);
   })
   .then(() => {
     // notification
