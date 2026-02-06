@@ -1064,7 +1064,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
     padding: 2px;
   }
 
-  .position-container-bottom-left {
+  .position-container-bottom-left > .gpf-widget:not([id^="GPlegends-"]) {
     display: none;
   }
 
