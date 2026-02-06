@@ -41,14 +41,16 @@ const btnExport = ref(new ButtonExport({
   name: "Mon iso",
   description: "",
   control: isocurve.value,
+  direction : "column", // row
   menu : true,
   menuOptions : {
-    outside: true,
-    above: true,
-    selectFormat: false,
-    labelDesc: false
+    name : "Options", // nom du menu, null affiche uniquement le curseur
+    position : "bottom", // bottom, right, left, ...
+    outside : true, // menu accordéon ou non
+    labelName : true, // afficher le nom de l'export
+    labelDesc : false, // afficher la description
+    selectFormat : true // afficher la liste des types d'export
   },
-  direction : "column",
   format : "geojson",
   icons : {
     menu : "",

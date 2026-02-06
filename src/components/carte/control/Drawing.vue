@@ -59,22 +59,25 @@ const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
 // bouton d'enregistrement / export du croquis avec un menu
+const nameByDefault = "Mon croquis";
 const formatByDefault = "kml";
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
   kind : "secondary",
   download : true,
-  name: "Mon croquis",
+  name: nameByDefault,
   description: "",
   control: drawing.value,
+  direction : "column", // row
   menu : true,
   menuOptions : {
-    outside: true,
-    above: true,
-    selectFormat: false,
-    labelDesc: false
+    name : "Options", // nom du menu, null affiche uniquement le curseur
+    position : "bottom", // bottom, right, left, ...
+    outside : true, // menu accordéon ou non
+    labelName : true, // afficher le nom de l'export
+    labelDesc : false, // afficher la description
+    selectFormat : true // afficher la liste des types d'export
   },
-  direction : "column",
   format : formatByDefault,
   icons : {
     menu : "",
@@ -85,7 +88,7 @@ const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
   download : false,
-  name: "Mon croquis",
+  name: nameByDefault,
   description: "",
   control: drawing.value,
   menu: false,
@@ -243,7 +246,7 @@ const onToggleShowVector = (e) => {
     // pour permettre une autre saisie dans 
     // une autre couche
     drawing.value.setLayer();
-    btnExport.value.inputName.value = "";
+    btnExport.value.setName(nameByDefault);
     btnExport.value.setFormat(formatByDefault);
     btnSave.value.setFormat(formatByDefault);
   }
