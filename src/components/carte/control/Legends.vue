@@ -60,4 +60,10 @@ VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les
     top : -243px !important;
   }
 }
+
+@media (max-width: 576px) {
+  button[id^=GPshowLegendsPicto] {
+    display: none;
+  }
+}
 </style>
