@@ -23,8 +23,10 @@ import {
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
+import { useLogger } from 'vue-logger-plugin';
 
 const mapStore = useMapStore()
+const log = useLogger()
 
 const props = defineProps({
   mapId: String
@@ -95,6 +97,7 @@ map.on('loadend', () => {
 provide(props.mapId, map)
 
 onMounted(() => {
+  log.debug("Map component mounted")
   // On déclenche l'ecriture dans le dom
   
   CRS.loadByDefault();
