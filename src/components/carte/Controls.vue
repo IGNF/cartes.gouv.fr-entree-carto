@@ -225,6 +225,7 @@ const routeOptions = {
   id: "14",
   gutter: false,
   listable: true,
+  prettifyCompute: true,
 };
 
 const measureLengthOptions = {
