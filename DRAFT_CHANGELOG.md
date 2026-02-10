@@ -29,7 +29,7 @@ Multiples corrections fonctionnelles et d'interface.
 
 #### 🔥 [Suppression]
 
-  - Itinéraire : suppression de mode de calcul "Plus rapide" et de la section "Passages autorisés" lorsque le calcul est lancé en mode piéton (#921, #722)
+  - Itinéraire : suppression de mode de calcul "Plus rapide" et de la section "Passages autorisés" lorsque le calcul est lancé en mode piéton (#921, #923, #722)
 
 #### 🐛 [Correction]
 
