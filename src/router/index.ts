@@ -1,8 +1,9 @@
 import { 
   type RouteRecordRaw, 
+  type RouteLocationNormalized,
   createRouter, 
-  createWebHistory } 
-from 'vue-router'
+  createWebHistory 
+} from 'vue-router'
 
 const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
 
@@ -33,6 +34,20 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Favoris',
     component: () => import('../views/Bookmarks.vue'), // Lazy loading
   }
+  ,
+  {
+    path: '/data/:slug',
+    name: 'Data',
+    component: () => import('../views/Data.vue'), // Lazy loading
+    props: true
+  }
+  ,
+  {
+    path: '/plan/:slug(.*)*',
+    name: 'Plan',
+    component: () => import('../views/Plan.vue'), // Lazy loading
+    props: true
+  }
 ]
 
 const router = createRouter({
@@ -56,6 +71,7 @@ router.beforeEach((to) => {
   
   return true
 })
+
 function updateTitle(to: RouteLocationNormalized) {
   const specificTitle = to.meta.title ? `${to.meta.title} - ` : ''
   document.title = `${specificTitle}${MAIN_TITLE}`
@@ -63,7 +79,7 @@ function updateTitle(to: RouteLocationNormalized) {
 
 function handleAccueilRedirect(to: RouteLocationNormalized) {
   if (!window.location.href.includes('/accueil')) {
-    window.open(to.href)
+    window.open(to.fullPath)
     return false
   }
   return true

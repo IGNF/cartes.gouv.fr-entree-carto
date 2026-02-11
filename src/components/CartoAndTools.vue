@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import Carto from "@/components/carte/Carto.vue";
 import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
 import RightMenuTool from "@/components/menu/RightMenuTool.vue";
@@ -10,12 +11,18 @@ import SaveModal from "@/components/modals/ModalSave.vue";
 
 import ModalWelcome from "@/components/modals/ModalWelcome.vue";
 
-import { useDataStore } from "@/stores/dataStore"
-import { useMapStore } from "@/stores/mapStore"
+import { useDataStore } from "@/stores/dataStore";
+import { useMapStore } from "@/stores/mapStore";
 import { useLogger } from 'vue-logger-plugin';
-import { useAppStore } from "@/stores/appStore"
+import { useAppStore } from "@/stores/appStore";
 
 import { fromShare } from "@/features/share";
+
+import { getLayersFromPermalink } from "@/features/permalink";
+
+import {
+  fromLonLat as fromLonLatProj
+} from "ol/proj";
 
 // lib notification
 import { push } from "notivue";
@@ -23,23 +30,24 @@ import { push } from "notivue";
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 const appStore = useAppStore();
+const logger = useLogger();
+
+const emitter = inject('emitter') as any;
 
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
-
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
 provide("refModalWelcome", refModalWelcome);
+
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
-
-const emitter = inject('emitter') as any;
 const onModalPrintOpen = () => {
   emitter.dispatchEvent('printmodal:open');
 }
@@ -155,11 +163,58 @@ const selectedControls = computed(() => {
   return controls;
 });
 
-const cartoRef = ref(null); // FIXME Référence au composant Carto utilisée ?
+// Référence au composant Carto
+const cartoRef = ref(null);
+
+// Gestion de la récupération des informations des villes
+// Gestion des raccourcis des couches de données
+const informationsData = ref({
+  type: "",
+  data: {}
+});
 
 onMounted(() => {
   if (appStore.siteOpened && refModalWelcome.value) {
     refModalWelcome.value.openModalWelcome();
+  }
+
+  // INFO
+  // Lors d'une redirection , les données de la ville sont
+  // passées dans le state de la route. 
+  // On les récupère ici pour les stocker dans informationsData.
+  if (history.state && history.state.cityinfo) {
+    informationsData.value = {
+      type : "cityinfo",
+      data : history.state?.cityinfo
+    }
+    console.warn(informationsData.value)
+    // centrer la carte sur les coordonnées de la ville
+    if (cartoRef.value && cartoRef.value?.mapIsReady) {
+      const center = fromLonLatProj([informationsData.value.data?.centre[1], informationsData.value.data?.centre[0]]);
+      setTimeout(() => {
+        var map = mapStore.getMap();
+        map.getView().setZoom(10);
+        map.getView().setCenter(center);
+      },100);
+    } 
+  }
+  
+  // INFO
+  // Lors d'une redirection , les données du raccourci sont
+  // passées dans le state de la route. 
+  // On les récupère ici pour les stocker dans informationsData.
+  if (history.state && history.state.shortcut) {
+    informationsData.value = {
+      type : "shortcut",
+      data : history.state?.shortcut
+    }
+    console.warn(informationsData.value)
+    // executer le permalien du raccourci pour appliquer les changements sur la carte
+    if (cartoRef.value && cartoRef.value?.mapIsReady) {
+      setTimeout(() => {
+        getLayersFromPermalink(informationsData.value.data.permalink);
+      },100);
+    }
   }
 });
 
@@ -193,13 +248,14 @@ provide("selectedLayers", selectedLayers);
     <RightMenuTool
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
+      :informations="informationsData"
     />
+
     <!-- Liste des modales -->
     <div class="modal-container">
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
       <SaveModal ref="refModalSave" />
-      <!-- Modale : Welcome (+ Eulerian) -->
       <ModalWelcome ref="refModalWelcome" />
     </div>
   </div>
