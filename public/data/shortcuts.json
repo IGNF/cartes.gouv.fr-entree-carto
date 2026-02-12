@@ -1,0 +1,8 @@
+{
+  "golf-du-morbihan": {
+    "permalink": "http://localhost:5173/cartes.gouv.fr-entree-carto?c=-2.813119,47.602751&z=12&l=ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(2;1;1;0),PLAN.IGN$GEOPORTAIL:GPP:TMS(1;1;1;0;toponymes)&permalink=yes",
+    "description": "Vue du golf du Morbihan, avec les couches Orthoimages et Plan IGN.",
+    "title": "Golf du Morbihan",
+    "legend": "Orthoimages et Plan IGN"
+  }
+}

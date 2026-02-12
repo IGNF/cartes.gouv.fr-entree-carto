@@ -17,8 +17,7 @@
 import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuControl from '@/components/menu/MenuControl.vue';
-// import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue';
-import { inject } from 'vue';
+import MenuInformations from '@/components/menu/MenuInformations.vue';
 
 // import { useDataStore } from "@/stores/dataStore"
 import { useDomStore } from '@/stores/domStore';
@@ -33,14 +32,18 @@ const props = defineProps({
   selectedLayers: {
     type: Object,
     default: () => ({})
-  }
+  },
+  informations: {
+    type: Object,
+    default: () => ({})
+   }
 })
 
 // var dataStore = useDataStore()
 
 // Pour information, le menu lateral est un composant generique
 // qui permet d'afficher un menu lateral gauche ou droit
-// avec un ensemble d'ocatalognglets.
+// avec un ensemble d'onglets.
 
 // Pour ajouter un onglet, il faut :
 // 1. Ajouter l'onglet dans ce tableau
@@ -62,7 +65,6 @@ const is_expanded = ref();
 // abonnement sur l'ouverture du catalogue sur un evenement emis
 const rightControls = ref(null)
 
-
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
     const arr = [
@@ -72,9 +74,15 @@ const tabArray = computed(() => {
             title : "Choisir mes outils",
             visibility : true,
             secondary : true
+        },
+        {
+            componentName : "MenuInformations",
+            icon : "ri:information-line",
+            title : "Informations",
+            visibility : true,
+            secondary : true
         }
     ];
-
     return arr;
 })
 
@@ -108,13 +116,13 @@ function tabIsActive(componentName) {
  * Réinitialise le menu à "fermé" quand on ouvre un control extension
  * Excpetion pour l'overviewmap
  */
- watch(() => domStore.getrightControlMenu(), (newVal) => {
+watch(() => domStore.getrightControlMenu(), (newVal) => {
   rightControls.value = newVal
   rightControls.value?.addEventListener("click", function (e) {
-  if (e.target.ariaPressed == "true") {
-    is_expanded.value = false;
-  }
-})
+    if (e.target.ariaPressed == "true") {
+      is_expanded.value = false;
+    }
+  })
 }, { immediate: true })
 </script>
 
@@ -130,15 +138,14 @@ function tabIsActive(componentName) {
   >
     <!-- Contenu du menu lateral -->
     <template #content>
-      <!-- <div
-        id="MenuCatalogueContent"
-        :class="[activeTab === 'MenuCatalogueContent' ? 'activeTab' : 'inactiveTab']"
+      <div
+        id="MenuInformationsContent"
+        :class="[activeTab === 'MenuInformationsContent' ? 'activeTab' : 'inactiveTab']"
       >
-        <MenuCatalogue
-          :selected-layers="props.selectedLayers"
-          :layers="dataStore.getLayers()"
+        <MenuInformations
+          :informations="props.informations"
         />
-      </div>  -->
+      </div>
      
       <div
         id="MenuControlContent"

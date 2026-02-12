@@ -79,15 +79,19 @@ export const useDataStore = defineStore('data', () => {
         const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
         alertsRes = await fetch(alertsConfURL);
         if (!alertsRes.ok) throw new Error('Erreur HTTP');
-      } catch (e) {
+      } catch {
         // fallback uniquement sur un souci de réseau !
         alertsRes = await fetch("data/alerts.json");
       }
-
+      
       const alerts = await alertsRes.json();
-
       m_alerts.value = alerts;
 
+      // On utilise la conf entrée carto pour 
+      // - les couches, 
+      // - les contacts, 
+      // - les territoires, 
+      // - les options générales et les tileMatrixSets
       const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
       const entreeCartoRes = await fetch(entreeCartoConfURL)
       const conf = await entreeCartoRes.json();
@@ -102,12 +106,12 @@ export const useDataStore = defineStore('data', () => {
       m_tileMatrixSets.value = conf.tileMatrixSets;
       m_topics.value = conf.topics || [];
 
-      this.isLoaded = true;
+      isLoaded.value = true;
       return conf.layers;
 
     } catch (err) {
       console.log(err);
-      this.isLoaded = false;
+      isLoaded.value = false;
       error.value = err.message;
     }
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { markRaw } from 'vue'
-  
+
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
 import NotificationSuccess from '@/icons/NotificationSuccess.vue'
@@ -184,11 +184,12 @@ const addBadgeHeader = () => {
   // logoDiv?.insertAdjacentElement('afterend', scndLogo)
 }
 
+
+
 onMounted(() => {
   addBadgeHeader()
   appStore.detectFirstOpen()
 })
-
 
 </script>
 
@@ -225,8 +226,6 @@ onMounted(() => {
     </template>
   </DsfrHeader>
 
-  <!-- Notifications
-  -->
   <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
     <Notification
@@ -315,7 +314,6 @@ onMounted(() => {
   <div
     class="fr-container fr-container--fluid fr-container-md"
   >
-
     <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->

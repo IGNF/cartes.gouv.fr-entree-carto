@@ -62,6 +62,10 @@ const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
 
+defineExpose({
+  mapIsReady
+});
+
 onMounted(() => {
   log.debug("Carto component mounted") 
 })

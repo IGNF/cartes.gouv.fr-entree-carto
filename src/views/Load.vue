@@ -8,8 +8,8 @@ import ModalInformation from '@/components/modals/ModalInformation.vue'
 <template>
   <Suspense>
     <!-- Chargement du dataStore avec une patience 
-          avant afficahge de la cartographie 
-      -->
+      avant affichage de la cartographie 
+    -->
     <StoreData>
       <!-- Modale : Informations -->
       <div class="fr-container fr-container--fluid fr-container-md">
