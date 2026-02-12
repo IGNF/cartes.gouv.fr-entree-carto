@@ -1,0 +1,24 @@
+version: '3.8'
+
+networks:
+    web_dev:
+        external: true
+
+services:
+    cityinfo_dev:
+        image: ghcr.io/ignf/cartes.gouv.fr-cityinfo:latest
+        container_name: cartesgouvfr-cityinfo-dev
+        environment:
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTPS_PROXY}
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTPS_PROXY}
+        ports:
+            - "3000:3000"
+        networks:
+            - web_dev
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cartesgouvfr-cityinfo.rule=Host(`cartesgouvfr-cityinfo.docker.localhost`) && PathPrefix(`/aide`)"
+            - "traefik.http.routers.cartesgouvfr-cityinfo.entrypoints=websecure"
+            - "traefik.http.services.cartesgouvfr-cityinfo.loadbalancer.server.port=3000"
