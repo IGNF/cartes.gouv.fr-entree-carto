@@ -34,7 +34,7 @@ export function useHeaderParams() {
               },
               {
                   text: "Guide d'utilisation",
-                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/presentation-utilisateur/generalites-utilisateur/',
+                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/generalites-visualiseur/',
                   target: "_blank",
                   icon: "ri-book-2-line"
               },
@@ -71,9 +71,9 @@ export function useHeaderParams() {
               //     icon: "ri-brush-line"
               // },
               {
-                  text: "Découvrir cartes.gouv.fr",
+                  text: "Découvrir cartes.gouv.fr ",
                   to: useBaseUrl() + '/decouvrir',
-                  icon: "fr-icon-external-link-line",
+                  target: "_blank",
                   button : true
               }
             ]   
