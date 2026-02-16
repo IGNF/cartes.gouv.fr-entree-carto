@@ -489,6 +489,10 @@ export const useMapStore = defineStore('map', () => {
       const index = getLayers().indexOf(id);
       if (index !== -1) {
         var strLayer = layers.value.split(",")[index];
+        var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
+        var values = strValues.split(";");
+        values[0] = i + 1; // mise à jour de la position
+        strLayer = id + "(" + values.join(";") + ")";
         l.push(strLayer);
       }
     }
