@@ -15,9 +15,11 @@
 import { useControlsMenuOptions } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import { useEulerian } from '@/plugins/Eulerian.js';
 import ControlListElement from './ControlListElement.vue';
 
 const log = useLogger();
+const eulerian = useEulerian();
 const mapStore = useMapStore();;
 
 const props = defineProps({
@@ -52,8 +54,82 @@ watch(selectedControlsModel, (values) => {
     mapStore.addControl(key);
   }
 })
-onMounted(() => {})
-onUpdated(() => {})
+
+/* ===================================== */
+/* TOOLTIP OVERRIDE                      */
+/* ===================================== */
+
+const tooltipContainer = ref(null);
+let tooltipObserver = null;
+
+function bindTooltip(link) {
+  if (link.__tooltipBound) return;
+
+const tooltipId = link.id.replace("link-", "");
+const tooltip = document.getElementById(tooltipId);
+if (!tooltip) return;
+
+const parent = link.parentElement;
+
+const show = () => {
+  tooltip.classList.add("fr-tooltip--shown");
+  tooltip.classList.remove("fr-tooltip--hidding");
+};
+
+const hide = () => {
+  tooltip.classList.add("fr-tooltip--hidding");
+  tooltip.classList.remove("fr-tooltip--shown");
+};
+
+link.addEventListener("mouseenter", show, true);
+
+link.addEventListener("mouseleave", (e) => {
+  // si on quitte vers un enfant du lien → on ignore
+  if (link.contains(e.relatedTarget)) {
+    return;
+  }
+  hide();
+}, true);
+
+if (parent) {
+  parent.addEventListener("mouseleave", (e) => {
+    if (!parent.contains(e.relatedTarget)) {
+      hide();
+    }
+  }, true);
+}
+
+link.__tooltipBound = true;
+}
+
+function setupTooltips() {
+  const links = document.querySelectorAll('a[id^="link-tooltip-v-"]');
+  links.forEach(bindTooltip);
+}
+
+onMounted(() => {
+  setupTooltips();
+
+  // Observer pour DOM dynamique
+  tooltipObserver = new MutationObserver(() => {
+    setupTooltips();
+  });
+
+  tooltipObserver.observe(tooltipContainer.value, {
+    childList: true,
+    subtree: true,
+  });
+});
+
+onUnmounted(() => {
+  if (tooltipObserver) {
+    tooltipObserver.disconnect();
+    tooltipObserver = null;
+  }
+});
+
+onUpdated(() => {
+});
 
 </script>
 
@@ -67,7 +143,7 @@ onUpdated(() => {})
       />
     </div>
     <div class="control-content">
-      <table>
+      <table ref="tooltipContainer">
         <ControlListElement
           v-for="(opt, idx) in allOptions"
           :key="idx"
