@@ -329,11 +329,24 @@ const onChangePositionLayer = (e) => {
   log.debug("onChangePositionLayer", e);
   // INFO
   // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
-  mapStore.updateLayerPosition(e.layers.reverse().map((layer) => {
+  mapStore.updateLayerPosition(e.layers.reverse().map((l) => {
     // TODO les couches utilisateur enregistrées !
-    if (layer.name && layer.service) {
-      return dataStore.getLayerIdByName(layer.name, layer.service);
-    } 
+    if (l.name && l.service) {
+      return dataStore.getLayerIdByName(l.name, l.service);
+    } else {
+      var gpId = l.layer.gpResultLayerId;
+      if (gpId) {
+        if (gpId.startsWith('bookmark')) {
+          // on utilise le uuid pour les données utilisateurs !
+          // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+          var id = gpId.split(':').pop();
+          log.debug(id, "| position", l.layer.getZIndex());
+          mapStore.updateBookmarkPropertyByID(id, {
+            p : l.layer.getZIndex() // position
+          });
+        }
+      }
+    }
   }));
 }
 const onChangeGrayScaleLayer = (e) => {
