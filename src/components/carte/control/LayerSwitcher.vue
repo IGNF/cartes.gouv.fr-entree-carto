@@ -329,7 +329,7 @@ const onChangePositionLayer = (e) => {
   log.debug("onChangePositionLayer", e);
   // INFO
   // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
-  mapStore.updateLayerPosition(e.layers.reverse().map((l) => {
+  mapStore.updateLayerPosition(e.layers.map((l) => {
     // TODO les couches utilisateur enregistrées !
     if (l.name && l.service) {
       return dataStore.getLayerIdByName(l.name, l.service);
