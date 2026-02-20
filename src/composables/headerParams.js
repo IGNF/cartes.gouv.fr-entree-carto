@@ -13,14 +13,6 @@ export function useHeaderParams() {
         serviceTitle: 'cartes.gouv.fr',
         serviceDescription: 'Le service public des cartes et données du territoire',
         logoText: ['république', 'française'],
-        quickLinks: [
-          // hack : doit être complété pour pouvoir utiliser le slot afterQuickLinks
-          {
-            label: '',
-            to: '/',
-            href: '#',
-          }
-        ],
         afterQuickLinks: [
           {
             title: "Aide",
