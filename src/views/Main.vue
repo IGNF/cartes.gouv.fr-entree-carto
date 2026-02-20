@@ -1,28 +1,19 @@
 <script setup lang="ts">
 import { markRaw } from 'vue'
-  
+
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
 import NotificationSuccess from '@/icons/NotificationSuccess.vue'
 import NotificationError from '@/icons/NotificationError.vue'
 import NotificationWarning from '@/icons/NotificationWarning.vue'
 import NotificationClose from '@/icons/NotificationClose.vue'
-  
+
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'
-import { useHeaderParams } from '@/composables/headerParams'
-import { useFooterParams } from '@/composables/footerParams'
 import { useBaseUrl } from '@/composables/baseUrl'
-  
+
 // library
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
-  
-// components
-import CustomNavigation from '@/components/header/CustomNavigation.vue'
-import ModalConsent from '@/components/modals/ModalConsent.vue'
-import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue'
-import ModalTheme from '@/components/modals/ModalTheme.vue'
-// import ModalWelcome from '@/components/modals/ModalWelcome.vue'
 
 // stores
 import { useAppStore } from "@/stores/appStore"
@@ -34,52 +25,10 @@ const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
+const { theme } = useScheme();
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-const largeScreen = useMatchMedia('LG')
-
-// paramètres pour le Header
-const headerParams = useHeaderParams()
-
-// paramètres pour le Footer
-const footerParams = useFooterParams()
-
-// ref sur le component ModalTheme
-const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null)
-
-// INFO
-// on met à jour les afterMandatoryLinks pour y ajouter des
-// options sur la 'gestion des themes'
-const afterMandatoryLinks = computed(() => {
-  return [
-    {
-      label: 'Paramètres d’affichage',
-      button: true,
-      class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
-      to: '/settings',
-      onclick: refModalTheme.value ? refModalTheme.value.openModalTheme : null
-    },
-  ]
-})
-
-// ref sur le component ModalConsent
-const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
-const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
-// const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null)
-
-// INFO
-// on met à jour les mandatoryLinks pour y ajouter des
-// options sur la 'gestion des cookies'
-const mandatoryLinks = computed(() => {
-  return footerParams.mandatoryLinks.map((element: any) => {
-    if (element.label === 'Gestion des cookies') {
-      delete element.href
-      element.onclick = refModalConsentCustom.value ? refModalConsentCustom.value.openModalConsentCustom : null
-      element.to = '/'
-    }
-    return element
-  })
-})
+const mobileScreen = useMatchMedia('LG')
 
 // customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
@@ -108,8 +57,8 @@ const myNotificationsTheme: NotivueTheme = {
 
 // choix du theme en fonction du theme dark ou light
 const notificationsTheme = computed(() => {
-  if (refModalTheme.value) {
-    if (refModalTheme.value.modelValue === 'dark') {
+  if (theme.value) {
+    if (theme.value === 'dark') {
       return {
         ...darkTheme,
         ...myNotificationsTheme
@@ -121,19 +70,6 @@ const notificationsTheme = computed(() => {
     ...myNotificationsTheme
   };
 });
-
-const footerToggle = ref(false);
-// fonction pour scroller en bas de page (afficher le footer)
-const scrollDown = () => {
-  // on scroll down pour afficher le footer
-  footerToggle.value = true;
-  setTimeout(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      behavior: 'smooth'
-    });
-  }, 100);
-}
 
 const alertClosed = ref(false);
 // gestion de l'alerte d'information sur la redirection depuis le geoportail
@@ -159,33 +95,7 @@ const onCloseSessionExpired = () => {
   sessionExpiredClosed.value = true;
 };
 
-// Badge header
-const addBadgeHeader = () => {
-  let badge = document.querySelector(".fr-header__service-title span");
-  let icon = document.createElement("span");
-  icon.classList.add("fr-icon-road-map-fill");
-  icon.style.scale = "50%";
-  if (badge && parent) {
-    badge.innerHTML = "Explorer";
-    badge.classList.remove("fr-badge--green-emeraude");
-    badge.classList.add("fr-badge--purple-glycine");
-    badge.classList.add("fr-icon-road-map-fill");
-    const textNode = badge.firstChild;
-    badge.insertBefore(icon, textNode);
-  }
-  // Logo header
-  // let logoDiv = document.querySelector(".fr-header__logo")
-  // let scndLogo = document.createElement("div")
-  // scndLogo.classList.add("header-second-logo")
-  // let img = document.createElement("img")
-  // scndLogo.append(img);
-  // img.classList.add("entree-carto-logo")
-  // img.src = "https://upload.wikimedia.org/wikipedia/commons/2/22/Flag_map_of_France.svg"
-  // logoDiv?.insertAdjacentElement('afterend', scndLogo)
-}
-
 onMounted(() => {
-  addBadgeHeader()
   appStore.detectFirstOpen()
 })
 
@@ -193,37 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <DsfrHeader
-    v-model="headerParams.serviceTitle"
-    :service-title="headerParams.serviceTitle"
-    :show-beta="true"
-    :service-description="domStore.isHeaderCompact ? '' : headerParams.serviceDescription"
-    :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
-    :quick-links="headerParams.quickLinks"
-    :class="domStore.isHeaderCompact ? 'minimized': ''"
-  >
-    <template #after-quick-links>
-      <CustomNavigation
-        id="main-navigation"
-        :label="'Menu principal'"
-        :nav-items="headerParams.afterQuickLinks"
-      />
-    </template>
-    <!--
-      HACK pour l'API Analytics
-      Contexte : L'API Analytics nécessite la présence d'un élément avec la classe
-      "fr-header__menu-links" dans le header pour correctement détecter et suivre
-      les interactions utilisateur. Sans cet élément, certaines fonctionnalités
-      d'analyse ne sont pas déclenchées.
-      Workaround : Nous ajoutons un <div class="fr-header__menu-links" /> vide dans
-      le slot "default" du DsfrHeader afin de satisfaire cette exigence de l'API.
-      Plan de suppression : Ce hack pourra être retiré lorsque l'API Analytics
-      corrigera ce comportement ou proposera une méthode officielle pour l'intégration.
-    -->
-    <template #default>
-      <div class="fr-header__menu-links" />
-    </template>
-  </DsfrHeader>
+  <CustomHeader />
 
   <!-- Notifications
   -->
@@ -266,7 +146,7 @@ onMounted(() => {
       <p v-html="sessionExpiredData.action" />
     </DsfrAlert>
   </div>
-  
+
   <div
     class="futur-map-container"
     :class="domStore.isHeaderCompact ? 'minimized': ''"
@@ -274,57 +154,10 @@ onMounted(() => {
     <router-view />
   </div>
   
-  <!-- INFO
-      Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
-  -->
-  <div
-    v-show="!largeScreen"
-    class="footer-toggle"
-    :class="footerToggle ? 'footer-toggle-true': ''"
-  >
-    <i
-      class="footer-open fr-icon-arrow-up-s-line"
-      @click="scrollDown"
-    />
-    <label
-      v-show="!largeScreen"
-      class="fr-footer-toggle-label footer-close fr-btn fr-btn--tertiary-no-outline fr-btn--close"
-      for="fr-footer-toggle"
-      @click="footerToggle ? footerToggle = false : ''"
-    > 
-      <span>Fermer</span>
-    </label>
-  </div>
-  <DsfrFooter
-    v-show="!largeScreen"
-    :before-mandatory-links="footerParams.beforeMandatoryLinks"
-    :after-mandatory-links="afterMandatoryLinks"
-    :logo-text="footerParams.logoText"
-    :desc-text="footerParams.descText"
-    :home-link="footerParams.homeLink"
-    :partners="footerParams.partners"
-    :licence-text="footerParams.licenceText"
-    :licence-to="footerParams.licenceTo"
-    :licence-name="footerParams.licenceName"
-    :licence-link-props="footerParams.licenceLinkProps"
-    :ecosystem-links="footerParams.ecosystemLinks"
-    :mandatory-links="mandatoryLinks"
-    ::class="footerToggle ? 'footer-toggle-true': ''"
+  <CustomFooter
+    v-if="!mobileScreen"
+    compact
   />
-
-  <div
-    class="fr-container fr-container--fluid fr-container-md"
-  >
-
-    <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
-    <ModalTheme ref="refModalTheme" />
-    <!-- Modale : Gestion des cookies (+ Eulerian) -->
-    <ModalConsent ref="refModalConsent" />
-    <!-- Modale : Gestion des cookies (+ Eulerian) -->
-    <ModalConsentCustom ref="refModalConsentCustom" />
-    <!-- Modale : Welcome (+ Eulerian) -->
-    <!-- <ModalWelcome ref="refModalWelcome" /> -->
-  </div>
 </template>
 
 <style lang="scss">
@@ -332,7 +165,7 @@ onMounted(() => {
   body.modal-open {
     overflow: unset;
   }
-  
+
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);
@@ -392,223 +225,4 @@ onMounted(() => {
     color: #070707;
   }
   */
-
-  .fr-footer__body, .fr-footer__partners, .fr-footer__bottom-copy{
-    display: none;
-  }
-  #footer {
-    padding-top: 0;
-  }
-  .fr-footer__bottom {
-    margin-top: 0;
-    box-shadow: inset 0 0px 0 0 var(--border-default-grey);
-  }
-  .fr-footer__partners + .fr-footer__bottom {
-    margin-top: 0;
-  }
-
-  /* mini footer */
-  #fr-footer-toggle {
-    display: none;
-  }
-  
-  .footer-toggle {
-    position: absolute;
-    right: 0;
-  }
-  .footer-open {
-    position: relative;
-    right: 22px;
-    top: 12px;
-  }
-
-  .footer-close {
-      display: none;
-  }
-  .footer-toggle-true {
-    i {
-      display: none;
-    }
-    .footer-close {
-      display: block;
-      position: relative;
-      top: 12pxw;
-    }
-  }
-
-  .fr-footer__logo {
-    max-height: 5.625rem;
-  }
-
-  .fr-footer__body {
-    position: relative;
-    &::after {
-      content: "";
-      position: absolute;
-      top: calc(100% + 18px);
-      width: 100%;
-      height: 1px;
-      background: var(--border-default-grey);
-  }
-  }
-
-  .footer-toggle-true + .fr-footer {
-    padding-top: 4rem !important;
-  }
-
-  .footer-toggle-true + .fr-footer {
-    padding-top: 4rem;
-  }
-
-  .footer-toggle-true + .fr-footer .fr-footer__body {
-    display: flex;
-  }
-
-  .footer-toggle-true + .fr-footer .fr-footer__partners,
-  .footer-toggle-true + .fr-footer .fr-footer__bottom > div {
-    display: unset;
-  }
-
-  .footer-toggle-true + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
-    display: inline-block;
-  }
-
-  .footer-toggle-true + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
-    display: inline-block;
-  }
-
-  @media (max-width: 991px) {
-
-    /* mini header */
-    .minimized {
-      .fr-header__service-tagline {
-      display: none;
-    }
-    .fr-header__service {
-      position: absolute;
-      left: 100px;
-    }
-      .fr-header__service::before {
-      display: none;
-      }
-    }
-
-    /* mini footer */
-    .fr-footer {
-      padding: 0.5rem 0;
-    }
-    .fr-footer__body, .fr-footer__partners, .fr-footer__bottom > div {
-      display: none;
-    }
-    .fr-footer__partners + .fr-footer__bottom {
-      margin-top: 0;
-    }
-    .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
-      display: none;
-    }
-    .fr-footer-toggle {
-      display: none;
-    }
-    .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
-      display: none;
-    }
-    .fr-footer__bottom {
-      box-shadow: unset;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom {
-      box-shadow: inset 0 1px 0 0 var(--border-default-grey);
-    }
-  }
-
-  /* Surcharge du logo DSFR */
-  .minimized {
-    .fr-logo::after {
-      content: none !important; /* Supprime complètement le pseudo-élément */
-      background: none !important;
-      display: none !important;
-    }
-    .fr-logo {
-      padding-top: 1rem !important;
-      scale: 1.3 !important;
-    }
-
-    .fr-header__navbar {
-      padding: .25rem;
-    }
-    @media (min-width: 991px) {
-      .fr-enlarge-link {
-        max-height: 2.5rem;
-      }
-      .fr-header__body-row {
-        padding: 0.51rem;
-      }
-      .fr-header__service {
-        padding-left: 0;
-      }
-    }
-
-    .fr-header__logo::after {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-    @media (max-width: 991px) {
-      .fr-header__logo::after {
-        left: 4.5rem;
-        top: 0.9rem;
-      }
-      .fr-header__brand {
-        padding: 0.13rem;
-      }
-    }
-    .fr-header__logo {
-      width: 7rem;
-    }
-  }
-
-  .entree-carto-logo {
-    max-height: 65px;
-  }
-  .fr-header__logo {
-    position: relative;
-    width: 12rem;
-  }
-  .fr-header__logo::after {
-    background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg");
-    content: "";
-    display: block;
-    height: 4rem;
-    width: 4rem;
-    background-size: contain; /* pour que l’image soit visible */
-    background-repeat: no-repeat;
-    position: absolute;
-    left: 60%;
-    top: 1rem;
-  }
-  :root[data-fr-theme="dark"] .fr-header__logo::after  {
-    background-image: url("https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo-dark.svg");
-  }
-
-  /*
-    en mode mobile place le menu bruger du header par dessus les control openlayer
-  */
-  header {
-    z-index: 9000;
-  }
-  /* Permet de cacher l'espace des liens (fr-header__menu-links) inutilisés en mode desktop (car on utilise menuCustomNavigation)
-  Et de l'afficher en mode mobile 
-  */
-  header:not(:has(#header-navigation)) .fr-header__menu-links {
-    display: none;
-  }
-
-  .flex-start {
-    justify-content: flex-start;
-  }
-
-  .fr-header__tools-links {
-    .fr-nav__btn {
-      padding: 8px;
-    }
-  }
 </style>
