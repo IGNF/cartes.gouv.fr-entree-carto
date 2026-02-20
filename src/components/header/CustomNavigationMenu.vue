@@ -7,16 +7,8 @@ import {
 } from "@gouvminint/vue-dsfr"
 
 import { useLogger } from 'vue-logger-plugin'
-import { useElementSize } from '@vueuse/core'
 import { useBaseUrl } from '@/composables/baseUrl';
-import { useDomStore } from "@/stores/domStore";
 
-// library
-// import { push } from 'notivue'
-// others
-// import t from '@/features/translation'
-
-const domStore = useDomStore();
 const log = useLogger();
 
 const props = defineProps({
@@ -42,19 +34,9 @@ const toggleId = (id) => emit('toggleId', id)
 const button = ref(null)
 const {
   collapse,
-  collapsing,
   cssExpanded,
   doExpand,
-  onTransitionEnd,
 } = useCollapsable()
-
-const { width: btnWidth } = useElementSize(button)
-const { width: menuWidth } = useElementSize(collapse)
-
-// 16px déduit de la classe .fr-menu
-const marginLeft = computed(() => {
-  return `-${menuWidth.value - btnWidth.value}px`
-})
 
 const expanded = computed(() => props.id === props.expandedId)
 watch(expanded, (newValue, oldValue) => {
@@ -130,9 +112,7 @@ onBeforeUnmount(() => {});
         data-testid="navigation-menu"
         :class="{
           'fr-collapse--expanded': cssExpanded,
-          'minimized': domStore.isHeaderCompact
         }"
-        @transitionend="onTransitionEnd(expanded)"
       >
         <ul
           class="fr-menu__list"
@@ -166,7 +146,10 @@ onBeforeUnmount(() => {});
                   class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right w100 justify-center"
                   :class="link.icon"
                 >
-                  <a :href="link.to" :target="link.target">{{ link.text }}</a>
+                  <a
+                    :href="link.to"
+                    :target="link.target"
+                  >{{ link.text }}</a>
                 </button>
               </div>
             </div>
@@ -215,14 +198,6 @@ onBeforeUnmount(() => {});
 .fr-nav__list {
   position: relative;
 }
-@media (min-width: 992px) {
-.fr-access_menu {
-  margin-left: v-bind(marginLeft);
-}
-.fr-access_menu:not(.minimized) {
-  margin-top: -44px;
-}
-}
 .w100 {
   width: 100%;
 }
@@ -238,4 +213,41 @@ a[target=_blank]::after {
   margin-left: auto;
 }
 
+// menus collapsable
+.fr-nav__item {
+  position: relative;
+}
+.fr-collapse {
+  right: 0;
+}
+
+// boutons du menu (desktop et mobile)
+.fr-header__tools-links {
+  .fr-nav__btn {
+    padding: 0.5rem;
+  }
+}
+.fr-header__menu-links {
+  .fr-nav__btn {
+    padding: 0.5rem;
+  }
+  .fr-btn--tertiary {
+    box-shadow: inset 0 0 0 1px var(--border-default-grey);
+  }
+  .fr-menu__list {
+    margin: 0 -0.25rem;
+    padding: 0 0 1rem;
+  }
+}
+</style>
+
+<style lang="scss">
+// alignements des boutons du menu mobile
+.fr-nav__btn span {
+  margin-right: auto;
+}
+
+.fr-header__menu-links::after {
+  content: none !important;
+}
 </style>
