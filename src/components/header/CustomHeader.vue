@@ -16,13 +16,15 @@ const headerParams = useHeaderParams();
 
 onMounted(() => {
   // modifie le badge beta en explorer
-  let badge = document.querySelector('.fr-badge');
-  badge.classList.remove('fr-badge--green-emeraude');
-  badge.classList.add('fr-badge--purple-glycine');
-  badge.innerHTML = `
-    <span class="fr-icon-road-map-fill fr-ml-n1v" style="transform:scale(0.5)"></span>
-    Explorer
-  `;
+  let badge = document.querySelector('.fr-header__service-title .fr-badge');
+  if (badge) {
+    badge.classList.remove('fr-badge--green-emeraude');
+    badge.classList.add('fr-badge--purple-glycine');
+    badge.innerHTML = `
+      <span class="fr-icon-road-map-fill fr-ml-n1v" style="transform:scale(0.5)"></span>
+      Explorer
+    `;
+  }
 });
 
 //
