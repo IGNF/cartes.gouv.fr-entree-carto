@@ -41,6 +41,7 @@ Multiples corrections fonctionnelles et d'interface.
   - Permalien : amélioration de la lecture des permaliens issus de la redirection du Géoportail (#908)
   - Espace personnel : la modification et le réenregistrement d'un document dans son espace personnel est fonctionnel (#918)
   - Barre de recheche : la recherche avancée affiche les coordonnées dans l'ordre "Latitude-Longitude" (#821, #857)
+  - Le footer est dans le header en mode mobile (#816)
 
 #### 🔒 [Sécurité]
 
