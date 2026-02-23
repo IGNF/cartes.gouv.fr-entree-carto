@@ -177,6 +177,7 @@ const toggleFooter = () => {
 }
 .fr-footer--compacted {
   padding-top: 0;
+  padding-right: 4rem;
 
   .fr-footer__body,
   .fr-footer__partners,
