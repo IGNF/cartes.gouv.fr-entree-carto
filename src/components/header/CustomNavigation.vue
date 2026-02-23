@@ -164,6 +164,11 @@ service.isAccessValided()
 onBeforeMount(() => {
   log.debug(`Navigation (${props.id}) mounted.`)
 });
+onUnmounted(() => {
+  // on s'assure d'enlever les events au unmount (même si c'est pas censé arriver)
+  document.removeEventListener('click', onDocumentClick);
+  document.removeEventListener('keydown', onKeyDown);
+});
 </script>
 
 <template>
