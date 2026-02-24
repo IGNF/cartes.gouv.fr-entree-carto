@@ -88,11 +88,14 @@ export const useDataStore = defineStore('data', () => {
       }
       return alerts;
     } catch {
-      const fallbackAlerts = await fetchJson('data/alerts.json');
-      if (!Array.isArray(fallbackAlerts)) {
-        throw new Error('Format des alertes invalide (fallback)');
-      }
-      return fallbackAlerts;
+      // HACK : en attendant une source d'alertes dynamique, 
+      // on retourne une liste vide pour éviter de planter l'app !
+      // const fallbackAlerts = await fetchJson('data/alerts.json');
+      // if (!Array.isArray(fallbackAlerts)) {
+      //   throw new Error('Format des alertes invalide (fallback)');
+      // }
+      // return fallbackAlerts;
+      return [];
     }
   }
 
