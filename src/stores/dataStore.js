@@ -64,15 +64,17 @@ export const useDataStore = defineStore('data', () => {
     })
   });
 
-  async function fetchJson(url) {
+  async function fetchJson(url, force=false) {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Erreur HTTP (${response.status})`);
     }
 
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      throw new Error('Format de réponse inattendu');
+    if (!force) {
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Format de réponse inattendu');
+      }
     }
 
     return response.json();
@@ -114,13 +116,13 @@ export const useDataStore = defineStore('data', () => {
     const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
 
     try {
-      const entreeCarto = await fetchJson(entreeCartoConfURL);
+      const entreeCarto = await fetchJson(entreeCartoConfURL, true);
       if (!isValidEntreeCartoConfig(entreeCarto)) {
         throw new Error('Format des données d\'entrée carto invalide');
       }
       return entreeCarto;
     } catch {
-      const fallbackEntreeCarto = await fetchJson('data/entreeCarto.json');
+      const fallbackEntreeCarto = await fetchJson('data/entreeCarto.json', true);
       if (!isValidEntreeCartoConfig(fallbackEntreeCarto)) {
         throw new Error('Format des données d\'entrée carto invalide (fallback)');
       }
