@@ -64,34 +64,76 @@ export const useDataStore = defineStore('data', () => {
     })
   });
 
+  async function fetchJson(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP (${response.status})`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error('Format de réponse inattendu');
+    }
+
+    return response.json();
+  }
+
+  async function loadAlertsWithFallback() {
+    const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
+
+    try {
+      const alerts = await fetchJson(alertsConfURL);
+      if (!Array.isArray(alerts)) {
+        throw new Error('Format des alertes invalide');
+      }
+      return alerts;
+    } catch {
+      const fallbackAlerts = await fetchJson('data/alerts.json');
+      if (!Array.isArray(fallbackAlerts)) {
+        throw new Error('Format des alertes invalide (fallback)');
+      }
+      return fallbackAlerts;
+    }
+  }
+
+  async function loadEntreeCartoWithFallback() {
+    const isValidEntreeCartoConfig = (conf) => {
+      return !!conf
+        && typeof conf === 'object'
+        && !Array.isArray(conf)
+        && !!conf.layers
+        && typeof conf.layers === 'object'
+        && !!conf.generalOptions
+        && typeof conf.generalOptions === 'object'
+        && !!conf.tileMatrixSets
+        && typeof conf.tileMatrixSets === 'object';
+    }
+    const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
+
+    try {
+      const entreeCarto = await fetchJson(entreeCartoConfURL);
+      if (!isValidEntreeCartoConfig(entreeCarto)) {
+        throw new Error('Format des données d\'entrée carto invalide');
+      }
+      return entreeCarto;
+    } catch {
+      const fallbackEntreeCarto = await fetchJson('data/entreeCarto.json');
+      if (!isValidEntreeCartoConfig(fallbackEntreeCarto)) {
+        throw new Error('Format des données d\'entrée carto invalide (fallback)');
+      }
+      return fallbackEntreeCarto;
+    }
+  }
+
   /**
    * @todo utiliser l'implementation officielle @link{https://vueuse.org/core/useFetch/}
    */
   async function fetchData() {
     try {
-
-      var alertsRes = null;
-
-      // on utilise les annexes pour les alertes
-      // la stabilité n'étant pas fiable, on prévoit
-      // un fallback (pour test)
-      try {
-        const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
-        alertsRes = await fetch(alertsConfURL);
-        if (!alertsRes.ok) throw new Error('Erreur HTTP');
-      } catch (e) {
-        // fallback uniquement sur un souci de réseau !
-        alertsRes = await fetch("data/alerts.json");
-      }
-
-      const alerts = await alertsRes.json();
-
+      const alerts = await loadAlertsWithFallback();
       m_alerts.value = alerts;
 
-      const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
-      const entreeCartoRes = await fetch(entreeCartoConfURL)
-      const conf = await entreeCartoRes.json();
-
+      const conf = await loadEntreeCartoWithFallback();
       m_territories.value = conf.territories;
       m_contacts.value = conf.contacts;
       m_featured.value = conf.featured || [];
@@ -102,12 +144,12 @@ export const useDataStore = defineStore('data', () => {
       m_tileMatrixSets.value = conf.tileMatrixSets;
       m_topics.value = conf.topics || [];
 
-      this.isLoaded = true;
+      isLoaded.value = true;
       return conf.layers;
 
     } catch (err) {
-      console.log(err);
-      this.isLoaded = false;
+      console.error(err);
+      isLoaded.value = false;
       error.value = err.message;
     }
   }
@@ -154,7 +196,7 @@ export const useDataStore = defineStore('data', () => {
   function getLayersSignatures() {
     return Object.fromEntries(
       Object.entries(m_layers.value)
-        .map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]])
+        .map(([, val]) => [val.name, val.serviceParams.id.split(":")[1]])
     );
   }
 
