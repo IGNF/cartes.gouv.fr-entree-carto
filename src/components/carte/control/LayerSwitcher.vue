@@ -194,12 +194,11 @@ const onRemoveLayer = (e) => {
   // on a la liste des couches natives restantes
   // on ne traite que les couches du catalogue (name & service properties) 
   // et les données personnelles (determiner bookmark id)
-  var layers = e.target._layersOrder;
+  var layers = e.target._layersOrder.reverse(); // on inverse la liste pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
   if (layers) {
-    for (const index in layers) {
-      if (Object.prototype.hasOwnProperty.call(layers, index)) {
-        const l = layers[index];
-        if (l.layer.name && l.layer.service) {
+    for (let index = 0; index < layers.length; index++) {
+      const l = layers[index];
+      if (l.layer.name && l.layer.service) {
           id = dataStore.getLayerIdByName(l.layer.name, l.layer.service);
           if (id) {
             mapStore.updateLayerProperty(id, {
@@ -220,7 +219,6 @@ const onRemoveLayer = (e) => {
             }
           }
         }
-      }
     }
   }
   log.debug("onRemoveLayer", id);
@@ -329,12 +327,35 @@ const onChangePositionLayer = (e) => {
   log.debug("onChangePositionLayer", e);
   // INFO
   // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
-  mapStore.updateLayerPosition(e.layers.reverse().map((layer) => {
-    // TODO les couches utilisateur enregistrées !
-    if (layer.name && layer.service) {
-      return dataStore.getLayerIdByName(layer.name, layer.service);
-    } 
-  }));
+  // on inverse la liste des couches pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
+  var layers = e.layers.reverse(); // on inverse la liste pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
+  for (let index = 0; index < layers.length; index++) {
+    const l = layers[index];
+      if (l.name && l.service) {
+        var id = dataStore.getLayerIdByName(l.name, l.service);
+        if (id) {
+          log.debug(l.name, "| position", index + 1);
+          mapStore.updateLayerProperty(id, {
+            position : index + 1 // position
+          });
+        }
+      } else {
+        var gpId = l.layer.gpResultLayerId;
+        if (gpId) {
+          // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+          if (gpId.startsWith('bookmark')) {
+            var id = gpId.split(':').pop();
+            if (id) {
+              log.debug(id, "| position", index + 1);
+              mapStore.updateBookmarkPropertyByID(id, {
+                p : index + 1 // position
+              });
+            }
+          }
+        }
+      }
+    
+  }
 }
 const onChangeGrayScaleLayer = (e) => {
   log.debug("onChangeGrayScaleLayer", e);

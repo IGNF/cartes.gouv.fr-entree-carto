@@ -77,9 +77,12 @@ function onLayerUnMounted(layer, index) {
 
 </script>
 
+<!-- FIXME : doit on trier les couches par position (ordre d'affichage)
+car les bookmarks sont ajoutés à la fin de la liste des couches !?
+[...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1)) -->
 <template>
   <Layer
-    v-for="layer, index in [...layers, ...bookmarks]"
+    v-for="(layer, index) in [...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1))"
     :key="layer.key"
     :layer-options="layer"
     :map-id="mapId"
