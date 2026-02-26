@@ -22,14 +22,14 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
             - name: Use nodejs
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                node-version: '20.x'
+                node-version: '24.x'
             
             - name: Setup Docker buildx
               uses: docker/setup-buildx-action@v3
@@ -55,7 +55,7 @@ jobs:
             # https://github.com/docker/build-push-action
             - name: Build and push Docker image to ghcr
               id: build-and-push
-              uses: docker/build-push-action@v5
+              uses: docker/build-push-action@v6
               with:
                   context: .
                   file: .docker/Dockerfile
