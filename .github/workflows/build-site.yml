@@ -16,12 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Use nodejs
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.x'
+          node-version: '24.x'
 
       - name: Install dependencies
         run: npm install
@@ -30,7 +30,7 @@ jobs:
         run: IAM_CLIENT_ID=${{ secrets.IAM_CLIENT_ID }} IAM_CLIENT_SECRET=${{ secrets.IAM_CLIENT_SECRET }} SOURCE_MAP=${{ env.SOURCE_MAP }} npm run build-only -- --mode demo
   
       - name: Upload Binary artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist
@@ -40,13 +40,13 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: IGNF/cartes.gouv.fr-entree-carto
           ref: gh-pages
       
       - name: Download Binary artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dist
           path: .
