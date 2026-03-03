@@ -180,6 +180,8 @@ const toggleFooter = () => {
 .fr-footer--compacted {
   padding-top: 0;
   padding-right: 4rem;
+  height: 3.5rem;
+  box-shadow: inset 0 2px 0 0 var(--border-plain-blue-france);
 
   .fr-footer__body,
   .fr-footer__partners,
