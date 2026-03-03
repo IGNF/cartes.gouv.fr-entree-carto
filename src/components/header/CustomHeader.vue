@@ -81,6 +81,7 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
     max-width: 360px;
     left: auto;
     right: 0;
+    box-shadow: var(--raised-shadow);
   }
 }
 
