@@ -2,11 +2,13 @@
 import { useFooterParams } from '@/composables/footerParams';
 
 import ModalTheme from '@/components/modals/ModalTheme.vue';
-// ref sur le component ModalTheme
-const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null)
-
+import ModalConsent from '@/components/modals/ModalConsent.vue';
 import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue';
-const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null)
+
+// ref sur le component ModalTheme
+const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null);
+const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null);
+const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null);
 
 // paramètres pour le Footer
 const footerParams = useFooterParams();
