@@ -3,6 +3,9 @@ import { useDomStore } from "@/stores/domStore";
 import { useHeaderParams } from '@/composables/headerParams';
 import { useMatchMedia } from '@/composables/matchMedia';
 
+import CustomFooter from '@/components/footer/CustomFooter.vue';
+import CustomNavigation from '@/components/header/CustomNavigation.vue';
+
 const domStore = useDomStore();
 const { theme } = useScheme();
 const mobileScreen = useMatchMedia('LG');
