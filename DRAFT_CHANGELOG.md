@@ -14,6 +14,8 @@
   
 #### 🔨 [Evolution]
 
+  - Header/Footer: adaptation du design aux maquettes (#816)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
@@ -21,7 +23,7 @@
 #### 🐛 [Correction]
 
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
-  - Le footer est dans le header en mode mobile (#816)
+  - En mode mobile, le footer est intégré au header (#816)
 
 #### 🔒 [Sécurité]
 
