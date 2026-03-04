@@ -24,4 +24,5 @@
 
 #### 🔒 [Sécurité]
 
+  - Dependance : conversion des images en base64 directement réalisée dans le build des extensions geopf pour openlayers (#962)
 ---
