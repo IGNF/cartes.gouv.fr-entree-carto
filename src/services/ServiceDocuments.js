@@ -214,6 +214,10 @@ var Documents = {
           break;
         }
         const label = this.labels[i];
+        if (!this.documents[label] || this.documents[label].length === 0) {
+          console.warn(`Aucun document trouvé pour le label ${label} dans le store !`); 
+          continue;
+        }
         for (let j = 0; j < this.documents[label].length; j++) {
           document = this.documents[label][j];
           if (document._id === data._id) {
