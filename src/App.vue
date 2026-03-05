@@ -36,4 +36,9 @@ body {
   background-color: var(--background-default-grey);
   margin-top: 0;
 }
+hr {
+  margin: 1rem 0;
+  padding: 0;
+  height: 1px;
+}
 </style>

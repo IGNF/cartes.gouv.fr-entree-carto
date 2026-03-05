@@ -113,34 +113,40 @@ const onClickSearchGeolocationRemove = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
-@media (min-width: 576px){
-  div[id^="GPsearchEngine-Advanced"] {
-    left: 50px;
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.gpf-widget[id^="GPsearchEngine-Advanced"] {
+  left: $widget-panel-x - 5; // marge 5 interne
+  box-shadow: none;
+
+  .GPSearchBar .GPInputGroup,
+  .GPSearchBar .GPInputGroup > input,
+  button[id^="GPshowSearchEnginePicto-"].fr-btn {
+    height: $widget-btn-size;
+  }
+
+  @include max(sm) {
+    top: $gap;
+    left: $gap - 5; // 5 interne
+    max-width: calc(100% - 6px); // 6px un peu magique
+
+    &:has(.GPSearchEngine-advanced-btn[aria-expanded="true"]) {
+      z-index: 4;
+    }
   }
 }
-@media (max-width: 576px){
-  div[id^="GPsearchEngine-Advanced"] {
-    margin-top: 3px;
-    max-width: calc(100% - 16px);
-    margin-left: 1px;
-  }
+
+// empeche le retrecissement dans un contexte flex
+// et fixe la largeur min
+.GPsearchInputSubmit {
+  flex: 0 0 $widget-btn-size;
 }
-/* Uniformisation avec les taille de bouton entrée carto */
-form.GPSearchBar>button[id^=GPshowSearchEnginePicto-].fr-btn {
-    width: 43px;
-}
-/* Permet de placer le menu déroulant de la barre de recherche par dessus les boutons menu
-  côté entrée carto
-*/
-@media (max-width: 576px) {
-.ol-overlaycontainer-stopevent {
-  z-index: 1002 !important;
-}
+// centre l'icone
+.GPsearchInputSubmit::before {
+  margin: 0 auto !important;
 }
 </style>

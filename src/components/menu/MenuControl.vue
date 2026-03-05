@@ -80,7 +80,9 @@ onUpdated(() => {})
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
 table {
   border-spacing: 30px 1rem;
   border-collapse: separate;
@@ -98,10 +100,8 @@ table {
 }
 
 .control-container {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 60px);
-  max-height: calc(76.8vh - 96px);
+  @include min(sm) {
+    width: $widget-panel-width-md;
+  }
 }
 </style>
