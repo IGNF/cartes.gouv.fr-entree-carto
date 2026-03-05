@@ -1,0 +1,56 @@
+[
+  {
+    "id": "edef2f50-4b68-4d3b-bf90-7c247b97b04f",
+    "title": "Test 1",
+    "description": "Test alerte 1",
+    "link": {
+      "url": "/niveau-de-service",
+      "label": "En savoir plus"
+    },
+    "severity": "warning",
+    "details": "C'est les détails",
+    "date": "2025-06-24T20:48:07.455Z",
+    "visibility": {
+      "homepage": false,
+      "contact": false,
+      "map": false,
+      "serviceLevel": true
+    }
+  },
+  {
+    "id": "adb83197-857c-4a9c-b2c6-14ed183f39d7",
+    "title": "Test 2",
+    "description": "Test alert 2",
+    "link": {
+      "url": "/niveau-de-service",
+      "label": "En savoir plus"
+    },
+    "severity": "info",
+    "details": "C'est les détails",
+    "date": "2025-04-09T07:39:33.414Z",
+    "visibility": {
+      "homepage": true,
+      "contact": false,
+      "map": false,
+      "serviceLevel": true
+    }
+  },
+  {
+    "id": "adb83197-857c-4a9c-b2c6-14ed183f39f1",
+    "title": "Test 3",
+    "description": "Test alert 3",
+    "link": {
+      "url": "/",
+      "label": "Plus d'informations"
+    },
+    "severity": "error",
+    "details": "C'est les détails",
+    "date": "2025-06-09T07:39:33.414Z",
+    "visibility": {
+      "homepage": true,
+      "contact": false,
+      "map": false,
+      "serviceLevel": false
+    }
+  }
+]

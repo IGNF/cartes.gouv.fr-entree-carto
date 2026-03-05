@@ -18,8 +18,15 @@ var EVENTS = {
 
   /**
    * Liste des evenements
-   * On utilise une convention d'écriture
-   *   ex. componentname:eventtype
+   * @description 
+   * Adopter une convention d'écriture
+   * ex. 
+   * { 
+   *   type : "document",
+   *   action : "saved",
+   *   value : "...",
+   *   componentName : "Drawing"
+   * }
    */
   eventsName: [
     "test:clicked",
@@ -33,12 +40,15 @@ var EVENTS = {
     "document:deleted",
     "document:exported",
     "document:shared",
+    "document:restore",
     // widgets
     "catalog:open:clicked",
     "leftmenu:close",
     "drawing:open:clicked",
     "layerimport:open:clicked",
     "searchengine:open:displayed",
+    "searchengine:geolocation:clicked",
+    "searchengine:geolocation:removed",
     "reporting:open:clicked",
     "modalreporting:open:clicked",
     // edition
@@ -47,7 +57,9 @@ var EVENTS = {
     "service:edit:clicked",
     "compute-route:edit:clicked",
     "compute-isocurve:edit:clicked",
-    "compute-profil:edit:clicked"
+    "compute-profil:edit:clicked",
+    // print
+    "printmodal:open",
   ]
 };
 

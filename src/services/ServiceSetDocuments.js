@@ -295,7 +295,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -373,7 +373,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -452,7 +452,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);

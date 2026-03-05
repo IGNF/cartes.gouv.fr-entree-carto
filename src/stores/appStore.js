@@ -32,6 +32,11 @@ const SCHEME_KEY_LS_MAIN = "scheme";
  */
 const SCHEME_KEY_LS_CARTES = "vue-dsfr-scheme";
 
+/**
+ * Clef du localStorage des documents temporaires
+ */
+const DOCUMENT_TEMP_KEY_LS = "document-temporary";
+
 export const useAppStore = defineStore('app', () => {
 
   // INFO version
@@ -92,9 +97,30 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  // INFO documents temporaires
+  // stockage des documents temporaires dans le localStorage
+  var documentTemporary = useStorage(DOCUMENT_TEMP_KEY_LS, "");
+
+  watch(documentTemporary, () => {
+    localStorage.setItem(DOCUMENT_TEMP_KEY_LS, documentTemporary.value);
+  })
+
+  const setDocumentTemporary = (data) => {
+    documentTemporary.value = data;
+  }
+  const getDocumentTemporary = () => {
+    return documentTemporary.value;
+  }
+  const clearDocumentTemporary = () => {
+   documentTemporary.value = "";
+  }
+
   return {
     siteOpened,
-    detectFirstOpen
+    detectFirstOpen,
+    setDocumentTemporary,
+    getDocumentTemporary,
+    clearDocumentTemporary
   }
 
 });

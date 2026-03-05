@@ -12,7 +12,8 @@ const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
 const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
-
+const IAM_CHECK_SSO_TIMEOUT = import.meta.env.IAM_CHECK_SSO_TIMEOUT || 5000;
+const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
 
 class ServiceLocal extends ServiceBase {
@@ -120,23 +121,30 @@ class ServiceLocal extends ServiceBase {
     return null;
   }
 
+  /**
+   * Verifie la session Keycloak en utilisant (iframe)
+   * - soit via la méthode native  
+   * - soit avec la librairie Keycloak
+   * @param {String} adapter - natif or keycloak
+   * @returns {Promise<Boolean>} - true if session is active, false otherwise
+   */
   async checkKeycloakSession (adapter) {
     if (!adapter) {
       adapter = 'natif';
     }
     if (adapter !== 'keycloak') {
-      return this.#checkKeycloakSessionAdapter1();
+      return this.#checkKeycloakSessionAdapterDefault();
     } else {
-      return this.#checkKeycloakSessionAdapter2();
+      return this.#checkKeycloakSessionAdapterKeycloak();
     }
   }
 
-  async #checkKeycloakSessionAdapter2 () {
-    console.warn("use checkKeycloakSessionAdapter keycloak");
+  async #checkKeycloakSessionAdapterKeycloak () {
+    console.log("use checkKeycloakSessionAdapter keycloak");
     const keycloak = new Keycloak({
       url: IAM_URL,
       realm: IAM_REALM,
-      clientId: 'cartes-gouv-public'
+      clientId: IAM_CHECK_SSO_CLIENT_ID
     });
 
     return keycloak.init({ 
@@ -148,18 +156,22 @@ class ServiceLocal extends ServiceBase {
     });
   }
 
-  async #checkKeycloakSessionAdapter1 () {
-    console.warn("use checkKeycloakSessionAdapter natif");
+  async #checkKeycloakSessionAdapterDefault () {
+    console.log("use checkKeycloakSessionAdapter natif");
     return new Promise((resolve) => {
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         
         const checkUrl = new URL(this.#client.settings.server + this.#client.settings.authorizationEndpoint);
-        checkUrl.searchParams.set('client_id', this.#client.settings.clientId);
+        checkUrl.searchParams.set('client_id', IAM_CHECK_SSO_CLIENT_ID);
         checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso.html');
         checkUrl.searchParams.set('response_type', 'code');
         checkUrl.searchParams.set('scope', 'openid');
-        checkUrl.searchParams.set('prompt', 'none'); // ← CRUCIAL
+        // INFO
+        // 'prompt=none' is required for silent authentication; 
+        // it prevents the OAuth2 server from showing any user interaction prompts in the iframe and
+        // instead immediately returns an error if the user is not already authenticated.
+        checkUrl.searchParams.set('prompt', 'none');
         
         iframe.src = checkUrl.toString();
         document.body.appendChild(iframe);
@@ -167,7 +179,7 @@ class ServiceLocal extends ServiceBase {
         const timeout = setTimeout(() => {
           cleanup();
           resolve(false); // Timeout = pas de session
-        }, 5000);
+        }, IAM_CHECK_SSO_TIMEOUT);
         
         function cleanup() {
           clearTimeout(timeout);

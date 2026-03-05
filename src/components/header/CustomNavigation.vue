@@ -3,6 +3,7 @@
 import { ref, onMounted, onBeforeMount, onUnmounted, inject } from 'vue'
 
 import { useServiceStore } from '@/stores/serviceStore';
+import { useAppStore } from '@/stores/appStore';
 import { useRandomId } from "@gouvminint/vue-dsfr"
 import { useLogger } from 'vue-logger-plugin'
 import { useRouter } from 'vue-router';
@@ -27,11 +28,22 @@ const props = defineProps({
 const log = useLogger();
 const router = useRouter();
 const serviceStore = useServiceStore();
+const appStore = useAppStore();
 
 const expandedMenuId = ref(undefined)
 // INFO
 // Afficher/masquer le menu dont l'id est passé en paramètre
 const toggle = (id) => {
+  // ajoute/enleve des events pour fermer les menus au click/echap
+  let expanded = id !== expandedMenuId.value;
+  if (expanded) {
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onKeyDown);
+  } else {
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onKeyDown);
+  }
+
   if (id === expandedMenuId.value) {
     expandedMenuId.value = undefined
     return
@@ -59,8 +71,17 @@ const onKeyDown = (e) => {
   }
 }
 
+const emitter = inject('emitter');
 var service = inject('services');
+
 // INFO
+// Délai (en ms) avant la restauration d'un document temporaire
+// du localStorage après la connexion de l'utilisateur.
+// Ce délai permet de s'assurer que les composants sont bien montés
+// avant de tenter de restaurer le document.
+const DOCUMENT_RESTORE_DELAY = 500;
+
+ // INFO
 // on teste si on est déjà authentifié ou pas, 
 // et si oui, on synchronise l'état.
 if (service.isAlreadyAuthentificate()) {
@@ -101,6 +122,33 @@ service.isAccessValided()
       serviceStore.setAuthentificateSyncNeeded(false);
       router.replace({ path : '/', query: undefined });
     }
+    if (status === "login") {
+      log.debug("User connected.");
+      // on regarde si il y'a un document temporaire à restaurer
+      // on émet un event pour le restaurer
+      var docTemp = appStore.getDocumentTemporary();
+      if (docTemp) {
+        appStore.clearDocumentTemporary();
+        var jsonDocTemp = JSON.parse(docTemp);
+        setTimeout(() => {
+          /**
+           * @event document:restore
+           * @description Evenement pour restaurer un document temporaire
+           * @property {Object} data - données du document
+           * @property {String} componentName - nom du component qui emet l'event
+           */
+          emitter.dispatchEvent("document:restore", {
+            data : jsonDocTemp,
+            componentName : "Main"
+          });
+        }, DOCUMENT_RESTORE_DELAY);
+      }
+    }
+    if (status === "logout") {
+      log.debug("User disconnected.");
+      // on supprime le document temporaire
+      appStore.clearDocumentTemporary();
+    }
   })
   .catch((e) => {
     console.warn(e);
@@ -116,14 +164,11 @@ service.isAccessValided()
 onBeforeMount(() => {
   log.debug(`Navigation (${props.id}) mounted.`)
 });
-onMounted(() => {
-  document.addEventListener('click', onDocumentClick)
-  document.addEventListener('keydown', onKeyDown)
-})
 onUnmounted(() => {
-  document.removeEventListener('click', onDocumentClick)
-  document.removeEventListener('keydown', onKeyDown)
-})
+  // on s'assure d'enlever les events au unmount (même si c'est pas censé arriver)
+  document.removeEventListener('click', onDocumentClick);
+  document.removeEventListener('keydown', onKeyDown);
+});
 </script>
 
 <template>

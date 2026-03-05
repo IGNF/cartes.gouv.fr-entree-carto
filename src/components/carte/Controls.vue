@@ -225,6 +225,7 @@ const routeOptions = {
   id: "14",
   gutter: false,
   listable: true,
+  prettifyCompute: true,
 };
 
 const measureLengthOptions = {
@@ -529,7 +530,15 @@ const contextMenuOptions = computed(() => {
   }
 })
 
+/** Print Control */
+emitter.addEventListener('printmodal:open', onModalPrintOpen);
+const refModalPrint = ref(null);
+
+function onModalPrintOpen() {
+  refModalPrint.value.onModalPrintOpen();
+}
 onMounted(() => {
+  log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
   domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
 })
@@ -699,6 +708,7 @@ onMounted(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
+  <PrintModal ref="refModalPrint"/>
 </template>
 
 <style>
@@ -1056,7 +1066,7 @@ button[id^="GPgetFeatureInfoPicto-"] {
     padding: 2px;
   }
 
-  .position-container-bottom-left {
+  .position-container-bottom-left > .gpf-widget:not([id^="GPlegends-"]) {
     display: none;
   }
 

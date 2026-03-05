@@ -19,21 +19,17 @@ import { fromShare } from "@/features/share";
 
 // lib notification
 import { push } from "notivue";
-import t from "@/features/translation";
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
-const log = useLogger();
 const appStore = useAppStore();
 
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
-const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
-provide("refModalPrint", refModalPrint);
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
@@ -42,8 +38,10 @@ provide("refModalWelcome", refModalWelcome);
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
+
+const emitter = inject('emitter') as any;
 const onModalPrintOpen = () => {
-  refModalPrint.value.onModalPrintOpen()
+  emitter.dispatchEvent('printmodal:open');
 }
 const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin(false)
@@ -198,10 +196,6 @@ provide("selectedLayers", selectedLayers);
     />
     <!-- Liste des modales -->
     <div class="modal-container">
-      <PrintModal
-        ref="refModalPrint"
-        :selected-bookmarks="selectedBookmarks"
-      />
       <ShareModal ref="refModalShare" />
       <LoginModal ref="refModalLogin" />
       <SaveModal ref="refModalSave" />
@@ -218,42 +212,4 @@ provide("selectedLayers", selectedLayers);
     height: inherit;
     display: flex;
   }
-</style>
-
-<style>
-/* FIXME Style non scopé pour cacher les boutons partage et de menu
-à voir si c'est factorisable avec ce qui est fait l153 de MenuLateralWrapper.vue */
-@media (max-width: 576px) {
-  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) .navButton,
-  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) #share-button-position {
-    display: none;
-  }
-}
-
-/* FIXME
-Cache le menu latéral si widget ouvert...
-*/
-#map-and-tools-container:has(#position-container-top-right > div > button[aria-pressed="true"]) .menu-toggle-wrap.right .menu-content-list  {
-  display: none;
-}
-#map-and-tools-container:has(#position-container-bottom-left > div > button[aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
-  display: none;
-}
-
-/* Exception pour l'overviewmap */
-#map-and-tools-container:has(#position-container-bottom-left > div > button[id^="GPshowOverviewMap"][aria-pressed="true"]
-):not(
-  :has(#position-container-bottom-left > div > button[aria-pressed="true"]:not([id^="GPshowOverviewMap"]))
-)
-.menu-toggle-wrap.left
-.menu-content-list  {
-  display: block;
-}
-
-#map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
-    display: none;
-}
-#map-and-tools-container:has(.gp-styling-div) .menu-toggle-wrap.left .menu-content-list  {
-    display: none;
-}
 </style>

@@ -13,14 +13,6 @@ export function useHeaderParams() {
         serviceTitle: 'cartes.gouv.fr',
         serviceDescription: 'Le service public des cartes et données du territoire',
         logoText: ['république', 'française'],
-        quickLinks: [
-          // hack : doit être complété pour pouvoir utiliser le slot afterQuickLinks
-          {
-            label: '',
-            to: '/',
-            href: '#',
-          }
-        ],
         afterQuickLinks: [
           {
             title: "Aide",
@@ -29,16 +21,19 @@ export function useHeaderParams() {
               {
                   text: "Questions Fréquentes",
                   to: useBaseUrl() + '/aide/fr/',
+                  target: "_blank",
                   icon: "ri-question-mark"
               },
               {
                   text: "Guide d'utilisation",
-                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/presentation-utilisateur/generalites-utilisateur/',
+                  to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/generalites-visualiseur/',
+                  target: "_blank",
                   icon: "ri-book-2-line"
               },
               {
                   text: "Nous contacter",
                   to: useBaseUrl() + '/nous-ecrire',
+                  target: "_blank",
                   icon: "ri-mail-line"
               }
             ]   
@@ -68,9 +63,9 @@ export function useHeaderParams() {
               //     icon: "ri-brush-line"
               // },
               {
-                  text: "Découvrir cartes.gouv.fr",
+                  text: "Découvrir cartes.gouv.fr ",
                   to: useBaseUrl() + '/decouvrir',
-                  icon: "fr-icon-external-link-line",
+                  target: "_blank",
                   button : true
               }
             ]   

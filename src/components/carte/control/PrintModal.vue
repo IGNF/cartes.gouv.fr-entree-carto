@@ -15,18 +15,19 @@ import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
 import View from '../View.vue';
+import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
+import { mainMap as mainMapId, printMap as printMapId } from "@/composables/keys"
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 const props = defineProps({
   visibility: Boolean,
-  printOptions: Object,
-  selectedBookmarks : Array
 });
-const selectedLayers = inject('selectedLayers');
+const emitter = inject('emitter');
+const map = inject(mainMapId);
 
 /**
  * Paramètres du composant de la modale
@@ -56,12 +57,14 @@ const size = "xl";
  */
 const printModalOpened = ref(false);
 const onModalPrintOpen = () => {
+  emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
   eulerian.pause();
 };
 const onModalPrintClose = () => {
   printModalOpened.value = false;
   eulerian.resume();
+  map.renderSync();
 };
 
 defineExpose({
@@ -251,6 +254,28 @@ const cssPreviewPXDimension = computed(() => {
   }
 })
 
+const format = ref('PNG');
+
+function exportMap() {
+  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
+  if (format.value === 'PDF') {
+    exportPDF();
+    return;
+  }
+  exportPNG({
+    canvasMap: canvas,
+    mapMMDimension: mapMMDimension.value,
+    titleHeightMM: titleHeightMM.value,
+    margin: margin.value,
+    hasTitle: hasTitle.value,
+    hasScale: hasScale.value,
+    drawTitle,
+    drawScale,
+    printTitle: printTitle.value,
+    refMap: refMap.value
+  })
+}
+
 // /**
 //  * Fonction d'export de la carte
 //  */
@@ -294,6 +319,86 @@ const exportPDF = () => {
   }
   doc.save('carte.pdf')
 }
+
+function exportPNG({
+  canvasMap,
+  mapMMDimension,
+  titleHeightMM,
+  margin,
+  hasTitle,
+  hasScale,
+  drawTitle,
+  drawScale,
+  printTitle,
+  refMap
+}) {
+  const pxPerMM = canvasMap.width / mapMMDimension.width;
+
+  const marginPx = margin * pxPerMM;
+  const titlePxHeight = hasTitle ? titleHeightMM * pxPerMM : 0;
+
+  const finalWidth =
+    canvasMap.width + marginPx * 2;
+
+  const finalHeight =
+    canvasMap.height +
+    titlePxHeight +
+    marginPx * 2;
+
+  const finalCanvas = document.createElement('canvas');
+  finalCanvas.width = finalWidth;
+  finalCanvas.height = finalHeight;
+
+  const ctx = finalCanvas.getContext('2d');
+
+  // FOND BLANC
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, finalWidth, finalHeight);
+
+  if (hasTitle) {
+    ctx.save();
+    ctx.translate(marginPx, marginPx);
+    drawTitle(
+      ctx,
+      titlePxHeight,
+      canvasMap.width,
+      mapMMDimension.width - 2 * margin,
+      printTitle
+    );
+    ctx.restore();
+  }
+
+  const mapOffsetY = marginPx + titlePxHeight;
+  ctx.drawImage(
+    canvasMap,
+    marginPx,
+    mapOffsetY
+  );
+
+  if (hasScale) {
+    drawScale(
+      ctx,
+      refMap.mapRef,
+      canvasMap.width,
+      canvasMap.height + mapOffsetY
+    );
+  }
+
+  const link = document.createElement('a');
+  if (format.value === 'PNG') {
+    link.download = 'carte.png';
+    link.href = finalCanvas.toDataURL('image/png');
+  }
+  if (format.value === 'JPEG') {
+    link.download = 'carte.jpeg';
+    link.href = finalCanvas.toDataURL('image/jpeg', 1);
+  }
+
+  link.click();
+
+  finalCanvas.remove();
+}
+
 
 const scaleLineOptions = {
   id: "4",
@@ -367,13 +472,18 @@ const scaleLineOptions = {
             :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
           />
         </div>
+        <DsfrSelect
+          v-model="format"
+          label="Format d'export"
+          :options="[ 'PDF', 'PNG', 'JPEG']"
+        />
         <DsfrButton
           id="print-page-export"
-          label="Export PDF"
-          title="Export PDF"
+          label="Imprimer la carte"
+          title="Imprimer la carte"
           icon=""
           no-outline
-          @click="exportPDF"
+          @click="exportMap"
         />
       </div>
       <!-- Dom de la prévisualisation de l'impression -->
@@ -401,10 +511,9 @@ const scaleLineOptions = {
               :center="mapStore.center"
               :zoom="mapStore.zoom"
             />
-            <Layers
-              :map-id="printMap"
-              :selected-layers="selectedLayers"
-              :selected-bookmarks="selectedBookmarks"
+            <PrintLayers
+              :main-map-id="mainMapId"
+              :print-map-id="printMapId"
             />
             <ScaleLine
               :visibility="hasScale"
@@ -485,7 +594,6 @@ const scaleLineOptions = {
     display: flex;
     flex-direction: row;
     height: 36rem;
-    margin-top: 30px;
   }
   /*
   TODO gestion des titres trop longs : le rapport de taille de la prévisualisation 
