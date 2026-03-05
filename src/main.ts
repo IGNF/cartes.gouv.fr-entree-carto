@@ -24,8 +24,6 @@ import { storePlugin } from 'pinia-plugin-store'
 import App from './App.vue'
 import router from './router/index'
 
-import './main.css'
-
 import { registeredIconCollections } from './iconscustom'
 
 registeredIconCollections()

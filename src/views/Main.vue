@@ -121,36 +121,31 @@ onMounted(() => {
     Le permalien possède la clef/valeur : "fromgpp=1"
     On informe donc l'utilisateur d'une action à faire.
   -->
-  <div v-if="mapStore.isRedirect">
-    <DsfrAlert
-      type="warning"
-      :title="alertData.title"
-      :closeable="true"
-      :closed="alertClosed"
-      @close="onCloseAlert()"
-    >
-      <p v-html="alertData.description" />
-    </DsfrAlert>
-  </div>
-
-  <div v-if="serviceStore.getAuthentificateSyncNeeded()">
-    <DsfrAlert
-      type="error"
-      :title="sessionExpiredData.title"
-      :small="true"
-      :closeable="true"
-      :closed="sessionExpiredClosed"
-      @close="onCloseSessionExpired()"
-    >
-      <p>{{ sessionExpiredData.description }}</p>
-      <p v-html="sessionExpiredData.action" />
-    </DsfrAlert>
-  </div>
-
-  <div
-    class="futur-map-container"
-    :class="domStore.isHeaderCompact ? 'minimized': ''"
+  <DsfrAlert
+    v-if="mapStore.isRedirect"
+    type="warning"
+    :title="alertData.title"
+    :closeable="true"
+    :closed="alertClosed"
+    @close="onCloseAlert()"
   >
+    <p v-html="alertData.description" />
+  </DsfrAlert>
+
+  <DsfrAlert
+    v-if="serviceStore.getAuthentificateSyncNeeded()"
+    type="error"
+    :title="sessionExpiredData.title"
+    :small="true"
+    :closeable="true"
+    :closed="sessionExpiredClosed"
+    @close="onCloseSessionExpired()"
+  >
+    <p>{{ sessionExpiredData.description }}</p>
+    <p v-html="sessionExpiredData.action" />
+  </DsfrAlert>
+
+  <div class="futur-map-container">
     <router-view />
   </div>
   
@@ -164,26 +159,6 @@ onMounted(() => {
 /* HACK Surcharge API Analytics */
   body.modal-open {
     overflow: unset;
-  }
-
-  .futur-map-container{
-    width: 100%;
-    height: calc(100vh - 169px);
-  }
-  .minimized.futur-map-container {
-    height: calc(100vh - 108.5px);
-  }
-
-  @media (max-width: 991px) {
-    .futur-map-container{
-      height: calc(100vh - 165px);
-      margin-bottom: 0px;
-
-    }
-    .minimized.futur-map-container {
-      height: calc(100vh - 56px);
-      margin-bottom: 0px;
-    }
   }
   /* TODO :
   surcharge des popups de notifications :
