@@ -84,6 +84,9 @@ onMounted(() => {
     v-if="isLoading"
     class="patience-container"
   >
+    <p class="fr-text fr-mt-2w">
+      Chargement des enregistrements...
+    </p>
     <Patience />
   </div>
   <div v-else-if="documentsIsEmpty">

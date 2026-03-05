@@ -1,6 +1,9 @@
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
+// nombre de documents à récupérer par page lors de la pagination
+const LIMIT_PER_PAGE = 50;
+
 /**
  * @description 
  * Classe de service de gestion des documents utilisateurs
@@ -17,7 +20,6 @@ import SetDocuments from "./ServiceSetDocuments";
  * Documents.documents;
  * ...
  */
-
 var Documents = {
   /**
    * Label obligatoire pour les documents du Portail
@@ -129,7 +131,6 @@ var Documents = {
   /**
    * Obtenir la liste des documents filtrée
    * 
-   * @todo pagination des resultats !
    * @example
    * curl -X 'GET' \
    * 'https://data.geopf.fr/api/users/me/documents?owned=true&shared=false&labels=cartes.gouv.fr&page=1&limit=10' \
@@ -145,21 +146,40 @@ var Documents = {
     }
 
     try {
-      var params = [
-        "owned=true",
-        "shared=false",
-        "page=1",
-        "limit=100"
-      ];
-      var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
-      var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
-        method: 'GET',
-        headers: {
-          "X-Requested-With" : "XMLHttpRequest"
+      var page = 1;
+      var limit = LIMIT_PER_PAGE;
+      var data = [];
+      var total = null;
+
+      while (true) {
+        var response = await this._getDocumentsByLabelPerPage(label, page, limit);
+        data = data.concat(response.data);
+
+        // On récupère le total à partir du header Content-Range
+        if (Number.isFinite(response.total)) {
+          total = response.total;
         }
-      });
-      var data = await response.json();
-      this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, 'fr', { sensitivity: 'base' }));
+
+        // Si aucune donnée n'est retournée, on arrête la pagination
+        if (response.data.length === 0) {
+          break;
+        }
+
+        // Si le total est connu et que nous avons récupéré tous les documents, on arrête la pagination
+        if (Number.isFinite(total) && data.length >= total) {
+          break;
+        }
+
+        // Fallback si le header n'est pas exposé/correct.
+        if (!Number.isFinite(total) && response.data.length < limit) {
+          break;
+        }
+
+        // On passe à la page suivante
+        page += 1;
+      }
+
+      this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, "fr", { sensitivity: "base" }));
   
       this.saveStore();
   
@@ -170,6 +190,55 @@ var Documents = {
     }
   },
 
+  /**
+   * Obtenir la liste des documents pour un label donné, paginée
+   * @param {*} label 
+   * @param {*} page 
+   * @param {*} limit 
+   * @returns {Promise} - Liste des documents pour un label donné, paginée
+   * @private
+   */
+  _getDocumentsByLabelPerPage: async function (label, page = 1, limit = LIMIT_PER_PAGE) {
+    if (!this.labels.includes(label)) {
+      return Promise.reject("Label filter not allowed !");
+    }
+
+    try {
+      var params = [
+        "owned=true",
+        "shared=false",
+        `page=${page}`,
+        `limit=${limit}`
+      ];
+      var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
+      var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
+        method: 'GET',
+        headers: {
+          "X-Requested-With" : "XMLHttpRequest"
+        }
+      });
+      var data = await response.json();
+      var contentRange = response.headers.get("Content-Range") || response.headers.get("content-range");
+      var total = null;
+
+      if (contentRange) {
+        var match = contentRange.match(/^(\d+)-(\d+)\/(\d+|\*)$/);
+        if (match && match[3] !== "*") {
+          total = Number.parseInt(match[3], 10);
+        }
+      }
+
+      return {
+        data,
+        total,
+        contentRange
+      };
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
+      this.throwError(error);
+    }
+  },
+  
   /**
    * Obtenir des informations sur le document
    * 
