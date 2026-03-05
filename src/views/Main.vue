@@ -18,12 +18,10 @@ import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from '
 
 // stores
 import { useAppStore } from "@/stores/appStore"
-import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 import { useServiceStore } from '@/stores/serviceStore'
 
 const appStore = useAppStore()
-const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
 const route = useRoute()
@@ -125,39 +123,31 @@ onMounted(() => {
     Le permalien possède la clef/valeur : "fromgpp=1"
     On informe donc l'utilisateur d'une action à faire.
   -->
-  <div v-if="mapStore.isRedirect">
-    <DsfrAlert
-      type="warning"
-      :title="alertData.title"
-      :closeable="true"
-      :closed="alertClosed"
-      @close="onCloseAlert()"
-    >
-      <p v-html="alertData.description" />
-    </DsfrAlert>
-  </div>
-
-  <div v-if="serviceStore.getAuthentificateSyncNeeded()">
-    <DsfrAlert
-      type="error"
-      :title="sessionExpiredData.title"
-      :small="true"
-      :closeable="true"
-      :closed="sessionExpiredClosed"
-      @close="onCloseSessionExpired()"
-    >
-      <p>{{ sessionExpiredData.description }}</p>
-      <p v-html="sessionExpiredData.action" />
-    </DsfrAlert>
-  </div>
-
-  <div
-    class="futur-map-container"
-    :class="{
-      minimized: domStore.isHeaderCompact,
-      embed: isEmbedRoute
-    }"
+  <DsfrAlert
+    v-if="mapStore.isRedirect"
+    type="warning"
+    :title="alertData.title"
+    :closeable="true"
+    :closed="alertClosed"
+    @close="onCloseAlert()"
   >
+    <p v-html="alertData.description" />
+  </DsfrAlert>
+
+  <DsfrAlert
+    v-if="serviceStore.getAuthentificateSyncNeeded()"
+    type="error"
+    :title="sessionExpiredData.title"
+    :small="true"
+    :closeable="true"
+    :closed="sessionExpiredClosed"
+    @close="onCloseSessionExpired()"
+  >
+    <p>{{ sessionExpiredData.description }}</p>
+    <p v-html="sessionExpiredData.action" />
+  </DsfrAlert>
+
+  <div class="futur-map-container">
     <router-view />
   </div>
   
@@ -173,28 +163,6 @@ onMounted(() => {
     overflow: unset;
   }
 
-  .futur-map-container{
-    width: 100%;
-    height: calc(100vh - 169px);
-  }
-  .futur-map-container.embed {
-    height: 100vh;
-  }
-  .minimized.futur-map-container {
-    height: calc(100vh - 108.5px);
-  }
-
-  @media (max-width: 991px) {
-    .futur-map-container{
-      height: calc(100vh - 165px);
-      margin-bottom: 0px;
-
-    }
-    .minimized.futur-map-container {
-      height: calc(100vh - 56px);
-      margin-bottom: 0px;
-    }
-  }
   /* TODO :
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
