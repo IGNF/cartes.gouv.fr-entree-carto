@@ -468,19 +468,13 @@ const getDataServiceWMTS = (data) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
-button[id^=GPshowImportPicto-] {
+<style lang="scss">
+// le widget est intégré dans le container gauche
+// mais le bouton est caché (car intégré dans menus gauche et droite)
+.position-container-top-left .gpf-btn-icon[id^=GPshowImportPicto-] {
   display: none;
-}
-.gpf-widget-button[id^=GPimport-]:has(>.gpf-btn-icon[aria-pressed=true]):after {
-  display: none;
-}
-dialog[id^=GPcontrolListPanel-] button[id^=GPshowImportPicto-]{
-  display: block;
 }
 </style>

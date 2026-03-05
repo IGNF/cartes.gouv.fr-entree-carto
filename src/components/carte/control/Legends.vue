@@ -41,29 +41,22 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-/*
-VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
-*/
-@media (min-width: 576px) {
-  dialog[id^=GPlegendsPanel-] {
-    top : -90px !important;
-    left : 47px !important;
-  }
-}
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-@media (max-width: 576px) {
-  .position-container-bottom-left .gpf-mobile-fullscreen>button[aria-pressed=true]~dialog[id^=GPlegendsPanel-] {
-    top : -243px !important;
-  }
-}
+// pas de bouton legende en mobile
+// mais le panel reste activable via contextmenu
+// donc on annule aussi la marge
+.gpf-widget[id^="GPlegends-"] {
+  @include max(sm) {
+    margin-top: -$gap;
 
-@media (max-width: 576px) {
-  button[id^=GPshowLegendsPicto] {
-    display: none;
+    & > .gpf-btn-icon {
+      display: none;
+    }
   }
 }
 </style>

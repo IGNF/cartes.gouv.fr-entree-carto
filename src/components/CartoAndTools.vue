@@ -168,16 +168,6 @@ provide("selectedLayers", selectedLayers);
 
 <template>
   <div id="map-and-tools-container">
-    <!-- Le menu de gauche : le menu tierce (et les favoris)
-     il y figure la liste des abonnements aux evenements sur le clic
-     d'un élement du menu tierce
-    -->
-    <LeftMenuTool
-      @on-modal-share-open="onModalShareOpen"
-      @on-modal-print-open="onModalPrintOpen"
-      @on-modal-login-open="onModalLoginOpen"
-    />
-
     <!-- Module cartographique :
      - liste des couches selectionnées
      - liste des controles selectionnés
@@ -187,6 +177,16 @@ provide("selectedLayers", selectedLayers);
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
       :selected-bookmarks="selectedBookmarks"
+    />
+
+    <!-- Le menu de gauche : le menu tierce (et les favoris)
+     il y figure la liste des abonnements aux evenements sur le clic
+     d'un élement du menu tierce
+    -->
+    <LeftMenuTool
+      @on-modal-share-open="onModalShareOpen"
+      @on-modal-print-open="onModalPrintOpen"
+      @on-modal-login-open="onModalLoginOpen"
     />
 
     <!-- Le menu des contrôles et le catalogue -->

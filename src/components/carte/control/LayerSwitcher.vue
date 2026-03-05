@@ -500,13 +500,43 @@ const onClickEditLayer = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
-button[id^="GPshowLayersListPicto-"] {
-  border-radius: 4px !important;
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+// surclasse hauteur du widget/bouton
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  height: $widget-btn-size;
+
+  .gpf-btn-icon {
+    width: $widget-btn-size;
+    height: $widget-btn-size;
+    @include widget-btn-style;
+  }
+}
+// counter
+.GPlayerCounter {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  left: auto;
+}
+// largeur du panel
+.gpf-panel[id^="GPlayersList"] {
+  width: $widget-panel-width-lg;
+}
+// panels multiple
+.gpf-panel[id^="GPlayersList"] ~ .gpf-panel {
+  right: calc(($widget-panel-width-lg - $widget-panel-multiple-width-lg) / 2) + $widget-btn-size + $gap !important;
+  top: 4rem !important;
+  min-width: $widget-panel-multiple-width-lg;
+  max-width: $widget-panel-multiple-width-lg;
+}
+// utilise un fond clair dans le panel
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"][aria-current="true"],
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"]:hover {
+  background: var(--background-default-grey);
 }
 </style>

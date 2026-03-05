@@ -29,6 +29,12 @@ var authenticated = computed(() => service.authenticated);
   </div>
 </template>
 
-<style scoped>
-  .container {}
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
+.container {
+  @include min(sm) {
+    width: $widget-panel-width-md;
+  }
+}
 </style>
