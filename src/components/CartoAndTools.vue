@@ -207,9 +207,13 @@ provide("selectedLayers", selectedLayers);
 
 <style scoped>
   #map-and-tools-container{
-    margin-left: 0;
-    width: inherit;
-    height: inherit;
-    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* cree un container */
+    container-name: map;
+    container-type: size;
+    /* et un containing block */
+    will-change: transform;
   }
 </style>
