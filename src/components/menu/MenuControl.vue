@@ -67,7 +67,7 @@ onUpdated(() => {})
       />
     </div>
     <div class="control-content">
-      <table>
+      <div>
         <ControlListElement
           v-for="(opt, idx) in allOptions"
           :key="idx"
@@ -75,7 +75,7 @@ onUpdated(() => {})
           :model-value="props.selectedControls"
           :control-list-element-options="opt"
         />
-      </table>
+      </div>
     </div>
   </div>
 </template>
@@ -83,13 +83,8 @@ onUpdated(() => {})
 <style scoped lang="scss">
 @use "@/assets/variables" as *;
 
-table {
-  border-spacing: 30px 1rem;
-  border-collapse: separate;
-}
 .control-search-bar {
   margin-bottom: 30px;
-  margin-right: 40px;
   top: 0px;
 }
 
