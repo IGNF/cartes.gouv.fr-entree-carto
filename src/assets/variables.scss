@@ -1,0 +1,80 @@
+@use "sass:map";
+
+// controls containers
+$gap: 8px;
+
+// buttons
+$widget-btn-size: 48px;
+$widget-btn-radius: 4px;
+$widget-btn-padding: 4px;
+
+@mixin widget-btn-style {
+  background-color: var(--background-default-grey);
+  box-shadow: inset 0 0 0 $widget-btn-padding var(--background-default-grey);
+  transition: background-color 300ms;
+}
+@mixin widget-btn-no-gutter-style {
+  background-color: var(--background-default-grey);
+  // ombre déformée pour rendre visuellement un carré
+  box-shadow:
+    inset $widget-btn-padding 0 var(--background-default-grey),
+    inset (-$widget-btn-padding) 0 var(--background-default-grey),
+    inset 0 ($widget-btn-padding - 1px) var(--background-default-grey),
+    inset 0 (-($widget-btn-padding - 1px)) var(--background-default-grey);
+  transition: background-color 300ms;
+}
+@mixin widget-btn-style-hover {
+  background-color: var(--hover-tint);
+}
+@mixin widget-btn-style-active {
+  background-color: var(--background-open-blue-france);
+}
+
+// panels
+$widget-panel-width-sm: 300px;
+$widget-panel-width-md: 400px;
+$widget-panel-width-lg: 500px;
+$widget-panel-multiple-width-lg: $widget-panel-width-lg - 40px;
+$widget-panel-x: $widget-btn-size + $gap * 2;
+
+@mixin widget-panel-sizes {
+  min-width: $widget-panel-width-sm !important;
+  max-width: min($widget-panel-width-lg, calc(100cqi - $widget-btn-size * 2 - $gap * 4)) !important;
+  height: fit-content !important;
+  max-height: calc(70vh) !important; // fallback
+  max-height: calc(100cqb - $gap * 2) !important;
+
+  @include max(sm) {
+    width: 100vw;
+    min-width: 100vw !important;
+    max-height: 100cqb !important;
+  }
+}
+
+// mq
+// min-width breakpoints
+$breakpoints: (
+  xs: 0,
+  sm: 36em, // 576
+  md: 48em, // 768
+  lg: 62em, // 992
+  xl: 78em, // 1248
+);
+
+@mixin min($bp) {
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin max($bp) {
+  @media (max-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin between($from, $to) {
+  @media (min-width: map.get($breakpoints, $from)) and (max-width: map.get($breakpoints, $to)) {
+    @content;
+  }
+}

@@ -491,7 +491,7 @@ export function useControlsExtensionPosition() {
     layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
-    reportingOptions : 'top-right',
+    reportingOptions : 'top-left',
     catalogOptions : 'top-right'
   }
 }

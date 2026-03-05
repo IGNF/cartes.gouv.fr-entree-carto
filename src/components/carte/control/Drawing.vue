@@ -403,28 +403,33 @@ const onExportVector = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+// gp-label-div/gp-styling-div sont les sous-panel de "annoter la carte"
+// positionne au même endroit qu'un panel de gauche
 .ol-overlay-container:has(.gp-label-div),
 .ol-overlay-container:has(.gp-styling-div) {
-  transform: translate(62px, 79px) !important;
-}
+  z-index: 4;
+  transform: none !important;
+  top: $gap;
+  left: $widget-panel-x;
 
-@media (max-width: 627px) and (min-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 144px) !important;
+  @include max(sm) {
+    top: 0;
+    left: 0;
+
+    .gp-label-div,
+    .gp-styling-div {
+      width: 100vw;
+    }
   }
 }
-
-@media (max-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 235px) !important;
-  }
+.gp-label-div,
+.gp-styling-div {
+  transform: none;
 }
 </style>

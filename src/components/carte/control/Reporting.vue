@@ -94,19 +94,10 @@ const onSendingReporting = (e) => {
   <ReportingStartModal ref="refModalReportingStart" />
 </template>
 
-<style>
-
-  button[id^="GPshowReportingPicto-"] {
-    display: none;
-  }
-  
-  div[id^="GPreporting-"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
-    display: none;
-  }
- @media (max-width: 576px) {
-  dialog[id^="GPreportingPanel-"] {
-    /* HACK : surcharge de la propriété de position top de gpf-mobile-fullscreen deja en important */
-    /* margin-top : -295px !important; */
-  }
+<style lang="scss">
+// le widget est intégré dans le container gauche
+// mais le bouton est caché (car intégré dans menu gauche)
+.gpf-widget[id^="GPreporting-"] > .gpf-btn-icon {
+  display: none;
 }
 </style>

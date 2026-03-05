@@ -42,37 +42,24 @@ const onContextMenuOpen = () => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-.ol-overlay-container:has(.gp-label-div),
-.ol-overlay-container:has(.gp-styling-div) {
-  transform: translate(62px, 79px) !important;
-}
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-div[id^="GPpointInfo-"] {
-  top: 6px;
-  left: 53px;
-}
+.gpf-widget[id^="GPpointInfo-"] {
+  top: $gap;
+  left: $widget-panel-x;
 
-@media (max-width: 627px) and (min-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 144px) !important;
+  @include max(sm) {
+    top: 0;
+    left: 0;
+    width: 100vw;
+
+    .gpf-panel {
+      width: inherit;
+    }
   }
 }
-
-@media (max-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 235px) !important;
-  }
-
-  div[id^="GPpointInfo-"] {
-    top: 165px;
-    left: 8px;
-  }
-}
-
 </style>
