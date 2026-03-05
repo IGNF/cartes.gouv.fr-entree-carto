@@ -14,9 +14,13 @@ export default {
 <script setup lang="js">
 import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.vue';
 import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
+import Patience from '@/components/utils/Patience.vue';
 
 var service = inject('services');
 const emitter = inject('emitter');
+
+const documentsLoadState = ref('loading');
+const isLoading = computed(() => documentsLoadState.value === 'loading');
 
 const IsEmpty = () => {
   var empty = true;
@@ -30,6 +34,7 @@ const IsEmpty = () => {
   }
   return empty;
 };
+
 var toggle = ref(false);
 var documentsIsEmpty = computed(() => {
   // INFO
@@ -46,29 +51,42 @@ var documentsIsEmpty = computed(() => {
 // INFO
 // abonnement à l'evenement du service sur les documents afin de 
 // savoir quand tous les documents sont remontés
-emitter.addEventListener("service:documents:loaded", (e) => {
+emitter.addEventListener("service:documents:loaded", () => {
+  documentsLoadState.value = 'loaded';
   toggle.value = !toggle.value;
 });
 // INFO
 // abonnement à l'evenement du service afin de 
 // mettre à jour le menu si un document a été ajouté, modifié ou supprimé...
-emitter.addEventListener("document:saved", (e) => {
+emitter.addEventListener("document:saved", () => {
+  documentsLoadState.value = 'loaded';
   toggle.value = !toggle.value;
 });
-emitter.addEventListener("document:deleted", (e) => {
+emitter.addEventListener("document:deleted", () => {
+  documentsLoadState.value = 'loaded';
   toggle.value = !toggle.value;
 });
-emitter.addEventListener("document:updated", (e) => {
+emitter.addEventListener("document:updated", () => {
+  documentsLoadState.value = 'loaded';
   toggle.value = !toggle.value;
 });
 
 onMounted(() => {
+  if (service.isAlreadyAuthentificate() && !documentsIsEmpty.value) {
+    documentsLoadState.value = 'loaded';
+  }
 })
 
 </script>
 
 <template>
-  <div v-if="documentsIsEmpty">
+  <div
+    v-if="isLoading"
+    class="patience-container"
+  >
+    <Patience />
+  </div>
+  <div v-else-if="documentsIsEmpty">
     <!-- Mode connecté sans documents dans l'espace personnel -->
     <MenuBookMarkNoData />
   </div>
@@ -81,5 +99,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
+.patience-container {
+  width: 100%;
+}
 </style>
