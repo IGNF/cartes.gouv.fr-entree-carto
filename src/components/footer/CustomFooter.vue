@@ -130,6 +130,8 @@ const toggleFooter = () => {
 </template>
 
 <style lang="scss">
+@use "@/assets/variables" as *;
+
 .ign-footer {
   position: relative;
 }
@@ -146,7 +148,7 @@ const toggleFooter = () => {
 .fr-header .ign-footer .fr-modal {
   background: transparent;
 }
-@media (max-width: 62em) {
+@include max(lg) {
   .fr-footer {
     margin-top: 2rem;
     padding-top: 3rem;

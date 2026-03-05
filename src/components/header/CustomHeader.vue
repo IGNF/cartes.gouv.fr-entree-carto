@@ -68,6 +68,8 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
 </template>
 
 <style lang="scss">
+@use "@/assets/variables" as *;
+
 // fixe taille du logo
 .fr-header__operator img {
   min-width: 0;
@@ -76,7 +78,7 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
 }
 
 // mobile (SM/MD): le menu ne couvre pas toute la page
-@media (min-width: 36em) and (max-width: 62em) {
+@include between(sm, lg) {
   .fr-header__menu {
     max-width: 360px;
     left: auto;
@@ -127,7 +129,7 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
     padding-right: 0.75rem;
   }
   /* mobile */
-  @media (max-width: 62em) {
+  @include max(lg) {
     .fr-header__body-row {
       padding: 0;
     }
