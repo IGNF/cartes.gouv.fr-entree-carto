@@ -16,6 +16,18 @@ const IAM_CHECK_SSO_TIMEOUT = import.meta.env.IAM_CHECK_SSO_TIMEOUT || 5000;
 const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
 
+const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
+const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
+
+function buildOAuthState () {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 class ServiceLocal extends ServiceBase {
 
   #client
@@ -125,20 +137,27 @@ class ServiceLocal extends ServiceBase {
    * Verifie la session Keycloak en utilisant (iframe)
    * - soit via la méthode native  
    * - soit avec la librairie Keycloak
-   * @param {String} adapter - natif or keycloak
+   * @param {String} adapter - natif or keycloak (par defaut)
    * @returns {Promise<Boolean>} - true if session is active, false otherwise
    */
   async checkKeycloakSession (adapter) {
     if (!adapter) {
-      adapter = 'natif';
+      adapter = 'keycloak';
     }
     if (adapter !== 'keycloak') {
-      return this.#checkKeycloakSessionAdapterDefault();
+      return this.#checkKeycloakSessionAdapterOAuth();
     } else {
       return this.#checkKeycloakSessionAdapterKeycloak();
     }
   }
 
+  /**
+   * Preconisé !
+   * Adapter utilisant la librairie Keycloak pour vérifier la session SSO
+   * - Avantages : plus robuste, gère mieux les cas de session expirée, de rafraîchissement de token, etc.
+   * - Inconvénients : plus lourd, nécessite de charger la librairie Keycloak
+   * @returns 
+   */
   async #checkKeycloakSessionAdapterKeycloak () {
     console.log("use checkKeycloakSessionAdapter keycloak");
     const keycloak = new Keycloak({
@@ -152,19 +171,26 @@ class ServiceLocal extends ServiceBase {
         flow: "standard",
         pkceMethod: "S256",
         checkLoginIframe: false,
-        silentCheckSsoRedirectUri: this.url + '/silent-check-sso2.html'
+        silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
     });
   }
 
-  async #checkKeycloakSessionAdapterDefault () {
-    console.log("use checkKeycloakSessionAdapter natif");
+  /**
+   * Experimental !
+   * Adapter utilisant une approche plus "native" pour vérifier la session SSO via OAuth2
+   * - Avantages : plus léger, pas besoin de charger la librairie Keycloak
+   * - Inconvénients : moins robuste, peut ne pas gérer correctement tous les cas de figure (session expirée, rafraîchissement de token, etc.)
+   * @returns 
+   */
+  async #checkKeycloakSessionAdapterOAuth () {
+    console.log("use checkKeycloakSessionAdapter oauth");
     return new Promise((resolve) => {
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         
         const checkUrl = new URL(this.#client.settings.server + this.#client.settings.authorizationEndpoint);
         checkUrl.searchParams.set('client_id', IAM_CHECK_SSO_CLIENT_ID);
-        checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso.html');
+        checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso-oauth.html');
         checkUrl.searchParams.set('response_type', 'code');
         checkUrl.searchParams.set('scope', 'openid');
         // INFO
@@ -285,7 +311,7 @@ class ServiceLocal extends ServiceBase {
       this.documents = {};
       this.error = {};
       status = "logout";
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((resolve) => {
         resolve(status);
       });
     }
@@ -337,12 +363,17 @@ class ServiceLocal extends ServiceBase {
     const url = this.url.includes("login") ? this.url : this.url + "/login";
       
     const codeVerifier = await generateCodeVerifier();
-    this.codeVerifier = codeVerifier; // au cas où...
+    const state = buildOAuthState();
+
+    this.codeVerifier = codeVerifier;
+    sessionStorage.setItem(`${OAUTH_PKCE_STORAGE_KEY}:${state}`, codeVerifier);
+    sessionStorage.setItem(OAUTH_STATE_STORAGE_KEY, state);
+    // Compatibilite avec les anciennes sessions/login en cours.
     localStorage.setItem("codeVerifier", codeVerifier);
     
     var responseIAM = await this.#client.authorizationCode.getAuthorizeUri({
       redirectUri: url,
-      state: 'some-string',
+      state,
       codeVerifier,
       scope: ['openid','profile','email'],
       extraParams: {
@@ -414,14 +445,30 @@ class ServiceLocal extends ServiceBase {
   */
   async getAccessToken () {
     const url = this.url.includes("login") ? this.url : this.url + "/login";
+    const urlParams = new URLSearchParams(location.search);
+    const stateFromRedirect = urlParams.get('state');
+    const storedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY);
+
+    if (stateFromRedirect && storedState && stateFromRedirect !== storedState) {
+      throw new Error('OAuth state mismatch');
+    }
+
+    const expectedState = stateFromRedirect || storedState;
+    const codeVerifierFromState = expectedState
+      ? sessionStorage.getItem(`${OAUTH_PKCE_STORAGE_KEY}:${expectedState}`)
+      : null;
       
-    var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
+    var codeVerifier = this.codeVerifier || codeVerifierFromState || localStorage.getItem("codeVerifier");
+
+    if (!codeVerifier) {
+      throw new Error('Missing PKCE code verifier');
+    }
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
       location,
       {
         redirectUri: url,
-        state: 'some-string',
+        state: expectedState || undefined,
         codeVerifier,
       }
     );
@@ -432,6 +479,12 @@ class ServiceLocal extends ServiceBase {
     console.debug("expires token", today);
 
     this.#fetchWrapper.token = token; // HACK !?
+
+    if (expectedState) {
+      sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${expectedState}`);
+    }
+    sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
+    localStorage.removeItem("codeVerifier");
 
     var store = useServiceStore();
     store.setService(this);

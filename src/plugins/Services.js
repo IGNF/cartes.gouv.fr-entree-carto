@@ -17,9 +17,9 @@ export class PluginServices {
     this.instance.checkKeycloakSession(IAM_CHECK_SSO)
     .then((session) => {
       if (session) {
-        console.info('✓ 🔑 Session Keycloak détectée');
+        console.warn('✓ 🔑 Session Keycloak détectée');
       } else {
-        console.info('✗ 🔓 Pas de session Keycloak');
+        console.warn('✗ 🔓 Pas de session Keycloak');
       }
     })
     .catch((e) => {

@@ -87,7 +87,7 @@ onMounted(() => {
     <p class="fr-text fr-mt-2w">
       Chargement des enregistrements...
     </p>
-    <Patience />
+    <Patience class="loader" />
   </div>
   <div v-else-if="documentsIsEmpty">
     <!-- Mode connecté sans documents dans l'espace personnel -->
@@ -104,5 +104,13 @@ onMounted(() => {
 <style scoped>
 .patience-container {
   width: 100%;
+  height: unset;
+  justify-content: center;
+
+}
+.loader {
+  width: 80px;
+  height: 80px;
+  left: initial;
 }
 </style>

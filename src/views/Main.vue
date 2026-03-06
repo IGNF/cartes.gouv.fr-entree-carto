@@ -96,6 +96,7 @@ const onCloseSessionExpired = () => {
 };
 
 onMounted(() => {
+  console.info('✓ 🚀 Application démarrée');
   appStore.detectFirstOpen()
 })
 
@@ -133,6 +134,12 @@ onMounted(() => {
     </DsfrAlert>
   </div>
 
+  <!-- INFO
+    Message d'information sur la session expirée
+      Via la clef/valeur : "authentificateSyncNeeded=1"
+      On informe donc l'utilisateur que sa session a expiré et 
+      qu'il peut se reconnecter.
+  -->
   <div v-if="serviceStore.getAuthentificateSyncNeeded()">
     <DsfrAlert
       type="error"
