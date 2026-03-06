@@ -2,7 +2,7 @@ import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
 // nombre de documents à récupérer par page lors de la pagination
-const LIMIT_PER_PAGE = 5;
+const LIMIT_PER_PAGE = 50;
 
 /**
  * @description 
