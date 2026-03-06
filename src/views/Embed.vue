@@ -72,19 +72,14 @@ onMounted(() => {
 
     <!-- loading state via #fallback slot -->
     <template #fallback>
-      <div class="patience-container">
-        <Patience />
-      </div>
+      <Patience />
     </template>
   </Suspense>
 </template>
 
-<style>
-  .map-container,
-  .patience-container {
-    margin-left: 0;
-    width: inherit;
-    height: 100vh;
-    display: flex;
-  }
+<style scoped>
+.map-container,
+.patience-container {
+  height: 100vh;
+}
 </style>
