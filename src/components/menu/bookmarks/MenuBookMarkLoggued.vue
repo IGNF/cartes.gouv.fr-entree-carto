@@ -152,7 +152,7 @@ onUnmounted(() => {
       Chargement des enregistrements...
     </p>
     <p class="fr-text--sm fr-mb-1w progress-summary">
-      {{ completedCategories }} / {{ totalCategories }} categories completees
+      {{ completedCategories }} / {{ totalCategories }} catégories chargées
     </p>
     <ul
       v-if="progressItems.length"
@@ -169,7 +169,7 @@ onUnmounted(() => {
       v-if="isFinishing"
       class="fr-text fr-text--sm done-label"
     >
-      Termine !
+      Terminé !
     </p>
     <Patience class="loader" />
   </div>

@@ -24,6 +24,7 @@
 
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
   - En mode mobile, le footer est intégré au header (#816)
+  - Espace Perso : optimisation de l'interface et des requêtes pour le chargement des enregistrements (#894)
 
 #### 🔒 [Sécurité]
 
