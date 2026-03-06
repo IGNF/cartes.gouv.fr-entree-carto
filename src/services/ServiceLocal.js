@@ -6,8 +6,6 @@ import { OAuth2Client, OAuth2Fetch } from '@badgateway/oauth2-client';
 import { generateCodeVerifier } from '@badgateway/oauth2-client';
 import Keycloak from "keycloak-js";
 
-import { inject } from 'vue';
-
 const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
@@ -232,7 +230,7 @@ class ServiceLocal extends ServiceBase {
   }
 
   async isAccessValided () {
-    const emitter = inject('emitter');
+    const emitter = this.getEmitter ? this.getEmitter() : null;
     var store = useServiceStore();
 
     // si IAM, on récupère les informations dans l'url
@@ -270,19 +268,23 @@ class ServiceLocal extends ServiceBase {
             return this.getUserMe()
             .then((user) => {
               console.debug(user);
-              emitter.dispatchEvent("service:user:loaded", {
-                bubbles : true,
-                detail : user
-              });
+              if (emitter) {
+                emitter.dispatchEvent("service:user:loaded", {
+                  bubbles : true,
+                  detail : user
+                });
+              }
               // on execute une autre promise chainée
               // ex. les favoris !
               return this.getDocuments()
               .then((documents) => {
-                console.debug(documents);
-                emitter.dispatchEvent("service:documents:loaded", {
-                  bubbles : true,
-                  detail : documents
-                });
+                console.warn(documents);
+                if (emitter) {
+                  emitter.dispatchEvent("service:documents:loaded", {
+                    bubbles : true,
+                    detail : documents
+                  });
+                }
               })
               .catch((e) => {
                 throw new Error('Error to get documents (' + e.message + ')');

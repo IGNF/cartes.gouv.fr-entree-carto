@@ -9,6 +9,7 @@ class ServiceBase {
 
   #fetch
   #pending
+  #emitter
 
   /**
    * Constructor for ServiceBase
@@ -47,6 +48,7 @@ class ServiceBase {
     this.#fetch = null;
 
     this.#pending = false;
+    this.#emitter = options.emitter || null;
 
     return this;
   }
@@ -113,6 +115,22 @@ class ServiceBase {
    */
   stopPending () {
     this.#pending = false;
+  }
+
+  /**
+   * Get emitter instance used to dispatch global events.
+   * @returns {Object|null}
+   */
+  getEmitter () {
+    return this.#emitter;
+  }
+
+  /**
+   * Set emitter instance used to dispatch global events.
+   * @param {Object|null} emitter
+   */
+  setEmitter (emitter) {
+    this.#emitter = emitter || null;
   }
 
   /**

@@ -2,7 +2,7 @@ import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
 // nombre de documents à récupérer par page lors de la pagination
-const LIMIT_PER_PAGE = 50;
+const LIMIT_PER_PAGE = 5;
 
 /**
  * @description 
@@ -145,6 +145,8 @@ var Documents = {
       return Promise.reject("Label filter not allowed !");
     }
 
+    const emitter = this.getEmitter ? this.getEmitter() : null;
+
     try {
       var page = 1;
       var limit = LIMIT_PER_PAGE;
@@ -180,9 +182,17 @@ var Documents = {
       }
 
       this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, "fr", { sensitivity: "base" }));
-  
+
       this.saveStore();
   
+      if (emitter) {
+        emitter.dispatchEvent("service:documents:completed", {
+          label : label,
+          data : data,
+          total : total
+        });
+      }
+
       return data;
     } catch (error) {
       console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
