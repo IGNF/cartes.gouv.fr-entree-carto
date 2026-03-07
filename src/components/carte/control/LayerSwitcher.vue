@@ -194,7 +194,8 @@ const onRemoveLayer = (e) => {
   // on a la liste des couches natives restantes
   // on ne traite que les couches du catalogue (name & service properties) 
   // et les données personnelles (determiner bookmark id)
-  var layers = e.target._layersOrder.reverse(); // on inverse la liste pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
+  // IMPORTANT: reverse() mute le tableau d'origine, on clone pour éviter les inversions d'ordre ultérieures.
+  var layers = [...(e.target._layersOrder || [])].reverse(); // top -> bottom
   if (layers) {
     for (let index = 0; index < layers.length; index++) {
       const l = layers[index];
@@ -202,18 +203,18 @@ const onRemoveLayer = (e) => {
           id = dataStore.getLayerIdByName(l.layer.name, l.layer.service);
           if (id) {
             mapStore.updateLayerProperty(id, {
-              position : l.layer.getZIndex()
+              position : index + 1 // position
             });
           }
         } else {
-          var gpId = l.layer.gpResultLayerId;
-          if (gpId) {
+          const layerGpId = l.layer.gpResultLayerId;
+          if (layerGpId) {
             // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
-            if (gpId.startsWith('bookmark')) {
-              id = gpId.split(':').pop();
+            if (layerGpId.startsWith('bookmark')) {
+              id = layerGpId.split(':').pop();
               if (id) {
                 mapStore.updateBookmarkPropertyByID(id, {
-                  p : l.layer.getZIndex() // position
+                  p : index + 1 // position
                 });
               }
             }
@@ -328,26 +329,27 @@ const onChangePositionLayer = (e) => {
   // INFO
   // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
   // on inverse la liste des couches pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
-  var layers = e.layers.reverse(); // on inverse la liste pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
+  // IMPORTANT: reverse() mute le tableau d'origine, on clone pour éviter les inversions d'ordre ultérieures.
+  var layers = [...(e.layers || [])].reverse(); // top -> bottom
   for (let index = 0; index < layers.length; index++) {
     const l = layers[index];
       if (l.name && l.service) {
-        var id = dataStore.getLayerIdByName(l.name, l.service);
-        if (id) {
+        const layerId = dataStore.getLayerIdByName(l.name, l.service);
+        if (layerId) {
           log.debug(l.name, "| position", index + 1);
-          mapStore.updateLayerProperty(id, {
+          mapStore.updateLayerProperty(layerId, {
             position : index + 1 // position
           });
         }
       } else {
-        var gpId = l.layer.gpResultLayerId;
-        if (gpId) {
+        const layerGpId = l.layer.gpResultLayerId;
+        if (layerGpId) {
           // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
-          if (gpId.startsWith('bookmark')) {
-            var id = gpId.split(':').pop();
-            if (id) {
-              log.debug(id, "| position", index + 1);
-              mapStore.updateBookmarkPropertyByID(id, {
+          if (layerGpId.startsWith('bookmark')) {
+            const bookmarkId = layerGpId.split(':').pop();
+            if (bookmarkId) {
+              log.debug(bookmarkId, "| position", index + 1);
+              mapStore.updateBookmarkPropertyByID(bookmarkId, {
                 p : index + 1 // position
               });
             }
