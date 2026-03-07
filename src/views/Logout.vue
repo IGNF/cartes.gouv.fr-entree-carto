@@ -22,8 +22,14 @@ onMounted(() => {
   var from = urlParams.get('from'); // logout redirection
 
   if (from === 'sessionExpired') {
-    service.getAccessLogoutSilent().then((url) => {
+    service.getAccessLogoutSilent()
+    .then((url) => {
       location.href = url;
+    })
+    .catch((error) => {
+      console.error('Silent logout failed:', error);
+      // En cas d'échec de la déconnexion silencieuse, rediriger vers la page de connexion
+      router.push({ path: '/', query: { from : 'logout', success : 0 } });
     });
     return;
   }

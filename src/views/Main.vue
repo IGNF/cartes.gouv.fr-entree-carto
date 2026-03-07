@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { markRaw } from 'vue'
+import { markRaw, watch } from 'vue'
 
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
@@ -99,10 +99,41 @@ const onCloseSessionExpired = () => {
   router.push({ path: '/logout', query: { from: 'sessionExpired' } });
 };
 
+const forceSessionExpiredAlertCloseIfNeeded = () => {
+  const service = serviceStore.getService();
+
+  if (!serviceStore.getAuthentificateSyncNeeded()) {
+    return;
+  }
+  if (sessionExpiredClosed.value) {
+    return;
+  }
+  if (typeof service?.isTokenExpiredForMoreThan24h !== 'function') {
+    return;
+  }
+  if (!service.isTokenExpiredForMoreThan24h()) {
+    return;
+  }
+
+  console.warn('Token expiré depuis plus de 24h: fermeture du bandeau et déconnexion silencieuse.');
+  onCloseSessionExpired();
+};
+
 onMounted(() => {
   console.info('✓ 🚀 Application démarrée');
   appStore.detectFirstOpen()
+  forceSessionExpiredAlertCloseIfNeeded();
 })
+
+watch(
+  () => serviceStore.getAuthentificateSyncNeeded(),
+  (syncNeeded) => {
+    if (syncNeeded) {
+      forceSessionExpiredAlertCloseIfNeeded();
+    }
+  },
+  { immediate: true }
+);
 
 
 </script>

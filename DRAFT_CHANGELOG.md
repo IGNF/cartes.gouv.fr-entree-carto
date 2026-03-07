@@ -15,6 +15,7 @@
 #### 🔨 [Evolution]
 
   - Header/Footer: adaptation du design aux maquettes (#816)
+  - Authentification : mise en place d'une auth direct avec un client public (#894)
 
 #### 🔥 [Obsolète]
 
@@ -27,5 +28,7 @@
   - Espace Perso : optimisation de l'interface et des requêtes pour le chargement des enregistrements (#894)
 
 #### 🔒 [Sécurité]
+
+  - mise à jour dépendance : oauth2-client@3.3.1
 
 ---

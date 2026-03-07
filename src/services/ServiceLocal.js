@@ -14,6 +14,8 @@ const IAM_CHECK_SSO_TIMEOUT = import.meta.env.IAM_CHECK_SSO_TIMEOUT || 5000;
 const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
 
+const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 24 * 60 * 60 * 1000;
+
 const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
 const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
 
@@ -435,6 +437,10 @@ class ServiceLocal extends ServiceBase {
   async getAccessLogoutSilent () {
     const url = this.url.includes("logout") ? this.url : this.url + "/logout";
 
+    if (!this.token || !this.token.idToken) {
+      return Promise.reject(new Error('No ID token available for silent logout'));
+    }
+    
     var responseIAM = `${this.#client.settings.server}/realms/${this.#client.settings.index}/protocol/openid-connect/logout?
       id_token_hint=${this.token.idToken}&
       post_logout_redirect_uri=${url}?session_state=${this.session}&
@@ -514,6 +520,24 @@ class ServiceLocal extends ServiceBase {
     store.setService(this);
 
     return this.token;
+  }
+
+  /**
+   * Indique si le token est expiré depuis plus de 24h.
+   * @returns {Boolean}
+   */
+  isTokenExpiredForMoreThan24h () {
+    if (!this.token || !this.token.expiresAt) {
+      return true;
+    }
+
+    const expiresAt = Number(this.token.expiresAt);
+
+    if (!Number.isFinite(expiresAt)) {
+      return false;
+    }
+
+    return (Date.now() - expiresAt) >= SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS;
   }
 }
 
