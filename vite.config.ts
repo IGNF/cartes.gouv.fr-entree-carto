@@ -68,8 +68,7 @@ export default defineConfig({
       exclude: [/\.(br)$/, /\.(gz)$/],
       algorithms: [
         'gzip',
-        'brotliCompress',
-        defineAlgorithm('deflate', { level: 9 })
+        'brotliCompress'
       ]
     })
   ],

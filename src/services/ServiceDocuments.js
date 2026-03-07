@@ -257,6 +257,7 @@ var Documents = {
     try {
       var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
         method: 'GET',
+        cache: "no-store",
         headers: {
           "X-Requested-With" : "XMLHttpRequest"
         }

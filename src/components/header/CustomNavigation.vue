@@ -34,6 +34,16 @@ const expandedMenuId = ref(undefined)
 // INFO
 // Afficher/masquer le menu dont l'id est passé en paramètre
 const toggle = (id) => {
+  // ajoute/enleve des events pour fermer les menus au click/echap
+  let expanded = id !== expandedMenuId.value;
+  if (expanded) {
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onKeyDown);
+  } else {
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onKeyDown);
+  }
+
   if (id === expandedMenuId.value) {
     expandedMenuId.value = undefined
     return
@@ -154,14 +164,11 @@ service.isAccessValided()
 onBeforeMount(() => {
   log.debug(`Navigation (${props.id}) mounted.`)
 });
-onMounted(() => {
-  document.addEventListener('click', onDocumentClick)
-  document.addEventListener('keydown', onKeyDown)
-})
 onUnmounted(() => {
-  document.removeEventListener('click', onDocumentClick)
-  document.removeEventListener('keydown', onKeyDown)
-})
+  // on s'assure d'enlever les events au unmount (même si c'est pas censé arriver)
+  document.removeEventListener('click', onDocumentClick);
+  document.removeEventListener('keydown', onKeyDown);
+});
 </script>
 
 <template>
