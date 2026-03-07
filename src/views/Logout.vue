@@ -19,6 +19,14 @@ onMounted(() => {
   // parametres
   var session = urlParams.get('session_state');
   var success = urlParams.get('success'); // remote
+  var from = urlParams.get('from'); // logout redirection
+
+  if (from === 'sessionExpired') {
+    service.getAccessLogoutSilent().then((url) => {
+      location.href = url;
+    });
+    return;
+  }
 
   // Si aucun parametre de session dans l'URL de la route '/logout',
   // on redirige vers IAM de deconnexion

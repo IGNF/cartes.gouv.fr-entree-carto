@@ -421,6 +421,28 @@ class ServiceLocal extends ServiceBase {
     return Promise.resolve(responseIAM);
   }
 
+  /**
+   * IAM pour se deconnecter silencieusement
+   * 
+   * @type {Promise}
+   * @see Logout
+   * @example
+   * GET /realms/{realm}/protocol/openid-connect/logout?
+   *   id_token_hint=<id_token>
+   *   &post_logout_redirect_uri=https://myapp.com/loggedout
+   *   &client_id=my-client
+   */
+  async getAccessLogoutSilent () {
+    const url = this.url.includes("logout") ? this.url : this.url + "/logout";
+
+    var responseIAM = `${this.#client.settings.server}/realms/${this.#client.settings.index}/protocol/openid-connect/logout?
+      id_token_hint=${this.token.idToken}&
+      post_logout_redirect_uri=${url}?session_state=${this.session}&
+      client_id=${this.#client.settings.clientId}`.replace(/ /g, '');
+
+    return Promise.resolve(responseIAM);
+  } 
+  
   /** 
    * IAM pour obtenir le token
    * 
@@ -474,7 +496,7 @@ class ServiceLocal extends ServiceBase {
         codeVerifier,
       }
     );
-
+    console.warn("token", token);
     this.token = token;
   
     const today = new Date(token.expiresAt);

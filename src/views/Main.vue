@@ -20,7 +20,9 @@ import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 import { useServiceStore } from '@/stores/serviceStore'
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
@@ -92,7 +94,9 @@ const sessionExpiredData = {
     action : `<a href="${url}login">Se reconnecter</a>`
 };
 const onCloseSessionExpired = () => {
+  console.warn('✓ Session : ', serviceStore.getService());
   sessionExpiredClosed.value = true;
+  router.push({ path: '/logout', query: { from: 'sessionExpired' } });
 };
 
 onMounted(() => {

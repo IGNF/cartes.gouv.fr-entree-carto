@@ -60,7 +60,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@badgateway/oauth2-client": "^2.4.2",
+    "@badgateway/oauth2-client": "^3.3.1",
     "@iconify-json/ri": "^1.2.6",
     "@playwright/test": "^1.52.0",
     "@rushstack/eslint-patch": "^1.11.0",
