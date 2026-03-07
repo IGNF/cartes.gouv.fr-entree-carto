@@ -61,7 +61,7 @@ var bookmarks = computed(() => {
 });
 
 function onLayerMounted(layer, index) {
-  var allLayers = [...layers.value, ...bookmarks.value];
+  var allLayers = [...layers.value, ...bookmarks.value].sort((a, b) => (a.position ?? -1) - (b.position ?? -1));
   log.debug(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
   if (allLayers.length - 1 === index) {
     setTimeout(() => {

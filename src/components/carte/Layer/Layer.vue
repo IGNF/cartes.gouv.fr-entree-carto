@@ -49,231 +49,214 @@ onMounted(() => {
   if (!props.layerOptions || Object.keys(props.layerOptions).length === 0) {
     return;
   }
-  
-  const service = props.layerOptions.service;
-  const name = props.layerOptions.name;
-  const position = props.layerOptions.position;
 
-  // INFO
-  // ajout du traitement des couches issues du catalogue
-  // liste des informations utiles pour recuperer tous les paramètres de la couche
-  // Array(Object) : [{name, service}]
-  if (name && service) {
-    var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
-    var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
-    value.params = params; // fusion
-    
-    var options = {
-      position : props.layerOptions.position,
-      visible : props.layerOptions.visible,
-      opacity : props.layerOptions.opacity,
-      grayscale : props.layerOptions.grayscale,
-      sourceParams : {crossOrigin : 'anonymous'},
-      permalink : props.layerOptions.permalink || false
-    };
-    // ajout des options de preload par defaut
-    var preload = {
-      preload : Infinity,
-      cacheSize : 1024
-    };
+  const enqueueOnMap = async () => {
+    const service = props.layerOptions.service;
+    const name = props.layerOptions.name;
+    const position = props.layerOptions.position;
+    const url = props.layerOptions.url;
+    const format = props.layerOptions.format;
 
-    log.debug("layer to add (catalog)", name, service, options, value);
-    switch (service) {
-      case "WMS":
-        layer = new GeoportalWMS({
-          layer : name,
-          configuration : value,
-          apiKey : "entree-carto",
-          olParams : Object.assign(options, preload)
-        });
-        break;
-      case "WMTS":
-        layer = new GeoportalWMTS({
-          layer : name,
-          configuration : value,
-          apiKey : "entree-carto",
-          olParams : Object.assign(options, preload)
-        });
-        break;
-      case "TMS":
-        options.declutter = true;
-        options.styleName = props.layerOptions.style || "default";
-        layer = new GeoportalMapBox({
-          layer : name,
-          style : props.layerOptions.style,
-          configuration : value,
-          apiKey : "entree-carto",
-        }, options);
-        break;
-      default:
-    }
+    // INFO
+    // ajout du traitement des couches issues du catalogue
+    if (name && service) {
+      var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
+      var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
+      value.params = params; // fusion
 
-    if (layer) {
-      log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
-      if (position !== layer.getZIndex()) {
-        if (position === -1) {
+      var options = {
+        position : props.layerOptions.position,
+        visible : props.layerOptions.visible,
+        opacity : props.layerOptions.opacity,
+        grayscale : props.layerOptions.grayscale,
+        sourceParams : {crossOrigin : 'anonymous'},
+        permalink : props.layerOptions.permalink || false
+      };
+      // ajout des options de preload par defaut
+      var preload = {
+        preload : Infinity,
+        cacheSize : 1024
+      };
+
+      log.debug("layer to add (catalog)", name, service, options, value);
+      switch (service) {
+        case "WMS":
+          layer = new GeoportalWMS({
+            layer : name,
+            configuration : value,
+            apiKey : "entree-carto",
+            olParams : Object.assign(options, preload)
+          });
+          break;
+        case "WMTS":
+          layer = new GeoportalWMTS({
+            layer : name,
+            configuration : value,
+            apiKey : "entree-carto",
+            olParams : Object.assign(options, preload)
+          });
+          break;
+        case "TMS":
+          options.declutter = true;
+          options.styleName = props.layerOptions.style || "default";
+          layer = new GeoportalMapBox({
+            layer : name,
+            style : props.layerOptions.style,
+            configuration : value,
+            apiKey : "entree-carto",
+          }, options);
+          break;
+        default:
+      }
+
+      if (layer) {
+        log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+        if (position !== layer.getZIndex()) {
+          if (Number(position) === -1) {
             log.debug(name, "| position auto");
           } else {
             log.debug(name, "| change position", position);
             layer.setZIndex(Number(position));
           }
-      }
-      map.addLayer(layer);
-      // informe le parent que la couche est montée
-      emit('mounted');
-    } else {
-      log.warn("La couche n'est pas reconnue !");
-      push.warning({
+        }
+        map.addLayer(layer);
+        emit('mounted');
+      } else {
+        log.warn("La couche n'est pas reconnue !");
+        push.warning({
           title: t.notification.title,
           message: t.notification.unknown_add_layer(name, service)
         });
-    }
-  }
-  
-  const url = props.layerOptions.url;
-  const format = props.layerOptions.format;
-
-  // INFO
-  // ajout du traitement des couches de type "vecteur" pour les 
-  // données personnelles
-  // liste des informations utiles pour recuperer tous les paramètres de la couche
-  // Array(Object) : [{url, format, type, opacity, visibility, ...}]
-  if (url && format) {
-    var promise = null;
-    const type = props.layerOptions.type.toLowerCase();
-
-    log.debug("layer to add (bookmark)", name, type, format);
-    var opts = props.layerOptions;
-    // liste des types de couches à traiter
-    switch (type) {
-      case "wms":
-      case "wmts":
-      case "service":
-
-        var kind = props.layerOptions.kind ? props.layerOptions.kind.toLowerCase() : null;
-        if (kind === "mapbox" || type === "mapbox") {
-          promise = createMapBoxLayer({
-            ...opts,
-            type: "service",
-            kind: "mapbox"
-          });
-        } else if (kind === "wms" || type === "wms") {
-          promise = createServiceLayer({
-            ...opts,
-            type: "service",
-            kind: "wms"
-          });
-        } else if (kind === "wmts" || type === "wmts") {
-          promise = createServiceLayer({
-            ...opts,
-            type: "service",
-            kind: "wmts"
-          });
-        } else {
-          throw new Error("Le service est inconnu !");
-        }
-        break;
-      case "carte":
-        throw "Not yet implemented !";
-        break;
-      case "compute":
-        promise = createComputeLayer(props.layerOptions);  
-        break;
-      case "url-mapbox":
-      case "mapbox":
-      case "url-kml":
-      case "kml":
-      case "url-gpx":
-      case "gpx":
-      case "url-geojson":
-      case "geojson":
-      case "import":
-        // url de partage contient toujours un contenu
-        // - soit pour un import ou croquis passant par l'outil d'édition
-        // - soit pour un fichier de style mapbox par l'outil d'édition
-        if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
-          promise = createMapBoxLayer(props.layerOptions);
-        } else {
-          promise = createVectorLayer({
-            ...opts,
-            type: "import",
-            format: format || (type && type.startsWith("url-") ? type.slice(4) : type) // au cas où format n'est plus défini
-          });  
-        }
-        break;
-      case "drawing":
-        // url de partage contient toujours un contenu du croquis
-        promise = createVectorLayer(props.layerOptions);
-        break;
-      default:
-        break;
+      }
+      return;
     }
 
-    // ajout de la couche
-    if (promise) {
-      promise
-      .then((l) => {
-        map.addLayer(l);
-        return l;
-      })
-      .then((l) => {
-        log.debug(name, "| position (props - zindex)", position, l.getZIndex());
-        if (position !== l.getZIndex()) {
-          if (position === -1) {
-            log.debug(name, "| position auto");
+    // INFO
+    // ajout du traitement des couches de type "vecteur" pour les données personnelles
+    if (url && format) {
+      var promise = null;
+      const type = props.layerOptions.type.toLowerCase();
+
+      log.debug("layer to add (bookmark)", name, type, format);
+      var opts = props.layerOptions;
+      switch (type) {
+        case "wms":
+        case "wmts":
+        case "service":
+          var kind = props.layerOptions.kind ? props.layerOptions.kind.toLowerCase() : null;
+          if (kind === "mapbox" || type === "mapbox") {
+            promise = createMapBoxLayer({
+              ...opts,
+              type: "service",
+              kind: "mapbox"
+            });
+          } else if (kind === "wms" || type === "wms") {
+            promise = createServiceLayer({
+              ...opts,
+              type: "service",
+              kind: "wms"
+            });
+          } else if (kind === "wmts" || type === "wmts") {
+            promise = createServiceLayer({
+              ...opts,
+              type: "service",
+              kind: "wmts"
+            });
           } else {
-            log.debug(name, "| change position", position);
-            l.setZIndex(Number(position));
+            throw new Error("Le service est inconnu !");
           }
-        }
-        return l;
-      })
-      .then((l) => {
-        // sauvegarde de la couche
-        layer = l;
-      })
-      .then(() => {
-        // informe le parent que la couche est montée
-        emit('mounted');
-      })
-      .then(() => {
-        // zoom sur la couche
-        // sauf si la couche vient du permalien !
-        if (mapStore.isPermalink) {
-          return;
-        }
-        var source = layer.getSource();
-        if (map.getView() && map.getSize()) {
-          var sourceExtent = null;
-          if (source && source.getExtent) {
-            sourceExtent = source.getExtent();
+          break;
+        case "carte":
+          throw "Not yet implemented !";
+        case "compute":
+          promise = createComputeLayer(props.layerOptions);
+          break;
+        case "url-mapbox":
+        case "mapbox":
+        case "url-kml":
+        case "kml":
+        case "url-gpx":
+        case "gpx":
+        case "url-geojson":
+        case "geojson":
+        case "import":
+          // url de partage contient toujours un contenu
+          // - soit pour un import ou croquis passant par l'outil d'édition
+          // - soit pour un fichier de style mapbox par l'outil d'édition
+          if (format.toLowerCase() === "mapbox" || type === "url-mapbox" || type === "mapbox") {
+            promise = createMapBoxLayer(props.layerOptions);
           } else {
-            if (source && source.getTileGrid) {
-              // INFO : pour les couches mapbox
-              sourceExtent = source.getTileGrid().getExtent();
-            }
-          }
-          if (sourceExtent && sourceExtent[0] !== Infinity) {
-            map.getView().fit(sourceExtent, map.getSize());
-          } else {
-            layer.once('change', () => {
-              if (layer.getSource().getExtent()) {
-                map.getView().fit(layer.getSource().getExtent(), map.getSize());
-              }
+            promise = createVectorLayer({
+              ...opts,
+              type: "import",
+              format: format || (type && type.startsWith("url-") ? type.slice(4) : type)
             });
           }
+          break;
+        case "drawing":
+          promise = createVectorLayer(props.layerOptions);
+          break;
+        default:
+          break;
+      }
+
+      if (!promise) {
+        return;
+      }
+
+      layer = await promise;
+      log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+      if (position !== layer.getZIndex()) {
+        if (Number(position) === -1) {
+          log.debug(name, "| position auto");
+        } else {
+          log.debug(name, "| change position", position);
+          layer.setZIndex(Number(position));
         }
-      })
-      .catch((e) => {
-        log.warn("Exception sur la couche " + name + " !");
-        console.warn(e);
-        push.warning({
-          title: t.notification.title,
-          message: t.notification.exception_add_layer(name, e.message)
-        });
-      });
+      }
+
+      map.addLayer(layer);
+      emit('mounted');
+
+      // zoom sur la couche sauf si la couche vient du permalien
+      if (mapStore.isPermalink()) {
+        return;
+      }
+      var source = layer.getSource();
+      if (map.getView() && map.getSize()) {
+        var sourceExtent = null;
+        if (source && source.getExtent) {
+          sourceExtent = source.getExtent();
+        } else if (source && source.getTileGrid) {
+          // INFO : pour les couches mapbox
+          sourceExtent = source.getTileGrid().getExtent();
+        }
+        if (sourceExtent && sourceExtent[0] !== Infinity) {
+          map.getView().fit(sourceExtent, map.getSize());
+        } else {
+          layer.once('change', () => {
+            if (layer.getSource().getExtent()) {
+              map.getView().fit(layer.getSource().getExtent(), map.getSize());
+            }
+          });
+        }
+      }
     }
-  }
+  };
+
+  const queueKey = "__layerAddQueue";
+  const currentQueue = map[queueKey] || Promise.resolve();
+  map[queueKey] = currentQueue
+    .then(() => enqueueOnMap())
+    .catch((e) => {
+      const name = props.layerOptions.name || props.layerOptions.id || "inconnue";
+      log.warn("Exception sur la couche " + name + " !");
+      console.warn(e);
+      push.warning({
+        title: t.notification.title,
+        message: t.notification.exception_add_layer(name, e.message)
+      });
+    });
 })
 
 /**

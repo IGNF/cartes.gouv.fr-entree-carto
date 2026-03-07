@@ -4,7 +4,6 @@
  * Cartographie intégrée pour partage
  * 
  */
-export default {};
 </script>
 
 <script setup lang="js">
@@ -79,12 +78,13 @@ onMounted(() => {
   </Suspense>
 </template>
 
-<style>
+<style lang="css">
   .map-container,
   .patience-container {
     margin-left: 0;
     width: inherit;
     height: 100vh;
     display: flex;
-  }
+    top: 0;
+}
 </style>

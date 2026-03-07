@@ -55,11 +55,10 @@ import t from './translation';
  * @property {*} options.data | @property {*} options.url
  * @fixme hack sur le format GPX à reporter sur les extensions !
  */
-const createVectorLayer = (options) => {
-  try {
-    var vectorFormat = null;
-    var vectorSource = null;
-    var vectorLayer = null;
+const createVectorLayer = async (options) => {
+  var vectorFormat = null;
+  var vectorSource = null;
+  var vectorLayer = null;
   
     var extended = (options.extended === undefined) ? true : options.extended;
     switch (options.format.toLowerCase()) {
@@ -161,10 +160,7 @@ const createVectorLayer = (options) => {
     // permalink
     vectorLayer.set("permalink", options.permalink || false);
 
-    return Promise.resolve(vectorLayer);
-  } catch (error) {
-    return Promise.reject(error);
-  }
+  return vectorLayer;
 };
 
 /**
@@ -184,11 +180,10 @@ const createVectorLayer = (options) => {
  * @property {*} options.compute
  * @property {*} options.data | @property {*} options.url
  */
-const createComputeLayer = (options) => {
-  try {
-    var vectorFormat = null;
-    var vectorSource = null;
-    var vectorLayer = null;
+const createComputeLayer = async (options) => {
+  var vectorFormat = null;
+  var vectorSource = null;
+  var vectorLayer = null;
   
     vectorFormat = new GeoJSON(); 
     // Extended
@@ -294,10 +289,7 @@ const createComputeLayer = (options) => {
     vectorLayer.getSource().once("featuresloadend", successLoadData);
     vectorLayer.getSource().once("featuresloaderror", failedLoadData);
 
-    return Promise.resolve(vectorLayer);
-  } catch (error) {
-    return Promise.reject(error);
-  }
+  return vectorLayer;
 }
 
 /**
@@ -318,7 +310,7 @@ const createComputeLayer = (options) => {
  * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer dans les getCapabilities ?
  */
-const createServiceLayer = (options) => {
+const createServiceLayer = async (options) => {
 
   var createLayer = (options) => {
     var tileLayer = null;
@@ -426,35 +418,22 @@ const createServiceLayer = (options) => {
   }
 
   if (options.url) {
-    return fetch(options.url)
-    .then((response) => {
-      if (response.ok) {
-        return response.json()
-          .then((data) => {
-            return createLayer({
-              ...options,
-              ...{
-                data : data
-              }
-            });
-          })
-          .catch((e) => {
-            throw e;
-          });
+    const response = await fetch(options.url);
+    if (!response.ok) {
+      throw new Error(t.ol.failed_source("service non reconnu"));
+    }
+
+    const data = await response.json();
+    return createLayer({
+      ...options,
+      ...{
+        data : data
       }
-    })
-    .catch((e) => {
-      throw e;
     });
   }
 
   if (options.data) {
-    try {
-      var layer = createLayer(options);
-      return Promise.resolve(layer);
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    return createLayer(options);
   }
 };
 
@@ -480,7 +459,7 @@ const createServiceLayer = (options) => {
  * @fixme extent à récuperer
  * @todo messages
  */
-const createMapBoxLayer = (options) => {
+const createMapBoxLayer = async (options) => {
 
   const createLayer = (options) => {
     var vectorLayer = null;
@@ -519,19 +498,12 @@ const createMapBoxLayer = (options) => {
       vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
       vectorLayer.styleUrl = options.url; // HACK pour le N&B !
 
-      var setStyle = () => {
-        applyStyle(vectorLayer, _glStyle, { source : _glSourceId })
-        .then(() => {
-          vectorLayer.getSource().setState("ready");
-          vectorLayer.set("mapbox-styles", _glStyle);
-        })
-        .then(() => {
-          vectorLayer.setVisible(getVisible(options.visible));
-          vectorLayer.setOpacity(getOpacity(options.opacity));
-        })
-        .catch((e) => {
-          throw e;
-        });
+      var setStyle = async () => {
+        await applyStyle(vectorLayer, _glStyle, { source : _glSourceId });
+        vectorLayer.getSource().setState("ready");
+        vectorLayer.set("mapbox-styles", _glStyle);
+        vectorLayer.setVisible(getVisible(options.visible));
+        vectorLayer.setOpacity(getOpacity(options.opacity));
       };
 
       if (vectorLayer.getSource()) {
@@ -545,71 +517,43 @@ const createMapBoxLayer = (options) => {
     return vectorLayer;
   };
 
-  const getStyle = (url) => {
-    return fetch(url)
-    .then((response) => {
-      if (response.ok) {
-        return response.json()
-          .then((data) => {
-            // La réponse est soit 
-            // - un style (json)
-            // - une url de style
-            if (data && data.sources) {
-              return data;
-            } else if (data && data.url) {
-              return fetch(data.url)
-                .then((response) => {
-                  if (response.ok) {
-                    return response.json()
-                      .then((style) => {
-                        return style;
-                      })
-                      .catch((e) => {
-                        throw e;
-                      });
-                  } else {
-                    throw new Error(t.ol.failed_mapbox("style mapbox"));
-                  }
-                })
-                .catch((e) => {
-                  throw e;
-                });
-            } else {
-              throw new Error(t.ol.failed_mapbox("style mapbox"));
-            }
-          })
-          .catch((e) => {
-            throw e;
-          });
+  const getStyle = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(t.ol.failed_mapbox("style mapbox"));
+    }
+
+    const data = await response.json();
+    // La réponse est soit
+    // - un style (json)
+    // - une url de style
+    if (data && data.sources) {
+      return data;
+    }
+
+    if (data && data.url) {
+      const styleResponse = await fetch(data.url);
+      if (!styleResponse.ok) {
+        throw new Error(t.ol.failed_mapbox("style mapbox"));
       }
-    })
-    .catch((e) => {
-      throw e;
-    });
+      return await styleResponse.json();
+    }
+
+    throw new Error(t.ol.failed_mapbox("style mapbox"));
   };
 
   if (options.url) {
-    return getStyle(options.url)
-    .then((style) => {
-      return createLayer({
-        ...options,
-        ...{
-          data : style
-        }
-      });
-    })
-    .catch((e) => {
-      throw e;
+    const style = await getStyle(options.url);
+    return createLayer({
+      ...options,
+      ...{
+        data : style
+      }
     });
   }
 
   if (options.data) {
-    try {
-      var layer = createLayer(options);
-      return Promise.resolve(layer);
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    return createLayer(options);
   }
 };
 

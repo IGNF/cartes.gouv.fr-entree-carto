@@ -84,7 +84,7 @@ export class Eulerian {
   start () {
     console.debug("start");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
-    window.dsfr.analytics.opt.enable();
+    window.dsfr.analytics.opt.toggle();
     window.dsfr.start();
     window.dsfr.analytics.readiness.then(() => {
       console.debug("start promise !");
@@ -104,7 +104,7 @@ export class Eulerian {
   stop () {
     console.debug("stop");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
-    // window.dsfr.analytics.opt.disable();
+    window.dsfr.analytics.opt.disable();
     window.dsfr.stop();
     this.status = false;
   }
