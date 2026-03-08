@@ -21,6 +21,8 @@ import ModalConsentCustom from './ModalConsentCustom.vue';
 import { useEulerian } from '@/plugins/Eulerian.js';
 
 const router = useRouter();
+const route = useRoute();
+
 const eulerian = useEulerian();
 
 const refModalConsentCustom = ref(null);
@@ -28,13 +30,13 @@ const refModalConsentCustom = ref(null);
 // gestion de la modale de consentement 'eulerian'
 // on vérifie si l'utilisateur a déjà donné son 
 // consentement pour le suivi Eulerian
-var open = eulerian.hasKey();
+const open = eulerian.hasKey();
 
 // on affiche la modale de consentement 
 // si l'utilisateur n'a pas encore donné son consentement et 
 // si on n'est pas sur la route /embed
 const isEmbedRoute = () => {
-  const pathname = window.location.pathname || '';
+  const pathname = route.path;
   return pathname.includes('/embed');
 };
 const consentModalOpened = ref(!open && !isEmbedRoute());
@@ -43,7 +45,7 @@ const consentModalOpened = ref(!open && !isEmbedRoute());
 // la modale de consentement
 // ceinture et bretelles ...
 watch(
-  () => window.location.pathname,
+  () => route.path,
   () => {
     if (isEmbedRoute()) {
       consentModalOpened.value = false;
