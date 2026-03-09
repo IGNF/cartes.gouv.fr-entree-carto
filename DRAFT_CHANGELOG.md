@@ -18,6 +18,7 @@
   - Menu des contrôles: respect de la maquette
   - Zoom: améliorations UI (fix #700)
   - Mini Carte: respect maquette (fix #794)
+  - La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
 
 #### 🔥 [Obsolète]
 
