@@ -217,12 +217,12 @@ onMounted(() => {
 
       map.addLayer(layer);
       emit('mounted');
-
       // zoom sur la couche sauf si la couche vient du permalien
       if (mapStore.isPermalink()) {
         return;
       }
-      // INFO : le zoom sur la couche est géré dans le composant parent pour les couches de type "service" (WMS, WMTS, Mapbox) afin de s'assurer que la couche est bien chargée avant de tenter de faire un fit sur son extent
+      // INFO : 
+      // on desactive le zoom to extent...
       // var source = layer.getSource();
       // if (map.getView() && map.getSize()) {
       //   var sourceExtent = null;
@@ -241,14 +241,14 @@ onMounted(() => {
       //       }
       //     });
       //   }
-      // }
+      // }  
     }
   };
 
   const queueKey = "__layerAddQueue";
   const currentQueue = map[queueKey] || Promise.resolve();
   map[queueKey] = currentQueue
-    .then(() => enqueueOnMap())
+    .then(() => enqueueOnMap()) 
     .catch((e) => {
       const name = props.layerOptions.name || props.layerOptions.id || "inconnue";
       log.warn("Exception sur la couche " + name + " !");
