@@ -35,7 +35,8 @@ class ServiceBase {
 
     /** authentification */
     this.authenticated = options.authenticated || false;
-
+    /** need authentificate sync */
+    this.authentificateSyncNeeded = options.authentificateSyncNeeded || false;
     
     /** user */
     this.user = options.user || {};

@@ -97,6 +97,7 @@ if (service.isAlreadyAuthentificate()) {
       // --> demande de sync à faire !
       if (!status && service.authenticated) {
         serviceStore.setAuthentificateSyncNeeded(true);
+        service.saveStore();
       }
     })
     .catch((e) => {
