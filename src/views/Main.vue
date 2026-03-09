@@ -9,21 +9,21 @@ import NotificationError from '@/icons/NotificationError.vue'
 import NotificationWarning from '@/icons/NotificationWarning.vue'
 import NotificationClose from '@/icons/NotificationClose.vue'
 
+// components
+import Alerts from '@/components/modals/Alerts.vue'
+import CustomHeader from '@/components/header/CustomHeader.vue'
+import CustomFooter from '@/components/footer/CustomFooter.vue'
+
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'
-import { useBaseUrl } from '@/composables/baseUrl'
 
 // library
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
 import { useAppStore } from "@/stores/appStore"
-import { useMapStore} from "@/stores/mapStore"
-import { useServiceStore } from '@/stores/serviceStore'
 
 const appStore = useAppStore()
-const mapStore = useMapStore()
-const serviceStore = useServiceStore()
 const route = useRoute()
 const { theme } = useScheme();
 
@@ -73,39 +73,16 @@ const notificationsTheme = computed(() => {
   };
 });
 
-const alertClosed = ref(false);
-// gestion de l'alerte d'information sur la redirection depuis le geoportail
-const alertData = {
-    title : "Iframe obsolète",
-    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 20/06/2026. Pour le mettre à jour, rendez vous sur notre <a href=\"https://ignf.github.io/permalink-converter/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
-}; 
-const onCloseAlert = () => {
-  alertClosed.value = true;
-};
-
-// Base URL pour les routes login/logout
-const url = useBaseUrl() + import.meta.env.BASE_URL;
-
-const sessionExpiredClosed = ref(false);
-// gestion de l'alerte de session expirée
-const sessionExpiredData = {
-    title : "Session expirée",
-    description : "Votre session a expirée. Veuillez vous reconnecter.",
-    action : `<a href="${url}login">Se reconnecter</a>`
-};
-const onCloseSessionExpired = () => {
-  sessionExpiredClosed.value = true;
-};
-
 onMounted(() => {
   appStore.detectFirstOpen()
 })
-
-
 </script>
 
 <template>
-  <CustomHeader v-if="!isEmbedRoute" />
+  <CustomHeader
+    v-if="!isEmbedRoute"
+    class="CustomHeader"
+  />
 
   <!-- Notifications
   -->
@@ -118,50 +95,59 @@ onMounted(() => {
     />
   </Notivue>
 
-  <!-- INFO
-    Message d'information sur la redirection issue du geoportail 
-    Le permalien possède la clef/valeur : "fromgpp=1"
-    On informe donc l'utilisateur d'une action à faire.
-  -->
-  <DsfrAlert
-    v-if="mapStore.isRedirect"
-    type="warning"
-    :title="alertData.title"
-    :closeable="true"
-    :closed="alertClosed"
-    @close="onCloseAlert()"
-  >
-    <p v-html="alertData.description" />
-  </DsfrAlert>
+  <Alerts class="Alerts" />
 
-  <DsfrAlert
-    v-if="serviceStore.getAuthentificateSyncNeeded()"
-    type="error"
-    :title="sessionExpiredData.title"
-    :small="true"
-    :closeable="true"
-    :closed="sessionExpiredClosed"
-    @close="onCloseSessionExpired()"
-  >
-    <p>{{ sessionExpiredData.description }}</p>
-    <p v-html="sessionExpiredData.action" />
-  </DsfrAlert>
-
-  <div class="futur-map-container">
+  <div class="futur-map-container Map">
     <router-view />
   </div>
   
   <CustomFooter
     v-if="!mobileScreen && !isEmbedRoute"
     compact
+    class="CustomFooter"
   />
 </template>
 
 <style lang="scss">
+@import "@/iconscustom.css";
+
+body {
+  min-height: 100vh;
+}
 /* HACK Surcharge API Analytics */
-  body.modal-open {
-    overflow: unset;
-  }
+body.modal-open {
+  overflow: unset;
+}
+#app {
+  display: grid;
+  // on définit 4 lignes (attention, il faut bien 4 enfants dans #app)
+  // [nom] taille
+  grid-template-rows:
+    [header] auto
+    [alerts] auto
+    [map] 1fr
+    [footer] auto;
+  min-height: 100vh;
+}
+// on place les éléments
+.CustomHeader {
+  grid-row: header;
+}
+.Alerts {
+  grid-row: alerts;
+}
+.Map {
+  grid-row: map;
+}
+.CustomFooter {
+  grid-row: footer;
+}
+
+hr {
+  margin: 1rem 0;
+  padding: 0;
+  height: 1px;
+}
 
   /* TODO :
   surcharge des popups de notifications :

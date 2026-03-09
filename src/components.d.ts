@@ -8,6 +8,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Alert: typeof import('./components/modals/Alert.vue')['default']
+    Alerts: typeof import('./components/modals/Alerts.vue')['default']
     Attributions: typeof import('./components/carte/control/Attributions.vue')['default']
     Carto: typeof import('./components/carte/Carto.vue')['default']
     CartoAndTools: typeof import('./components/CartoAndTools.vue')['default']
@@ -71,7 +73,6 @@ declare module 'vue' {
     MenuTierce: typeof import('./components/menu/MenuTierce.vue')['default']
     ModalConsent: typeof import('./components/modals/ModalConsent.vue')['default']
     ModalConsentCustom: typeof import('./components/modals/ModalConsentCustom.vue')['default']
-    ModalInformation: typeof import('./components/modals/ModalInformation.vue')['default']
     ModalLogin: typeof import('./components/modals/ModalLogin.vue')['default']
     ModalReportingStart: typeof import('./components/modals/ModalReportingStart.vue')['default']
     ModalReportingSuccessSent: typeof import('./components/modals/ModalReportingSuccessSent.vue')['default']

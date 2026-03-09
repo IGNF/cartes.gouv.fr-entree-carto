@@ -116,6 +116,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    ns,
     siteOpened,
     detectFirstOpen,
     setDocumentTemporary,
