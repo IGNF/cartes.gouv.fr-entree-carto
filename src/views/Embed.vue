@@ -40,21 +40,6 @@ const selectedControls = [
   "Zoom"
 ];
 
-function hideHeader () {
-  var header = document.querySelector(".fr-header");
-  header.classList.add("gpf-hidden");
-}
-
-function hideFooter () {
-  var footer = document.querySelector(".fr-footer");
-  footer.classList.add("gpf-hidden");
-}
-
-onMounted(() => {
-  hideHeader();
-  hideFooter();
-});
-
 </script>
 
 <template>

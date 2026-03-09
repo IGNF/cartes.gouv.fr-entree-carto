@@ -12,7 +12,7 @@
 export default {};
 </script>
 <script setup lang="js">
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';
 
 import ModalConsentCustom from './ModalConsentCustom.vue';
@@ -21,20 +21,46 @@ import ModalConsentCustom from './ModalConsentCustom.vue';
 import { useEulerian } from '@/plugins/Eulerian.js';
 
 const router = useRouter();
+const route = useRoute();
+
 const eulerian = useEulerian();
 
 const refModalConsentCustom = ref(null);
 
 // gestion de la modale de consentement 'eulerian'
-var open = eulerian.hasKey();
+// on vérifie si l'utilisateur a déjà donné son 
+// consentement pour le suivi Eulerian
+const open = eulerian.hasKey();
 
-const consentModalOpened = ref(!open);
+// on affiche la modale de consentement 
+// si l'utilisateur n'a pas encore donné son consentement et 
+// si on n'est pas sur la route /embed
+const isEmbedRoute = () => {
+  const pathname = route.path;
+  return pathname.includes('/embed');
+};
+const consentModalOpened = ref(!open && !isEmbedRoute());
+
+// on écoute les changements de route pour fermer 
+// la modale de consentement
+// ceinture et bretelles ...
+watch(
+  () => route.path,
+  () => {
+    if (isEmbedRoute()) {
+      consentModalOpened.value = false;
+    }
+  },
+  { immediate: true }
+);
 
 const title = "À propos des cookies sur cartes.gouv.fr";
-const size = "md";
 const url = useBaseUrl() + "/donnees-personnelles";
 
 const openModalConsent = () => {
+  if (isEmbedRoute()) {
+    return;
+  }
   consentModalOpened.value = true;
   eulerian.pause();
 }
@@ -71,20 +97,25 @@ const onCustomizeCookies = () => {
 </script>
 
 <template>
-  <div v-if="consentModalOpened" class="fr-consent-banner">
-    <h2 class="fr-h6">{{ title }}</h2>
+  <div 
+    v-if="consentModalOpened" 
+    class="fr-consent-banner"
+  >
+    <h2 class="fr-h6">
+      {{ title }}
+    </h2>
     <p id="my-consent">
-        <DsfrConsent
-          @accept-all="onAcceptConsentAll()"
-          @refuse-all="onRefuseConsentAll()"
-          @customize="onCustomizeCookies()"
-        >
-          Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
-          les services disponibles sur ce site. 
-          Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
-          Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
-          Préférences pour tous les services.
-        </DsfrConsent>
+      <DsfrConsent
+        @accept-all="onAcceptConsentAll()"
+        @refuse-all="onRefuseConsentAll()"
+        @customize="onCustomizeCookies()"
+      >
+        Bienvenue ! Nous utilisons des cookies pour améliorer votre expérience et 
+        les services disponibles sur ce site. 
+        Pour en savoir plus, visitez la page <a :href="url">Données personnelles et cookies</a>.  
+        Vous pouvez, à tout moment, avoir le contrôle sur les cookies que vous souhaitez activer.
+        Préférences pour tous les services.
+      </DsfrConsent>
     </p>
     <DsfrButton
       id="fr-consent-modal-hidden-control-button"
