@@ -222,25 +222,26 @@ onMounted(() => {
       if (mapStore.isPermalink()) {
         return;
       }
-      var source = layer.getSource();
-      if (map.getView() && map.getSize()) {
-        var sourceExtent = null;
-        if (source && source.getExtent) {
-          sourceExtent = source.getExtent();
-        } else if (source && source.getTileGrid) {
-          // INFO : pour les couches mapbox
-          sourceExtent = source.getTileGrid().getExtent();
-        }
-        if (sourceExtent && sourceExtent[0] !== Infinity) {
-          map.getView().fit(sourceExtent,  { size : map.getSize() });
-        } else {
-          layer.once('change', () => {
-            if (layer.getSource().getExtent()) {
-              map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
-            }
-          });
-        }
-      }
+      // INFO : le zoom sur la couche est géré dans le composant parent pour les couches de type "service" (WMS, WMTS, Mapbox) afin de s'assurer que la couche est bien chargée avant de tenter de faire un fit sur son extent
+      // var source = layer.getSource();
+      // if (map.getView() && map.getSize()) {
+      //   var sourceExtent = null;
+      //   if (source && source.getExtent) {
+      //     sourceExtent = source.getExtent();
+      //   } else if (source && source.getTileGrid) {
+      //     // INFO : pour les couches mapbox
+      //     sourceExtent = source.getTileGrid().getExtent();
+      //   }
+      //   if (sourceExtent && sourceExtent[0] !== Infinity) {
+      //     map.getView().fit(sourceExtent,  { size : map.getSize() });
+      //   } else {
+      //     layer.once('change', () => {
+      //       if (layer.getSource().getExtent()) {
+      //         map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
+      //       }
+      //     });
+      //   }
+      // }
     }
   };
 
