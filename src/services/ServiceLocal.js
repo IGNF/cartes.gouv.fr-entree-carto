@@ -4,7 +4,6 @@ import { useServiceStore } from '@/stores/serviceStore';
 
 import { OAuth2Client, OAuth2Fetch } from '@badgateway/oauth2-client';
 import { generateCodeVerifier } from '@badgateway/oauth2-client';
-import Keycloak from "keycloak-js";
 
 const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
@@ -135,44 +134,19 @@ class ServiceLocal extends ServiceBase {
 
   /**
    * Verifie la session Keycloak en utilisant (iframe)
-   * - soit via la méthode native  
-   * - soit avec la librairie Keycloak
-   * @param {String} adapter - natif or keycloak (par defaut)
+   * - soit via la méthode native/oauth2 (spécifique au local)
+   * - soit via l'implémentation de ServiceBase (keycloak par défaut)
+   * @param {String} adapter - natif | oauth2 | keycloak (par defaut)
    * @returns {Promise<Boolean>} - true if session is active, false otherwise
    */
   async checkKeycloakSession (adapter) {
-    if (!adapter) {
-      adapter = 'keycloak';
-    }
-    if (adapter !== 'keycloak') {
+    if (adapter !== "keycloak") {
       return this.#checkKeycloakSessionAdapterOAuth();
-    } else {
-      return this.#checkKeycloakSessionAdapterKeycloak();
     }
-  }
 
-  /**
-   * Preconisé !
-   * Adapter utilisant la librairie Keycloak pour vérifier la session SSO
-   * - Avantages : plus robuste, gère mieux les cas de session expirée, de rafraîchissement de token, etc.
-   * - Inconvénients : plus lourd, nécessite de charger la librairie Keycloak
-   * @returns 
-   */
-  async #checkKeycloakSessionAdapterKeycloak () {
-    console.log("use checkKeycloakSessionAdapter keycloak");
-    const keycloak = new Keycloak({
-      url: IAM_URL,
-      realm: IAM_REALM,
-      clientId: IAM_CHECK_SSO_CLIENT_ID
-    });
-
-    return keycloak.init({ 
-        onLoad: 'check-sso', 
-        flow: "standard",
-        pkceMethod: "S256",
-        checkLoginIframe: false,
-        silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
-    });
+    // Delegate keycloak (et fallback) au comportement par defaut
+    // de ServiceBase.
+    return super.checkKeycloakSession('keycloak');
   }
 
   /**

@@ -2,8 +2,14 @@ import Users from '@/services/ServiceUsers';
 import Documents from '@/services/ServiceDocuments';
 
 import { useServiceStore } from '@/stores/serviceStore';
+// client keycloak pour vérifier la session (iframe)
+import Keycloak from "keycloak-js";
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
+const IAM_URL = import.meta.env.IAM_URL;
+const IAM_REALM = import.meta.env.IAM_REALM;
+
+const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 
 class ServiceBase {
 
@@ -131,6 +137,37 @@ class ServiceBase {
    */
   setEmitter (emitter) {
     this.#emitter = emitter || null;
+  }
+
+  /**
+   * Verifie la session Keycloak en utilisant (iframe)
+   * - soit avec la librairie Keycloak (par défaut)
+   * - soit via la méthode oauth2  
+   * @param {String} adapter - oauth2 or keycloak
+   * @returns {Promise<Boolean>} - true if session is active, false otherwise
+   */
+  async checkKeycloakSession (adapter) {
+    if (adapter === "keycloak") {
+      console.log("use checkKeycloakSessionAdapter keycloak");
+      const keycloak = new Keycloak({
+        url: IAM_URL,
+        realm: IAM_REALM,
+        clientId: IAM_CHECK_SSO_CLIENT_ID
+      });
+
+      return keycloak.init({ 
+          onLoad: 'check-sso', 
+          flow: "standard",
+          pkceMethod: "S256",
+          checkLoginIframe: false,
+          silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
+      });
+    } else {
+      console.log("use checkKeycloakSessionAdapter oauth2");
+      return new Promise((reject) => {
+        reject("checkKeycloakSessionAdapter oauth2 is not implemented yet !");
+      });
+    }
   }
 
   /**
