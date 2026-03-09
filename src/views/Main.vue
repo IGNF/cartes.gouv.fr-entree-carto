@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { markRaw } from 'vue'
+import { useRoute } from 'vue-router'
 
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
@@ -25,7 +26,10 @@ const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
+const route = useRoute()
 const { theme } = useScheme();
+
+const isEmbedRoute = computed(() => route.path === '/embed')
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
@@ -103,7 +107,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <CustomHeader />
+  <CustomHeader v-if="!isEmbedRoute" />
 
   <!-- Notifications
   -->
@@ -149,13 +153,16 @@ onMounted(() => {
 
   <div
     class="futur-map-container"
-    :class="domStore.isHeaderCompact ? 'minimized': ''"
+    :class="{
+      minimized: domStore.isHeaderCompact,
+      embed: isEmbedRoute
+    }"
   >
     <router-view />
   </div>
   
   <CustomFooter
-    v-if="!mobileScreen"
+    v-if="!mobileScreen && !isEmbedRoute"
     compact
   />
 </template>
@@ -169,6 +176,9 @@ onMounted(() => {
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);
+  }
+  .futur-map-container.embed {
+    height: 100vh;
   }
   .minimized.futur-map-container {
     height: calc(100vh - 108.5px);
