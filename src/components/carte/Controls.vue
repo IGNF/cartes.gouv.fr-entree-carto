@@ -886,12 +886,20 @@ onMounted(() => {
   display: none;
 }
 // puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
-// le controlList est affiché tout en bas, sous la liste
 .position-container-top-right > .gpf-widget:nth-child(3) ~ .gpf-widget[id^="GPcontrolList-"] {
   position: absolute !important;
-  bottom: -$widget-btn-size !important;
-  bottom: 0 !important;
   display: block;
+  // le controlList est affiché tout en bas, sous la liste
+  // --diff-widgets
+  // si le nombre max (--nb-widgets) est plus grand que le nombre de widget (--count +1 car controlList)
+  // alors, --diff-widgets > 0 et bottom = 9999px * n, sinon --diff-widgets = 0 et bottom = 0
+  --diff-widgets: max(var(--nb-widgets) - var(--count) + 1, 0);
+  bottom: calc(var(--diff-widgets) * 9999px) !important;
+}
+
+// on ajoute un border-radius sur l'avant dernier élément, a partir du 3e (celui avant controlList)
+.position-container-top-right > .gpf-widget:nth-child(2) ~ .gpf-widget:nth-last-child(2) > .gpf-btn-icon {
+  border-radius: 0 0 $widget-btn-radius $widget-btn-radius;
 }
 
 // on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
@@ -920,7 +928,7 @@ onMounted(() => {
   .position-container-top-right:has(> .gpf-widget:nth-child(#{$i + 3})) { --count: #{$i} }
 }
 
-// on décale tous les widgets qui dépassent de la hauteur (pour conserver le border-radius de controlList visible)
+// on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget:not([id^="GPcontrolList-"]) {
   margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
 }
