@@ -84,7 +84,7 @@ export class Eulerian {
   start () {
     console.debug("start");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
-    window.dsfr.analytics.opt.toggle();
+    window.dsfr.analytics.opt.enable();
     window.dsfr.start();
     window.dsfr.analytics.readiness.then(() => {
       console.debug("start promise !");

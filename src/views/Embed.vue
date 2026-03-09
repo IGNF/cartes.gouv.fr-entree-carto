@@ -85,6 +85,5 @@ onMounted(() => {
     width: inherit;
     height: 100vh;
     display: flex;
-    top: 0;
 }
 </style>

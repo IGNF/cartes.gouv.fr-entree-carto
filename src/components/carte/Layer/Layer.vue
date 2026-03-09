@@ -167,7 +167,7 @@ onMounted(() => {
           }
           break;
         case "carte":
-          throw "Not yet implemented !";
+          throw new Error("Not yet implemented !");
         case "compute":
           promise = createComputeLayer(props.layerOptions);
           break;
@@ -232,11 +232,11 @@ onMounted(() => {
           sourceExtent = source.getTileGrid().getExtent();
         }
         if (sourceExtent && sourceExtent[0] !== Infinity) {
-          map.getView().fit(sourceExtent, map.getSize());
+          map.getView().fit(sourceExtent,  { size : map.getSize() });
         } else {
           layer.once('change', () => {
             if (layer.getSource().getExtent()) {
-              map.getView().fit(layer.getSource().getExtent(), map.getSize());
+              map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
             }
           });
         }
