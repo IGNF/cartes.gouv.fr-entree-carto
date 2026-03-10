@@ -62,5 +62,10 @@ function onClickZoomOut (e) {
 .ol-custom-zoom-in,
 .ol-custom-zoom-out {
   height: 50%;
+
+  // supprime tooltip
+  &::before {
+    content: none !important;
+  }
 }
 </style>
