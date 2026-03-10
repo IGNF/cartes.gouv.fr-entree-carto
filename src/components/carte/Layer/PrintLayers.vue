@@ -4,18 +4,16 @@ import VectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
 import VectorTile from 'ol/layer/VectorTile';
 
+import { useMapStore } from '@/stores/mapStore';
+let mapStore = useMapStore();
+
 const props = defineProps({
-  mainMapId: {
-    type: String,
-    default: ''
-  },
-    printMapId: {
+  printMapId: {
     type: String,
     default: ''
   }
 })
 
-const mainMap = inject(props.mainMapId);
 const printMap = inject(props.printMapId);
 
 function cloneTileLayer(layer) {
@@ -95,8 +93,7 @@ function cloneLayer(layer) {
 }
 
 onMounted(async () => {
-const layers = mainMap.getLayers();
-
+const layers = mapStore.getMap().getLayers();
 layers.forEach(layer => {
   let l = cloneLayer(layer)
   printMap.addLayer(l);
@@ -109,4 +106,5 @@ layers.forEach(layer => {
 </script>
 
 <template>
+  <div />
 </template>
