@@ -752,6 +752,7 @@ onMounted(() => {
 
   &.gpf-widget-button {
     box-shadow: var(--raised-shadow);
+    border-radius: $widget-btn-radius;
   }
 
   & > .gpf-btn-icon {
