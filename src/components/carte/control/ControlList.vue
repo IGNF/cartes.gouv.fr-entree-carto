@@ -76,14 +76,9 @@ onUpdated(() => {
     box-shadow: 0 3px 3px -1px var(--shadow-color);
   }
 
-  .gpf-btn-icon {
-    // dernier element de la liste
-    border-radius: 0 0 $widget-btn-radius $widget-btn-radius !important;
-
-    span::before {
-      // supprime la séparation
-      content: none !important;
-    }
+  .gpf-btn-icon span::before {
+    // supprime la séparation
+    content: none !important;
   }
 }
 
