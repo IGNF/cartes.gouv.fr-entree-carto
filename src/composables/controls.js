@@ -13,6 +13,9 @@
  *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
+import { useMatchMedia } from '@/composables/matchMedia';
+let isMobile = useMatchMedia('SM');
+
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
@@ -92,7 +95,7 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: false,
-    default: true,
+    default: !isMobile.value,
     icon: "ri:zoom-in-line"
   },
   Route: {
