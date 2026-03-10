@@ -30,5 +30,5 @@
 #### 🔒 [Sécurité]
 
   - mise à jour dépendance : oauth2-client@3.3.1
-
+  - Dépendance : conversion des images en base64 directement réalisée dans le build des extensions geopf pour openlayers (#962)
 ---

@@ -20,14 +20,17 @@ import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 import { useServiceStore } from '@/stores/serviceStore'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
-const router = useRouter();
 const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
-const { theme } = useScheme();
+const router = useRouter()
+const route = useRoute()
+const { theme } = useScheme()
+
+const isEmbedRoute = computed(() => route.path === '/embed')
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
@@ -139,7 +142,7 @@ watch(
 </script>
 
 <template>
-  <CustomHeader />
+  <CustomHeader v-if="!isEmbedRoute" />
 
   <!-- Notifications
   -->
@@ -191,13 +194,16 @@ watch(
 
   <div
     class="futur-map-container"
-    :class="domStore.isHeaderCompact ? 'minimized': ''"
+    :class="{
+      minimized: domStore.isHeaderCompact,
+      embed: isEmbedRoute
+    }"
   >
     <router-view />
   </div>
   
   <CustomFooter
-    v-if="!mobileScreen"
+    v-if="!mobileScreen && !isEmbedRoute"
     compact
   />
 </template>
@@ -211,6 +217,9 @@ watch(
   .futur-map-container{
     width: 100%;
     height: calc(100vh - 169px);
+  }
+  .futur-map-container.embed {
+    height: 100vh;
   }
   .minimized.futur-map-container {
     height: calc(100vh - 108.5px);

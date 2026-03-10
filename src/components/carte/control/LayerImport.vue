@@ -33,8 +33,9 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 const service = inject('services');
 
-const refModalLogin = inject("refModalLogin");
-const refModalSave = inject("refModalSave");
+// Ces injections sont optionnelles (ex: route embed sans modales).
+const refModalLogin = inject("refModalLogin", null);
+const refModalSave = inject("refModalSave", null);
 
 const props = defineProps({
   mapId: {
