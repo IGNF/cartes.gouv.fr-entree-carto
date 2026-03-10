@@ -112,6 +112,8 @@ app.use(services)
 app.use(notivue)
 app.use(bus)
 
-waitingPrepareApp().then(() => {
+waitingPrepareApp().then(async () => {
+  // Ensure initial route is fully resolved before first render.
+  await router.isReady()
   app.mount('#app')
 })
