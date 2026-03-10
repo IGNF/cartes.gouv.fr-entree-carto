@@ -21,6 +21,10 @@ onMounted(() => {
   var success = urlParams.get('success'); // remote
   var from = urlParams.get('from'); // logout redirection
 
+  // INFO
+  // La session expirée n'est plus utilisée 
+  // suite au changement de workflow de deconnexion, 
+  // mais on garde le code en cas où...
   if (from === 'sessionExpired') {
     service.getAccessLogoutSilent()
     .then((url) => {
@@ -34,14 +38,31 @@ onMounted(() => {
     return;
   }
 
+  // INFO
+  // En cas de session invalide détectée à l'authentification
+  if (from === 'authInvalid') {
+    service.getAccessLogout()
+    .then((url) => {
+      location.href = url;
+    })
+    .catch((error) => {
+      console.error('Logout after auth invalid failed:', error);
+      router.push({ path: '/', query: { from : 'logout', success : 0 } });
+    });
+    return;
+  }
+
+  // INFO
   // Si aucun parametre de session dans l'URL de la route '/logout',
   // on redirige vers IAM de deconnexion
   if (!queryString) {
-    service.getAccessLogout().then((url) => {
+    service.getAccessLogout()
+    .then((url) => {
       location.href = url;
     });
     return;
   }
+  
   // IAM de deconnexion redirige vers la route '/logout' aprés validation
   // Et, elle fournit la 'session' en mode 'local' ou 'success' pour le mode 'remote'
   var value = 0;

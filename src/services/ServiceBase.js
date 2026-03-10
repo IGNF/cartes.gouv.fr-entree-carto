@@ -35,8 +35,6 @@ class ServiceBase {
 
     /** authentification */
     this.authenticated = options.authenticated || false;
-    /** need authentificate sync */
-    this.authentificateSyncNeeded = options.authentificateSyncNeeded || false;
     
     /** user */
     this.user = options.user || {};
@@ -175,7 +173,7 @@ class ServiceBase {
    * Check if the access is valid
    * @returns {Promise} - Promise that resolves if access is valid, rejects otherwise
    */
-  async isAccessValided () {
+  async resolveAccessStatus () {
     // Enregistrement du statut par defaut dans le storage 
     this.saveStore();
     Promise.resolve();
@@ -202,20 +200,20 @@ class ServiceBase {
     Promise.reject('this must be overridden !');
   }
   /**
-   * Check if the authentificate is already done
+   * Check if the authentificate is already done locally
    * @returns {Boolean} - True if authentificate
    */
-  isAlreadyAuthentificate () {
-    if (this.authenticated && Object.keys(this.user).length > 0) {
+  isAuthenticatedLocally () {
+    if (this.authenticated) {
       return true;
     }
     return false;
   }
   /**
-   * Check if the authentificate is done
+   * Check if the authentificate is really done
    * @returns {Boolean} - True if authentificate
    */
-  async isAuthentificate () {
+  async validateAuthentication () {
     try {
       var data = await this.getUserMe();
       return (data !== null);

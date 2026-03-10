@@ -130,7 +130,7 @@ emitter.addEventListener("document:updated", () => {
 });
 
 onMounted(() => {
-  if (service.isAlreadyAuthentificate() && !documentsIsEmpty.value) {
+  if (service.isAuthenticatedLocally() && !documentsIsEmpty.value) {
     documentsLoadState.value = 'loaded';
   }
 })

@@ -20,13 +20,12 @@ import { useAppStore } from "@/stores/appStore"
 import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 import { useServiceStore } from '@/stores/serviceStore'
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const appStore = useAppStore()
 const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
-const router = useRouter()
 const route = useRoute()
 const { theme } = useScheme()
 
@@ -89,54 +88,34 @@ const onCloseAlert = () => {
 // Base URL pour les routes login/logout
 const url = useBaseUrl() + import.meta.env.BASE_URL;
 
-const sessionExpiredClosed = ref(false);
-// gestion de l'alerte de session expirée
-const sessionExpiredData = {
-    title : "Session expirée",
-    description : "Votre session a expirée. Veuillez vous reconnecter.",
+const authentificateSyncNeeded = computed(() => serviceStore.authentificateSyncNeeded);
+const temporyDocumentClosed = ref(false);
+// gestion de l'alerte de reconnexion requise pour enregistrer 
+// un document temporaire
+const temporyDocumentData = {
+    title : "Connexion requise",
+    description : "Connectez-vous pour enregistrer le document temporaire.",
     action : `<a href="${url}login">Se reconnecter</a>`
 };
-const onCloseSessionExpired = () => {
-  console.warn('✓ Session : ', serviceStore.getService());
-  sessionExpiredClosed.value = true;
-  router.push({ path: '/logout', query: { from: 'sessionExpired' } });
-};
-
-const forceSessionExpiredAlertCloseIfNeeded = () => {
-  const service = serviceStore.getService();
-
-  if (!serviceStore.getAuthentificateSyncNeeded()) {
-    return;
-  }
-  if (sessionExpiredClosed.value) {
-    return;
-  }
-  if (typeof service?.isTokenExpiredForMoreThan24h !== 'function') {
-    return;
-  }
-  if (!service.isTokenExpiredForMoreThan24h()) {
-    return;
-  }
-
-  console.warn('Token expiré depuis plus de 24h: fermeture du bandeau et déconnexion silencieuse.');
-  onCloseSessionExpired();
+const onCloseTemporyDocument = () => {
+  // INFO
+  // En cas de fermeture de l'alerte, on considère que l'utilisateur
+  // ne souhaite pas se reconnecter pour enregistrer le document temporaire.
+  temporyDocumentClosed.value = true;
+  serviceStore.setAuthentificateSyncNeeded(false);
+  appStore.clearDocumentTemporary();
 };
 
 onMounted(() => {
   console.info('✓ 🚀 Application démarrée');
   appStore.detectFirstOpen()
-  forceSessionExpiredAlertCloseIfNeeded();
 })
 
-watch(
-  () => serviceStore.getAuthentificateSyncNeeded(),
-  (syncNeeded) => {
-    if (syncNeeded) {
-      forceSessionExpiredAlertCloseIfNeeded();
-    }
-  },
-  { immediate: true }
-);
+watch(authentificateSyncNeeded, (needAuth) => {
+  if (needAuth) {
+    temporyDocumentClosed.value = false;
+  }
+});
 
 
 </script>
@@ -173,22 +152,21 @@ watch(
   </div>
 
   <!-- INFO
-    Message d'information sur la session expirée
+    Message d'information sur la nécessité de se reconnecter 
+    pour enregistrer un document temporaire
       Via la clef/valeur : "authentificateSyncNeeded=1"
-      On informe donc l'utilisateur que sa session a expiré et 
-      qu'il peut se reconnecter.
   -->
-  <div v-if="serviceStore.getAuthentificateSyncNeeded()">
+  <div v-if="authentificateSyncNeeded">
     <DsfrAlert
-      type="error"
-      :title="sessionExpiredData.title"
+      type="warning"
+      :title="temporyDocumentData.title"
       :small="true"
       :closeable="true"
-      :closed="sessionExpiredClosed"
-      @close="onCloseSessionExpired()"
+      :closed="temporyDocumentClosed"
+      @close="onCloseTemporyDocument()"
     >
-      <p>{{ sessionExpiredData.description }}</p>
-      <p v-html="sessionExpiredData.action" />
+      <p>{{ temporyDocumentData.description }}</p>
+      <p v-html="temporyDocumentData.action" />
     </DsfrAlert>
   </div>
 

@@ -13,7 +13,7 @@ const IAM_CHECK_SSO_TIMEOUT = import.meta.env.IAM_CHECK_SSO_TIMEOUT || 5000;
 const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
 
-const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 24 * 60 * 60 * 1000;
+const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 12 * 60 * 60 * 1000;
 
 const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
 const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
@@ -205,7 +205,7 @@ class ServiceLocal extends ServiceBase {
     });
   }
 
-  async isAccessValided () {
+  async resolveAccessStatus () {
     const emitter = this.getEmitter ? this.getEmitter() : null;
     var store = useServiceStore();
 
@@ -427,7 +427,7 @@ class ServiceLocal extends ServiceBase {
    * IAM pour obtenir le token
    * 
    * @type {Promise}
-   * @see isAccessValided
+   * @see resolveAccessStatus
    * @example
    * POST https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token
    * content-type: application/x-www-form-urlencoded
@@ -497,10 +497,15 @@ class ServiceLocal extends ServiceBase {
   }
 
   /**
-   * Indique si le token est expiré depuis plus de 24h.
+   * Not used !
+   * Indique si le token est expiré depuis plus de 12h.
+   * @description
+   * Cette vérification devait être utilisée pour déclencher une déconnexion 
+   * silencieuse lorsque le token est expiré depuis plus de 12 heures.
+   * Mais, le nouveau workflow de deconnexion ne se base plus sur cette logique...
    * @returns {Boolean}
    */
-  isTokenExpiredForMoreThan24h () {
+  isTokenExpiredForMoreThan12h () {
     if (!this.token || !this.token.expiresAt) {
       return true;
     }

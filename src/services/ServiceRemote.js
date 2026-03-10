@@ -17,7 +17,7 @@ class ServiceRemote extends ServiceBase {
     return this;
   }
 
-  async isAccessValided () {
+  async resolveAccessStatus () {
     const emitter = this.getEmitter ? this.getEmitter() : null;
     var store = useServiceStore();
 
