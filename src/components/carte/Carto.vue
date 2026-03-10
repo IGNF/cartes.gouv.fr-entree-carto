@@ -16,6 +16,8 @@
 import "ol/ol.css";
 import "geopf-extensions-openlayers/css/Dsfr.css";
 
+import { nextTick } from "vue";
+
 import Map from '@/components/carte/Map.vue'
 import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
@@ -62,6 +64,38 @@ const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
 
+
+const hasInitialRecenter = ref(false);
+
+// INFO
+// On écoute l'événement "ready" émis par le composant Layers lorsque 
+// la dernière couche est montée.
+const onLayersReady = () => {
+  if (hasInitialRecenter.value) {
+    return;
+  }
+
+  nextTick(() => {
+    initialize();
+    hasInitialRecenter.value = true;
+  });
+};
+
+const initialize = () => {
+  const map = mapStore.getMap();
+  if (!map) {
+    return;
+  }
+
+  const view = map.getView();
+  if (!view) {
+    return;
+  }
+
+  // actions à faire une fois que la carte est prête 
+  // et que les couches sont montées !
+}
+
 onMounted(() => {
   log.debug("Carto component mounted") 
 })
@@ -83,14 +117,15 @@ onMounted(() => {
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
       v-if="mapIsReady"
-      :control-options="props.selectedControls"
       :map-id="mainMap"
+      :control-options="props.selectedControls"
     />
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
       :map-id="mainMap"
       :selected-layers="props.selectedLayers"
       :selected-bookmarks="props.selectedBookmarks"
+      @ready="onLayersReady"
     />
   </Map>
 </template>

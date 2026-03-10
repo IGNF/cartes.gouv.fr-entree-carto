@@ -104,7 +104,7 @@ export class Eulerian {
   stop () {
     console.debug("stop");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
-    // window.dsfr.analytics.opt.disable();
+    window.dsfr.analytics.opt.disable();
     window.dsfr.stop();
     this.status = false;
   }

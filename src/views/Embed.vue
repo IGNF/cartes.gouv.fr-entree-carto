@@ -4,7 +4,6 @@
  * Cartographie intégrée pour partage
  * 
  */
-export default {};
 </script>
 
 <script setup lang="js">
@@ -64,12 +63,12 @@ const selectedControls = [
   </Suspense>
 </template>
 
-<style>
+<style lang="css">
   .map-container,
   .patience-container {
     margin-left: 0;
     width: inherit;
     height: 100vh;
     display: flex;
-  }
+}
 </style>
