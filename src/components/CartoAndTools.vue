@@ -27,6 +27,7 @@ const appStore = useAppStore();
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
+const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
@@ -39,9 +40,8 @@ const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
 
-const emitter = inject('emitter') as any;
 const onModalPrintOpen = () => {
-  emitter.dispatchEvent('printmodal:open');
+  refModalPrint.value.onModalPrintOpen();
 }
 const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin(false)
@@ -194,14 +194,15 @@ provide("selectedLayers", selectedLayers);
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
     />
-    <!-- Liste des modales -->
-    <div class="modal-container">
-      <ShareModal ref="refModalShare" />
-      <LoginModal ref="refModalLogin" />
-      <SaveModal ref="refModalSave" />
-      <!-- Modale : Welcome (+ Eulerian) -->
-      <ModalWelcome ref="refModalWelcome" />
-    </div>
+  </div>
+  <!-- Liste des modales -->
+  <div class="modal-container">
+    <ShareModal ref="refModalShare" />
+    <LoginModal ref="refModalLogin" />
+    <SaveModal ref="refModalSave" />
+    <PrintModal ref="refModalPrint" />
+    <!-- Modale : Welcome (+ Eulerian) -->
+    <ModalWelcome ref="refModalWelcome" />
   </div>
 </template>
 
