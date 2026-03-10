@@ -531,13 +531,6 @@ const contextMenuOptions = computed(() => {
   }
 })
 
-/** Print Control */
-emitter.addEventListener('printmodal:open', onModalPrintOpen);
-const refModalPrint = ref(null);
-
-function onModalPrintOpen() {
-  refModalPrint.value.onModalPrintOpen();
-}
 onMounted(() => {
   log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
@@ -709,7 +702,6 @@ onMounted(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
-  <PrintModal ref="refModalPrint" />
 </template>
 
 <style lang="scss">
