@@ -20,6 +20,10 @@ const props = defineProps({
 })
 
 // INFO
+// Evenement "ready" émis lorsque la dernière couche est montée !
+const emit = defineEmits(["ready"])
+
+// INFO
 // liste des couches à ajouter sur la carte
 // Array(Object) : cf. dataStore.getLayerByID(layerId)
 const log = useLogger()
@@ -61,9 +65,10 @@ var bookmarks = computed(() => {
 });
 
 function onLayerMounted(layer, index) {
-  var allLayers = [...layers.value, ...bookmarks.value];
+  var allLayers = [...layers.value, ...bookmarks.value].sort((a, b) => (a.position ?? -1) - (b.position ?? -1));
   log.debug(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
   if (allLayers.length - 1 === index) {
+    emit("ready"); // dernière couche montée : "ready" !
     setTimeout(() => {
       log.debug(`Layer last : ${layer.name} (${index})`);
       removePermalink();
@@ -77,9 +82,12 @@ function onLayerUnMounted(layer, index) {
 
 </script>
 
+<!-- FIXME : doit on trier les couches par position (ordre d'affichage)
+car les bookmarks sont ajoutés à la fin de la liste des couches !?
+[...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1)) -->
 <template>
   <Layer
-    v-for="layer, index in [...layers, ...bookmarks]"
+    v-for="(layer, index) in [...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1))"
     :key="layer.key"
     :layer-options="layer"
     :map-id="mapId"
