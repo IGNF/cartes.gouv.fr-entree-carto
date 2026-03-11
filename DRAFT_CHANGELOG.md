@@ -12,7 +12,7 @@
 
 #### ✨ [Ajout]
 
-  - Territories: sauvegarde des territoires utilisateurs dans la session (#969)
+  - Territories: persistance via localStorage des territoires utilisateurs (#969)
   
 #### 🔨 [Evolution]
 

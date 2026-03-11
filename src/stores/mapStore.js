@@ -7,11 +7,6 @@ import { useStorage } from '@vueuse/core';
 
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
-import { add } from 'ol/coordinate';
-
-// FIXME
-// comment reduire la taille de la chaine de caractères dans l'url ?
-// import { decode, encode } from "universal-base64url";
 
 /**
  * Valeurs par defaut
@@ -632,17 +627,26 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
-  function getTerritories() {
+  function parseTerritories() {
     if (!territories.value) {
       return [];
     }
-    return JSON.parse(territories.value);
+    try {
+      return JSON.parse(territories.value);
+    } catch {
+      territories.value = "";
+      localStorage.removeItem(ns('territories'));
+      return [];
+    }
+  }
+  function getTerritories() {
+    return parseTerritories();
   }
   function addTerritory(territory) {
     if (!territory) {
       return;
     }
-    var json = JSON.parse(territories.value || "[]");
+    var json = parseTerritories();
     if (!json.find(t => t.id === territory.id)) {
       json.push(territory);
       territories.value = JSON.stringify(json);
@@ -652,7 +656,7 @@ export const useMapStore = defineStore('map', () => {
     if (!territory) {
       return;
     }
-    var json = JSON.parse(territories.value || "[]");
+    var json = parseTerritories();
     var newJson = json.filter(t => t.id !== territory.id);
     territories.value = JSON.stringify(newJson);
   }
