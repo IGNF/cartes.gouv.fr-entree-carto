@@ -15,6 +15,9 @@
 #### 🔨 [Evolution]
 
   - Header/Footer: adaptation du design aux maquettes (#816)
+  - Menu des contrôles: respect de la maquette
+  - Zoom: améliorations UI (fix #700)
+  - Mini Carte: respect maquette (fix #794)
 
 #### 🔥 [Obsolète]
 
@@ -24,6 +27,7 @@
 
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
   - En mode mobile, le footer est intégré au header (#816)
+  - Revue UI des widgets/boutons/panels (#964) (fix #672, #743, #844, #886, #888)
 
 #### 🔒 [Sécurité]
 
