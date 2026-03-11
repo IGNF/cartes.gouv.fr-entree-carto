@@ -7,6 +7,7 @@ import { useStorage } from '@vueuse/core';
 
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
+import { add } from 'ol/coordinate';
 
 // FIXME
 // comment reduire la taille de la chaine de caractères dans l'url ?
@@ -26,8 +27,7 @@ const DEFAULT = {
   Y: 5859851.607344459,
   LON: 2.602777, // informatif
   LAT: 46.493888, // informatif
-  ZOOM: 6,
-  FIRSTVISIT: false
+  ZOOM: 6
 }
 
 /**
@@ -49,7 +49,6 @@ const ns = ((value) => {
  * - cartes.gouv.fr.center --> webmercator
  * - cartes.gouv.fr.permalink
  * - cartes.gouv.fr.permalinkShare
- * - cartes.gouv.fr.firstVisit
  * - cartes.gouv.fr.layers
  * - cartes.gouv.fr.bookmarks
  * - cartes.gouv.fr.zoom -> absolue !
@@ -102,9 +101,9 @@ const ns = ((value) => {
  *   par celle du permalien (yes) ou la compléter (no).
  * 
  * - isRedirect() --> boolean
- *  Detecte une information de redirection après le chargement de la carte
- *  ceci permet d'informer l'utilisateur qu'il a été redirigé
- *  depuis une autre application (ex. Geoportail, GéoIDE, etc.)
+ *   Detecte une information de redirection après le chargement de la carte
+ *   ceci permet d'informer l'utilisateur qu'il a été redirigé
+ *   depuis une autre application (ex. Geoportail, GéoIDE, etc.)
  * 
  * @see useUrlParams
  */
@@ -224,8 +223,8 @@ export const useMapStore = defineStore('map', () => {
   var y = useStorage(ns('y'), DEFAULT.Y);
   var lon = useStorage(ns('lon'), DEFAULT.LON);
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
-  var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
   var geolocation = useStorage(ns('geolocation'), "");
+  var territories = useStorage(ns('territories'), ""); // stringified json !
   
   // INFO
   // cette valeur devrait toujours être reinitilisée à false
@@ -387,9 +386,6 @@ export const useMapStore = defineStore('map', () => {
   watch(center, () => {
     localStorage.setItem(ns('center'), center.value.toString()); // string
   })
-  watch(firstVisit, () => {
-    localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
-  })
   watch(controls, () => {
     localStorage.setItem(ns('controls'), controls.value.toString()); // string
   })
@@ -401,6 +397,9 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(noLoginInformation, () => {
     localStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
+  })
+  watch(territories, () => {
+    localStorage.setItem(ns('territories'), territories.value.toString()); // string
   })
 
   //////////////////
@@ -633,6 +632,31 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  function getTerritories() {
+    if (!territories.value) {
+      return [];
+    }
+    return JSON.parse(territories.value);
+  }
+  function addTerritory(territory) {
+    if (!territory) {
+      return;
+    }
+    var json = JSON.parse(territories.value || "[]");
+    if (!json.find(t => t.id === territory.id)) {
+      json.push(territory);
+      territories.value = JSON.stringify(json);
+    }
+  }
+  function removeTerritory(territory) {
+    if (!territory) {
+      return;
+    }
+    var json = JSON.parse(territories.value || "[]");
+    var newJson = json.filter(t => t.id !== territory.id);
+    territories.value = JSON.stringify(newJson);
+  }
+
   return {
     map,
     layers,
@@ -644,13 +668,15 @@ export const useMapStore = defineStore('map', () => {
     y,
     lon,
     lat,
-    firstVisit,
     permalink,
     permalinkShare,
     geolocation,
     isRedirect,
     isPermalink,
     noLoginInformation,
+    getTerritories,
+    addTerritory,
+    removeTerritory,
     getMap,
     setMap,
     getLayers,

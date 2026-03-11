@@ -2,6 +2,7 @@
 
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
+import { useMapStore } from '@/stores/mapStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { Territories } from 'geopf-extensions-openlayers';
@@ -11,20 +12,28 @@ import { push } from 'notivue';
 import t from '@/features/translation';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  territoriesOptions: Object
+  territoriesOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
-const store = useDataStore();
+const dataStore = useDataStore();
+const mapStore = useMapStore();
 
 const map = inject(props.mapId)
 const territories = ref(new Territories(props.territoriesOptions));
 
 function addTerritories () {
-  var t = store.getTerritories();
+  var toBeSave = (mapStore.getTerritories().length === 0);
+  var t = toBeSave ? dataStore.getTerritories() : mapStore.getTerritories();
   for (let i = 0; i < t.length; i++) {
     // exclude : ATF, IDF
     if (t[i].id === 'ATF' || t[i].id === 'IDF') {
@@ -32,6 +41,9 @@ function addTerritories () {
     }
     const territory = t[i];
     territories.value.setTerritory(territory);
+    if (toBeSave) {
+      mapStore.addTerritory(territory);
+    }
   }
 }
 
@@ -85,6 +97,7 @@ const onChangeTerritories = (e) => {
 }
 const onAddTerritories = (e) => {
   log.debug(e);
+  mapStore.addTerritory(e.territory);
   push.info({
     title: t.territories.title,
     message: t.territories.add(e.territory.title),
@@ -92,6 +105,7 @@ const onAddTerritories = (e) => {
 }
 const onRemoveTerritories = (e) => {
   log.debug(e);
+  mapStore.removeTerritory(e.territory);
   push.info({
     title: t.territories.title,
     message: t.territories.remove(e.territory.title),

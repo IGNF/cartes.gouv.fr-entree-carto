@@ -11,6 +11,8 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+  - Territories: sauvegarde des territoires utilisateurs dans la session (#969)
   
 #### 🔨 [Evolution]
 
