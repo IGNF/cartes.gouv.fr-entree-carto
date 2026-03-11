@@ -70,6 +70,13 @@ var Users = {
         this.user = data;
         
         this.saveStore();
+      } else if (response.status === 401 || response.status === 403) {
+        this.user = {};
+        this.authenticated = false;
+        this.saveStore();
+        return null;
+      } else {
+        throw new Error(`Unexpected response status for /users/me: ${response.status}`);
       }
   
       return data;

@@ -243,6 +243,9 @@ class ServiceLocal extends ServiceBase {
             // ex. les informations de l'utilisateur !
             return this.getUserMe()
             .then((user) => {
+              if (!user) {
+                throw new Error('User profile unavailable from API');
+              }
               console.debug(user);
               if (emitter) {
                 emitter.dispatchEvent("service:user:loaded", {
