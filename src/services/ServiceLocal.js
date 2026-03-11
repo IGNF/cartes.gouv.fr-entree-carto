@@ -254,7 +254,6 @@ class ServiceLocal extends ServiceBase {
               // ex. les favoris !
               return this.getDocuments()
               .then((documents) => {
-                console.warn(documents);
                 if (emitter) {
                   emitter.dispatchEvent("service:documents:loaded", {
                     bubbles : true,
@@ -476,7 +475,6 @@ class ServiceLocal extends ServiceBase {
         codeVerifier,
       }
     );
-    console.warn("token", token);
     this.token = token;
   
     const today = new Date(token.expiresAt);

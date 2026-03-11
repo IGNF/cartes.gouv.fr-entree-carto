@@ -21,8 +21,23 @@ onMounted(() => {
   var code = urlParams.get('code');
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
+  var from = urlParams.get('from'); // login redirection
   var success = urlParams.get('success'); // remote
   var auth = urlParams.get('authentication_failed'); // remote
+
+  // INFO
+  // En cas de session invalide détectée à l'authentification
+  if (from === 'auto-sso') {
+    service.getAccessLogin()
+    .then((url) => {
+      location.href = url;
+    })
+    .catch((error) => {
+      console.error('Login after auto-sso failed:', error);
+      router.push({ path: '/', query: { from : 'login', success : 0 } });
+    });
+    return;
+  }
 
   // Si aucun parametre de session dans l'URL de la route '/login',
   // on redirige vers IAM authentification

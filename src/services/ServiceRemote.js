@@ -50,7 +50,6 @@ class ServiceRemote extends ServiceBase {
           }
 
           const documents = await this.getDocuments();
-          console.warn(documents);
           if (emitter) {
             emitter.dispatchEvent("service:documents:loaded", {
               bubbles: true,

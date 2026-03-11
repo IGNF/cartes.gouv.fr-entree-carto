@@ -96,7 +96,6 @@ emitter.addEventListener("service:documents:loaded", () => {
 });
 emitter.addEventListener("service:documents:completed", (payload) => {
   var detail = toDocumentsCompletedPayload(payload) || {};
-  console.warn("Documents loaded for category", detail);
   var category = detail.label;
   if (!category) {
     return;

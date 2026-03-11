@@ -30,6 +30,12 @@ const router = useRouter();
 const serviceStore = useServiceStore();
 const appStore = useAppStore();
 
+const AUTO_SSO_ATTEMPTED_KEY = 'auth:auto-sso-attempted';
+
+const IAM_CHECK_SSO_DISABLE = import.meta.env.IAM_CHECK_SSO_DISABLE;;
+const IAM_CHECK_SSO_TYPE = import.meta.env.IAM_CHECK_SSO_TYPE;
+const IAM_CHECK_SSO_AUTO_AUTH = import.meta.env.IAM_CHECK_SSO_AUTO_AUTH;
+
 const expandedMenuId = ref(undefined)
 
 // INFO
@@ -103,6 +109,31 @@ const checkTemporalDocument = () => {
 var service = inject('services');
 const authenticated = ref(false);
 
+const cleanAutoSSOAttemptedFlag = () => {
+  sessionStorage.removeItem(AUTO_SSO_ATTEMPTED_KEY);
+}
+const checkSessionKeyCloak = async () => {
+  const autoSsoAlreadyAttempted = sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
+
+  if (autoSsoAlreadyAttempted) {
+    return false;
+  }
+
+  log.debug("Checking Keycloak session...");
+  const hasKeycloakSession = await service.checkKeycloakSession(IAM_CHECK_SSO_TYPE);
+  log.debug(`Keycloak session check : ${hasKeycloakSession} !`);
+
+  if (hasKeycloakSession) {
+    sessionStorage.setItem(AUTO_SSO_ATTEMPTED_KEY, '1');
+    log.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
+    if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
+      await router.push({ path: '/login', query: { from: 'auto-sso' } });
+    }
+    return true;
+  }
+
+  return false;
+}
 const checkAuthentication = async () => {
   authenticated.value = Boolean(service.authenticated);
 
@@ -122,6 +153,7 @@ const checkAuthentication = async () => {
 
     if (status === "login") {
       log.debug("User connected.");
+      cleanAutoSSOAttemptedFlag();
       authenticated.value = true;
       checkTemporalDocument();
       return;
@@ -129,6 +161,7 @@ const checkAuthentication = async () => {
 
     if (status === "logout") {
       log.debug("User disconnected.");
+      cleanAutoSSOAttemptedFlag();
       authenticated.value = false;
       appStore.clearDocumentTemporary();
       return;
@@ -155,6 +188,15 @@ const checkAuthentication = async () => {
 
       log.debug("validateAuthentication() finished !");
     } else {
+      // Si une session IAM existe dans le navigateur, 
+      // on relance le flow OIDC automatiquement.
+      if (IAM_CHECK_SSO_DISABLE !== '1') {
+        const redirectedToLogin = await checkSessionKeyCloak();
+        if (redirectedToLogin) {
+          return;
+        }
+      }
+
       authenticated.value = false;
     }
   } catch (e) {
