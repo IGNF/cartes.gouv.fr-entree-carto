@@ -13,6 +13,9 @@
  *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
+import { useMatchMedia } from '@/composables/matchMedia';
+let isMobile = useMatchMedia('SM');
+
 export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
@@ -92,7 +95,7 @@ export const useControls = {
     active: true,
     disable: false,
     analytic: false,
-    default: true,
+    default: !isMobile.value,
     icon: "ri:zoom-in-line"
   },
   Route: {
@@ -106,7 +109,7 @@ export const useControls = {
   FullScreen: {
     id: 'FullScreen',
     active: true,
-    disable: true,
+    disable: false,
     analytic: false,
     default: true,
     icon: "ri:fullscreen-line"
@@ -162,7 +165,7 @@ export const useControls = {
   Territories: {
     id: 'Territories',
     active: true,
-    disable: true,
+    disable: false,
     analytic: true,
     default: true,
     icon: "fr-icon-france-line"
@@ -239,226 +242,195 @@ export function useDefaultControls() {
 export function useControlsMenuOptions() {
   return [
     {
-      label: 'Barre de Recherche',
-      id: 'searchEngine',
-      name: useControls.SearchEngine.id,
-      hint: 'Barre de recherche sur la carte',
-      disabled: useControls.SearchEngine.disable,
-      tooltip: ""
+      label: 'Mesurer une distance',
+      id: 'measureLength',
+      name: useControls.MeasureLength.id,
+      disabled: useControls.MeasureLength.disable,
+      icon: "ri:ruler-line",
+      group: 'Mesure',
+    },
+    {
+      label: 'Mesurer une surface',
+      id: 'measureArea',
+      name: useControls.MeasureArea.id,
+      disabled: useControls.MeasureArea.disable,
+      icon: "ri:custom-size",
+      group: 'Mesure',
+    },
+    {
+      label: 'Mesurer un angle',
+      id: 'measureAzimuth',
+      name: useControls.MeasureAzimuth.id,
+      disabled: useControls.MeasureAzimuth.disable,
+      icon: "ri:compasses-2-line",
+      group: 'Mesure',
+    },
+    {
+      label: 'Coordonnées du curseur',
+      id: 'mousePosition',
+      name: useControls.MousePosition.id,
+      disabled: useControls.MousePosition.disable,
+      icon: "gpf:coordonnee",
+      group: 'Mesure',
+    },
+    {
+      label: 'Profil altimétrique',
+      id: 'elevationPath',
+      name: useControls.ElevationPath.id,
+      hint: 'Afficher l’altitude le long d’un trajet',
+      disabled: useControls.ElevationPath.disable,
+      icon: "ri:line-chart-line",
+      group: 'Mesure',
+    },
+    {
+      label: 'Annoter la carte',
+      id: 'drawing',
+      name: useControls.Drawing.id,
+      hint: 'Ajouter des points, lignes, formes ou textes directement sur la carte',
+      disabled: useControls.Drawing.disable,
+      icon: "ri:pencil-line",
+      group: 'Dessin',
+    },
+    {
+      label: 'Itinéraire',
+      id: 'route',
+      name: useControls.Route.id,
+      disabled: useControls.Route.disable,
+      icon: "ri:route-line",
+      group: 'Déplacements',
+    },
+    {
+      label: 'Trouver une adresse',
+      id: 'reverseGeocode',
+      name: useControls.ReverseGeocode.id,
+      hint: 'Obtenir l’adresse ou le nom d’un lieu à partir d’un point ou d’une zone sur la carte',
+      disabled: useControls.ReverseGeocode.disable,
+      icon: "ri:signpost-line",
+      group: 'Déplacements',
+    },
+    {
+      label: 'Zone selon temps de trajet',
+      id: 'isocurve',
+      name: useControls.Isocurve.id,
+      hint: 'Afficher la zone que l’on peut atteindre en un temps donné depuis un point de départ',
+      disabled: useControls.Isocurve.disable,
+      icon: "ri:map-pin-time-line",
+      group: 'Déplacements',
     },
     {
       label: 'Mini carte',
       id: 'overview',
       name: useControls.OverviewMap.id,
-      hint: 'Petite carte pour se repérer',
+      hint: 'Aperçu de la zone pour se répérer facilement',
       disabled: useControls.OverviewMap.disable,
-      tooltip: "Mini Carte pour contextualiser la zone cartographique",
-      icon: "ri:navigation-line"
+      icon: "ri:navigation-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Sélecteur de territoires',
+      id: 'territories',
+      name: useControls.Territories.id,
+      disabled: useControls.Territories.disable,
+      icon: "fr-icon-france-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Zoom',
+      id: 'zoom',
+      name: useControls.Zoom.id,
+      disabled: useControls.Zoom.disable,
+      icon: "ri:zoom-in-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Plein écran',
+      id: 'fullscreen',
+      name: useControls.FullScreen.id,
+      disabled: useControls.FullScreen.disable,
+      icon: "ri:fullscreen-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Barre de Recherche',
+      id: 'searchEngine',
+      name: useControls.SearchEngine.id,
+      hint: 'Barre de recherche sur la carte',
+      disabled: useControls.SearchEngine.disable,
     },
     {
       label: 'Scale Line',
       id: 'scaleLine',
       name: useControls.ScaleLine.id,
-      hint: 'Echelle',
       disabled: useControls.ScaleLine.disable,
-      tooltip: ""
     },
     {
       label: 'Gestionnaire de couches',
       id: 'layerSwitcher',
       name: useControls.LayerSwitcher.id,
-      hint: 'Gestionnaire de couches',
       disabled: useControls.LayerSwitcher.disable,
-      tooltip: "",
       icon: "fr-icon-stack-line"
     },
     {
       label: 'GetFeatureInfo',
       id: 'getFeatureInfo',
       name: useControls.GetFeatureInfo.id,
-      hint: 'Informations sur les couches',
       disabled: useControls.GetFeatureInfo.disable,
-      tooltip: "",
       icon: "gpf:getfeature-line"
     },
     {
       label: 'Légendes',
       id: 'legends',
       name: useControls.Legends.id,
-      hint: 'Légendes',
       disabled: useControls.Legends.disable,
-      tooltip: "",
       icon: "ri:list-indefinite"
-    },
-    {
-      label: 'Annoter la carte',
-      id: 'drawing',
-      name: useControls.Drawing.id,
-      hint: 'Annoter la carte',
-      disabled: useControls.Drawing.disable,
-      tooltip: "Ajouter des points, lignes, formes ou textes directement sur la carte",
-      icon: "ri:pencil-line",
-    },
-    {
-      label: 'Trouver une adresse',
-      id: 'reverseGeocode',
-      name: useControls.ReverseGeocode.id,
-      hint: 'Geocodage inverse',
-      disabled: useControls.ReverseGeocode.disable,
-      tooltip: "Obtenir l'adresse ou le nom d'un lieu à partir d'un point ou d'une zone sur la carte",
-      icon: "ri:signpost-line"
-    },
-    {
-      label: 'Zone selon temps de trajet',
-      id: 'isocurve',
-      name: useControls.Isocurve.id,
-      hint: 'Calcul d\'isochrone',
-      disabled: useControls.Isocurve.disable,
-      tooltip: "Afficher la zone que l'on peut atteindre en un temps donné depuis un point de départ",
-      icon: "ri:map-pin-time-line"
-    },
-    {
-      label: 'Itinéraire',
-      id: 'route',
-      name: useControls.Route.id,
-      hint: 'Calcul d\'itinéraire',
-      disabled: useControls.Route.disable,
-      tooltip: "Trouver le meilleur trajet entre deux ou plusieurs points",
-      icon: "ri:route-line"
-    },
-    {
-      label: 'Zoom',
-      id: 'zoom',
-      name: useControls.Zoom.id,
-      hint: 'Zoomer - dézoomer',
-      disabled: useControls.Zoom.disable,
-      tooltip: "Zoomer dézoomer sur la carte",
-      icon: "ri:zoom-in-line"
-    },
-    {
-      label: 'Plein écran',
-      id: 'fullscreen',
-      name: useControls.FullScreen.id,
-      hint: 'Plein écran',
-      disabled: useControls.FullScreen.disable,
-      tooltip: "",
-      icon: "ri:fullscreen-line"
-    },
-    {
-      label: 'Mesurer une distance',
-      id: 'measureLength',
-      name: useControls.MeasureLength.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureLength.disable,
-      tooltip: "Tracer un trajet pour connaître sa longueur",
-      icon: "ri:ruler-line"
-    },
-    {
-      label: 'Mesurer une surface',
-      id: 'measureArea',
-      name: useControls.MeasureArea.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureArea.disable,
-      tooltip: "Tracer une zone pour connaître son aire",
-      icon: "ri:custom-size"
-    },
-    {
-      label: 'Mesurer un angle',
-      id: 'measureAzimuth',
-      name: useControls.MeasureAzimuth.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureAzimuth.disable,
-      tooltip: "Tracer un trait pour connaître l'angle par rapport au Nord",
-      icon: "ri:compasses-2-line"
     },
     {
       label: 'Partager une carte',
       id: 'share',
       name: useControls.Share.id,
-      hint: 'Partages',
       disabled: useControls.Share.disable,
-      tooltip: "",
       icon: "ri:map-2-line"
-    },
-    {
-      label: 'Coordonnées du curseur',
-      id: 'mousePosition',
-      name: useControls.MousePosition.id,
-      hint: 'Position de la souris',
-      disabled: useControls.MousePosition.disable,
-      tooltip: "Voir les coordonnées du curseur",
-      icon: "gpf:coordonnee"
-    },
-    {
-      label: 'Selectionner un territoire',
-      id: 'territories',
-      name: useControls.Territories.id,
-      hint: 'Territoires',
-      disabled: useControls.Territories.disable,
-      tooltip: "",
-      icon: "fr-icon-france-line"
-    },
-    {
-      label: 'Courbe d\'altitude le long d\'un trajet',
-      id: 'elevationPath',
-      name: useControls.ElevationPath.id,
-      hint: 'Profil altimétrique',
-      disabled: useControls.ElevationPath.disable,
-      tooltip: "Afficher le profil altimétrique le long d'un trajet",
-      icon: "ri:line-chart-line"
     },
     {
       label: 'Importer des données',
       id: 'layerImport',
       name: useControls.LayerImport.id,
-      hint: 'Import de données',
       disabled: useControls.LayerImport.disable,
-      tooltip: "",
       icon: "ri:file-upload-line"
     },
     {
       label: 'Imprimer une carte',
       id: 'print',
       name: useControls.Print.id,
-      hint: 'Impression',
       disabled: useControls.Print.disable,
-      tooltip: "",
       icon: "fr-icon-printer-line"
     },
     {
       label: 'Liste des controles',
       id: 'controlList',
       name: useControls.ControlList.id,
-      hint: 'Liste des controles supplémentaires non affichés',
       disabled: useControls.ControlList.disable,
-      tooltip: "",
       icon: "ri:list-check"
     },
     {
       label: 'Menu contextuel',
       id: 'contextMenu',
       name: useControls.ContextMenu.id,
-      hint: 'Menu contextuel au clic droit sur la carte',
       disabled: useControls.ContextMenu.disable,
-      tooltip: "",
       icon: "ri:menu-2-line"
     },
     {
       label: 'Signaler une anomalie',
       id: 'reporting',
       name: useControls.Reporting.id,
-      hint: 'Outil de signalement d\'anomalie',
       disabled: useControls.Reporting.disable,
-      tooltip: "",
       icon: "fr-icon-feedback-line"
     },
     {
       label: 'Catalogue',
       id: 'catalog',
       name: useControls.Catalog.id,
-      hint: '',
       disabled: useControls.Catalog.disable,
-      tooltip: "",
       icon: "ri:map-2-line"
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
@@ -491,7 +463,7 @@ export function useControlsExtensionPosition() {
     layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
-    reportingOptions : 'top-right',
+    reportingOptions : 'top-left',
     catalogOptions : 'top-right'
   }
 }

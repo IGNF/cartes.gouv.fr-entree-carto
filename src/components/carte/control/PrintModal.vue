@@ -19,7 +19,6 @@ import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
 import { jsPDF } from "jspdf";
-import { mainMap as mainMapId, printMap as printMapId } from "@/composables/keys"
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
@@ -27,7 +26,6 @@ const props = defineProps({
   visibility: Boolean,
 });
 const emitter = inject('emitter');
-const map = inject(mainMapId);
 
 /**
  * Paramètres du composant de la modale
@@ -64,7 +62,7 @@ const onModalPrintOpen = () => {
 const onModalPrintClose = () => {
   printModalOpened.value = false;
   eulerian.resume();
-  map.renderSync();
+  mapStore.getMap().renderSync();
 };
 
 defineExpose({
@@ -187,7 +185,7 @@ const paper2PreviewScaleCoeff = computed(() => {
 const mapMMDimension = computed(() => {
   var w = paperDimension.value.width - 2 * margin.value
   var h = paperDimension.value.height - 2 *  margin.value
-  if (hasTitle) {
+  if (hasTitle.value) {
     /**
      * on utilise la part que représente le titre dans la preview car
      * la conversion avec pixel2mm est trop approximative
@@ -512,8 +510,7 @@ const scaleLineOptions = {
               :zoom="mapStore.zoom"
             />
             <PrintLayers
-              :main-map-id="mainMapId"
-              :print-map-id="printMapId"
+              :print-map-id="printMap"
             />
             <ScaleLine
               :visibility="hasScale"

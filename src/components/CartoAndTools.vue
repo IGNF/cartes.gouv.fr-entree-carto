@@ -27,6 +27,7 @@ const appStore = useAppStore();
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
+const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 
 const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
 
@@ -39,9 +40,8 @@ const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
 
-const emitter = inject('emitter') as any;
 const onModalPrintOpen = () => {
-  emitter.dispatchEvent('printmodal:open');
+  refModalPrint.value.onModalPrintOpen();
 }
 const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin(false)
@@ -168,16 +168,6 @@ provide("selectedLayers", selectedLayers);
 
 <template>
   <div id="map-and-tools-container">
-    <!-- Le menu de gauche : le menu tierce (et les favoris)
-     il y figure la liste des abonnements aux evenements sur le clic
-     d'un élement du menu tierce
-    -->
-    <LeftMenuTool
-      @on-modal-share-open="onModalShareOpen"
-      @on-modal-print-open="onModalPrintOpen"
-      @on-modal-login-open="onModalLoginOpen"
-    />
-
     <!-- Module cartographique :
      - liste des couches selectionnées
      - liste des controles selectionnés
@@ -189,27 +179,42 @@ provide("selectedLayers", selectedLayers);
       :selected-bookmarks="selectedBookmarks"
     />
 
+    <!-- Le menu de gauche : le menu tierce (et les favoris)
+     il y figure la liste des abonnements aux evenements sur le clic
+     d'un élement du menu tierce
+    -->
+    <LeftMenuTool
+      @on-modal-share-open="onModalShareOpen"
+      @on-modal-print-open="onModalPrintOpen"
+      @on-modal-login-open="onModalLoginOpen"
+    />
+
     <!-- Le menu des contrôles et le catalogue -->
     <RightMenuTool
       :selected-layers="selectedLayers"
       :selected-controls="selectedControls"
     />
-    <!-- Liste des modales -->
-    <div class="modal-container">
-      <ShareModal ref="refModalShare" />
-      <LoginModal ref="refModalLogin" />
-      <SaveModal ref="refModalSave" />
-      <!-- Modale : Welcome (+ Eulerian) -->
-      <ModalWelcome ref="refModalWelcome" />
-    </div>
+  </div>
+  <!-- Liste des modales -->
+  <div class="modal-container">
+    <ShareModal ref="refModalShare" />
+    <LoginModal ref="refModalLogin" />
+    <SaveModal ref="refModalSave" />
+    <PrintModal ref="refModalPrint" />
+    <!-- Modale : Welcome (+ Eulerian) -->
+    <ModalWelcome ref="refModalWelcome" />
   </div>
 </template>
 
 <style scoped>
   #map-and-tools-container{
-    margin-left: 0;
-    width: inherit;
-    height: inherit;
-    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* cree un container */
+    container-name: map;
+    container-type: size;
+    /* et un containing block */
+    will-change: transform;
   }
 </style>

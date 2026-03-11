@@ -37,11 +37,21 @@ onUpdated(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-  .ol-scale-line {
-    left: 58px;
-  }
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.ol-scale-line {
+  z-index: auto;
+  left: auto;
+  right: $widget-panel-x;
+  background: var(--background-default-grey);
+}
+// couleur en mode sombre
+html[data-fr-theme="dark"] .ol-scale-line-inner {
+  color: var(--text-action-high-blue-france);
+  border-color: var(--text-action-high-blue-france);
+}
 </style>

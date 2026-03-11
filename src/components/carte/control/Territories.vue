@@ -100,27 +100,15 @@ const onRemoveTerritories = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
-/*
-VERRUE : pour les widgets dont les boutons sont bottom-left, on veut aligner les panels avec le container top-left
-*/
-dialog[id^=GPterritoriesPanel-] {
-  top : -90px !important;
-  left : 46px !important;
-}
-
+<style lang="scss">
 #add-view-form-fieldset {
-  margin-bottom: unset;
+  margin-bottom: 0;
 }
 
-@media (max-width: 576px){
-  .gpf-panel__body_territories {
-    max-height: calc(100vh - 92.5px - 56px);
-  }
+.gpf-panel__body_territories {
+  max-height: initial;
 }
 </style>

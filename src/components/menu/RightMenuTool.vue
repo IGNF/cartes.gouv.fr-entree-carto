@@ -18,7 +18,6 @@ import MenuLateralWrapper from '@/components/menu/MenuLateralWrapper.vue';
 import MenuLateralNavButton from '@/components/menu/MenuLateralNavButton.vue';
 import MenuControl from '@/components/menu/MenuControl.vue';
 // import MenuCatalogue from '@/components/menu/catalogue/MenuCatalogue.vue';
-import { inject } from 'vue';
 
 // import { useDataStore } from "@/stores/dataStore"
 import { useDomStore } from '@/stores/domStore';
@@ -81,7 +80,6 @@ const tabArray = computed(() => {
 // onglet actif
 const activeTab = ref("MenuControlContent");
 const wrapper = ref(null);
-const width = 500;
 
 // Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
@@ -89,12 +87,6 @@ function tabClicked(newTab) {
     wrapper.value.closeMenu();
   } else {
     activeTab.value = newTab + "Content";
-    // on change la largeur du menu pour les favoris
-    if (newTab === "MenuBookMarks") {
-      wrapper.value.widthMenu = 400;
-    } else {
-      wrapper.value.widthMenu = width;
-    }
     wrapper.value.openMenu();
   }
 }
@@ -126,7 +118,6 @@ function tabIsActive(componentName) {
     v-model="is_expanded"
     :side="side"
     :visibility="true"
-    :width="500"
   >
     <!-- Contenu du menu lateral -->
     <template #content>

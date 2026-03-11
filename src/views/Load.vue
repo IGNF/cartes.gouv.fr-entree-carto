@@ -20,18 +20,7 @@ import ModalInformation from '@/components/modals/ModalInformation.vue'
 
     <!-- loading state via #fallback slot -->
     <template #fallback>
-      <div class="patience-container">
-        <Patience />
-      </div>
+      <Patience />
     </template>
   </Suspense>
 </template>
-
-<style>
-  .patience-container{
-    margin-left: 0;
-    width: inherit;
-    height: 76.8vh;
-    display: flex;
-  }
-</style>

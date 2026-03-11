@@ -32,12 +32,28 @@ const selectedControlsModel = defineModel({ type: Array, default: () => [] });
 const opts = useControlsMenuOptions();
 
 const allOptions = computed(() => {
-  return opts.filter((opt) => {
-    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) || 
-        opt.hint.toLowerCase().includes(searchString.value.toLowerCase())  ||
-        opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
-      return opt;
-  })
+  // regroupement des controles par group
+  // [
+  //   { group: 'id',  items: [{ label: 'Barre de Recherche', ... }] },
+  //   { group: 'id2', items: [{ label: 'Mini carte', ... }] }
+  // ]
+  // puis filtrage des items par la recherche
+  // puis filtrage si pas d'items
+  return Object.entries(
+    opts.reduce((acc, item) => {
+      (acc[item.group] ??= []).push(item);
+      return acc;
+    }, {})
+  ).map(([group, items]) => ({
+    group,
+    items: items.filter(opt => {
+      return (
+        opt.label.toLowerCase().includes(searchString.value.toLowerCase()) ||
+        opt.hint?.toLowerCase().includes(searchString.value.toLowerCase()) ||
+        opt.name.toLowerCase().includes(searchString.value.toLowerCase())
+      );
+    })
+  })).filter(({ items }) => items.length > 0);
 });
 
 const searchString = ref("");
@@ -67,41 +83,40 @@ onUpdated(() => {})
       />
     </div>
     <div class="control-content">
-      <table>
-        <ControlListElement
-          v-for="(opt, idx) in allOptions"
-          :key="idx"
-          v-model="selectedControlsModel"
-          :model-value="props.selectedControls"
-          :control-list-element-options="opt"
-        />
-      </table>
+      <div>
+        <div
+          v-for="group in allOptions"
+          :key="group.group"
+        >
+          <p class="fr-text--sm fr-mb-0">
+            {{ group.group }}
+          </p>
+          <div class="fr-mb-3w">
+            <ControlListElement
+              v-for="(opt, idx) in group.items"
+              :key="idx"
+              v-model="selectedControlsModel"
+              :model-value="props.selectedControls"
+              :control-list-element-options="opt"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-table {
-  border-spacing: 30px 1rem;
-  border-collapse: separate;
-}
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
 .control-search-bar {
   margin-bottom: 30px;
-  margin-right: 40px;
   top: 0px;
 }
 
-.control-content {
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  overflow-x: hidden;
-}
-
 .control-container {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 60px);
-  max-height: calc(76.8vh - 96px);
+  @include min(sm) {
+    width: $widget-panel-width-md;
+  }
 }
 </style>

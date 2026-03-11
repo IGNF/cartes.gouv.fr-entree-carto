@@ -21,28 +21,6 @@ const log = useLogger()
 const map = inject(props.mapId)
 const controlList = ref(new ControlList(props.controlListOptions))
 
-// REMOVEME : le bouton "+" ne descend plus quand l'écran est petit. Commenté au cas-où on re-change d'avis
-// const isSmallScreen = useMatchMedia('SM')
-// const isSmallHeight = useMatchMediaHeight('XS')
-
-// watch(isSmallScreen, () => {
-//   if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
-//     controlList.value.setPosition("top-right")
-//   }
-//   else {
-//     controlList.value.setPosition("bottom-right")
-//   }
-// })
-
-// watch(isSmallHeight, () => {
-//   if (props.visibility && !isSmallScreen.value && !isSmallHeight.value) {
-//     controlList.value.setPosition("top-right")
-//   }
-//   else {
-//     controlList.value.setPosition("bottom-right")
-//   }
-// })
-
 watch(selectedControls, () => {
   setTimeout(() => {
     map.removeControl(controlList.value);
@@ -52,13 +30,6 @@ watch(selectedControls, () => {
         var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
         useActionButtonEulerian(el);
       }
-      // REMOVEME : le bouton "+" ne descend plus quand l'écran est petit. Commenté au cas-où on re-change d'avis
-      // if (!isSmallScreen.value && !isSmallHeight.value) {
-      //   controlList.value.setPosition("top-right")
-      // }
-      // else {
-      //   controlList.value.setPosition("bottom-right")
-      // }
     }
   }, 10);
 })
@@ -92,7 +63,28 @@ onUpdated(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style scoped></style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.gpf-widget[id^="GPcontrolList-"] {
+  height: $widget-btn-size;
+
+  &.gpf-widget-button {
+    box-shadow: 0 3px 3px -1px var(--shadow-color);
+  }
+
+  .gpf-btn-icon span::before {
+    // supprime la séparation
+    content: none !important;
+  }
+}
+
+// le positionnement dynamique des widgets basé sur la hauteur modifie la position de GPcontrolList (en absolute)
+// du coup, le panel doit être en fixed pour être aligné en haut de la map
+.gpf-widget[id^="GPcontrolList-"] .gpf-panel {
+  position: fixed;
+}
+</style>

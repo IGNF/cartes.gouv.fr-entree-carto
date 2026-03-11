@@ -17,13 +17,11 @@ import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from '
 
 // stores
 import { useAppStore } from "@/stores/appStore"
-import { useDomStore } from "@/stores/domStore"
 import { useMapStore} from "@/stores/mapStore"
 import { useServiceStore } from '@/stores/serviceStore'
 import { useRoute } from 'vue-router';
 
 const appStore = useAppStore()
-const domStore = useDomStore()
 const mapStore = useMapStore()
 const serviceStore = useServiceStore()
 const route = useRoute()
@@ -135,48 +133,40 @@ watch(authentificateSyncNeeded, (needAuth) => {
   </Notivue>
 
   <!-- INFO
-    Message d'information sur la redirection issue du geoportail 
-    Le permalien possède la clef/valeur : "fromgpp=1"
-    On informe donc l'utilisateur d'une action à faire.
-  -->
-  <div v-if="mapStore.isRedirect">
-    <DsfrAlert
-      type="warning"
-      :title="alertData.title"
-      :closeable="true"
-      :closed="alertClosed"
-      @close="onCloseAlert()"
-    >
-      <p v-html="alertData.description" />
-    </DsfrAlert>
-  </div>
-
-  <!-- INFO
     Message d'information sur la nécessité de se reconnecter 
     pour enregistrer un document temporaire
       Via la clef/valeur : "authentificateSyncNeeded=1"
   -->
-  <div v-if="authentificateSyncNeeded">
-    <DsfrAlert
-      type="warning"
-      :title="temporyDocumentData.title"
-      :small="true"
-      :closeable="true"
-      :closed="temporyDocumentClosed"
-      @close="onCloseTemporyDocument()"
-    >
-      <p>{{ temporyDocumentData.description }}</p>
-      <p v-html="temporyDocumentData.action" />
-    </DsfrAlert>
-  </div>
-
-  <div
-    class="futur-map-container"
-    :class="{
-      minimized: domStore.isHeaderCompact,
-      embed: isEmbedRoute
-    }"
+  <DsfrAlert
+    v-if="authentificateSyncNeeded"
+    type="warning"
+    :title="temporyDocumentData.title"
+    :small="true"
+    :closeable="true"
+    :closed="temporyDocumentClosed"
+    @close="onCloseTemporyDocument()"
   >
+    <p>{{ temporyDocumentData.description }}</p>
+    <p v-html="temporyDocumentData.action" />
+  </DsfrAlert>
+
+  <!-- INFO
+    Message d'information sur la redirection issue du geoportail 
+    Le permalien possède la clef/valeur : "fromgpp=1"
+    On informe donc l'utilisateur d'une action à faire.
+  -->
+  <DsfrAlert
+    v-if="mapStore.isRedirect"
+    type="warning"
+    :title="alertData.title"
+    :closeable="true"
+    :closed="alertClosed"
+    @close="onCloseAlert()"
+  >
+    <p v-html="alertData.description" />
+  </DsfrAlert>
+
+  <div class="futur-map-container">
     <router-view />
   </div>
   
@@ -192,28 +182,6 @@ watch(authentificateSyncNeeded, (needAuth) => {
     overflow: unset;
   }
 
-  .futur-map-container{
-    width: 100%;
-    height: calc(100vh - 169px);
-  }
-  .futur-map-container.embed {
-    height: 100vh;
-  }
-  .minimized.futur-map-container {
-    height: calc(100vh - 108.5px);
-  }
-
-  @media (max-width: 991px) {
-    .futur-map-container{
-      height: calc(100vh - 165px);
-      margin-bottom: 0px;
-
-    }
-    .minimized.futur-map-container {
-      height: calc(100vh - 56px);
-      margin-bottom: 0px;
-    }
-  }
   /* TODO :
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements

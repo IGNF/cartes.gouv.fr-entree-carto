@@ -39,88 +39,75 @@ watch(isActive, (value) => {
   }
 })
 
-const onClick = () => {
-  isActive.value = !isActive.value
-}
-
 onMounted(() => {})
 onUpdated(() => {})
 
 </script>
 
 <template>
-  <tr class="control-list-element">
-    <td class="control-list-element-img">
-      <DsfrTooltip
-        on-hover
-        :content="controlListElementOptions.tooltip"
-        @click="onClick()"
-      >
-        <div>
-          <span
-            v-if="controlListElementOptions.svg" 
-            class="custom-svg-icon" 
-            v-html="controlListElementOptions.svg"
-          />
-          <VIcon
-            v-else-if="!dsfrIcon"
-            scale="1.25"
-            :name="controlListElementOptions.icon"
-          />
-          <span 
-            v-else
-            :class="controlListElementOptions.icon" 
-            aria-hidden="true"
-          />
-        </div>
-      </DsfrTooltip>
-    </td>
-    <td class="control-list-element-img">
-      <DsfrTooltip
-        on-hover
-        :content="controlListElementOptions.tooltip"
-      >
-        <DsfrToggleSwitch
-          v-model="isActive"
-          :disabled="controlListElementOptions.disabled"
-          :input-id="controlListElementOptions.id"
-          :label="controlListElementOptions.label"
-          label-left
-          :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
-          v-bind="$attrs"
-          class="control-list-element"
+  <div class="control-list-element">
+    <div class="control-list-element-img">
+      <div>
+        <VIcon
+          v-if="!dsfrIcon"
+          scale="1.25"
+          :name="controlListElementOptions.icon"
         />
-      </DsfrTooltip>
-    </td>
-  </tr> 
+        <span 
+          v-else
+          :class="controlListElementOptions.icon" 
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+    <div class="control-list-element-toggle">
+      <DsfrToggleSwitch
+        v-model="isActive"
+        :disabled="controlListElementOptions.disabled"
+        :input-id="controlListElementOptions.id"
+        :label="controlListElementOptions.label"
+        label-left
+        no-text
+        :hint="controlListElementOptions.hint"
+        :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
+        v-bind="$attrs"
+      />
+    </div>
+  </div> 
 </template>
 
 <style scoped>
 .control-list-element {
-    margin-bottom: 20px;
-    max-width: 95%;
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+  padding: 1rem 0;
+}
+.control-list-element + .control-list-element {
+  border-top: 1px solid var(--border-default-grey);
 }
 .control-list-element-img {
-  border: solid --background-default-grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 40px;
+  height: 40px;
+  margin-right: 0.5rem;
 }
+.control-list-element-toggle {
+  flex: 1;
+}
+</style>
 
-.custom-svg-icon svg {
-  width: 19.2px;
-  height: 19.2px;
-  display: inline-block;
-  color: var(--test-default-grey);
-  fill: currentColor;
+<style lang="scss">
+// augmente la zone cliquable du label
+.control-list-element {
+  .fr-toggle__label:has(+ .fr-hint-text) {
+    padding-bottom: 1.75rem;
+  }
+  .fr-hint-text {
+    margin-top: -1.5rem;
+    pointer-events: none;
+  }
 }
-.custom-svg-icon{
-  display: inline-block;
-  vertical-align: middle; 
-  color: var(--test-default-grey);
-  font-size: 1em;
-}
-
-td {
-  vertical-align: top;
-  text-align: left;
-}
-
 </style>

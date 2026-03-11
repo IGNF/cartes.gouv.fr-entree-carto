@@ -21,9 +21,6 @@ import { useDomStore } from '@/stores/domStore';
 
 const domStore = useDomStore();
 
-const props = defineProps({
-})
-
 const side = "left"
 const is_expanded = ref()
 
@@ -53,7 +50,6 @@ const tabArray = computed(() => {
 
 const activeTab = ref("MenuCatalogueContent")
 const wrapper = ref(null)
-const width = 300;
 
 // Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
@@ -61,12 +57,6 @@ function tabClicked(newTab) {
     wrapper.value.closeMenu();
   } else {
     activeTab.value = newTab + "Content";
-    // on change la largeur du menu pour les favoris
-    if (newTab === "MenuBookMarks") {
-      wrapper.value.widthMenu = 400;
-    } else {
-      wrapper.value.widthMenu = width;
-    }
     wrapper.value.openMenu();
   }
 }
@@ -148,8 +138,6 @@ watch(() => domStore.getleftControlMenu(), (newVal) => {
     v-model="is_expanded"
     :side="side"
     :visibility="true"
-    :width="width"
-    :padding="16"
   >
     <template #content>
       <div

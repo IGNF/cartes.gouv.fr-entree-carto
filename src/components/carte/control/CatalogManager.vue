@@ -110,20 +110,33 @@ const onCatalogLayerRemove = (e) => {
 </script>
 
 <template>
-  <div>
-    <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
-  </div>
+  <div />
 </template>
 
-<style>
-button[id^=GPshowCatalogPicto-]{
-  border-radius: 4px !important;
-  border-radius: 4px !important;
-}
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-@media (max-width: 576px) {
-  button[id^="GPshowCatalogPicto-"][aria-pressed="true"] + dialog {
-    max-width: unset;
+.gpf-widget[id^="GPcatalog"] {
+  button[id^=GPshowCatalogPicto-] {
+    background-color: var(--background-action-high-blue-france);
+    box-shadow: inset 0 0 0 $widget-btn-padding var(--background-action-high-blue-france);
   }
+  button[id^=GPshowCatalogPicto-][aria-pressed=true],
+  button[id^=GPshowCatalogPicto-][aria-pressed=true]:not(:disabled):hover {
+    background-color: var(--hover-tint);
+  }
+}
+// autorise une hauteur maximale disponible
+// et cree un scroll sur la liste
+[id^=GPcatalogPanel-] {
+  overflow: auto;
+}
+.gpf-catalog-tabs-fixe,
+.gpf-catalog-tabs-fixe-with-bar {
+  --tabs-height: 100% !important;
+}
+#GPcatalogContainerTabs .fr-tabs__panel {
+  max-height: 100% !important;
+  overflow: initial !important;
 }
 </style>

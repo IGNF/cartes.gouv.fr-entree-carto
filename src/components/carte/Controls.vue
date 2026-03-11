@@ -118,6 +118,7 @@ const layerSwitcherOptions = {
     id: "2",
     position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
+    gutter: true,
     panel: true,
     counter: true,
     allowEdit: true,
@@ -405,14 +406,14 @@ const elevationPathOptions = {
 const layerImportOptions = {
   id: "20",
   position: useControlsExtensionPosition().layerImportOptions,
-  gutter: false,
+  gutter: true,
   listable: true,
 };
 
 const reportingOptions = {
   id: "21",
   position: useControlsExtensionPosition().reportingOptions,
-  gutter: false,
+  gutter: true,
   listable: true,
   format : "kml"
 };
@@ -420,7 +421,7 @@ const reportingOptions = {
 const catalogOptions = {
   id: "22",
   position: useControlsExtensionPosition().catalogOptions,
-  gutter: false,
+  gutter: true,
   listable: false,
   titlePrimary : "Catalogue de cartes",
   layerLabel : "title",
@@ -530,13 +531,6 @@ const contextMenuOptions = computed(() => {
   }
 })
 
-/** Print Control */
-emitter.addEventListener('printmodal:open', onModalPrintOpen);
-const refModalPrint = ref(null);
-
-function onModalPrintOpen() {
-  refModalPrint.value.onModalPrintOpen();
-}
 onMounted(() => {
   log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
@@ -708,379 +702,227 @@ onMounted(() => {
     :reporting-options="reportingOptions"
     :map-id="mapId"
   />
-  <PrintModal ref="refModalPrint"/>
 </template>
 
-<style>
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-.position-container-bottom-left,
-.position-container-bottom-right,
-.position-container-top-left,
+// positionnement des conteneurs de widgets
+.ol-overlaycontainer-stopevent {
+  // evite de creer un stacking context (ce qui complexifie la superposition des menuwrapper)
+  z-index: initial !important;
+}
+.position {
+  z-index: 1;
+  width: $widget-btn-size;
+  height: calc(100% - $gap * 2);
+  gap: $gap;
+}
+.position-container-top-left {
+  top: $gap;
+  left: $gap;
+}
 .position-container-top-right {
-  margin: 0;
+  top: $gap;
+  right: $gap;
+  // cree un containing block
+  will-change: transform;
+}
+.position-container-bottom-left {
+  bottom: $gap;
+  left: $gap;
+}
+.position-container-bottom-right {
+  z-index: 0;
+  bottom: $gap;
+  right: $gap;
+}
+@include max(sm) {
+  .position {
+    height: calc(100% - ($widget-btn-size + $gap * 3));
+  }
+  .position-container-top-left,
+  .position-container-top-right {
+    top: $widget-btn-size + $gap * 2;
+  }
+}
+.gpf-widget {
+  width: $widget-btn-size;
   padding: 0;
-}
 
-.gpf-widget[id^="GPlayerSwitcher-"] {
-  margin-bottom: 47px;
-  margin-top: 12px;
-}
+  &.gpf-widget-button {
+    box-shadow: var(--raised-shadow);
+    border-radius: $widget-btn-radius;
+  }
 
-button[id^="GPgetFeatureInfoPicto-"] {
-  display: none;
+  & > .gpf-btn-icon {
+    width: $widget-btn-size;
+    height: $widget-btn-size;
+    padding: $widget-btn-padding;
+    // supprime l'ombre
+    filter: none;
+    // cree l'effet du bouton
+    @include widget-btn-style;
+    // surclasse dsfr
+    max-width: initial !important;
+    max-height: initial !important;
+  }
+  &.gpf-button-no-gutter > .gpf-btn-icon {
+    @include widget-btn-no-gutter-style;
+  }
+  & > .gpf-btn-icon:not(:disabled):hover {
+    @include widget-btn-style-hover;
+  }
+  & > .gpf-btn-icon[aria-pressed="true"],
+  & > .gpf-btn-icon[aria-pressed="true"]:not(:disabled):hover {
+    @include widget-btn-style-active;
+  }
+  // supprime les traits active
+  &:has(> .gpf-btn-icon[aria-pressed="true"])::after {
+    content: none;
+  }
 }
+// conteneur top-right
+.position-container-top-right {
+  // cree un espace vide au-dessus du 3e widget (pour insérer le controleur de widgets)
+  .gpf-widget:nth-child(3) {
+    margin-top: $widget-btn-size;
+  }
+  // enleve le border-radius (en haut)
+  .gpf-widget:nth-child(3) .gpf-btn-icon {
+    border-radius: 0;
+  }
+}
+// tooltips: position
+.position-container-top-right > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-right > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
+  transform: translate(-100%, $widget-btn-padding);
+}
+.position-container-top-left > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-left > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
+  transform: translate($widget-btn-size - $widget-btn-padding * 2, $widget-btn-padding);
+}
+// modales: au dessus quand active
+.position:has(> .gpf-widget > .gpf-btn-icon[aria-pressed="true"]) {
+  z-index: 2;
 
-.gpf-widget-button[id^="GPgetFeatureInfo"]:has(>.gpf-btn-icon[aria-pressed=true]):after {
+  // au dessus de tout en mobile
+  @include max(sm) {
+    z-index: 4;
+  }
+}
+// tooltips: au-dessus quand hover
+.position:has(> .gpf-widget > .gpf-btn-icon[aria-label]:hover) {
+  z-index: 3;
+}
+// supprime tooltip si deja ouverte
+.position > .gpf-widget > .gpf-btn-icon[aria-pressed="true"]:hover::before {
   content: none;
-  background: none;
+}
+// alignements en hauteur des bouton no-gutter
+.position-container-top-left .gpf-button-no-gutter,
+.position-container-top-right .gpf-button-no-gutter {
+  margin-bottom: -$gap;
+}
+// panels
+.gpf-panel {
+  position: absolute;
+  top: 0 !important; // aligne par rapport a .position
+  @include widget-panel-sizes;
+  box-shadow: var(--raised-shadow);
+}
+.position-container-top-left .gpf-panel,
+.position-container-bottom-left .gpf-panel {
+  left: $widget-btn-size + $gap !important;
+}
+.position-container-top-right .gpf-panel,
+.position-container-bottom-right .gpf-panel {
+  right: $widget-btn-size + $gap !important;
+}
+.gpf-panel__body {
+  max-height: calc(70vh) !important;
+  max-height: calc(100cqb - $gap * 2) !important;
+}
+.gpf-panel__body_ls {
+  max-height: initial !important;
+}
+.gpf-panel__content {
+  overflow: auto;
+}
+@include max(sm) {
+  .gpf-panel {
+    max-width: 100vw !important;
+    max-height: 100cqb !important;
+  }
+  .gpf-panel__body {
+    max-height: 100cqb !important;
+  }
+  // selecteur a rallonge obligatoire pour surclasser le style
+  .position .gpf-widget > button[aria-pressed] ~ dialog.gpf-panel {
+    min-width: 0;
+    right: -$gap !important;
+    top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
+    width: 100vw !important;
+  }
+  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget > button[aria-pressed] ~ dialog.gpf-panel {
+    right: auto !important;
+    left: -$gap !important;
+  }
 }
 
-/* 12 boutons */
-.position-container-top-right > .gpf-widget:nth-child(n+16) > button {
+/**
+ *  gestion du nombre de widget en fonction de la hauteur
+ */
+
+// le widget GPcontrolList est caché par défaut (pas d'outils)
+.gpf-widget[id^="GPcontrolList-"] {
   display: none;
 }
-
-.position-container-top-right:has(.gpf-widget:nth-child(17)) > .gpf-widget:nth-child(n+15) > button {
-  display: none;
+// puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
+.position-container-top-right > .gpf-widget:nth-child(3) ~ .gpf-widget[id^="GPcontrolList-"] {
+  position: absolute !important;
+  display: block;
+  // le controlList est affiché tout en bas, sous la liste
+  // --diff-widgets
+  // si le nombre max (--nb-widgets) est plus grand que le nombre de widget (--count +1 car controlList)
+  // alors, --diff-widgets > 0 et bottom = 9999px * n, sinon --diff-widgets = 0 et bottom = 0
+  --diff-widgets: max(var(--nb-widgets) - var(--count) + 1, 0);
+  bottom: calc(var(--diff-widgets) * 9999px) !important;
 }
 
-.position-container-top-right:not(:has(.gpf-widget:nth-child(17))) > .gpf-widget[id^="GPcontrolList-"] > button {
-  display: none;
+// on ajoute un border-radius sur l'avant dernier élément, a partir du 3e (celui avant controlList)
+.position-container-top-right > .gpf-widget:nth-child(2) ~ .gpf-widget:nth-last-child(2) > .gpf-btn-icon {
+  border-radius: 0 0 $widget-btn-radius $widget-btn-radius;
 }
 
-.position-container-top-right:has(.gpf-widget:nth-child(17)) > .gpf-widget:nth-child(n+15)[id^="GPcontrolList-"] > button {
-  display: inline-flex;
+// on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
+.position-container-top-right {
+  --nb-widgets: 0;
+  position: relative;
+  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 4) + ($gap * 2));
 }
 
-.position-container-top-right > div:nth-child(n+16) {
-  padding: 0;
-  margin: 0;
+// on défini le nombre de widgets max en fonction de la hauteur de map
+@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 0 } }
+@container map (min-height: 550px) { .position-container-top-right { --nb-widgets: 2 } }
+@container map (min-height: 600px) { .position-container-top-right { --nb-widgets: 3 } }
+@container map (min-height: 650px) { .position-container-top-right { --nb-widgets: 4 } }
+@container map (min-height: 700px) { .position-container-top-right { --nb-widgets: 5 } }
+@container map (min-height: 750px) { .position-container-top-right { --nb-widgets: 6 } }
+@container map (min-height: 850px) { .position-container-top-right { --nb-widgets: 8 } }
+@container map (min-height: 900px) { .position-container-top-right { --nb-widgets: 10 } }
+@container map (min-height: 950px) { .position-container-top-right { --nb-widgets: 20 } }
+
+// creation des selecteurs pour 20 outils
+@for $i from 1 through 20 {
+  // defini la position du widget (i) (n=3 est le premier widget)
+  .position-container-top-right > .gpf-widget:nth-child(#{$i + 2}) { --i: #{$i} }
+  // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
+  .position-container-top-right:has(> .gpf-widget:nth-child(#{$i + 3})) { --count: #{$i} }
 }
 
-.position-container-top-right:has(div:nth-child(17)) > div:nth-child(n+15) {
-  margin: 0;
-  padding: 0;
-}
-
-.position-container-top-right:not(:has(div:nth-child(17))) > div[id^="GPcontrolList-"] {
-  margin: 0;
-  padding: 0;
-}
-
-.position-container-top-right:has(div:nth-child(17)) > div:nth-child(n+15)[id^="GPcontrolList-"] {
-  padding: 2px;
-}
-
-.gpf-button-no-gutter:has(+ .gpf-widget-button[id^="GPcontrolList-"]) > .gpf-btn-icon {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-}
-/* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
-/* Que le menu ... (1 seul bouton) */
-@media (max-height: 639px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+4) > button {
-    display: none;
-  }
-
-  .position-container-top-right > div:nth-child(n+4) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+3) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(5)) > .gpf-widget[id^="GPcontrolList-"] {
-    padding: 2px;
-    padding-top: 12px;
-}
-}
-
-/* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
-/* 4 boutons */
-@media (min-height: 640px) and (max-height: 679px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(7))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+7)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+6) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6):has(> div[id^="GPcontrolList-"]) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(7))) > div[id^="GPcontrolList-"] {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(7)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
-/* 5 boutons */
-@media (min-height: 680px) and (max-height: 759px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+8) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(9)) > .gpf-widget:nth-child(n+7) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(9)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+6) {
-    padding: 0;
-    margin: 0;
-    padding-left: 2px;
-  }
-
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7):has(> div[id^="GPcontrolList-"])  {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+7)[id^="GPcontrolList-"] {
-    /*padding: 2px;*/
-  }
-}
-
-/* 7 boutons */
-@media (min-height: 760px) and (max-height: 799px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+10) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(11)) > .gpf-widget:nth-child(n+9) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(11)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+9) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+9):has(> div[id^="GPcontrolList-"])  {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+9)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* 8 boutons */
-@media (min-height: 800px) and (max-height: 879px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(11))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+11)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+10) {
-    padding: 0;
-    margin: 0;
-    padding-left: 2px;
-  }
-
-  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+10):has(> div[id^="GPcontrolList-"])  {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(11))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(11)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* 10 boutons */
-@media (min-height: 880px) and (max-height: 959px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+13) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(13))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+13)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+12) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+13):has(> div[id^="GPcontrolList-"])  {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(13))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(13)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-@media (min-width: 576px) {
-  .position-container-bottom-left,
-  .position-container-bottom-right,
-  .position-container-top-left,
-  .position-container-top-right {
-    height: calc(100% - 102px);
-  }
-
-  .position-container-top-right {
-      top: 13px;
-  }
-/* position du coin haut-gauche au même niveau que les autres panneaux ouverts par le menu carte */
-  .position-container-top-left {
-    top: 13px;
-  }
-}
-@media (max-width: 576px) {
-  .position-container-top-left {
-    top: 299px;
-  }
-  .position-container-top-right{
-    top: 60px;
-  }
-  .GPpanel {
-    margin-top : -56px !important;
-  }
-
-  .position-container-bottom-left,
-  .position-container-bottom-right,
-  .position-container-top-left,
-  .position-container-top-right {
-    height: calc(100% - 303px);
-  }
-
-  /* Mode mobile : on positionne les dialog par dessus la barre de recherche
-  en position fix, sous le header DSFR, et on annule le positionnement introduit
-  par la classe gpf-mobile-fullscreen (right ou left) à l'aide de marges */
-  .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    margin-top: -294px;
-    max-height: calc(100% + 302px);
-  }
-
-  .position-container-top-right > .gpf-widget:nth-child(n+5) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget:not([id^="GPcontrolList-"]):nth-child(n+4) > button {
-    display: none;
-  }
-
-  .gpf-widget[id^="GPzoom-"]{
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(6)) > .gpf-widget[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-
-  .position-container-bottom-left > .gpf-widget:not([id^="GPlegends-"]) {
-    display: none;
-  }
-
-  .ol-scale-line {
-    transform: translateX(-50px);
-  }
-}
-
-@media (max-width: 627px) and (min-width: 576px) {
-  .position-container-bottom-left,
-  .position-container-bottom-right,
-  .position-container-top-left,
-  .position-container-top-right {
-    height: calc(100% - 168px);
-  }
+// on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
+.position-container-top-right > .gpf-widget:not([id^="GPcontrolList-"]) {
+  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
 }
 </style>
