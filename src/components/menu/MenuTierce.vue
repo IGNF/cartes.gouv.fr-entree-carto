@@ -30,8 +30,6 @@ const emit = defineEmits([
   'onBookMarksOpen'
 ]);
 
-const isCompact = ref(domStore.getIsHeaderCompact())
-
 function onOpenControlReporting() {
   // on active le controle
   mapStore.addControl("Reporting");
@@ -58,29 +56,10 @@ function openControl(controlName) {
   })
 }
 
-function onToggleHeaderCompact() {
-  isCompact.value = !isCompact.value
-  domStore.setIsHeaderCompact(isCompact.value);
-}
-
-const icon = "mingcute:file-import-line"
-const defaultScale = 0.8325;
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
-
 // INFO
 // on active / desactive le bouton "Mes enregistrements" selon
 // si on est authentifié ou pas
 var service = inject('services');
-var authenticatedValue = computed(() => service.authenticated);
-// INFO
-// on est sur un faux "disabled" du bouton
-// car on souhaite que les evenements soient toujours actifs
-const authenticatedClass = ref({
-  authenticatedProperty: !authenticatedValue.value
-});
 
 const BookmarksButton = ref(null)
 onMounted(() => {
@@ -94,7 +73,7 @@ onMounted(() => {
       <DsfrButton
         tertiary
         no-outline
-        :class="authenticatedClass"
+        :class="{'fr-btn--disabled': !service.authenticated }"
         icon="ri-bookmark-line"
         @click="$emit('onBookMarksOpen')"
       >
@@ -138,45 +117,35 @@ onMounted(() => {
     </DsfrButton>
     <hr>
 
-    <DsfrButton
-      tertiary
-      no-outline
-      icon="ri:layout-top-line"
-      @click="onToggleHeaderCompact"
-    >
-      <div class="compact-toggle">
-        Affichage compact
-        <DsfrToggleSwitch
-          v-model="isCompact"
-          no-text
-          label-left
-          @click.stop
-          @click="domStore.setIsHeaderCompact(!isCompact)"
-        />
-      </div>
-    </DsfrButton>
+    <div class="fr-btn fr-btn--tertiary-no-outline fr-btn--md fr-btn--icon-left fr-icon-layout-top-line">
+      <DsfrToggleSwitch
+        v-model="domStore.isHeaderCompact"
+        label="Affichage compact"
+        no-text
+        class="fr-toggle--label-left"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.authenticatedProperty {
-  --hover: inherit;
-  --active: inherit;
-  background-color: transparent;
-  color: var(--text-disabled-grey);
+:deep(.fr-btn),
+:deep(.fr-toggle__label) {
+  font-size: 0.875rem;
+  color: var(--text-action-high-grey);
 }
 
-a {
-  text-decoration: none;
+.fr-btn--disabled {
+  color: var(--text-disabled-grey);
+
+  --idle: transparent;
+  --hover: inherit;
+  --active: inherit;
 }
+
 .container {
   display: flex;
   flex-direction: column;
-}
-
-:deep(button) {
-  font-size: 0.875rem;
-  color: var(--text-action-high-grey);
 }
 
 @media (max-width: 576px) {
@@ -189,10 +158,5 @@ a {
   .tierce-print {
     display: none;
   }
-}
-
-.compact-toggle {
-  display: flex;
-  justify-content: space-between;
 }
 </style>
