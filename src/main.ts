@@ -64,7 +64,6 @@ const services = createServices(storage ? JSON.parse(storage).connexion : {})
 const eulerian = createEulerian({
   verbose : !isProduction, // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
-  isActionEnabled: "reduce", // on limite le tracking uniquement sur les elements "data-fr-analytics-action"
   site: {
     environment: isProduction ? "production" : "development",
     entity: "IGN"

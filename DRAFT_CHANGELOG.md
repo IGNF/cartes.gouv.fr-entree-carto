@@ -24,6 +24,8 @@
 
 #### 🔥 [Suppression]
 
+  - Suppression des actions Eulerian: utilise la version standalone sans dépendance dsfr
+
 #### 🐛 [Correction]
 
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)

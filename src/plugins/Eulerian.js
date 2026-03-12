@@ -32,10 +32,8 @@ export class Eulerian {
     this.options = options;
 
     window.dsfr = {
-      verbose: options.verbose,
-      mode: "vue"
-    }
-    window.dsfr.analytics = options;
+      analytics: options,
+    };
 
     /**
      * clef du consentement
@@ -52,7 +50,6 @@ export class Eulerian {
 
     // chargement des scripts de l'API Analytics Eulerain
     this.load().then(() => {
-      console.debug("import dynamic dsfr !");
       // activation de la collecte si la clef de consentement est déjà active
       var value = JSON.parse(localStorage.getItem(this.key));
       if (value) {
@@ -69,11 +66,8 @@ export class Eulerian {
    * Chargement de l'API Analytics Eulerain
    */
   async load() {
-    await import("@gouvfr/dsfr/dist/dsfr.module").then(() => {
-      console.debug("import dynamic dsfr.module !");
-    })
-    await import("@gouvfr/dsfr/dist/analytics/analytics.module").then(() => {
-      console.debug("import dynamic analytics.module !");
+    await import("@gouvfr/dsfr/standalone/analytics/analytics.module.standalone.js").then(() => {
+      console.debug("import dynamic analytics.module.standalone !");
     })
   }
 
@@ -82,19 +76,21 @@ export class Eulerian {
    * @public
    */
   start () {
-    console.debug("start");
     localStorage.setItem(this.key, '{"eulerianAnalytics":true,"isFullConsent":true}');
     window.dsfr.analytics.opt.enable();
-    window.dsfr.start();
+    /*
     window.dsfr.analytics.readiness.then(() => {
       console.debug("start promise !");
       if (!this.options.verbose) {
         window.dsfr.inspector.level = 10;
       }
+      window.dsfr.analytics.isDebugging = true;
       window.dsfr.analytics.reset();
+      console.log('collect');
       window.dsfr.analytics.collect(); // envoie les données
     });
     this.status = true;
+    */
   }
 
   /**
@@ -102,11 +98,10 @@ export class Eulerian {
    * @public
    */
   stop () {
-    console.debug("stop");
     localStorage.setItem(this.key, '{"eulerianAnalytics":false,"isFullConsent":false}');
     window.dsfr.analytics.opt.disable();
-    window.dsfr.stop();
-    this.status = false;
+    //window.dsfr.stop();
+    //this.status = false;
   }
 
   /**
@@ -114,10 +109,12 @@ export class Eulerian {
    * @public
    */
   pause () {
+    /*
     if (this.status) {
       window.dsfr.stop();
     }
     console.debug("pause", this.status);
+    */
   }
   
   /**
@@ -125,10 +122,12 @@ export class Eulerian {
    * @public
    */
   resume () {
+    /*
     if (this.status) {
       window.dsfr.start();
     }
     console.debug("resume", this.status);
+    */
   }
 
   /**
