@@ -1,0 +1,2 @@
+import{p as u,r as l,s as i,W as _}from"./index-DfdmgJ0o.js";const f={},g=Object.assign(f,{__name:"Logout",setup(m){const a=_(),t=i("services");return u(()=>{const e=location.search,o=new URLSearchParams(e);var c=o.get("session_state"),r=o.get("success");if(!e){t.getAccessLogout().then(n=>{location.href=n});return}var s=0;t.mode==="local"&&c!==null?s=1:t.mode==="remote"&&r!==null?s=parseInt(r,10):s=0,a.push({path:"/",query:{from:"logout",success:s}})}),(e,o)=>l(e.$slots,"default")}});export{g as default};
+//# sourceMappingURL=Logout-Crbq_Y_k.js.map
