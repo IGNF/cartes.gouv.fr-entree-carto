@@ -53,6 +53,7 @@ $widget-panel-x: $widget-btn-size + $gap * 2;
 
 // mq
 // min-width breakpoints
+// on retranche 0.01em pour les max-width
 $breakpoints: (
   xs: 0,
   sm: 36em, // 576
@@ -68,13 +69,13 @@ $breakpoints: (
 }
 
 @mixin max($bp) {
-  @media (max-width: map.get($breakpoints, $bp)) {
+  @media (max-width: map.get($breakpoints, $bp) - 0.01em) {
     @content;
   }
 }
 
 @mixin between($from, $to) {
-  @media (min-width: map.get($breakpoints, $from)) and (max-width: map.get($breakpoints, $to)) {
+  @media (min-width: map.get($breakpoints, $from)) and (max-width: map.get($breakpoints, $to) - 0.01em) {
     @content;
   }
 }
