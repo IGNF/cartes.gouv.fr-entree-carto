@@ -642,23 +642,29 @@ export const useMapStore = defineStore('map', () => {
   function getTerritories() {
     return parseTerritories();
   }
-  function addTerritory(territory) {
-    if (!territory) {
+  function addTerritory(json_territory) {
+    if (!json_territory) {
       return;
     }
     var json = parseTerritories();
-    if (!json.find(t => t.id === territory.id)) {
-      json.push(territory);
+    if (!json.find(t => t.id === json_territory.id)) {
+      json.push(json_territory);
       territories.value = JSON.stringify(json);
     }
   }
-  function removeTerritory(territory) {
-    if (!territory) {
+  function removeTerritory(json_territory) {
+    if (!json_territory) {
       return;
     }
     var json = parseTerritories();
-    var newJson = json.filter(t => t.id !== territory.id);
+    var newJson = json.filter(t => t.id !== json_territory.id);
     territories.value = JSON.stringify(newJson);
+  }
+  function addTerritories(json_territories) {
+    if (!json_territories || json_territories.length === 0) {
+      return;
+    }
+    territories.value = JSON.stringify(json_territories);
   }
 
   return {
@@ -681,6 +687,7 @@ export const useMapStore = defineStore('map', () => {
     getTerritories,
     addTerritory,
     removeTerritory,
+    addTerritories,
     getMap,
     setMap,
     getLayers,
