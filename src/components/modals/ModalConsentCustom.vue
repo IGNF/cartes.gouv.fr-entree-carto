@@ -14,37 +14,26 @@ export default {};
 <script setup lang="js">
 import { useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';
+import { useModals } from '@/composables/useModals';
 
 // plugin local
 import { useEulerian } from '@/plugins/Eulerian.js';
 
 const router = useRouter();
 const eulerian = useEulerian();
+let modals = useModals();
 
-const consentCustomModalOpened = ref(false);
 const refConsent = ref(null);
 
-const title = "Panneau de gestion des cookies";
-const size = "md";
 const url = useBaseUrl() + "/donnees-personnelles";
 
-const openModalConsentCustom = () => {
-  consentCustomModalOpened.value = true;
-  eulerian.pause();
-}
-
 const onModalConsentCustomClose = () => {
-  consentCustomModalOpened.value = false;
+  modals.close('consentCustom');
   router.push({ path : '/' });
   // INFO
   // l'utilisateur a t il fait un choix ou fermeture direct ?
   eulerian.resume();
 }
-
-defineExpose({
-  openModalConsentCustom,
-  onModalConsentCustomClose
-});
 
 const onAcceptConsentAll = () => {
   eulerian.start();
@@ -54,68 +43,41 @@ const onRefuseConsentAll = () => {
   eulerian.stop();
   onModalConsentCustomClose();
 }
-const onClickValideChoice = () => {
-  onModalConsentCustomClose();
-}
 
 onMounted(() => {
-  if (refConsent.value) {}
-})
-
-onBeforeUpdate(() => {
   if (refConsent.value) {
-    var btn = refConsent.value.querySelector('button[title="Refuser tous les cookies"]');
-    btn.classList.add("fr-btn--secondary");
-  }
-})
-
-onUpdated(() => {
-  if (refConsent.value) {
-    // HACK
+    // HACK vuedsfr
     var btn = refConsent.value.querySelector('button[title="Refuser tous les cookies"]');
     btn.classList.add("fr-btn--secondary");
     var ul = refConsent.value.querySelector('ul');
     ul.classList.replace("fr-btns-group--inline-reverse", "fr-btns-group--inline");
   }
 })
-
 </script>
 
 <template>
-  <!-- Modale : Gestion des cookies (+ Eulerian) -->
-  <DsfrModal
-    :opened="consentCustomModalOpened" 
-    :title="title"
-    :size="size" 
-    @close="onModalConsentCustomClose"
-  >
-    <!-- slot : c'est ici que l'on customise le contenu ! -->
-    <hr>
-    <div id="my-consent-description">
-      <h5>Eulerian Analytics</h5>
-      En cliquant sur 'Tout accepter', vous consentez à l'utilisation des cookies pour nous aider
-      à améliorer notre site web en collectant et en rapportant des informations sur votre
-      utilisation grâce à Eulerian Analytics. <br>
-      Si vous n'êtes pas d'accord, veuillez cliquer sur 'Tout refuser'. 
-      Votre expérience de navigation ne sera pas affectée.
-    </div>
-    <div>
-      <p id="my-consent-buttons" ref="refConsent">
-        <DsfrConsent
+  <div id="my-consent-description">
+    <h5>Eulerian Analytics</h5>
+    En cliquant sur 'Tout accepter', vous consentez à l'utilisation des cookies pour nous aider
+    à améliorer notre site web en collectant et en rapportant des informations sur votre
+    utilisation grâce à Eulerian Analytics. <br>
+    Si vous n'êtes pas d'accord, veuillez cliquer sur 'Tout refuser'. 
+    Votre expérience de navigation ne sera pas affectée.
+  </div>
+  <div>
+    <p
+      id="my-consent-buttons"
+      ref="refConsent"
+    >
+      <DsfrConsent
         @accept-all="onAcceptConsentAll()"
         @refuse-all="onRefuseConsentAll()"
-        >
+      >
         Préférences pour tous les services.
         <a :href="url">Données personnelles et cookies</a>
-        </DsfrConsent>
-      </p>
-    </div>
-    <!-- <div class="fr-consent-manager__buttons fr-btns-group fr-btns-group--center fr-btns-group--inline-sm">
-      <DsfrButton @click="onClickValideChoice">
-        Confirmer mes choix
-      </DsfrButton>
-    </div> -->
-  </DsfrModal>
+      </DsfrConsent>
+    </p>
+  </div>
 </template>
 
 <style>

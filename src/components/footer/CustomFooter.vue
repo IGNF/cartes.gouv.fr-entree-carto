@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { useFooterParams } from '@/composables/footerParams';
-
-import ModalTheme from '@/components/modals/ModalTheme.vue';
-import ModalConsent from '@/components/modals/ModalConsent.vue';
-import ModalConsentCustom from '@/components/modals/ModalConsentCustom.vue';
-
-// ref sur le component ModalTheme
-const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null);
-const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null);
-const refModalConsentCustom = ref<InstanceType<typeof ModalConsentCustom> | null>(null);
+import { useModals } from '@/composables/useModals';
 
 // paramètres pour le Footer
 const footerParams = useFooterParams();
+const modals = useModals();
 
 // INFO
 // on met à jour les afterMandatoryLinks pour y ajouter des
@@ -23,7 +16,9 @@ const afterMandatoryLinks = computed(() => {
       button: true,
       class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
       to: '/settings',
-      onclick: refModalTheme.value ? refModalTheme.value.openModalTheme : null
+      onclick: () => {
+        modals.open('theme')
+      }
     },
   ]
 })
@@ -35,7 +30,7 @@ const mandatoryLinks = computed(() => {
   return footerParams.mandatoryLinks.map((element: any) => {
     if (element.label === 'Gestion des cookies') {
       delete element.href
-      element.onclick = refModalConsentCustom.value ? refModalConsentCustom.value.openModalConsentCustom : null
+      element.onclick = () => { modals.open('consentCustom') }
       element.to = '/'
     }
     return element
@@ -114,18 +109,6 @@ const toggleFooter = () => {
         'fr-footer--compacted': compact && !open
       }"
     />
-    <div
-      class="fr-container fr-container--fluid fr-container-md"
-    >
-      <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
-      <ModalTheme ref="refModalTheme" />
-      <!-- Modale : Gestion des cookies (+ Eulerian) -->
-      <ModalConsent ref="refModalConsent" />
-      <!-- Modale : Gestion des cookies (+ Eulerian) -->
-      <ModalConsentCustom ref="refModalConsentCustom" />
-      <!-- Modale : Welcome (+ Eulerian) -->
-      <!-- <ModalWelcome ref="refModalWelcome" /> -->
-    </div>
   </div>
 </template>
 

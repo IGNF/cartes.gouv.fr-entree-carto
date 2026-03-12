@@ -11,6 +11,7 @@ import NotificationClose from '@/icons/NotificationClose.vue'
 
 // components
 import Alerts from '@/components/modals/Alerts.vue'
+import Modals from '@/components/modals/Modals.vue'
 import CustomHeader from '@/components/header/CustomHeader.vue'
 import CustomFooter from '@/components/footer/CustomFooter.vue'
 
@@ -106,6 +107,8 @@ onMounted(() => {
     compact
     class="CustomFooter"
   />
+
+  <Modals />
 </template>
 
 <style lang="scss">
