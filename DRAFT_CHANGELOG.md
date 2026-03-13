@@ -11,6 +11,8 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+  - Territories: persistance via localStorage des territoires utilisateurs (#969)
   
 #### 🔨 [Evolution]
 
