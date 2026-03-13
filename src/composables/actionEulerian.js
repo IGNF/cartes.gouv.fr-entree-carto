@@ -14,6 +14,8 @@
  * </button>
  */
 export function useActionButtonEulerian(element) {
-  element.setAttribute("data-fr-analytics-action", element.title);
-  element.setAttribute("data-fr-js-button-actionee", true);
+  // FIXME: desactive temporairement l'ajout des actions Eulerian
+
+  //element.setAttribute("data-fr-analytics-click", element.getAttribute('aria-label') || Math.random());
+  //element.setAttribute("data-fr-js-button-actionee", true);
 };

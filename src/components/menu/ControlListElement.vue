@@ -66,7 +66,7 @@ onUpdated(() => {})
         :disabled="controlListElementOptions.disabled"
         :input-id="controlListElementOptions.id"
         :label="controlListElementOptions.label"
-        label-left
+        class="fr-toggle--label-left"
         no-text
         :hint="controlListElementOptions.hint"
         :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"

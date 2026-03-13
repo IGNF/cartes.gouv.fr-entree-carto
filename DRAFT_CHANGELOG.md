@@ -19,10 +19,14 @@
   - Menu des contrôles: respect de la maquette
   - Zoom: améliorations UI (fix #700)
   - Mini Carte: respect maquette (fix #794)
+  - La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
+  - Mise à jour des packages dsfr et vue-dsfr
 
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
+
+  - Suppression des actions Eulerian: utilise la version standalone sans dépendance dsfr
 
 #### 🐛 [Correction]
 
@@ -30,6 +34,7 @@
   - En mode mobile, le footer est intégré au header (#816)
   - Espace Perso : optimisation de l'interface et des requêtes pour le chargement des enregistrements (#894)
   - Revue UI des widgets/boutons/panels (#964) (fix #672, #743, #844, #886, #888)
+  - Amélioration accessibilité toggle du header compact
 
 #### 🔒 [Sécurité]
 

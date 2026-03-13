@@ -14,8 +14,7 @@ export default {};
 <script setup lang="js">
 import { useRoute, useRouter } from 'vue-router';
 import { useBaseUrl } from '@/composables/baseUrl';
-
-import ModalConsentCustom from './ModalConsentCustom.vue';
+import { useModals } from '@/composables/useModals';
 
 // plugin local
 import { useEulerian } from '@/plugins/Eulerian.js';
@@ -25,7 +24,7 @@ const route = useRoute();
 
 const eulerian = useEulerian();
 
-const refModalConsentCustom = ref(null);
+const modals = useModals();
 
 // gestion de la modale de consentement 'eulerian'
 // on vérifie si l'utilisateur a déjà donné son 
@@ -57,14 +56,6 @@ watch(
 const title = "À propos des cookies sur cartes.gouv.fr";
 const url = useBaseUrl() + "/donnees-personnelles";
 
-const openModalConsent = () => {
-  if (isEmbedRoute()) {
-    return;
-  }
-  consentModalOpened.value = true;
-  eulerian.pause();
-}
-
 const onModalConsentClose = () => {
   consentModalOpened.value = false;
   router.push({ path : '/' });
@@ -72,11 +63,6 @@ const onModalConsentClose = () => {
   // l'utilisateur a t il fait un choix ou fermeture direct ?
   eulerian.resume();
 }
-
-defineExpose({
-  openModalConsent,
-  onModalConsentClose
-});
 
 const onAcceptConsentAll = () => {
   eulerian.start();
@@ -89,11 +75,9 @@ const onRefuseConsentAll = () => {
 const onCustomizeCookies = () => {
   eulerian.stop();
   onModalConsentClose();
-  if (refModalConsentCustom.value) {
-    refModalConsentCustom.value.openModalConsentCustom();
-  }
-}
 
+  modals.open('consentCustom');
+}
 </script>
 
 <template>
@@ -123,8 +107,6 @@ const onCustomizeCookies = () => {
       @click="onModalConsentClose"
     />
   </div>
-  <!-- Modale : Gestion des cookies personnalisés -->
-  <ModalConsentCustom ref="refModalConsentCustom" />
 </template>
 
 <style>

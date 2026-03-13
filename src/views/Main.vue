@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { markRaw, watch } from 'vue'
+import { markRaw } from 'vue'
 
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
@@ -8,22 +8,23 @@ import NotificationError from '@/icons/NotificationError.vue'
 import NotificationWarning from '@/icons/NotificationWarning.vue'
 import NotificationClose from '@/icons/NotificationClose.vue'
 
+// components
+import Alerts from '@/components/modals/Alerts.vue'
+import Modals from '@/components/modals/Modals.vue'
+import CustomHeader from '@/components/header/CustomHeader.vue'
+import CustomFooter from '@/components/footer/CustomFooter.vue'
+
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'
-import { useBaseUrl } from '@/composables/baseUrl'
 
 // library
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
 import { useAppStore } from "@/stores/appStore"
-import { useMapStore} from "@/stores/mapStore"
-import { useServiceStore } from '@/stores/serviceStore'
 import { useRoute } from 'vue-router';
 
 const appStore = useAppStore()
-const mapStore = useMapStore()
-const serviceStore = useServiceStore()
 const route = useRoute()
 const { theme } = useScheme()
 
@@ -73,53 +74,18 @@ const notificationsTheme = computed(() => {
   };
 });
 
-const alertClosed = ref(false);
-// gestion de l'alerte d'information sur la redirection depuis le geoportail
-const alertData = {
-    title : "Iframe obsolète",
-    description : "<strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 20/06/2026. Pour le mettre à jour, rendez vous sur notre <a href=\"https://ignf.github.io/permalink-converter/\" target=\"_blank\"> convertisseur de liens </a> !</strong>",
-}; 
-const onCloseAlert = () => {
-  alertClosed.value = true;
-};
-
-// Base URL pour les routes login/logout
-const url = useBaseUrl() + import.meta.env.BASE_URL;
-
-const authentificateSyncNeeded = computed(() => serviceStore.authentificateSyncNeeded);
-const temporyDocumentClosed = ref(false);
-// gestion de l'alerte de reconnexion requise pour enregistrer 
-// un document temporaire
-const temporyDocumentData = {
-    title : "Connexion requise",
-    description : "Connectez-vous pour enregistrer le document temporaire.",
-    action : `<a href="${url}login">Se reconnecter</a>`
-};
-const onCloseTemporyDocument = () => {
-  // INFO
-  // En cas de fermeture de l'alerte, on considère que l'utilisateur
-  // ne souhaite pas se reconnecter pour enregistrer le document temporaire.
-  temporyDocumentClosed.value = true;
-  serviceStore.setAuthentificateSyncNeeded(false);
-  appStore.clearDocumentTemporary();
-};
-
 onMounted(() => {
   console.info('✓ 🚀 Application démarrée');
   appStore.detectFirstOpen()
 })
 
-watch(authentificateSyncNeeded, (needAuth) => {
-  if (needAuth) {
-    temporyDocumentClosed.value = false;
-  }
-});
-
-
 </script>
 
 <template>
-  <CustomHeader v-if="!isEmbedRoute" />
+  <CustomHeader
+    v-if="!isEmbedRoute"
+    class="CustomHeader"
+  />
 
   <!-- Notifications
   -->
@@ -132,55 +98,61 @@ watch(authentificateSyncNeeded, (needAuth) => {
     />
   </Notivue>
 
-  <!-- INFO
-    Message d'information sur la nécessité de se reconnecter 
-    pour enregistrer un document temporaire
-      Via la clef/valeur : "authentificateSyncNeeded=1"
-  -->
-  <DsfrAlert
-    v-if="authentificateSyncNeeded"
-    type="warning"
-    :title="temporyDocumentData.title"
-    :small="true"
-    :closeable="true"
-    :closed="temporyDocumentClosed"
-    @close="onCloseTemporyDocument()"
-  >
-    <p>{{ temporyDocumentData.description }}</p>
-    <p v-html="temporyDocumentData.action" />
-  </DsfrAlert>
+  <Alerts class="Alerts" />
 
-  <!-- INFO
-    Message d'information sur la redirection issue du geoportail 
-    Le permalien possède la clef/valeur : "fromgpp=1"
-    On informe donc l'utilisateur d'une action à faire.
-  -->
-  <DsfrAlert
-    v-if="mapStore.isRedirect"
-    type="warning"
-    :title="alertData.title"
-    :closeable="true"
-    :closed="alertClosed"
-    @close="onCloseAlert()"
-  >
-    <p v-html="alertData.description" />
-  </DsfrAlert>
-
-  <div class="futur-map-container">
+  <div class="futur-map-container Map">
     <router-view />
   </div>
   
   <CustomFooter
     v-if="!mobileScreen && !isEmbedRoute"
     compact
+    class="CustomFooter"
   />
+
+  <Modals />
 </template>
 
 <style lang="scss">
+@import "@/iconscustom.css";
+
+body {
+  min-height: 100vh;
+}
 /* HACK Surcharge API Analytics */
-  body.modal-open {
-    overflow: unset;
-  }
+body.modal-open {
+  overflow: unset;
+}
+#app {
+  display: grid;
+  // on définit 4 lignes (attention, il faut bien 4 enfants dans #app)
+  // [nom] taille
+  grid-template-rows:
+    [header] auto
+    [alerts] auto
+    [map] 1fr
+    [footer] auto;
+  min-height: 100vh;
+}
+// on place les éléments
+.CustomHeader {
+  grid-row: header;
+}
+.Alerts {
+  grid-row: alerts;
+}
+.Map {
+  grid-row: map;
+}
+.CustomFooter {
+  grid-row: footer;
+}
+
+hr {
+  margin: 1rem 0;
+  padding: 0;
+  height: 1px;
+}
 
   /* TODO :
   surcharge des popups de notifications :

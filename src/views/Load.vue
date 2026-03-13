@@ -2,7 +2,6 @@
 import CartoAndTools from '@/components/CartoAndTools.vue'
 import Patience from '@/components/utils/Patience.vue'
 import StoreData from '@/components/StoreData.vue';
-import ModalInformation from '@/components/modals/ModalInformation.vue'
 </script>
 
 <template>
@@ -11,10 +10,6 @@ import ModalInformation from '@/components/modals/ModalInformation.vue'
           avant afficahge de la cartographie 
       -->
     <StoreData>
-      <!-- Modale : Informations -->
-      <div class="fr-container fr-container--fluid fr-container-md">
-        <ModalInformation />
-      </div>
       <CartoAndTools />
     </StoreData>
 
