@@ -76,7 +76,8 @@ export default {
   },
   territories: {
     title: 'Territoires',
-    change: (value) => { return `Le territoire ${value} a été modifié` },
+    change: "Les territoires ont été modifiés",
+    reset: "Tous les territoires ont été réinitialisés",
     remove: (value) => { return `Le territoire ${value} a été supprimé` },
     add: (value) => { return `Le territoire ${value} a été ajouté` }
   },
