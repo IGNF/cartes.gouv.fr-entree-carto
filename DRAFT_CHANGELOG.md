@@ -6,7 +6,12 @@
 
 ### 🎉 Résumé
 
+Refactorisation et reprise globale de l'UI : taille des panels, aspects des boutons, adaptation de l'interface, du header et du footer en fonction de la taille de la fenêtre.
+Espace personnel rendu plus robuste dans le chargement et l'enregistrement des documents personnels, session en mode authentifiée mieux gérée entre les différentes instances de cartes.gouv.
+
 ### 💥 Breaking changes
+
+Reset du localStorage pour les modifications de l'espace personnel.
 
 ### 📖 Changelog
 
