@@ -40,8 +40,6 @@ headerParams.value.quickLinks = [
     to: '/',
   }
 ];
-// ajoute un faux aria-label (qui permet en CSS de masquer le faux quicklinks)
-headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
 </script>
 
 <template>
@@ -51,7 +49,6 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
     :service-description="domStore.isHeaderCompact ? false : headerParams.serviceDescription"
     :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
     :quick-links="headerParams.quickLinks"
-    :quick-links-aria-label="headerParams.quickLinksAriaLabel"
     :operator-img-src="operatorImgSrc"
     :language-selector="headerParams.languageSelector"
     :class="{ 'fr-header--compact': domStore.isHeaderCompact }"
@@ -151,7 +148,7 @@ headerParams.value.quickLinksAriaLabel = 'hack_quickLinks';
 }
 
 // hack vuedsfr
-[aria-label="hack_quickLinks"] {
+:is(.fr-header__menu-links, .fr-header__tools-links) > div:first-child {
   display: none !important;
 }
 </style>
