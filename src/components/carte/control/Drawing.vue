@@ -58,6 +58,11 @@ const props = defineProps({
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
+// INFO
+// variable pour éviter la restauration multiple d'un document temporaire
+// cas d'un event "document:restore" émis plusieurs fois ou avant le montage du composant
+const restoredTemporaryDocument = ref(false);
+
 // bouton d'enregistrement / export du croquis avec un menu
 const formatByDefault = "kml";
 const btnExport = ref(new ButtonExport({
@@ -154,36 +159,50 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
  */
 emitter.addEventListener("document:restore", (e) => {
   log.debug("Restore document !", e);
-  if (drawing.value) {
-    createVectorLayer({
-      name : e.data.name || "Document restauré",
-      description : e.data.description || "Document temporaire restauré depuis une précédente session",
-      type : e.data.type || "drawing",
-      format : e.data.format || "kml",
-      target : e.data.target || "internal",
-      data : e.data.content
-    }).then((layer) => {
-      // restaurer le croquis dans le widget
-      // puis l'afficher
-      drawing.value.setCollapsed(false);
-      drawing.value.setLayer(layer);
-      btnExport.value.setName(e.data.name || "Document restauré");
-      btnExport.value.setFormat(e.data.format);
-      btnSave.value.setName(e.data.name || "Document restauré");
-      btnSave.value.setFormat(e.data.format);
-
-    }).then(() => {
-      // et, l'enregistrer définitivement
-      btnSave.value.button.click();
-    }).catch((error) => {
-      console.error(error);
-      push.error({
-        title: t.drawing.title,
-        message: t.drawing.restore_failed
-      });
-    });
-  }
+  restoreTemporaryDocument(e.data);
 });
+
+const restoreTemporaryDocument = (payload) => {
+  if (!payload || !drawing.value) {
+    return;
+  }
+  if (restoredTemporaryDocument.value) {
+    return;
+  }
+
+  appStore.clearDocumentTemporary();
+
+  createVectorLayer({
+    name : payload.name || "Document restauré",
+    description : payload.description || "Document temporaire restauré depuis une précédente session",
+    type : payload.type || "drawing",
+    format : payload.format || "kml",
+    target : payload.target || "internal",
+    data : payload.content
+  }).then((layer) => {
+    // restaurer le croquis dans le widget puis l'afficher
+    drawing.value.setCollapsed(false);
+    drawing.value.setLayer(layer);
+    btnExport.value.setName(payload.name || "Document restauré");
+    btnExport.value.setFormat(payload.format);
+    btnSave.value.setName(payload.name || "Document restauré");
+    btnSave.value.setFormat(payload.format);
+  }).then(() => {
+    // Le document est restauré dans le widget: 
+    // la reconnexion n'est plus requise.
+    serviceStore.setAuthentificateSyncNeeded(false);
+    restoredTemporaryDocument.value = true;
+  }).then(() => {
+    // et, l'enregistrer définitivement sur l'espace personnel
+    btnSave.value.button.click();
+  }).catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.drawing.title,
+      message: t.drawing.restore_failed
+    });
+  });
+};
 
 onMounted(() => {
   log.debug("Drawing component mounted");
@@ -202,6 +221,17 @@ onMounted(() => {
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
     drawing.value.on("change:collapsed", onToggleShowVector);
+  }
+
+  // Fallback: si l'event a ete emis avant le montage du composant,
+  // le document temporaire reste disponible dans le store.
+  const docTemp = appStore.getDocumentTemporary();
+  if (service.authenticated && docTemp) {
+    try {
+      restoreTemporaryDocument(JSON.parse(docTemp));
+    } catch (error) {
+      console.error(error);
+    }
   }
 })
 
@@ -228,7 +258,6 @@ onBeforeUpdate(() => {
     map.removeControl(btnExport.value);
   }
 })
-
 
 /**
  * Gestionnaire d'evenement 
@@ -299,20 +328,12 @@ const onSaveVector = (e) => {
       message: t.auth.not_authentificated
     });
   }
-
-  // notification d'une reconnection nécessaire
-  if (serviceStore.getAuthentificateSyncNeeded()) {
-    bSaveDocumentTemporary = true;
-    push.warning({
-      title: t.auth.title,
-      message: t.auth.need_authentification
-    });
-  }
   
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (bSaveDocumentTemporary) {
     if (data.layer) {
+      serviceStore.setAuthentificateSyncNeeded(true);
       appStore.setDocumentTemporary(JSON.stringify({
         content : data.content,
         name : data.name,
@@ -334,8 +355,8 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var _type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = _type;
+    var soustype = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = soustype;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }

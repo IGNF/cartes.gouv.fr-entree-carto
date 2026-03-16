@@ -2,13 +2,20 @@ import Users from '@/services/ServiceUsers';
 import Documents from '@/services/ServiceDocuments';
 
 import { useServiceStore } from '@/stores/serviceStore';
+// client keycloak pour vérifier la session (iframe)
+import Keycloak from "keycloak-js";
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
+const IAM_URL = import.meta.env.IAM_URL;
+const IAM_REALM = import.meta.env.IAM_REALM;
+
+const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 
 class ServiceBase {
 
   #fetch
   #pending
+  #emitter
 
   /**
    * Constructor for ServiceBase
@@ -28,7 +35,6 @@ class ServiceBase {
 
     /** authentification */
     this.authenticated = options.authenticated || false;
-
     
     /** user */
     this.user = options.user || {};
@@ -47,6 +53,7 @@ class ServiceBase {
     this.#fetch = null;
 
     this.#pending = false;
+    this.#emitter = options.emitter || null;
 
     return this;
   }
@@ -116,10 +123,57 @@ class ServiceBase {
   }
 
   /**
+   * Get emitter instance used to dispatch global events.
+   * @returns {Object|null}
+   */
+  getEmitter () {
+    return this.#emitter;
+  }
+
+  /**
+   * Set emitter instance used to dispatch global events.
+   * @param {Object|null} emitter
+   */
+  setEmitter (emitter) {
+    this.#emitter = emitter || null;
+  }
+
+  /**
+   * Verifie la session Keycloak en utilisant (iframe)
+   * - soit avec la librairie Keycloak (par défaut)
+   * - soit via la méthode oauth2  
+   * @param {String} adapter - oauth2 or keycloak
+   * @returns {Promise<Boolean>} - true if session is active, false otherwise
+   */
+  async checkKeycloakSession (adapter) {
+    if (adapter === "keycloak") {
+      console.log("use checkKeycloakSessionAdapter keycloak");
+      const keycloak = new Keycloak({
+        url: IAM_URL,
+        realm: IAM_REALM,
+        clientId: IAM_CHECK_SSO_CLIENT_ID
+      });
+
+      return keycloak.init({ 
+          onLoad: 'check-sso', 
+          flow: "standard",
+          pkceMethod: "S256",
+          checkLoginIframe: false,
+          silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
+      });
+    } else {
+      console.log("use checkKeycloakSessionAdapter oauth2");
+      return new Promise((reject) => {
+        reject("checkKeycloakSessionAdapter oauth2 is not implemented yet !");
+      });
+    }
+  }
+
+  /**
    * Check if the access is valid
    * @returns {Promise} - Promise that resolves if access is valid, rejects otherwise
    */
-  async isAccessValided () {
+  async resolveAccessStatus () {
     // Enregistrement du statut par defaut dans le storage 
     this.saveStore();
     Promise.resolve();
@@ -146,20 +200,20 @@ class ServiceBase {
     Promise.reject('this must be overridden !');
   }
   /**
-   * Check if the authentificate is already done
+   * Check if the authentificate is already done locally
    * @returns {Boolean} - True if authentificate
    */
-  isAlreadyAuthentificate () {
-    if (this.authenticated && Object.keys(this.user).length > 0) {
+  isAuthenticatedLocally () {
+    if (this.authenticated) {
       return true;
     }
     return false;
   }
   /**
-   * Check if the authentificate is done
+   * Check if the authentificate is really done
    * @returns {Boolean} - True if authentificate
    */
-  async isAuthentificate () {
+  async validateAuthentication () {
     try {
       var data = await this.getUserMe();
       return (data !== null);

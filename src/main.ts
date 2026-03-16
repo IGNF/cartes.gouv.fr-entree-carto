@@ -105,9 +105,9 @@ app.use(pinia)
 app.use(router)
 app.use(logger)
 app.use(eulerian)
-app.use(services)
 app.use(notivue)
 app.use(bus)
+app.use(services)
 
 waitingPrepareApp().then(async () => {
   // Ensure initial route is fully resolved before first render.

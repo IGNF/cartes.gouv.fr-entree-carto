@@ -122,9 +122,9 @@ var SetDocuments = {
         this.labelsTarget.find((e) => obj.target.toLowerCase().includes(e))
       ];
       if (obj.kind) {
-        var valueService = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
-        if (valueService) {
-          labels.push(valueService);
+        var valueKind = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
+        if (valueKind) {
+          labels.push(valueKind);
         }
       }
       if (obj.compute) {
@@ -295,7 +295,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -332,7 +332,7 @@ var SetDocuments = {
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();
@@ -373,7 +373,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -403,7 +403,7 @@ var SetDocuments = {
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();
@@ -452,7 +452,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -486,7 +486,7 @@ var SetDocuments = {
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();

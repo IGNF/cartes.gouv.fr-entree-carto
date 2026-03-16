@@ -14,16 +14,23 @@
         <strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 20/06/2026. Pour le mettre à jour, rendez vous sur notre <a
           href="https://ignf.github.io/permalink-converter/"
           target="_blank"
-        >convertisseur de liens !</a></strong>
+        >convertisseur de liens !</a></strong>
       </p>
     </Alert>
 
+    <!-- INFO
+      Message d'information sur la nécessité de se reconnecter 
+      pour enregistrer un document temporaire
+      Via la clef/valeur : "authentificateSyncNeeded=1"
+    -->
     <Alert
-      v-if="serviceStore.getAuthentificateSyncNeeded()"
-      type="error"
-      small
+      v-if="authentificateSyncNeeded"
+      type="warning"
+      title="Connexion requise"
+      :closed="temporyDocumentClosed"
+      @close="onCloseTemporyDocument()"
     >
-      <p>Votre session a expirée. Veuillez vous reconnecter.</p>
+      <p>Connectez-vous pour enregistrer le document temporaire.</p>
       <p><a :href="loginUrl">Se reconnecter</a></p>
     </Alert>
 
@@ -66,6 +73,23 @@ let serviceStore = useServiceStore();
 
 // Login URL
 let loginUrl = useBaseUrl() + import.meta.env.BASE_URL + 'login';
+
+// Documents temporaires
+const temporyDocumentClosed = ref(false);
+const authentificateSyncNeeded = computed(() => serviceStore.authentificateSyncNeeded);
+watch(authentificateSyncNeeded, (needAuth) => {
+  if (needAuth) {
+    temporyDocumentClosed.value = false;
+  }
+});
+const onCloseTemporyDocument = () => {
+  // INFO
+  // En cas de fermeture de l'alerte, on considère que l'utilisateur
+  // ne souhaite pas se reconnecter pour enregistrer le document temporaire.
+  temporyDocumentClosed.value = true;
+  serviceStore.setAuthentificateSyncNeeded(false);
+  appStore.clearDocumentTemporary();
+};
 
 // Recupere les alertes
 let alerts = computed(() => {

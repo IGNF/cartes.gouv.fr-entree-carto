@@ -17,6 +17,7 @@
 #### 🔨 [Evolution]
 
   - Header/Footer : adaptation du design aux maquettes (#816)
+  - Authentification : mise en place d'une auth direct avec un client public (#894)
   - Menu des contrôles : respect de la maquette (#964)
   - Zoom: améliorations UI (#964) (fix #700)
   - Mini Carte: respect maquette (#964) (fix #794)
@@ -36,6 +37,7 @@
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
   - Alertes : mise en place d'un contournement au cas où les alertes ne se chargent pas à l'initialisation (885fe6667659170adf413ac8dc650547f3078404, f349d20f08cd42d40d8e843b954f0e4e260e5e3a)
   - Footer : En mode mobile, le footer est intégré au header (#816)
+  - Espace Perso : optimisation de l'interface et des requêtes pour le chargement des enregistrements (#894)
   - LayerSwitcher : L'ordre d'empilement des couches est correctement conservé sur la carte et dans le layerswitcher après rechargement de la page (#948)
   - Recherche : La recherche avancée de parcelles cadastrales est fonctionnelle sur les DROM-COM (#959)
   - Revue UI des widgets/boutons/panels (#964) (fix #672, #743, #844, #886, #888)
@@ -44,5 +46,6 @@
 
 #### 🔒 [Sécurité]
 
+  - Dépendance : mise à jour oauth2-client@3.3.1
   - Dépendance : conversion des images en base64 directement réalisée dans le build des extensions geopf pour openlayers (#962)
 ---

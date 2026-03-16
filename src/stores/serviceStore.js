@@ -11,11 +11,13 @@ import { serviceFactotyCreate } from '@/services/ServiceFactory';
 export const useServiceStore = defineStore({
   id: 'service',
   state: () => ({
-    connexion: {}
+    connexion: {},
+    authentificateSyncNeeded: false
   }),
   getters: {
     // ex.
     // service: (state) => state.connexion
+    isAuthentificateSyncNeeded: (state) => state.authentificateSyncNeeded
   },
   actions: {
     getService () {
@@ -25,10 +27,11 @@ export const useServiceStore = defineStore({
       this.connexion = serviceFactotyCreate(s);
     },
     setAuthentificateSyncNeeded (b) {
-      this.connexion.authentificateSyncNeeded = b;
+      const value = Boolean(b);
+      this.authentificateSyncNeeded = value;
     },
     getAuthentificateSyncNeeded () {
-      return this.connexion.authentificateSyncNeeded || false;
+      return this.authentificateSyncNeeded;
     }
   }
 });

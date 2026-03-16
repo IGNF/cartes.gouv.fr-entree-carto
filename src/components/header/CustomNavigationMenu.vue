@@ -23,6 +23,10 @@ const props = defineProps({
   expandedId: {
     type: String,
     default: '',
+  },
+  authenticated: {
+    type: Boolean,
+    default: false,
   }
 })
 
@@ -58,7 +62,13 @@ const url = useBaseUrl() + import.meta.env.BASE_URL;
 const emitter = inject('emitter');
 emitter.addEventListener('service:user:loaded', (e) => {
   log.debug('service:user:loaded event received:', e);
-  user.value = e.detail || service.user;
+  user.value = e.detail;
+});
+
+watch(() => props.authenticated, (isAuthenticated) => {
+  if (!isAuthenticated) {
+    user.value = {};
+  }
 });
 
 onBeforeMount(() => {
@@ -86,7 +96,7 @@ onBeforeUnmount(() => {});
   > 
     <div class="fr-nav__item">
       <DsfrButton
-        v-if="menu.connexionMenu && !service.authenticated"
+        v-if="menu.connexionMenu && !authenticated"
         ref="button"
         icon="ri-account-circle-fill"
         class="fr-nav__btn fr-nav__btn-no-dropdown"
@@ -117,7 +127,7 @@ onBeforeUnmount(() => {});
         <ul
           class="fr-menu__list"
         >
-          <DsfrNavigationMenuItem v-if="menu.connexionMenu && service.authenticated && user">
+          <DsfrNavigationMenuItem v-if="menu.connexionMenu && authenticated && user">
             <div class="fr-container  fr-pt-2v">  
               <div class="fr-grid-row fr-grid-row--left">
                 <div class="fr-description__info fr-text--xs">
@@ -171,7 +181,7 @@ onBeforeUnmount(() => {});
                 <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center">
                   <i class="ri-logout-box-line" />
                   <a 
-                    v-if="service.authenticated"
+                    v-if="authenticated"
                     :href="url + '/logout'"
                   >Se déconnecter</a>
                   <a 
