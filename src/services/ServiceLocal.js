@@ -1,4 +1,5 @@
 import ServiceBase from "@/services/ServiceBase";
+import { encryptValue, decryptValue } from "@/services/ServiceEncrypt";
 
 import { useServiceStore } from '@/stores/serviceStore';
 
@@ -346,8 +347,9 @@ class ServiceLocal extends ServiceBase {
     const state = buildOAuthState();
 
     this.codeVerifier = codeVerifier;
-    sessionStorage.setItem(`${OAUTH_PKCE_STORAGE_KEY}:${state}`, codeVerifier);
-    sessionStorage.setItem(OAUTH_STATE_STORAGE_KEY, state);
+    const encryptedState = await encryptValue(state);
+    sessionStorage.setItem(`${OAUTH_PKCE_STORAGE_KEY}:${encryptedState}`, codeVerifier);
+    sessionStorage.setItem(OAUTH_STATE_STORAGE_KEY, encryptedState);
     // Compatibilite avec les anciennes sessions/login en cours.
     localStorage.setItem("codeVerifier", codeVerifier);
     
@@ -454,12 +456,13 @@ class ServiceLocal extends ServiceBase {
     const urlParams = new URLSearchParams(location.search);
     const stateFromRedirect = urlParams.get('state');
     const storedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY);
-
-    if (stateFromRedirect && storedState && stateFromRedirect !== storedState) {
+    const storedStateDecrypted = storedState ? await decryptValue(storedState) : null;
+    
+    if (stateFromRedirect && storedStateDecrypted && stateFromRedirect !== storedStateDecrypted) {
       throw new Error('OAuth state mismatch');
     }
 
-    const expectedState = stateFromRedirect || storedState;
+    const expectedState = stateFromRedirect || storedStateDecrypted;
     const codeVerifierFromState = expectedState
       ? sessionStorage.getItem(`${OAUTH_PKCE_STORAGE_KEY}:${expectedState}`)
       : null;
@@ -485,8 +488,8 @@ class ServiceLocal extends ServiceBase {
 
     this.#fetchWrapper.token = token; // HACK !?
 
-    if (expectedState) {
-      sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${expectedState}`);
+    if (storedState) {
+      sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${storedState}`);
     }
     sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
     localStorage.removeItem("codeVerifier");
