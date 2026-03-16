@@ -33,6 +33,7 @@ var EVENTS = {
     // service
     "service:changed",
     "service:documents:loaded",
+    "service:documents:completed",
     "service:user:loaded",
     // document
     "document:saved",

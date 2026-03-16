@@ -69,7 +69,7 @@ services:
             - "traefik.http.services.cartesgouvfr-documentation.loadbalancer.server.port=8082"
 
     app_dev:
-        image: ghcr.io/ignf/cartes.gouv.fr:0.10.5
+        image: ghcr.io/ignf/cartes.gouv.fr:0.12.4-beta.3
         container_name: cartesgouvfr-dev
         env_file:
             - ./cartes/.env.local

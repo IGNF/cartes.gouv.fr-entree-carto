@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { markRaw } from 'vue'
-import { useRoute } from 'vue-router'
 
 // icones
 import NotificationInfo from '@/icons/NotificationInfo.vue'
@@ -23,10 +22,11 @@ import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from '
 
 // stores
 import { useAppStore } from "@/stores/appStore"
+import { useRoute } from 'vue-router';
 
 const appStore = useAppStore()
 const route = useRoute()
-const { theme } = useScheme();
+const { theme } = useScheme()
 
 const isEmbedRoute = computed(() => route.path === '/embed')
 
@@ -75,8 +75,10 @@ const notificationsTheme = computed(() => {
 });
 
 onMounted(() => {
+  console.info('✓ 🚀 Application démarrée');
   appStore.detectFirstOpen()
 })
+
 </script>
 
 <template>

@@ -171,12 +171,12 @@ onMounted(() => {
   content: none;
 }
 // le navButton quand il y a au moins 1 widget (n=4)
-#mainMap:has(.position-container-top-right .gpf-widget:nth-child(4)) ~ .menu-toggle-wrap.right .navButton {
+#mainMap:has(.position-container-top-right .gpf-widget-button:nth-child(4)) ~ .menu-toggle-wrap.right .navButton {
   border-radius: $widget-btn-radius $widget-btn-radius 0 0;
   box-shadow: inset 0 0 0 $widget-btn-padding var(--background-default-grey), 0 -2px 3px var(--shadow-color); // --raised-shadow mais remontee
 }
 // la séparation
-#mainMap:has(.position-container-top-right .gpf-widget:nth-child(4)) ~ .menu-toggle-wrap.right .navButton::after {
+#mainMap:has(.position-container-top-right .gpf-widget-button:nth-child(4)) ~ .menu-toggle-wrap.right .navButton::after {
   content: "";
   display: block;
   height: 1px;

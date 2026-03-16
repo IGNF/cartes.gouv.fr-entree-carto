@@ -746,14 +746,11 @@ onMounted(() => {
     top: $widget-btn-size + $gap * 2;
   }
 }
-.gpf-widget {
+.gpf-widget-button {
   width: $widget-btn-size;
   padding: 0;
-
-  &.gpf-widget-button {
-    box-shadow: var(--raised-shadow);
-    border-radius: $widget-btn-radius;
-  }
+  box-shadow: var(--raised-shadow);
+  border-radius: $widget-btn-radius;
 
   & > .gpf-btn-icon {
     width: $widget-btn-size;
@@ -785,25 +782,25 @@ onMounted(() => {
 // conteneur top-right
 .position-container-top-right {
   // cree un espace vide au-dessus du 3e widget (pour insérer le controleur de widgets)
-  .gpf-widget:nth-child(3) {
+  .gpf-widget-button:nth-child(3) {
     margin-top: $widget-btn-size;
   }
   // enleve le border-radius (en haut)
-  .gpf-widget:nth-child(3) .gpf-btn-icon {
+  .gpf-widget-button:nth-child(3) .gpf-btn-icon {
     border-radius: 0;
   }
 }
 // tooltips: position
-.position-container-top-right > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before,
-.position-container-bottom-right > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
+.position-container-top-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
   transform: translate(-100%, $widget-btn-padding);
 }
-.position-container-top-left > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before,
-.position-container-bottom-left > .gpf-widget > .gpf-btn-icon[aria-label]:hover::before {
+.position-container-top-left > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-left > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
   transform: translate($widget-btn-size - $widget-btn-padding * 2, $widget-btn-padding);
 }
 // modales: au dessus quand active
-.position:has(> .gpf-widget > .gpf-btn-icon[aria-pressed="true"]) {
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]) {
   z-index: 2;
 
   // au dessus de tout en mobile
@@ -812,11 +809,11 @@ onMounted(() => {
   }
 }
 // tooltips: au-dessus quand hover
-.position:has(> .gpf-widget > .gpf-btn-icon[aria-label]:hover) {
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-label]:hover) {
   z-index: 3;
 }
 // supprime tooltip si deja ouverte
-.position > .gpf-widget > .gpf-btn-icon[aria-pressed="true"]:hover::before {
+.position > .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]:hover::before {
   content: none;
 }
 // alignements en hauteur des bouton no-gutter
@@ -858,13 +855,13 @@ onMounted(() => {
     max-height: 100cqb !important;
   }
   // selecteur a rallonge obligatoire pour surclasser le style
-  .position .gpf-widget > button[aria-pressed] ~ dialog.gpf-panel {
+  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
     min-width: 0;
     right: -$gap !important;
     top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
     width: 100vw !important;
   }
-  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget > button[aria-pressed] ~ dialog.gpf-panel {
+  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
     right: auto !important;
     left: -$gap !important;
   }
@@ -879,7 +876,7 @@ onMounted(() => {
   display: none;
 }
 // puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
-.position-container-top-right > .gpf-widget:nth-child(3) ~ .gpf-widget[id^="GPcontrolList-"] {
+.position-container-top-right > .gpf-widget-button:nth-child(3) ~ .gpf-widget-button[id^="GPcontrolList-"] {
   position: absolute !important;
   display: block;
   // le controlList est affiché tout en bas, sous la liste
@@ -891,7 +888,7 @@ onMounted(() => {
 }
 
 // on ajoute un border-radius sur l'avant dernier élément, a partir du 3e (celui avant controlList)
-.position-container-top-right > .gpf-widget:nth-child(2) ~ .gpf-widget:nth-last-child(2) > .gpf-btn-icon {
+.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:nth-last-child(2) > .gpf-btn-icon {
   border-radius: 0 0 $widget-btn-radius $widget-btn-radius;
 }
 
@@ -916,13 +913,13 @@ onMounted(() => {
 // creation des selecteurs pour 20 outils
 @for $i from 1 through 20 {
   // defini la position du widget (i) (n=3 est le premier widget)
-  .position-container-top-right > .gpf-widget:nth-child(#{$i + 2}) { --i: #{$i} }
+  .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
   // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
-  .position-container-top-right:has(> .gpf-widget:nth-child(#{$i + 3})) { --count: #{$i} }
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 3})) { --count: #{$i} }
 }
 
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
-.position-container-top-right > .gpf-widget:not([id^="GPcontrolList-"]) {
+.position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
   margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
 }
 </style>
