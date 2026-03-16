@@ -71,10 +71,7 @@ onUpdated(() => {
 
 .gpf-widget[id^="GPcontrolList-"] {
   height: $widget-btn-size;
-
-  &.gpf-widget-button {
-    box-shadow: 0 3px 3px -1px var(--shadow-color);
-  }
+  box-shadow: 0 3px 3px -1px var(--shadow-color);
 
   .gpf-btn-icon span::before {
     // supprime la séparation
