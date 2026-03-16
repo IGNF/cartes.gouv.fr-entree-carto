@@ -16,25 +16,31 @@
   
 #### 🔨 [Evolution]
 
-  - Header/Footer: adaptation du design aux maquettes (#816)
-  - Menu des contrôles: respect de la maquette
-  - Zoom: améliorations UI (fix #700)
-  - Mini Carte: respect maquette (fix #794)
-  - La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
-  - Mise à jour des packages dsfr et vue-dsfr
+  - Header/Footer : adaptation du design aux maquettes (#816)
+  - Menu des contrôles : respect de la maquette (#964)
+  - Zoom: améliorations UI (#964) (fix #700)
+  - Mini Carte: respect maquette (#964) (fix #794)
+  - Alertes/UI : La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
+  - Mise à jour des packages dsfr et vue-dsfr (#972)
+  - Territoires : les territoires personnalisés sont sauvegardés dans les données de session et donc conservés en rechargeant la page (#969)
 
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
-  - Suppression des actions Eulerian: utilise la version standalone sans dépendance dsfr
+  - Eulerian : Suppression des actions Eulerian en utilisant la version standalone sans dépendance dsfr (#970)
+  - Eulerian : Suppression de l'affichage de la modale de consentement quand consultation du site dans une iframe (#966)
 
 #### 🐛 [Correction]
 
   - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
-  - En mode mobile, le footer est intégré au header (#816)
+  - Alertes : mise en place d'un contournement au cas où les alertes ne se chargent pas à l'initialisation (885fe6667659170adf413ac8dc650547f3078404, f349d20f08cd42d40d8e843b954f0e4e260e5e3a)
+  - Footer : En mode mobile, le footer est intégré au header (#816)
+  - LayerSwitcher : L'ordre d'empilement des couches est correctement conservé sur la carte et dans le layerswitcher après rechargement de la page (#948)
+  - Recherche : La recherche avancée de parcelles cadastrales est fonctionnelle sur les DROM-COM (#959)
   - Revue UI des widgets/boutons/panels (#964) (fix #672, #743, #844, #886, #888)
-  - Amélioration accessibilité toggle du header compact
+  - Amélioration accessibilité toggle du header compact (#972)
+  - UI : amélioration du comportement de l'interface aux valeurs seuils de taille d'écran (#971)
 
 #### 🔒 [Sécurité]
 
