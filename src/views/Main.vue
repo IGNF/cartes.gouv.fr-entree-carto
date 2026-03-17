@@ -184,6 +184,10 @@ const addBadgeHeader = () => {
   // logoDiv?.insertAdjacentElement('afterend', scndLogo)
 }
 
+import { useRoute } from 'vue-router';
+const route = useRoute()
+const isEmbedRoute = computed(() => route.path === '/embed')
+
 onMounted(() => {
   addBadgeHeader()
   appStore.detectFirstOpen()
@@ -241,7 +245,10 @@ onMounted(() => {
     Le permalien possède la clef/valeur : "fromgpp=1"
     On informe donc l'utilisateur d'une action à faire.
   -->
-  <div v-if="mapStore.isRedirect">
+  <div
+    v-if="mapStore.isRedirect"
+    :class="{ 'temp-redirect-embed': isEmbedRoute }"
+  >
     <DsfrAlert
       type="warning"
       :title="alertData.title"
@@ -315,7 +322,6 @@ onMounted(() => {
   <div
     class="fr-container fr-container--fluid fr-container-md"
   >
-
     <!-- Modale : Paramètres d’affichage (+ Eulerian) -->
     <ModalTheme ref="refModalTheme" />
     <!-- Modale : Gestion des cookies (+ Eulerian) -->
@@ -611,4 +617,10 @@ onMounted(() => {
       padding: 8px;
     }
   }
+
+.temp-redirect-embed {
+  position: absolute;
+  z-index: 1000;
+  background: var(--background-default-grey);
+}
 </style>

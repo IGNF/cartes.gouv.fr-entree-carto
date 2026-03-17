@@ -48,6 +48,8 @@ function hideHeader () {
 function hideFooter () {
   var footer = document.querySelector(".fr-footer");
   footer.classList.add("gpf-hidden");
+  var footerToggle = document.querySelector(".footer-toggle");
+  footerToggle.classList.add("gpf-hidden");
 }
 
 onMounted(() => {
