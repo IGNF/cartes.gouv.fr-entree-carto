@@ -5,6 +5,7 @@ import { defineConfig, ProxyOptions, ViteDevServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import EnvRuntime from 'vite-plugin-env-runtime';
+import htmlPurge from 'vite-plugin-purgecss'
 
 // INFO 
 // mode https avec certificats unsecure (dev)
@@ -23,6 +24,10 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    htmlPurge({
+      safelist: [/^(?!fr-).*/], // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
+      variables: true, // supprime les variables css inutilisées
+    }),
     // INFO mode https
     // basicSsl(),
     AutoImport({

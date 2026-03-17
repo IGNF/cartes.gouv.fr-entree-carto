@@ -169,7 +169,7 @@ onBeforeUnmount(() => {});
               :href="link.to"
               :target="link.target"
               class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
-              :class="'fr-icon' + link.icon?.replace('ri', '')"
+              :class="link.icon"
             >
               <!-- <VIcon :name="link.icon" size="1.5rem" class="fr-icon--grey-800" /> -->
               {{ link.text }}
