@@ -22,19 +22,19 @@ export function useHeaderParams() {
                   text: "Questions Fréquentes",
                   to: useBaseUrl() + '/aide/fr/',
                   target: "_blank",
-                  icon: "ri-question-mark"
+                  icon: "fr-icon-question-mark"
               },
               {
                   text: "Guide d'utilisation",
                   to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/generalites-visualiseur/',
                   target: "_blank",
-                  icon: "ri-book-2-line"
+                  icon: "fr-icon-book-2-line"
               },
               {
                   text: "Nous contacter",
                   to: useBaseUrl() + '/nous-ecrire',
                   target: "_blank",
-                  icon: "ri-mail-line"
+                  icon: "fr-icon-mail-line"
               }
             ]   
           },  
@@ -45,17 +45,17 @@ export function useHeaderParams() {
               {
                   text: "Explorer les cartes",
                   to: useBaseUrl() + '/explorer-les-cartes',
-                  icon: "ri-road-map-line"
+                  icon: "fr-icon-road-map-line"
               },
               {
                   text: "Rechercher une donnée",
                   to: useBaseUrl() + '/rechercher-une-donnee/search',
-                  icon: "ri-search-line"
+                  icon: "fr-icon-search-line"
               },
               {
                   text: "Publier une donnée",
                   to: useBaseUrl() + '/publier-une-donnee',
-                  icon: "ri-database-line"
+                  icon: "fr-icon-database-line"
               },
               // {
               //     text: "Créer une carte",
@@ -83,12 +83,12 @@ export function useHeaderParams() {
             {
                 text: "Tableau de bord",
                 to: useBaseUrl() + '/tableau-de-bord',
-                icon: "ri-dashboard-3-line"
+                icon: "fr-icon-dashboard-3-line"
             },
             {
                 text: "Mon compte",
                 to: useBaseUrl() + '/mon-compte',
-                icon: "ri-user-line"
+                icon: "fr-icon-user-line"
             }
           ]   
         });
