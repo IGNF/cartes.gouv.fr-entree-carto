@@ -43,8 +43,12 @@ class ServiceBase {
     /** erreurs IAM */
     this.error = options.error || {};
 
-    /** mode local ou remote */
-    this.mode = options.mode || IAM_AUTH_MODE;
+    /** 
+     * mode local ou remote 
+     * on force toujours le mode d'authentification 
+     * pour éviter les erreurs de configuration
+     */
+    this.mode = IAM_AUTH_MODE;
 
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
     this.api = null;
