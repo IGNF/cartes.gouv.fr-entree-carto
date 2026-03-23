@@ -112,6 +112,9 @@ const authenticated = ref(false);
 const cleanAutoSSOAttemptedFlag = () => {
   sessionStorage.removeItem(AUTO_SSO_ATTEMPTED_KEY);
 }
+const setAutoSSOAttemptedFlag = () => {
+  sessionStorage.setItem(AUTO_SSO_ATTEMPTED_KEY, '1');
+}
 const checkSessionKeyCloak = async () => {
   const autoSsoAlreadyAttempted = sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
 
@@ -119,13 +122,20 @@ const checkSessionKeyCloak = async () => {
     return false;
   }
 
-  log.debug("Checking Keycloak session...");
-  const hasKeycloakSession = await service.checkKeycloakSession(IAM_CHECK_SSO_TYPE);
-  log.debug(`Keycloak session check : ${hasKeycloakSession} !`);
+  let hasKeycloakSession = false;
+  try {
+    console.debug("Checking Keycloak session...");
+    hasKeycloakSession = await service.checkKeycloakSession(IAM_CHECK_SSO_TYPE);
+    console.debug(`Keycloak session check : ${hasKeycloakSession} !`);
+  } catch (error) {
+    setAutoSSOAttemptedFlag();
+    console.warn('Keycloak session check failed, disabling auto-SSO retry for this tab session.', error);
+    return false;
+  }
 
   if (hasKeycloakSession) {
-    sessionStorage.setItem(AUTO_SSO_ATTEMPTED_KEY, '1');
-    log.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
+    setAutoSSOAttemptedFlag();
+    console.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
     if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
       await router.push({ path: '/login', query: { from: 'auto-sso' } });
     }
