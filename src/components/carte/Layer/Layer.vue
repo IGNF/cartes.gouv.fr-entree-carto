@@ -139,6 +139,8 @@ onMounted(() => {
 
       log.debug("layer to add (bookmark)", name, type, format);
       var opts = props.layerOptions;
+      // HACK on ajoute un timestamp à l'url cache-busting
+      opts.url = `${opts.url}?_=${Date.now()}`;
       switch (type) {
         case "wms":
         case "wmts":
