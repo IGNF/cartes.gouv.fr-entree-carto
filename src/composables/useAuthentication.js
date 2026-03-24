@@ -36,7 +36,7 @@ export function useAuthentication(deps = {}) {
 
   const hasAutoSSOBeenAttempted = () => {
     return sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
-  }
+  };
 
   // INFO
   // en mode de navigation privée, des excpetions sont levées lors de l'accès au "silent SSO en iframe"
