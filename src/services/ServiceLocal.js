@@ -275,7 +275,8 @@ class ServiceLocal extends ServiceBase {
           }
         })
         .then(() => {
-          // on retourne le statut
+          // on enregistre le statut une fois toutes les données chargées
+          store.setService(this);
           return status;
         })
         .catch((e) => {
@@ -309,7 +310,10 @@ class ServiceLocal extends ServiceBase {
     }
 
     // enregistrement dans le storage du statut de la connexion
-    store.setService(this);
+    // (uniquement pour les cas logout et no-auth, le login est géré dans la chaîne de promises)
+    if (status !== "login") {
+      store.setService(this);
+    }
 
     return promise || Promise.resolve(status);
   }

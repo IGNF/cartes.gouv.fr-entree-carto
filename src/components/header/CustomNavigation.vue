@@ -2,11 +2,10 @@
   
 import { ref, onMounted, onBeforeMount, onUnmounted, inject } from 'vue'
 
-import { useServiceStore } from '@/stores/serviceStore';
 import { useAppStore } from '@/stores/appStore';
 import { useRandomId } from "@gouvminint/vue-dsfr"
 import { useLogger } from 'vue-logger-plugin'
-import { useRouter } from 'vue-router';
+import { useAuthentication } from '@/composables/useAuthentication';
 
 import CustomNavigationMenu from './CustomNavigationMenu.vue'
 
@@ -26,15 +25,8 @@ const props = defineProps({
 })
 
 const log = useLogger();
-const router = useRouter();
-const serviceStore = useServiceStore();
 const appStore = useAppStore();
-
-const AUTO_SSO_ATTEMPTED_KEY = 'auth:auto-sso-attempted';
-
-const IAM_CHECK_SSO_DISABLE = import.meta.env.IAM_CHECK_SSO_DISABLE;;
-const IAM_CHECK_SSO_TYPE = import.meta.env.IAM_CHECK_SSO_TYPE;
-const IAM_CHECK_SSO_AUTO_AUTH = import.meta.env.IAM_CHECK_SSO_AUTO_AUTH;
+const emitter = inject('emitter');
 
 const expandedMenuId = ref(undefined)
 
@@ -78,137 +70,29 @@ const onKeyDown = (e) => {
   }
 }
 
-const emitter = inject('emitter');
-
 const checkTemporalDocument = () => {
-  // INFO
-  // Délai (en ms) avant la restauration d'un document temporaire
-  // du localStorage après la connexion de l'utilisateur.
-  // Ce délai permet de s'assurer que les composants sont bien montés
-  // avant de tenter de restaurer le document.
   const DOCUMENT_RESTORE_DELAY = 500;
 
-  var docTemp = appStore.getDocumentTemporary();
+  const docTemp = appStore.getDocumentTemporary();
   if (docTemp) {
-    var jsonDocTemp = JSON.parse(docTemp);
+    const jsonDocTemp = JSON.parse(docTemp);
     setTimeout(() => {
-      /**
-       * @event document:restore
-       * @description Evenement pour restaurer un document temporaire
-       * @property {Object} data - données du document
-       * @property {String} componentName - nom du component qui emet l'event
-       */
-      emitter.dispatchEvent("document:restore", {
-        data : jsonDocTemp,
-        componentName : "CustomNavigation"
+      emitter.dispatchEvent('document:restore', {
+        data: jsonDocTemp,
+        componentName: 'CustomNavigation'
       });
     }, DOCUMENT_RESTORE_DELAY);
   }
 }
 
-var service = inject('services');
-const authenticated = ref(false);
-
-const cleanAutoSSOAttemptedFlag = () => {
-  sessionStorage.removeItem(AUTO_SSO_ATTEMPTED_KEY);
-}
-const checkSessionKeyCloak = async () => {
-  const autoSsoAlreadyAttempted = sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
-
-  if (autoSsoAlreadyAttempted) {
-    return false;
+const { authenticated, checkAuthentication } = useAuthentication({
+  onLogin: () => {
+    checkTemporalDocument();
+  },
+  onLogout: () => {
+    appStore.clearDocumentTemporary();
   }
-
-  log.debug("Checking Keycloak session...");
-  const hasKeycloakSession = await service.checkKeycloakSession(IAM_CHECK_SSO_TYPE);
-  log.debug(`Keycloak session check : ${hasKeycloakSession} !`);
-
-  if (hasKeycloakSession) {
-    sessionStorage.setItem(AUTO_SSO_ATTEMPTED_KEY, '1');
-    log.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
-    if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
-      await router.push({ path: '/login', query: { from: 'auto-sso' } });
-    }
-    return true;
-  }
-
-  return false;
-}
-const checkAuthentication = async () => {
-  authenticated.value = Boolean(service.authenticated);
-
-  // INFO
-  // on teste si une demande de connexion (ou de deconnexion) a été faite,
-  // et si elle est valide, on demande le jeton de connexion, puis,
-  // on récupère les informations utilisateurs.
-  // Pour les favoris, on récupère aussi les documents.
-  try {
-    const status = await service.resolveAccessStatus();
-
-    if (status !== "no-auth") {
-      log.debug(`Access validated : ${status} !`);
-      serviceStore.setAuthentificateSyncNeeded(false);
-      router.replace({ path : '/', query: undefined });
-    }
-
-    if (status === "login") {
-      log.debug("User connected.");
-      cleanAutoSSOAttemptedFlag();
-      authenticated.value = true;
-      checkTemporalDocument();
-      return;
-    }
-
-    if (status === "logout") {
-      log.debug("User disconnected.");
-      cleanAutoSSOAttemptedFlag();
-      authenticated.value = false;
-      appStore.clearDocumentTemporary();
-      return;
-    }
-
-    // INFO
-    // Pas de callback login/logout : on valide la session locale si nécessaire.
-    if (service.isAuthenticatedLocally()) {
-      log.debug("User already authentificate locally, checking session validity...");
-      const isValid = await service.validateAuthentication();
-      log.debug(`Checking session validity : ${isValid} !`);
-      authenticated.value = Boolean(isValid);
-
-      // le service ne renvoie rien (401 Unauthorized)
-      // mais, on est encore enregistré comme authentifié
-      // --> sync : on considère que la session est incohérente et
-      //            on redirige vers la deconnexion
-      if (!isValid && service.authenticated) {
-        log.warn("Incoherent local session (401 côté IAM/API), redirect to logout.");
-        authenticated.value = false;
-        router.push({ path: '/logout', query: { from: 'authInvalid' } });
-        return;
-      }
-
-      log.debug("validateAuthentication() finished !");
-    } else {
-      // Si une session IAM existe dans le navigateur, 
-      // on relance le flow OIDC automatiquement.
-      if (IAM_CHECK_SSO_DISABLE !== '1') {
-        const redirectedToLogin = await checkSessionKeyCloak();
-        if (redirectedToLogin) {
-          return;
-        }
-      }
-
-      authenticated.value = false;
-    }
-  } catch (e) {
-    console.warn(e);
-    // push.error({
-    //   title: t.auth.title,
-    //   message: t.auth.failed(e.message || e)
-    // });
-  } finally {
-    log.debug("resolveAccessStatus() finished !");
-  }
-}
+});
 
 onBeforeMount(() => {
   log.debug(`Navigation (${props.id}) before mount.`);

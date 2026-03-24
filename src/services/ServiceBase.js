@@ -10,6 +10,7 @@ const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 
 const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
+const KEYCLOAK_SILENT_SSO_BLOCKED_KEY = 'auth:keycloak-silent-sso-blocked';
 
 class ServiceBase {
 
@@ -151,6 +152,11 @@ class ServiceBase {
    */
   async checkKeycloakSession (adapter) {
     if (adapter === "keycloak") {
+      const keycloakSilentSsoBlocked = sessionStorage.getItem(KEYCLOAK_SILENT_SSO_BLOCKED_KEY) === '1';
+      if (keycloakSilentSsoBlocked) {
+        return false;
+      }
+
       console.log("use checkKeycloakSessionAdapter keycloak");
       const keycloak = new Keycloak({
         url: IAM_URL,
@@ -158,13 +164,26 @@ class ServiceBase {
         clientId: IAM_CHECK_SSO_CLIENT_ID
       });
 
-      return keycloak.init({ 
-          onLoad: 'check-sso', 
-          flow: "standard",
-          pkceMethod: "S256",
-          checkLoginIframe: false,
-          silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
-      });
+      try {
+        return await keycloak.init({ 
+            onLoad: 'check-sso', 
+            flow: "standard",
+            pkceMethod: "S256",
+            checkLoginIframe: false,
+            silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
+        });
+      } catch (error) {
+        const message = String(error?.message || error || '');
+        const isThirdPartyIframeTimeout = message.includes('3rd party check iframe message');
+
+        if (isThirdPartyIframeTimeout) {
+          sessionStorage.setItem(KEYCLOAK_SILENT_SSO_BLOCKED_KEY, '1');
+          console.warn('Silent SSO check skipped: browser blocks third-party storage/cookies (requestStorageAccess or iframe timeout).');
+          return false;
+        }
+
+        throw error;
+      }
     } else {
       console.log("use checkKeycloakSessionAdapter oauth2");
       return new Promise((reject) => {
