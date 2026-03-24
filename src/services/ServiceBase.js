@@ -165,11 +165,18 @@ class ServiceBase {
       });
 
       try {
+        // INFO
+        // https://www.keycloak.org/securing-apps/javascript-adapter#_browsers_with_blocked_third_party_cookies
+        // Silent check-sso is not supported and falls back to regular (non-silent) check-sso by default. 
+        // This behavior can be changed by setting silentCheckSsoFallback: false in the options passed 
+        // to the init method. In this case, check-sso will be completely disabled if restrictive browser 
+        // behavior is detected.
         return await keycloak.init({ 
             onLoad: 'check-sso', 
             flow: "standard",
             pkceMethod: "S256",
             checkLoginIframe: false,
+            silentCheckSsoFallback: false,
             silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
         });
       } catch (error) {
