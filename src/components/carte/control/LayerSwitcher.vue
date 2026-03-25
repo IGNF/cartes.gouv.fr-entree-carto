@@ -548,14 +548,14 @@ const onClickEditLayer = (e) => {
 }
 // largeur du panel
 .gpf-panel[id^="GPlayersList"] {
-  width: $widget-panel-width-lg;
+  width: $widget-panel-width-lg !important;
 }
 // panels multiple
 .gpf-panel[id^="GPlayersList"] ~ .gpf-panel {
   right: calc(($widget-panel-width-lg - $widget-panel-multiple-width-lg) / 2) + $widget-btn-size + $gap !important;
   top: 4rem !important;
-  min-width: $widget-panel-multiple-width-lg;
-  max-width: $widget-panel-multiple-width-lg;
+  min-width: $widget-panel-multiple-width-lg !important;
+  max-width: $widget-panel-multiple-width-lg !important;
 }
 // utilise un fond clair dans le panel
 .gpf-panel__content[id^="GPlayerSwitcher_ID_"][aria-current="true"],
