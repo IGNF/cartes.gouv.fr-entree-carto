@@ -353,24 +353,6 @@ export const useMapStore = defineStore('map', () => {
   localStorage.setItem(ns('permalink'), permalink.value);
   localStorage.setItem(ns('permalinkShare'), permalinkShare.value);
 
-  watch(zoom, () => {
-    localStorage.setItem(ns('zoom'), Math.round(zoom.value));
-  })
-  watch(x, () => {
-    localStorage.setItem(ns('x'), x.value);
-  })
-  watch(y, () => {
-    localStorage.setItem(ns('y'), y.value);
-  })
-  watch(lon, () => {
-    localStorage.setItem(ns('lon'), lon.value);
-  })
-  watch(lat, () => {
-    localStorage.setItem(ns('lat'), lat.value);
-  })
-  watch(layers, () => {
-    localStorage.setItem(ns('layers'), layers.value.toString()); // string
-  })
   watch(permalink, () => {
     localStorage.setItem(ns('permalink'), permalink.value.toString()); // string
   })
@@ -379,21 +361,6 @@ export const useMapStore = defineStore('map', () => {
   })
   watch(center, () => {
     localStorage.setItem(ns('center'), center.value.toString()); // string
-  })
-  watch(controls, () => {
-    localStorage.setItem(ns('controls'), controls.value.toString()); // string
-  })
-  watch(bookmarks, () => {
-    localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
-  })
-  watch(geolocation, () => {
-    localStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
-  })
-  watch(noLoginInformation, () => {
-    localStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
-  })
-  watch(territories, () => {
-    localStorage.setItem(ns('territories'), territories.value.toString()); // string
   })
 
   //////////////////
