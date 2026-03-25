@@ -223,7 +223,6 @@ export const useMapStore = defineStore('map', () => {
   
   // INFO
   // cette valeur devrait toujours être reinitilisée à false
-  localStorage.setItem(ns('noLoginInformation'), false);
   var noLoginInformation = useStorage(ns('noLoginInformation'), false);
 
   //////////////////
