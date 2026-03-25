@@ -49,6 +49,10 @@ onUpdated(() => {
   right: $widget-panel-x;
   background: var(--background-default-grey);
 }
+// déplace tout à droite si pas d'outil en bas/droite
+.position-container-bottom-right:empty ~ .ol-scale-line {
+  right: $gap;
+}
 // couleur en mode sombre
 html[data-fr-theme="dark"] .ol-scale-line-inner {
   color: var(--text-action-high-blue-france);
