@@ -1,6 +1,7 @@
 import {
   defineStore
 } from 'pinia';
+import { shallowRef } from 'vue';
 
 /**
  * @description
@@ -15,14 +16,14 @@ import {
  * - topics : thématiques / producteurs
  */
 export const useDataStore = defineStore('data', () => {
-  const m_layers = ref({});
+  const m_layers = shallowRef({});
   const m_generalOptions = ref({});
-  const m_tileMatrixSets = ref({});
+  const m_tileMatrixSets = shallowRef({});
   const m_contacts = ref({});
   const m_territories = ref([]);
-  const m_featured = ref([]);
+  const m_featured = shallowRef([]);
   const m_alerts = ref([]);
-  const m_topics = ref([]);
+  const m_topics = shallowRef([]);
   const isLoaded = ref(false);
   const error = ref("");
   const filterServices = "WMTS,WMS,TMS";
