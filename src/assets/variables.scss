@@ -48,6 +48,9 @@ $widget-panel-x: $widget-btn-size + $gap * 2;
     width: 100vw;
     min-width: 100vw !important;
     max-height: 100cqb !important;
+
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 

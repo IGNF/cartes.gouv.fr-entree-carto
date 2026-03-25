@@ -129,6 +129,10 @@ const onClickSearchGeolocationRemove = (e) => {
     height: $widget-btn-size;
   }
 
+  .GPSearchBar .GPInputGroup {
+    border-top-right-radius: 0;
+  }
+
   @include max(sm) {
     top: $gap;
     left: $gap - 5; // 5 interne

@@ -126,12 +126,12 @@ defineExpose({
 .menu-content-list {
   position: absolute;
   top: 0;
-  @include widget-panel-sizes;
   overflow: auto;
   scrollbar-width: thin;
   background-color: var(--background-default-grey);
   border-radius: $widget-btn-radius;
   box-shadow: var(--raised-shadow);
+  @include widget-panel-sizes;
 }
 .left .menu-content-list {
   left: $widget-btn-size + $gap;
