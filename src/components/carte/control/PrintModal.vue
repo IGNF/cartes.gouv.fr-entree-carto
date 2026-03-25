@@ -14,7 +14,6 @@ import { useElementSize } from '@vueuse/core'
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 import Map from '../Map.vue';
-import View from '../View.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
@@ -503,12 +502,9 @@ const scaleLineOptions = {
             ref="refMap" 
             class="map"
             :map-id="printMap"
+            :center="mapStore.center"
+            :zoom="mapStore.zoom"
           >
-            <View
-              :map-id="printMap"
-              :center="mapStore.center"
-              :zoom="mapStore.zoom"
-            />
             <PrintLayers
               :print-map-id="printMap"
             />
