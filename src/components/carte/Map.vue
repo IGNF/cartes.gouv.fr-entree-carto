@@ -12,7 +12,7 @@ export default {
 <script setup lang="js">
 import { CRS } from 'geopf-extensions-openlayers'
 
-import Map from 'ol/Map'
+import { Map, View } from 'ol'
 import {
     MouseWheelZoom,
     defaults as defaultInteractions
@@ -20,6 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
+import { fromLonLat, toLonLat } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -32,7 +33,9 @@ const props = defineProps({
   mapId: {
     type: String,
     default: 'mainMap'
-  }
+  },
+  zoom : Number,
+  center : Array,
 })
 
 /**
@@ -53,6 +56,13 @@ const map = new Map({
       condition : eventShiftKeyOnly
     })
   ]),
+  view: new View({
+    zoom: props.zoom,
+    center: fromLonLat(props.center),
+    minZoom : 0,
+    maxZoom : 21,
+    projection : "EPSG:3857"
+  }),
 })
 
 /**
@@ -96,6 +106,22 @@ map.on('loadend', () => {
   
   endLoading();
 });
+/**
+ * abonnement à l'evenement 'moveend' de la map
+ * pour mise à jour du centre de la carte
+ */
+map.on("moveend", (e) => {
+  let view = map.getView();
+  let center = view.getCenter();
+  mapStore.x = center[0];
+  mapStore.y = center[1];
+
+  var coordinate = toLonLat(center);
+  mapStore.lon = coordinate[0];
+  mapStore.lat = coordinate[1];
+
+  mapStore.zoom = view.getZoom();
+})
 
 provide(props.mapId, map)
 
@@ -111,8 +137,9 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
-  if (props.mapId == mainMap)
-  mapStore.setMap(map)
+  if (props.mapId == mainMap) {
+    mapStore.setMap(map)
+  }
 })
 
 /**
