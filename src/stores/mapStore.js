@@ -108,7 +108,7 @@ export const useMapStore = defineStore('map', () => {
   /////////////
   // objet map
   /////////////
-  const map = ref({});
+  let map = {};
 
   // gestion des KVP dans l'URL (permalink)
   try {
@@ -402,10 +402,10 @@ export const useMapStore = defineStore('map', () => {
   //////////////////
 
   function getMap () {
-    return map.value;
+    return map;
   }
   function setMap (m) {
-    map.value = m;
+    map = m;
   }
 
   function getLayers () {
