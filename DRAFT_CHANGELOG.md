@@ -30,6 +30,7 @@ Reset du localStorage pour les modifications de l'espace personnel.
   - Mise à jour des packages dsfr et vue-dsfr (#972)
   - Territoires : les territoires personnalisés sont sauvegardés dans les données de session et donc conservés en rechargeant la page (#969)
   - SearcheEngine: ajout du placeholder "Rechercher un lieu" (#1010)
+  - Amélioration des performances de rendu de la carte et de l’interface (#1007)
 
 #### 🔥 [Obsolète]
 
