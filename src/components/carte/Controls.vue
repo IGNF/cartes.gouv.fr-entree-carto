@@ -38,17 +38,12 @@ import CatalogManager from './control/CatalogManager.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
-import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
-
-import { 
-  LayerWMTS as GeoportalWMTS
-} from 'geopf-extensions-openlayers';
 
 const emitter = inject('emitter');
 
@@ -92,7 +87,6 @@ const props = defineProps({
 // ]
 const mapStore = useMapStore();
 const domStore = useDomStore();
-const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
@@ -162,22 +156,6 @@ const getFeatureInfoOptions = {
   id: "6",
   position: useControlsExtensionPosition().getFeatureInfoOptions,
   noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
-};
-
-
-const overviewMapOptions = {
-  id: "7",
-  collapsed: false,
-  position: useControlsExtensionPosition().overviewMapOptions,
-  layers : [
-    new GeoportalWMTS({
-      layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
-      configuration : {
-        ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
-        params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
-      }
-    })
-  ]
 };
 
 const fullscreenOptions = {
@@ -533,7 +511,6 @@ onMounted(() => {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :analytic="useControls.OverviewMap.analytic"
-    :overview-map-options="overviewMapOptions"
     :map-id="mapId"
   />
   <Territories
