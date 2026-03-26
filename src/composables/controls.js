@@ -15,6 +15,9 @@
  */
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useDataStore } from "@/stores/dataStore";
+import { 
+  LayerWMTS as GeoportalWMTS
+} from 'geopf-extensions-openlayers';
 
 let isMobile = useMatchMedia('SM');
 
@@ -648,6 +651,20 @@ export function useControlsOptions () {
           featured : dataStore.getFeatured()
         }
       }
+    },
+    overviewMap: {
+      id: "7",
+      collapsed: false,
+      position: useControlsExtensionPosition().overviewMapOptions,
+      layers : [
+        new GeoportalWMTS({
+          layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+          configuration : {
+            ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+            params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+          }
+        })
+      ]
     },
   };
 };
