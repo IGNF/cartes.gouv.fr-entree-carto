@@ -29,6 +29,7 @@ Reset du localStorage pour les modifications de l'espace personnel.
   - Alertes/UI : La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
   - Mise à jour des packages dsfr et vue-dsfr (#972)
   - Territoires : les territoires personnalisés sont sauvegardés dans les données de session et donc conservés en rechargeant la page (#969)
+  - Amélioration des performances de rendu de la carte et de l’interface (#1007)
 
 #### 🔥 [Obsolète]
 
