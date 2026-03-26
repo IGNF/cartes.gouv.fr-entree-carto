@@ -3,6 +3,7 @@ import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useControlsOptions } from '@/composables/controls';
 
 import { Catalog } from 'geopf-extensions-openlayers';
 
@@ -13,10 +14,6 @@ const props = defineProps({
   },
   visibility: Boolean,
   analytic: Boolean,
-  catalogManagerOptions: {
-    type: Object,
-    default: () => ({})
-  }
 });
 
 const log = useLogger();
@@ -25,7 +22,8 @@ const mapStore = useMapStore();
 
 const emitter = inject('emitter');
 const map = inject(props.mapId);
-const catalog = ref(new Catalog(props.catalogManagerOptions));
+
+const catalog = ref(new Catalog(useControlsOptions().catalog));
 
 // FIXME non utilisé ?
 // abonnement sur l'ouverture du controle

@@ -418,95 +418,6 @@ const reportingOptions = {
   format : "kml"
 };
 
-const catalogOptions = {
-  id: "22",
-  position: useControlsExtensionPosition().catalogOptions,
-  gutter: true,
-  listable: false,
-  titlePrimary : "Catalogue de cartes",
-  layerLabel : "title",
-  layerThumbnail : true,
-  size : "xl",
-  tabHeightAuto : false,
-  addToMap : false,
-  optimisation : "on-demand",
-  search : {
-    display : false,
-    criteria : ["name","title","description"]
-  },
-  categories : [
-    {
-      title : "Cartes de référence",
-      id : "base",
-      order : false,
-      featured : true,
-      filter : {
-        field : "base",
-        value : "true"
-      }
-    },
-    {
-      title : "Toutes les cartes",
-      id : "data",
-      search : true,
-      items : [
-        {
-          title : "Thème",
-          default : true,
-          order : true,
-          section : true,
-          icon : true,
-          filter : {
-            field : "thematic",
-            value : "*"
-          }
-        },
-        {
-          title : "Producteur",
-          order : true,
-          section : true,
-          icon : false,
-          filter : {
-            field : "producer",
-            value : "*"
-          }
-        }
-        /*,
-        {
-          title : "Service",
-          order : true,
-          section : true,
-          icon : true,
-          filter : {
-            field : "service",
-            value : "*"
-          }
-        },
-        */
-        // Ex. de configuration de clustering à réactiver si besoin
-        // {
-        //   title : "Tout",
-        //   section : false,
-        //   cluster : true,
-        //   clusterOptions : {
-        //     rows_in_block : 20,
-        //     blocks_in_cluster : 4
-        //   },
-        //   filter : null
-        // }
-      ]
-    },
-  ],
-  configuration : {
-    type : "json",
-    data : {
-      layers : dataStore.getLayers(),
-      topics : dataStore.getTopics(),
-      featured : dataStore.getFeatured()
-    }
-  }
-};
-
 const contextMenuOptions = computed(() => {
   return {
     contextMenuItemsOptions : [
@@ -545,7 +456,6 @@ onMounted(() => {
   <CatalogManager
     :visibility="true"
     :analytic="false"
-    :catalog-manager-options="catalogOptions"
     :map-id="mapId"
   />
   <LayerSwitcher
