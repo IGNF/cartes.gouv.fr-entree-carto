@@ -211,6 +211,7 @@ provide("selectedLayers", selectedLayers);
     position: relative;
     width: 100%;
     height: 100%;
+    background: var(--background-disabled-grey);
     /* cree un container */
     container-name: map;
     container-type: size;
