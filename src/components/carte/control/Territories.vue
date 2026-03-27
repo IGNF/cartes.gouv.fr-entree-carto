@@ -217,7 +217,13 @@ const onRemoveTerritories = (e) => {
   margin-bottom: 0;
 }
 
-.gpf-panel__body_territories {
+#gpf-territories-views-container-id {
+  bottom: 0;
+}
+
+#gpf-territories-views-container-id,
+.gpf-panel__body_territories,
+.gpf-panel__views_territories-listview-entries {
   max-height: initial;
 }
 </style>
