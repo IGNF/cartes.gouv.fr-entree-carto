@@ -19,6 +19,15 @@
         "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/idf.svg"
     },
     {
+        "id": "GLP",
+        "title": "Guadeloupe",
+        "description": "",
+        "zoom": null,
+        "bbox": [ -61.97, 15.72, -60.93, 16.66],
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/glp.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/glp.svg"
+    },
+    {
         "id": "MTQ",
         "title": "Martinique",
         "description": "",
@@ -37,26 +46,8 @@
         "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/guf.svg"
     },
     {
-        "id": "MYT",
-        "title": "Mayotte",
-        "description": "",
-        "zoom": null,
-        "bbox": [44.95, -13.049, 45.32, -12.57],
-        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/myt.png",
-        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/myt.svg"
-    },
-    {
-        "id": "GLP",
-        "title": "Guadeloupe",
-        "description": "",
-        "zoom": null,
-        "bbox": [ -61.97, 15.72, -60.93, 16.66],
-        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/glp.png",
-        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/glp.svg"
-    },
-    {
         "id": "REU",
-        "title": "Réunion",
+        "title": "La Réunion",
         "description": "",
         "zoom": null,
         "bbox": [55.07, -21.46, 55.86, -20.79],
@@ -71,6 +62,15 @@
         "bbox": [-56.48, 46.69, -56.07, 47.19],
         "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/spm.png",
         "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/spm.svg"
+    },
+    {
+        "id": "MYT",
+        "title": "Mayotte",
+        "description": "",
+        "zoom": null,
+        "bbox": [44.95, -13.049, 45.32, -12.57],
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/myt.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/myt.svg"
     },
     {
         "id": "BLM",
@@ -110,7 +110,7 @@
     },
     {
         "id": "NCL",
-        "title": "Nouvelle Calédonie",
+        "title": "Nouvelle-Calédonie",
         "description": "",
         "zoom": null,
         "bbox": [163.02,-23.08, 167.86,-19.50],
@@ -168,6 +168,7 @@
     "ORTHOIMAGERY.ORTHOPHOTOS",
     "PLAN.IGN",
     "GEOGRAPHICALGRIDSYSTEMS.MAPS",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR",
     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
     "CADASTRALPARCELS.HISTO.2008-2013.PARCELS",
@@ -175,13 +176,12 @@
     "BDTOPO",
     "LANDCOVER.FORESTINVENTORY.V2",
     "DEBROUSSAILLEMENT",
-    "dgac_peb_plan_wmsv",
-    "TRANSPORTS.DRONES.RESTRICTIONS",
     "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965",
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950",
     "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
     "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI",
-    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI"
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI",
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
   ],
   "topics": {
     "thematic" : [
@@ -308,6 +308,12 @@
           "noConstraint": true
       }
     },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR:OGC:WMTS": {
+	  "base": true,
+      "globalConstraint": {
+          "noConstraint": true
+      }
+    },
     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
       "base": true,
       "globalConstraint": {
@@ -348,15 +354,6 @@
           "noConstraint": true
       }
     },
-    "dgac_peb_plan_wmsv$GEOPORTAIL:OGC:WMS": {
-      "base": true
-    },
-    "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
-      "base": true,
-      "globalConstraint": {
-          "noConstraint": true
-      }
-    },
     "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965$GEOPORTAIL:OGC:WMTS": {
       "base": true,
       "globalConstraint": {
@@ -388,7 +385,7 @@
       }
     },
     "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
-      "base": false,
+      "base": true,
       "legends": [
         {
           "format": "image/png",
