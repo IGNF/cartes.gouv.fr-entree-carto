@@ -19,7 +19,6 @@ import "geopf-extensions-openlayers/css/Dsfr.css";
 import { nextTick } from "vue";
 
 import Map from '@/components/carte/Map.vue'
-import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
@@ -107,13 +106,9 @@ onMounted(() => {
     ref="refMap"
     class="map"
     :map-id="mainMap"
+    :center="mapStore.center"
+    :zoom="mapStore.zoom"
   >
-    <!-- Initialisation de la vue -->
-    <View
-      :map-id="mainMap"
-      :center="mapStore.center"
-      :zoom="mapStore.zoom"
-    />
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
       v-if="mapIsReady"

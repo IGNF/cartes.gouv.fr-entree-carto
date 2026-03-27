@@ -2,6 +2,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useControlsOptions } from '@/composables/controls';
 
 import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
@@ -9,14 +10,13 @@ const props = defineProps({
   mapId: String,
   visibility: Boolean,
   analytic: Boolean,
-  overviewMapOptions: Object
 });
 
 const log = useLogger();
 
 
 const map = inject(props.mapId);
-const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions));
+const overviewMap = ref(new GeoportalOverviewMap(useControlsOptions().overviewMap));
 
 const isSmallScreen = useMatchMedia('SM')
 

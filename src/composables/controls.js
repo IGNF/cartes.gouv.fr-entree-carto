@@ -14,6 +14,11 @@
  * }
  */
 import { useMatchMedia } from '@/composables/matchMedia';
+import { useDataStore } from "@/stores/dataStore";
+import { 
+  LayerWMTS as GeoportalWMTS
+} from 'geopf-extensions-openlayers';
+
 let isMobile = useMatchMedia('SM');
 
 export const useControls = {
@@ -574,3 +579,92 @@ export function useControlsPosition() {
     right : rightC
   }
 }
+
+/**
+ * Obtenir les options de chaque contrôle
+ * @returns 
+ */
+export function useControlsOptions () {
+  const dataStore = useDataStore();
+  return {
+    catalog: {
+      id: "22",
+      position: useControlsExtensionPosition().catalogOptions,
+      gutter: true,
+      listable: false,
+      titlePrimary : "Catalogue de cartes",
+      layerLabel : "title",
+      layerThumbnail : true,
+      size : "xl",
+      tabHeightAuto : false,
+      addToMap : false,
+      optimisation : "on-demand",
+      search : {
+        display : false,
+        criteria : ["name","title","description"]
+      },
+      categories : [
+        {
+          title : "Cartes de référence",
+          id : "base",
+          order : false,
+          featured : true,
+          filter : {
+            field : "base",
+            value : "true"
+          }
+        },
+        {
+          title : "Toutes les cartes",
+          id : "data",
+          search : true,
+          items : [
+            {
+              title : "Thème",
+              default : true,
+              order : true,
+              section : true,
+              icon : true,
+              filter : {
+                field : "thematic",
+                value : "*"
+              }
+            },
+            {
+              title : "Producteur",
+              order : true,
+              section : true,
+              icon : false,
+              filter : {
+                field : "producer",
+                value : "*"
+              }
+            }
+          ]
+        },
+      ],
+      configuration : {
+        type : "json",
+        data : {
+          layers : dataStore.getLayers(),
+          topics : dataStore.getTopics(),
+          featured : dataStore.getFeatured()
+        }
+      }
+    },
+    overviewMap: {
+      id: "7",
+      collapsed: false,
+      position: useControlsExtensionPosition().overviewMapOptions,
+      layers : [
+        new GeoportalWMTS({
+          layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+          configuration : {
+            ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+            params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+          }
+        })
+      ]
+    },
+  };
+};
