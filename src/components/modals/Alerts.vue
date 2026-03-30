@@ -11,7 +11,7 @@
       title="Iframe obsolète"
     >
       <p>
-        <strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 30/09/2026. Pour le mettre à jour, rendez vous sur notre <a
+        <strong> Attention : le lien vers cette carte créée sur le Géoportail ne sera plus fonctionnel à compter du 31/12/2026. Pour le mettre à jour, rendez vous sur notre <a
           href="https://ignf.github.io/permalink-converter/"
           target="_blank"
         >convertisseur de liens !</a></strong>
