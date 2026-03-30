@@ -138,7 +138,8 @@ const onClickSearchGeolocationRemove = (e) => {
     left: $gap - 5; // 5 interne
     max-width: calc(100% - 6px); // 6px un peu magique
 
-    &:has(.GPSearchEngine-advanced-btn[aria-expanded="true"]) {
+    &:has(.GPSearchEngine-advanced-btn[aria-expanded="true"]),
+    .GPautoCompleteContainer {
       z-index: 4;
     }
   }
