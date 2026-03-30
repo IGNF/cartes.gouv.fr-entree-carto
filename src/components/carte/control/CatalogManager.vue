@@ -136,6 +136,7 @@ const onCatalogLayerRemove = (e) => {
   --tabs-height: 100% !important;
 }
 #GPcatalogContainerTabs .fr-tabs__panel {
+  height: initial;
   max-height: 100% !important;
   overflow: initial !important;
 }
