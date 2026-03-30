@@ -110,7 +110,8 @@ const searchEngineOptions = {
     prettifyResults : true,
     maximumEntries : 5
   },
-  markerUrl : IconGeolocationSVG
+  markerUrl : IconGeolocationSVG,
+  placeholder: "Rechercher un lieu...",
 };
 
 const layerSwitcherOptions = {

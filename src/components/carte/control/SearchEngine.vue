@@ -133,6 +133,10 @@ const onClickSearchGeolocationRemove = (e) => {
     border-top-right-radius: 0;
   }
 
+  @include min(sm) {
+    width: 420px;
+  }
+
   @include max(sm) {
     top: $gap;
     left: $gap - 5; // 5 interne
