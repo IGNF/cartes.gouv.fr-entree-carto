@@ -719,6 +719,8 @@ onMounted(() => {
 .position-container-top-left .gpf-panel,
 .position-container-bottom-left .gpf-panel {
   left: $widget-btn-size + $gap !important;
+  top: $widget-btn-size + $gap !important;
+  max-height: calc(100cqb - $widget-btn-size - $gap * 3) !important;
 }
 .position-container-top-right .gpf-panel,
 .position-container-bottom-right .gpf-panel {
