@@ -39,6 +39,9 @@ import CatalogManager from './control/CatalogManager.vue';
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useMatchMedia } from '@/composables/matchMedia';
+let isMobile = useMatchMedia('SM');
+
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
@@ -90,23 +93,24 @@ const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
-
 // liste des options pour les contrôles
-const searchEngineOptions = {
-  id: "1",
-  collapsed: false,
-  collapsible: false,
-  returnTrueGeometry: true,
-  autocompleteOptions : {
-    serviceOptions : {
-        maximumResponses : 10
+const searchEngineOptions = computed(() => {
+  return {
+    id: "1",
+    collapsed: false,
+    collapsible: false,
+    returnTrueGeometry: true,
+    autocompleteOptions : {
+      serviceOptions : {
+          maximumResponses : 10
+      },
+      prettifyResults : true,
+      maximumEntries : 5
     },
-    prettifyResults : true,
-    maximumEntries : 5
-  },
-  markerUrl : IconGeolocationSVG,
-  placeholder: "Rechercher un lieu...",
-};
+    markerUrl : IconGeolocationSVG,
+    placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+  };
+});
 
 const layerSwitcherOptions = {
   options: {
