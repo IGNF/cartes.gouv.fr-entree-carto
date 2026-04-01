@@ -8,6 +8,10 @@ import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 import 'notivue/notification.css'
 import 'notivue/animations.css'
 
+// chargement des CSS de la carte et des extensions
+import "ol/ol.css";
+import "geopf-extensions-openlayers/css/Dsfr.css";
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'

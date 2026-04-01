@@ -11,11 +11,6 @@
   };
 </script>
 <script setup lang="js">
-
-// chargement des CSS de la carte et des extensions
-import "ol/ol.css";
-import "geopf-extensions-openlayers/css/Dsfr.css";
-
 import { nextTick } from "vue";
 
 import Map from '@/components/carte/Map.vue'
