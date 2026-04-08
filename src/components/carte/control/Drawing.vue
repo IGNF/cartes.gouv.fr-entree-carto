@@ -204,6 +204,30 @@ const restoreTemporaryDocument = (payload) => {
   });
 };
 
+const saveTemporaryDocument = (payload) => {
+  if (!payload) {
+    return;
+  }
+  if (!payload.type) {
+    var id = payload.layer.gpResultLayerId.toLowerCase();
+    var type = id.split(':')[0];
+    payload.type = type.replace("layer", ""); // ex. drawing, import, bookmark...
+  }
+  // stockage temporaire dans le localStorage
+  // car l'utilisateur demande une sauvegarde sans etre authentifié !
+  if (payload.layer) {
+    serviceStore.setAuthentificateSyncNeeded(true);
+    appStore.setDocumentTemporary(JSON.stringify({
+      content : payload.content,
+      name : payload.name,
+      description : payload.description,
+      format : payload.format,
+      target : payload.target,
+      type : payload.type
+    }));
+  }
+};
+
 onMounted(() => {
   log.debug("Drawing component mounted");
   if (props.visibility) {
@@ -268,13 +292,13 @@ onBeforeUpdate(() => {
 const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
-    if (drawing.value.getLayer()) {
-      onSaveVector({
+    if (!service.authenticated) {
+      saveTemporaryDocument({
         content : drawing.value.exportFeatures(),
         name : drawing.value.getExportName(),
         description : "",
         format : drawing.value.getExportFormat(),
-        layer : drawing.value.getLayer()
+        layer : drawing.value.getLayer(),
       });
     }
     // dissociation de la couche du widget 
@@ -341,17 +365,7 @@ const onSaveVector = (e) => {
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (bSaveDocumentTemporary) {
-    if (data.layer) {
-      serviceStore.setAuthentificateSyncNeeded(true);
-      appStore.setDocumentTemporary(JSON.stringify({
-        content : data.content,
-        name : data.name,
-        description : data.description,
-        format : data.format,
-        target : data.target,
-        type : data.type
-      }));
-    }
+    saveTemporaryDocument(data);
     return; // pas plus loin...
   }
 
