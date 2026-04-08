@@ -268,6 +268,15 @@ onBeforeUpdate(() => {
 const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
+    if (drawing.value.getLayer()) {
+      onSaveVector({
+        content : drawing.value.exportFeatures(),
+        name : drawing.value.getExportName(),
+        description : "",
+        format : drawing.value.getExportFormat(),
+        layer : drawing.value.getLayer()
+      });
+    }
     // dissociation de la couche du widget 
     // pour permettre une autre saisie dans 
     // une autre couche
