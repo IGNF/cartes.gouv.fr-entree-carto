@@ -31,6 +31,7 @@ Reset du localStorage pour les modifications de l'espace personnel.
   - Territoires : les territoires personnalisés sont sauvegardés dans les données de session et donc conservés en rechargeant la page (#969)
   - SearcheEngine: ajout du placeholder "Rechercher un lieu" (#1010)
   - Amélioration des performances de rendu de la carte et de l’interface (#1007)
+  - Ajout d’une case à cocher «Ne plus afficher» sur la modale d’embarquement (#988)
 
 #### 🔥 [Obsolète]
 
