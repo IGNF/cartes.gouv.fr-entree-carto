@@ -51,6 +51,7 @@ Reset du localStorage pour les modifications de l'espace personnel.
   - Amélioration accessibilité toggle du header compact (#972)
   - UI : amélioration du comportement de l'interface aux valeurs seuils de taille d'écran (#971)
   - Territories: fixe la hauteur de la modale (#886)
+  - Panels: les panels des widgets de gauche sont positionnés sous la recherche (#1009)
 
 #### 🔒 [Sécurité]
 

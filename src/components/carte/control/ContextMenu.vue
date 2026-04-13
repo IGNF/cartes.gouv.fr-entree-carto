@@ -49,7 +49,7 @@ const onContextMenuOpen = () => {
 @use "@/assets/variables" as *;
 
 .gpf-widget[id^="GPpointInfo-"] {
-  top: $gap;
+  top: $widget-btn-size + $gap * 2;
   left: $widget-panel-x;
 
   @include max(sm) {
