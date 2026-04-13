@@ -74,8 +74,10 @@ let onDismiss = (modalName) => {
     dismissibleModals = JSON.parse(localStorage.getItem(appStore.ns('modals')));
   }
 
-  // on push dans local storage (pas de vérification, car pas possible a priori)
-  dismissibleModals.push(modalName);
+  // on push dans local storage (sans doublons)
+  if (!dismissibleModals.includes(modalName)) {
+    dismissibleModals.push(modalName);
+  }
   localStorage.setItem(appStore.ns('modals'), JSON.stringify(dismissibleModals));
 }
 </script>
