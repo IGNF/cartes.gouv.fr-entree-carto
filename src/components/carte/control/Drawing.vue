@@ -151,6 +151,16 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
 });
 
 /**
+ * @event drawing:close
+ * @description Evenement pour fermer le controle de dessin
+ */
+emitter.addEventListener("drawing:close", () => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(true);
+  }
+});
+
+/**
  * @event document:restore
  * @description Evenement pour restaurer un document temporaire déclenché 
  * par la demande de connexion réussie
