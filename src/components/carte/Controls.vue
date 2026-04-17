@@ -202,6 +202,9 @@ const isocurveOptions = {
   id: "13",
   gutter: false,
   listable: true,
+  isocurveOptions : {
+    "serverUrl" : "https://data-pprd.priv.geopf.fr/navigation/isochrone"
+  }
 };
 
 const routeOptions = {
@@ -210,6 +213,9 @@ const routeOptions = {
   gutter: false,
   listable: true,
   prettifyCompute: true,
+  routeOptions : {
+    "serverUrl": "https://data-pprd.priv.geopf.fr/navigation/itineraire"
+  }
 };
 
 const measureLengthOptions = {
