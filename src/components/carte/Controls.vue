@@ -100,9 +100,17 @@ const searchEngineOptions = computed(() => {
     collapsed: false,
     collapsible: false,
     returnTrueGeometry: true,
-    autocompleteOptions : {
-      serviceOptions : {
+    serviceOptions : {
+      autocompleteOptions : {
+        serviceOptions : {
+          serverUrl : "https://data-pprd.priv.geopf.fr/geocodage/completion?",
           maximumResponses : 10
+        }
+      },
+      geocodeOptions : {
+        serviceOptions : {
+          serverUrl : "https://data-pprd.priv.geopf.fr/geocodage/search"
+        }
       },
       prettifyResults : true,
       maximumEntries : 5
@@ -195,6 +203,9 @@ const reverseGeocodeOptions = {
   position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
+  reverseGeocodeOptions : {
+    "serverUrl" : "https://data-pprd.priv.geopf.fr/geocodage/reverse"
+  }
 };
 
 const isocurveOptions = {
@@ -245,6 +256,11 @@ const mousePositionOptions = {
   gutter: false,
   listable: true,
   editCoordinates : true,
+  altitude : {
+    serviceOptions : {
+      "serverUrl" : "https://data-pprd.priv.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json?"
+    }
+  },
   // On ajoute les systemes UTM pour les territoires
   systems : [
     {
@@ -390,6 +406,9 @@ const elevationPathOptions = {
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
+  elevationOptions : {
+    "serverUrl": "https://data-pprd.priv.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevationLine.json"
+  }
 };
 
 const layerImportOptions = {
