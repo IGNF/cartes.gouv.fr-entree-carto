@@ -6,7 +6,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-9.86, 41.15, 10.38, 51.56],
-        "icon": "public/img/territories/fxx.svg"
+        "icon": "img/territories/fxx.svg"
     },
     {
         "id": "IDF",
@@ -14,7 +14,7 @@
         "description": "",
         "zoom": null,
         "bbox": [2.18, 48.77, 2.52, 48.95],
-        "icon": "public/img/territories/idf.svg"
+        "icon": "img/territories/idf.svg"
     },
     {
         "id": "GLP",
@@ -22,7 +22,7 @@
         "description": "",
         "zoom": null,
         "bbox": [ -61.97, 15.72, -60.93, 16.66],
-        "icon": "public/img/territories/glp.svg"
+        "icon": "img/territories/glp.svg"
     },
     {
         "id": "MTQ",
@@ -30,7 +30,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-61.40, 14.25, -60.67, 15.04],
-        "icon": "public/img/territories/mtq.svg"
+        "icon": "img/territories/mtq.svg"
     },
     {
         "id": "GUF",
@@ -38,7 +38,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-55.65, 1.49, -51.20, 6.21],
-        "icon": "public/img/territories/guf.svg"
+        "icon": "img/territories/guf.svg"
     },
     {
         "id": "REU",
@@ -46,7 +46,7 @@
         "description": "",
         "zoom": null,
         "bbox": [55.07, -21.46, 55.86, -20.79],
-        "icon": "public/img/territories/reu.svg"
+        "icon": "img/territories/reu.svg"
     },
     {
         "id": "SPM",
@@ -54,7 +54,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-56.48, 46.69, -56.07, 47.19],
-        "icon": "public/img/territories/spm.svg"
+        "icon": "img/territories/spm.svg"
     },
     {
         "id": "MYT",
@@ -62,7 +62,7 @@
         "description": "",
         "zoom": null,
         "bbox": [44.95, -13.049, 45.32, -12.57],
-        "icon": "public/img/territories/myt.svg"
+        "icon": "img/territories/myt.svg"
     },
     {
         "id": "BLM",
@@ -70,7 +70,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-62.95, 17.85, -62.75, 17.95],
-        "icon": "public/img/territories/blm.svg"
+        "icon": "img/territories/blm.svg"
     },
     {
         "id": "MAF",
@@ -78,7 +78,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-63.2, 18.0, -62.9, 18.2],
-        "icon": "public/img/territories/maf.svg"
+        "icon": "img/territories/maf.svg"
     },
     {
         "id": "WLF",
@@ -86,7 +86,7 @@
         "description": "",
         "zoom": null,
         "bbox": [180.3, -15.2, 185.3, -12.25],
-        "icon": "public/img/territories/wlf.svg"
+        "icon": "img/territories/wlf.svg"
     },
     {
         "id": "PYF",
@@ -94,7 +94,7 @@
         "description": "",
         "zoom": null,
         "bbox": [-154.83, -27.60, -134.32, -7.25],
-        "icon": "public/img/territories/pyf.svg"
+        "icon": "img/territories/pyf.svg"
     },
     {
         "id": "NCL",
@@ -102,7 +102,7 @@
         "description": "",
         "zoom": null,
         "bbox": [163.02,-23.08, 167.86,-19.50],
-        "icon": "public/img/territories/ncl.svg"
+        "icon": "img/territories/ncl.svg"
     },
     {
         "id": "ATF",
@@ -110,7 +110,7 @@
         "description": "",
         "zoom": null,
         "bbox": [50.00, -60.00, 90.00, -45.00],
-        "icon": "public/img/territories/atf.svg"
+        "icon": "img/territories/atf.svg"
     }
   ]
 }
