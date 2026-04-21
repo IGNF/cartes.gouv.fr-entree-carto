@@ -81,6 +81,23 @@ export const useDataStore = defineStore('data', () => {
     return response.json();
   }
 
+  async function loadTerritories() {
+    const territoriesConfURL = import.meta.env.VITE_GPF_CONF_TERRITORIES;
+
+    try {
+      const response = await fetchJson(territoriesConfURL);
+      if (!response || !Array.isArray(response.territories)) {
+        throw new Error('Format des territoires invalide');
+      }
+      if (response.territories.length === 0) {
+        throw new Error('Aucun territoire trouvé');
+      }
+      return response.territories;
+    } catch {
+      return null;
+    }
+  }
+
   async function loadAlertsWithFallback() {
     const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
 
@@ -140,7 +157,7 @@ export const useDataStore = defineStore('data', () => {
       m_alerts.value = alerts;
 
       const conf = await loadEntreeCartoWithFallback();
-      m_territories.value = conf.territories;
+      m_territories.value = await loadTerritories() || conf.territories; // fallback to conf territories if fetch fails
       m_contacts.value = conf.contacts;
       m_featured.value = conf.featured || [];
       m_layers.value = conf.layers;
