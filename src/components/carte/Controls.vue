@@ -93,6 +93,13 @@ const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
+var baseUrlService = import.meta.env.VITE_GPF_BASE_URL_SERVICE;
+if (!baseUrlService) {
+  // Utilisation de l'url des services de production
+  log.warn("VITE_GPF_BASE_URL_SERVICE is not defined, using production URL");
+  baseUrlService = "https://data.geopf.fr";
+}
+
 // liste des options pour les contrôles
 const searchEngineOptions = computed(() => {
   return {
@@ -102,10 +109,16 @@ const searchEngineOptions = computed(() => {
     returnTrueGeometry: true,
     autocompleteOptions : {
       serviceOptions : {
-          maximumResponses : 10
+          maximumResponses : 10,
+          serverUrl : `${baseUrlService}/geocodage/completion?`
       },
       prettifyResults : true,
       maximumEntries : 5
+    },
+    geocodeOptions : {
+      serviceOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`
+      }
     },
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
@@ -195,6 +208,9 @@ const reverseGeocodeOptions = {
   position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
+  reverseGeocodeOptions : {
+    serverUrl : `${baseUrlService}/geocodage/reverse`
+  }
 };
 
 const isocurveOptions = {
@@ -202,6 +218,9 @@ const isocurveOptions = {
   id: "13",
   gutter: false,
   listable: true,
+  isocurveOptions : {
+    serverUrl : `${baseUrlService}/navigation/isocurve`
+  }
 };
 
 const routeOptions = {
@@ -210,6 +229,9 @@ const routeOptions = {
   gutter: false,
   listable: true,
   prettifyCompute: true,
+  routeOptions : {
+    serverUrl : `${baseUrlService}/navigation/itineraire`
+  }
 };
 
 const measureLengthOptions = {
@@ -239,6 +261,11 @@ const mousePositionOptions = {
   gutter: false,
   listable: true,
   editCoordinates : true,
+  altitude : {
+    serviceOptions : {
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
+    }
+  },
   // On ajoute les systemes UTM pour les territoires
   systems : [
     {
@@ -384,6 +411,9 @@ const elevationPathOptions = {
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
+  elevationPathOptions : {
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
+  }
 };
 
 const layerImportOptions = {
