@@ -1,41 +1,5 @@
 <script setup lang="ts">
-import { useFooterParams } from '@/composables/footerParams';
-import { useModals } from '@/composables/useModals';
-
-// paramètres pour le Footer
-const footerParams = useFooterParams();
-const modals = useModals();
-
-// INFO
-// on met à jour les afterMandatoryLinks pour y ajouter des
-// options sur la 'gestion des themes'
-const afterMandatoryLinks = computed(() => {
-  return [
-    {
-      label: 'Paramètres d’affichage',
-      button: true,
-      class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
-      to: '/settings',
-      onclick: () => {
-        modals.open('theme')
-      }
-    },
-  ]
-})
-
-// INFO
-// on met à jour les mandatoryLinks pour y ajouter des
-// options sur la 'gestion des cookies'
-const mandatoryLinks = computed(() => {
-  return footerParams.mandatoryLinks.map((element: any) => {
-    if (element.label === 'Gestion des cookies') {
-      delete element.href
-      element.onclick = () => { modals.open('consentCustom') }
-      element.to = '/'
-    }
-    return element
-  })
-})
+import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
 
 defineProps({
   compact: {
@@ -44,71 +8,12 @@ defineProps({
   }
 });
 
-let open = ref(false);
-
-let openAttrs = {
-  label: 'Plus d’informations',
-  icon: 'fr-icon-arrow-up-s-line',
-};
-
-let closeAttrs = {
-  label: 'Fermer',
-  icon: 'fr-icon-close-line',
-};
-
-let openCloseAttrs = computed(() => {
-  return open.value ? closeAttrs : openAttrs;
-});
-
-const toggleFooter = () => {
-  open.value = !open.value;
-
-  let top = open.value ? document.body.scrollHeight : 0;
-  setTimeout(() => {
-    window.scrollTo({
-      left: 0,
-      top,
-      behavior: (top !== 0) ? 'smooth' : 'auto',
-    });
-  }, 0);
-};
-
 </script>
 
 <template>
+
   <div class="ign-footer">
-    <DsfrButton
-      v-if="compact"
-      class="btn-toggle"
-      :icon-only="!open"
-      :label="openCloseAttrs.label"
-      :aria-label="!open ? openCloseAttrs.label : null"
-      :icon="openCloseAttrs.icon"
-      icon-right
-      tertiary
-      no-outline
-      :aria-expanded="open"
-      aria-controls="footer"
-      @click="toggleFooter"
-    />
-    <DsfrFooter
-      :before-mandatory-links="footerParams.beforeMandatoryLinks"
-      :after-mandatory-links="afterMandatoryLinks"
-      :logo-text="footerParams.logoText"
-      :desc-text="footerParams.descText"
-      :home-link="footerParams.homeLink"
-      :partners="footerParams.partners"
-      :licence-text="footerParams.licenceText"
-      :licence-to="footerParams.licenceTo"
-      :licence-name="footerParams.licenceName"
-      :licence-link-props="footerParams.licenceLinkProps"
-      :ecosystem-links="footerParams.ecosystemLinks"
-      :mandatory-links="mandatoryLinks"
-      :class="{
-        'fr-footer--compact': compact,
-        'fr-footer--compacted': compact && !open
-      }"
-    />
+    <CgfrFooter compact/>
   </div>
 </template>
 
