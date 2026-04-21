@@ -93,6 +93,13 @@ const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
+var baseUrlService = import.meta.env.VITE_GPF_BASE_URL_SERVICE;
+if (!baseUrlService) {
+  // Utilisation de l'url des services de production
+  log.warn("VITE_GPF_BASE_URL_SERVICE is not defined, using production URL");
+  baseUrlService = "https://data.geopf.fr";
+}
+
 // liste des options pour les contrôles
 const searchEngineOptions = computed(() => {
   return {
@@ -100,20 +107,18 @@ const searchEngineOptions = computed(() => {
     collapsed: false,
     collapsible: false,
     returnTrueGeometry: true,
-    serviceOptions : {
-      autocompleteOptions : {
-        serviceOptions : {
-          serverUrl : "https://data-pprd.priv.geopf.fr/geocodage/completion?",
-          maximumResponses : 10
-        }
-      },
-      geocodeOptions : {
-        serviceOptions : {
-          serverUrl : "https://data-pprd.priv.geopf.fr/geocodage/search"
-        }
+    autocompleteOptions : {
+      serviceOptions : {
+          maximumResponses : 10,
+          serverUrl : `${baseUrlService}/geocodage/completion?`
       },
       prettifyResults : true,
       maximumEntries : 5
+    },
+    geocodeOptions : {
+      serviceOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`
+      }
     },
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
@@ -204,7 +209,7 @@ const reverseGeocodeOptions = {
   gutter: false,
   listable: true,
   reverseGeocodeOptions : {
-    "serverUrl" : "https://data-pprd.priv.geopf.fr/geocodage/reverse"
+    serverUrl : `${baseUrlService}/geocodage/reverse`
   }
 };
 
@@ -214,7 +219,7 @@ const isocurveOptions = {
   gutter: false,
   listable: true,
   isocurveOptions : {
-    "serverUrl" : "https://data-pprd.priv.geopf.fr/navigation/isochrone"
+    serverUrl : `${baseUrlService}/navigation/isocurve`
   }
 };
 
@@ -225,7 +230,7 @@ const routeOptions = {
   listable: true,
   prettifyCompute: true,
   routeOptions : {
-    "serverUrl": "https://data-pprd.priv.geopf.fr/navigation/itineraire"
+    serverUrl : `${baseUrlService}/navigation/itineraire`
   }
 };
 
@@ -258,7 +263,7 @@ const mousePositionOptions = {
   editCoordinates : true,
   altitude : {
     serviceOptions : {
-      "serverUrl" : "https://data-pprd.priv.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json?"
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
     }
   },
   // On ajoute les systemes UTM pour les territoires
@@ -406,8 +411,8 @@ const elevationPathOptions = {
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
-  elevationOptions : {
-    "serverUrl": "https://data-pprd.priv.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevationLine.json"
+  elevationPathOptions : {
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
   }
 };
 

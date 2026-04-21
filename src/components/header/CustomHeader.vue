@@ -6,13 +6,15 @@ import { useMatchMedia } from '@/composables/matchMedia';
 import CustomFooter from '@/components/footer/CustomFooter.vue';
 import CustomNavigation from '@/components/header/CustomNavigation.vue';
 
+const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
+
 const domStore = useDomStore();
 const { theme } = useScheme();
 const mobileScreen = useMatchMedia('LG');
 
 let operatorImgSrc = computed(() => {
   let lightOrDark = theme.value === 'light' ? '' : '-dark';
-  return `https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo${lightOrDark}.svg`;
+  return isStaticService ? `https://cartes.gouv.fr/img/header/cartes-gouv-logo${lightOrDark}.svg` : `https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo${lightOrDark}.svg`;
 });
 
 const headerParams = useHeaderParams();
