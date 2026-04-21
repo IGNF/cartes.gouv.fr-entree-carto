@@ -42,16 +42,18 @@ var EVENTS = {
     "document:exported",
     "document:shared",
     "document:restore",
+    // others
+    "leftmenu:close",
+    "modalreporting:open:clicked",
     // widgets
     "catalog:open:clicked",
-    "leftmenu:close",
     "drawing:open:clicked",
+    "drawing:close",
     "layerimport:open:clicked",
     "searchengine:open:displayed",
     "searchengine:geolocation:clicked",
     "searchengine:geolocation:removed",
     "reporting:open:clicked",
-    "modalreporting:open:clicked",
     // edition
     "vector:edit:clicked",
     "mapbox:edit:clicked",

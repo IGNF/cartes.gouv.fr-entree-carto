@@ -7,8 +7,7 @@ import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from "@/components/carte/control/ShareModal.vue";
 import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
-
-import ModalWelcome from "@/components/modals/ModalWelcome.vue";
+import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
@@ -28,13 +27,13 @@ const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
-
-const refModalWelcome = ref<InstanceType<typeof ModalWelcome> | null>(null);
+const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
 
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
 provide("refModalWelcome", refModalWelcome);
+
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
@@ -201,8 +200,6 @@ provide("selectedLayers", selectedLayers);
     <LoginModal ref="refModalLogin" />
     <SaveModal ref="refModalSave" />
     <PrintModal ref="refModalPrint" />
-    <!-- Modale : Welcome (+ Eulerian) -->
-    <ModalWelcome ref="refModalWelcome" />
   </div>
 </template>
 

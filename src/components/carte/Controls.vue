@@ -39,6 +39,9 @@ import CatalogManager from './control/CatalogManager.vue';
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useMatchMedia } from '@/composables/matchMedia';
+let isMobile = useMatchMedia('SM');
+
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
@@ -90,23 +93,37 @@ const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
+var baseUrlService = import.meta.env.VITE_GPF_BASE_URL_SERVICE;
+if (!baseUrlService) {
+  // Utilisation de l'url des services de production
+  log.warn("VITE_GPF_BASE_URL_SERVICE is not defined, using production URL");
+  baseUrlService = "https://data.geopf.fr";
+}
 
 // liste des options pour les contrôles
-const searchEngineOptions = {
-  id: "1",
-  collapsed: false,
-  collapsible: false,
-  returnTrueGeometry: true,
-  autocompleteOptions : {
-    serviceOptions : {
-        maximumResponses : 10
+const searchEngineOptions = computed(() => {
+  return {
+    id: "1",
+    collapsed: false,
+    collapsible: false,
+    returnTrueGeometry: true,
+    autocompleteOptions : {
+      serviceOptions : {
+          maximumResponses : 10,
+          serverUrl : `${baseUrlService}/geocodage/completion?`
+      },
+      prettifyResults : true,
+      maximumEntries : 5
     },
-    prettifyResults : true,
-    maximumEntries : 5
-  },
-  markerUrl : IconGeolocationSVG,
-  placeholder: "Rechercher un lieu...",
-};
+    geocodeOptions : {
+      serviceOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`
+      }
+    },
+    markerUrl : IconGeolocationSVG,
+    placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+  };
+});
 
 const layerSwitcherOptions = {
   options: {
@@ -191,6 +208,9 @@ const reverseGeocodeOptions = {
   position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
+  reverseGeocodeOptions : {
+    serverUrl : `${baseUrlService}/geocodage/reverse`
+  }
 };
 
 const isocurveOptions = {
@@ -198,6 +218,9 @@ const isocurveOptions = {
   id: "13",
   gutter: false,
   listable: true,
+  isocurveOptions : {
+    serverUrl : `${baseUrlService}/navigation/isocurve`
+  }
 };
 
 const routeOptions = {
@@ -206,6 +229,9 @@ const routeOptions = {
   gutter: false,
   listable: true,
   prettifyCompute: true,
+  routeOptions : {
+    serverUrl : `${baseUrlService}/navigation/itineraire`
+  }
 };
 
 const measureLengthOptions = {
@@ -235,6 +261,11 @@ const mousePositionOptions = {
   gutter: false,
   listable: true,
   editCoordinates : true,
+  altitude : {
+    serviceOptions : {
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
+    }
+  },
   // On ajoute les systemes UTM pour les territoires
   systems : [
     {
@@ -380,6 +411,9 @@ const elevationPathOptions = {
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
+  elevationPathOptions : {
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
+  }
 };
 
 const layerImportOptions = {
@@ -719,6 +753,8 @@ onMounted(() => {
 .position-container-top-left .gpf-panel,
 .position-container-bottom-left .gpf-panel {
   left: $widget-btn-size + $gap !important;
+  top: $widget-btn-size + $gap !important;
+  max-height: calc(100cqb - $widget-btn-size - $gap * 3) !important;
 }
 .position-container-top-right .gpf-panel,
 .position-container-bottom-right .gpf-panel {

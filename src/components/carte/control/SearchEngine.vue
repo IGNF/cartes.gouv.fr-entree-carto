@@ -49,7 +49,7 @@ const advancedSearchEngineOptions = computed(() => {
 });
 
 // const searchEngineAdvanced = ref(markRaw(new SearchEngineAdvanced(advancedSearchEngineOptions.value)));
-const searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
+let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
   if (props.visibility) {
@@ -65,13 +65,13 @@ onMounted(() => {
 })
 
 onBeforeUpdate(() => {
-  if (!props.visibility) {
-    map.removeControl(searchEngineAdvanced.value);
-  }
+  map.removeControl(searchEngineAdvanced.value);
 })
 
 onUpdated(() => {
   if (props.visibility) {
+    // cree un nouveau searchengine quand les props changent (label)
+    searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
     map.addControl(searchEngineAdvanced.value);
   }
 })

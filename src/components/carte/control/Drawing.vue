@@ -151,6 +151,16 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
 });
 
 /**
+ * @event drawing:close
+ * @description Evenement pour fermer le controle de dessin
+ */
+emitter.addEventListener("drawing:close", () => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(true);
+  }
+});
+
+/**
  * @event document:restore
  * @description Evenement pour restaurer un document temporaire déclenché 
  * par la demande de connexion réussie
@@ -202,6 +212,30 @@ const restoreTemporaryDocument = (payload) => {
       message: t.drawing.restore_failed
     });
   });
+};
+
+const saveTemporaryDocument = (payload) => {
+  if (!payload) {
+    return;
+  }
+  if (!payload.type) {
+    var id = payload.layer.gpResultLayerId.toLowerCase();
+    var type = id.split(':')[0];
+    payload.type = type.replace("layer", ""); // ex. drawing, import, bookmark...
+  }
+  // stockage temporaire dans le localStorage
+  // car l'utilisateur demande une sauvegarde sans etre authentifié !
+  if (payload.layer) {
+    serviceStore.setAuthentificateSyncNeeded(true);
+    appStore.setDocumentTemporary(JSON.stringify({
+      content : payload.content,
+      name : payload.name,
+      description : payload.description,
+      format : payload.format,
+      target : payload.target,
+      type : payload.type
+    }));
+  }
 };
 
 onMounted(() => {
@@ -268,6 +302,15 @@ onBeforeUpdate(() => {
 const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
+    if (!service.authenticated) {
+      saveTemporaryDocument({
+        content : drawing.value.exportFeatures(),
+        name : drawing.value.getExportName(),
+        description : "",
+        format : drawing.value.getExportFormat(),
+        layer : drawing.value.getLayer(),
+      });
+    }
     // dissociation de la couche du widget 
     // pour permettre une autre saisie dans 
     // une autre couche
@@ -332,17 +375,7 @@ const onSaveVector = (e) => {
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (bSaveDocumentTemporary) {
-    if (data.layer) {
-      serviceStore.setAuthentificateSyncNeeded(true);
-      appStore.setDocumentTemporary(JSON.stringify({
-        content : data.content,
-        name : data.name,
-        description : data.description,
-        format : data.format,
-        target : data.target,
-        type : data.type
-      }));
-    }
+    saveTemporaryDocument(data);
     return; // pas plus loin...
   }
 
