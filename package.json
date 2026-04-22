@@ -1,7 +1,7 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.16-3-hotfix-iti-iso",
+  "version": "1.0.16-4-hotfix-build-purgecss",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
   "date": "22/04/2026",
   "directories": {},
