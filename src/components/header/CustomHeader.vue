@@ -2,7 +2,7 @@
 import { useDomStore } from "@/stores/domStore";
 import { useHeaderParams } from '@/composables/headerParams';
 import { useMatchMedia } from '@/composables/matchMedia';
-
+import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
 import CustomFooter from '@/components/footer/CustomFooter.vue';
 import CustomNavigation from '@/components/header/CustomNavigation.vue';
 
@@ -59,7 +59,7 @@ headerParams.value.quickLinks = [
         label="Menu principal"
         :nav-items="headerParams.afterQuickLinks"
       />
-      <CustomFooter v-if="mobileScreen" />
+      <CgfrFooter v-if="mobileScreen" />
     </template>
   </DsfrHeader>
 </template>
