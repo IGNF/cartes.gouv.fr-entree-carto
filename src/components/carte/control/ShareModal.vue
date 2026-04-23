@@ -70,6 +70,11 @@ const shareNetworks = computed(() => {
       "name": "instagram",
       "label": "Partager sur Instagram",
       "url": contacts.networks.instagram
+    },
+    {
+      "name": "bluesky",
+      "label": "Partager sur Bluesky",
+      "url": "https://bsky.app/intent/compose?text=" + mapStore.permalink
     }
   ]
 });
