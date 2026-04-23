@@ -34,6 +34,7 @@ Corrections UI variées, amélioration de certaines performances de rendu.
   - LayerSwitcher : la largeur des panel est forcée (#1008)
   - Cartalogue : correction du scoll en mode mobile (#1008)
   - Panels: les panels des widgets de gauche sont positionnés sous la recherche (#1015)
+  - Panels: fixe un scroll sur la légende
   - Espace Personnel : Les dessin sont conservés dans le localStorage quand on ferme le widget de dessin et non perdus en mode déconnecté (#1019)
   - Itinéraire/Isochrone(HOTFIX) : répare l'interface des widgets itinéraire et isochrone
   
