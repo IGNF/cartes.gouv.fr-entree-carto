@@ -20,7 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat, toLonLat, transform } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -34,8 +34,6 @@ const props = defineProps({
     type: String,
     default: 'mainMap'
   },
-  zoom : Number,
-  center : Array,
 })
 
 /**
@@ -57,13 +55,13 @@ const map = new Map({
     })
   ]),
   view: new View({
-    zoom: props.zoom,
-    center: fromLonLat(props.center),
+    zoom: mapStore.zoom,
+    center: fromLonLat(mapStore.center), // 3857
     minZoom : 0,
     maxZoom : 21,
     projection : "EPSG:3857"
   }),
-})
+});
 
 /**
  * INFO
@@ -106,21 +104,38 @@ map.on('loadend', () => {
   
   endLoading();
 });
+
+let updateMapView = () => {
+  let view = map.getView();
+  let center = view.getCenter(); // 3857
+  mapStore.x = center[0]; // 3857
+  mapStore.y = center[1]; // 3857
+
+  let coordinate = toLonLat(center); // 4326
+  mapStore.lon = coordinate[0]; // 4326
+  mapStore.lat = coordinate[1]; // 4326
+
+  mapStore.zoom = view.getZoom();
+}
+
 /**
  * abonnement à l'evenement 'moveend' de la map
  * pour mise à jour du centre de la carte
  */
-map.on("moveend", (e) => {
-  let view = map.getView();
-  let center = view.getCenter();
-  mapStore.x = center[0];
-  mapStore.y = center[1];
+map.on("moveend", () => {
+  updateMapView();
+});
 
-  var coordinate = toLonLat(center);
-  mapStore.lon = coordinate[0];
-  mapStore.lat = coordinate[1];
-
-  mapStore.zoom = view.getZoom();
+watch(() => mapStore.isPlanisphereMode, (isPlanisphereMode) => {
+  if (isPlanisphereMode) {
+    map.setTarget(null);
+  } else {
+    let view = map.getView();
+    view.setCenter(fromLonLat(mapStore.center));
+    view.setZoom(mapStore.zoom);
+    map.setTarget(mapRef.value);
+    setTimeout(() => updateSize, 0);
+  }
 })
 
 provide(props.mapId, map)
@@ -130,7 +145,11 @@ onMounted(() => {
   // On déclenche l'ecriture dans le dom
   
   CRS.loadByDefault();
-  map.setTarget(mapRef.value)
+  if (mapStore.isPlanisphereMode) {
+    map.setTarget(null);
+  } else {
+    map.setTarget(mapRef.value);
+  }
   
   // On ajoute une option d'accessibilité
   const canvas = mapRef.value.getElementsByTagName('canvas')

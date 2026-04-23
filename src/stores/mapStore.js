@@ -22,7 +22,8 @@ const DEFAULT = {
   Y: 5859851.607344459,
   LON: 2.602777, // informatif
   LAT: 46.493888, // informatif
-  ZOOM: 6
+  ZOOM: 6,
+  PLANISPHERE_ZOOM: 4.5,
 }
 
 /**
@@ -220,7 +221,7 @@ export const useMapStore = defineStore('map', () => {
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
   var geolocation = useStorage(ns('geolocation'), "");
   var territories = useStorage(ns('territories'), ""); // stringified json !
-  
+
   // INFO
   // cette valeur devrait toujours être reinitilisée à false
   var noLoginInformation = useStorage(ns('noLoginInformation'), false);
@@ -281,6 +282,8 @@ export const useMapStore = defineStore('map', () => {
   var center = computed(() => {
     return [lon.value.toFixed(6), lat.value.toFixed(6)];
   });
+
+  let isPlanisphereMode = computed(() => zoom.value <= DEFAULT.PLANISPHERE_ZOOM);
 
   ////////////////////
   // objets complexes
@@ -644,6 +647,7 @@ export const useMapStore = defineStore('map', () => {
     y,
     lon,
     lat,
+    isPlanisphereMode,
     permalink,
     permalinkShare,
     geolocation,

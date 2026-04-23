@@ -21,6 +21,14 @@
     </Modal>
 
     <Modal
+      v-if="modals.isOpen('planisphere')"
+      name="planisphere"
+      title="Mode planisphère"
+    >
+      <ModalPlanisphere />
+    </Modal>
+
+    <Modal
       v-if="modals.isOpen('welcome')"
       name="welcome"
       size="lg"
@@ -50,6 +58,7 @@
 <script setup>
 import Modal from '@/components/modals/Modal.vue';
 import ModalConsent from '@/components/modals/ModalConsent.vue';
+import ModalPlanisphere from '@/components/modals/ModalPlanisphere.vue';
 import ModalTheme from '@/components/modals/ModalTheme.vue';
 import ModalWelcome from '@/components/modals/ModalWelcome.vue';
 
