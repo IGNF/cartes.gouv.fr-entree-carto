@@ -14,6 +14,7 @@
 import { nextTick } from "vue";
 
 import Map from '@/components/carte/Map.vue'
+import Planisphere from '@/components/carte/Planisphere.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
@@ -101,8 +102,6 @@ onMounted(() => {
     ref="refMap"
     class="map"
     :map-id="mainMap"
-    :center="mapStore.center"
-    :zoom="mapStore.zoom"
   >
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
@@ -118,6 +117,7 @@ onMounted(() => {
       @ready="onLayersReady"
     />
   </Map>
+  <Planisphere />
 </template>
 
 <style scoped>
