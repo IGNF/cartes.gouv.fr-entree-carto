@@ -83,6 +83,7 @@ declare module 'vue' {
     ModalWelcome: typeof import('./components/modals/ModalWelcome.vue')['default']
     MousePosition: typeof import('./components/carte/control/MousePosition.vue')['default']
     OverviewMap: typeof import('./components/carte/control/OverviewMap.vue')['default']
+    Panoramax: typeof import('./components/carte/control/Panoramax.vue')['default']
     Patience: typeof import('./components/utils/Patience.vue')['default']
     Print: typeof import('./components/carte/control/Print.vue')['default']
     PrintLayers: typeof import('./components/carte/Layer/PrintLayers.vue')['default']
