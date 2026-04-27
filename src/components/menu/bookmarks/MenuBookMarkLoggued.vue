@@ -145,7 +145,7 @@ onUnmounted(() => {
 <template>
   <div
     v-if="isLoading"
-    class="patience-container"
+    class="loading-container"
   >
     <p class="fr-text fr-mt-2w">
       Chargement des enregistrements...
@@ -170,7 +170,7 @@ onUnmounted(() => {
     >
       Terminé !
     </p>
-    <Patience class="loader" />
+    <Patience />
   </div>
   <div v-else-if="documentsIsEmpty">
     <!-- Mode connecté sans documents dans l'espace personnel -->
@@ -185,7 +185,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.patience-container {
+.loading-container {
   width: 100%;
   height: unset;
   display: flex;
@@ -207,10 +207,5 @@ onUnmounted(() => {
   margin: 0 0 0.5rem;
   color: var(--text-title-grey);
   font-weight: 700;
-}
-.loader {
-  width: 80px;
-  height: 80px;
-  left: initial;
 }
 </style>
