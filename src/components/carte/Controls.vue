@@ -115,7 +115,7 @@ const searchEngineOptions = computed(() => {
       prettifyResults : true,
       maximumEntries : 5
     },
-    geocodeOptions : {
+    searchOptions : {
       serviceOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`
       }
