@@ -35,8 +35,11 @@ Corrections UI variées, amélioration de certaines performances de rendu.
   - Cartalogue : correction du scoll en mode mobile (#1008)
   - Panels: les panels des widgets de gauche sont positionnés sous la recherche (#1015)
   - Espace Personnel : Les dessin sont conservés dans le localStorage quand on ferme le widget de dessin et non perdus en mode déconnecté (#1019)
-  - Itinéraire/Isochrone(HOTFIX) : répare l'interface des widgets itinéraire et isochrone (#1013, #1039)
+  - Itinéraire/Isochrone(HOTFIX) : répare l'interface des widgets itinéraire et isochrone
+  - Panels(HOTFIX): fixe un scroll sur la légende (#1041)
+  - Panels(HOTFIX): fixe la largeur du sous panel Infos de LayerSwitcher (#1041)
   - Isochrone(HOTFIX) : répare l'appel au service d'isochrone depuis le widget du même nom (#1045)
+
   
 #### 🔒 [Sécurité]
 
