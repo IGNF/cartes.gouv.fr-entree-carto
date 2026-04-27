@@ -45,7 +45,6 @@ import { CgfrModalCookies, CgfrModalTheme } from 'cartes.gouv.fr-vue-components'
 
 import Modal from '@/components/modals/Modal.vue';
 import ModalConsent from '@/components/modals/ModalConsent.vue';
-import ModalTheme from '@/components/modals/ModalTheme.vue';
 import ModalWelcome from '@/components/modals/ModalWelcome.vue';
 
 import { useAppStore } from '@/stores/appStore';
