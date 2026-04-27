@@ -3,7 +3,6 @@ import { useDomStore } from "@/stores/domStore";
 import { useHeaderParams } from '@/composables/headerParams';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
-import CustomFooter from '@/components/footer/CustomFooter.vue';
 import CustomNavigation from '@/components/header/CustomNavigation.vue';
 
 const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
