@@ -14,11 +14,15 @@
   
 #### 🔨 [Evolution]
 
+  - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
 
 #### 🐛 [Correction]
+
+  - Impression : correction de la mise en page de l'impression en cas de titre long (#1043)
   
 #### 🔒 [Sécurité]
 
