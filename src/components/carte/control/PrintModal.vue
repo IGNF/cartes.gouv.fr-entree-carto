@@ -269,7 +269,8 @@ function exportMap() {
     drawTitle,
     drawScale,
     printTitle: printTitle.value,
-    refMap: refMap.value
+    refMap: refMap.value,
+    mapTitleElement: mapTitle.value
   })
 }
 
@@ -307,7 +308,7 @@ const exportPDF = () => {
     // conversion mm vers px doit passer par une proportion car coeffPX2MM pas assez précis
     titleCanvas.height = (titleHeightMM.value / mapMMDimension.value.height) * canvas.height;
     let ctxTitle = titleCanvas.getContext('2d');
-    drawTitle(ctxTitle, titleCanvas.height, titleCanvas.width, mapMMDimension.value.width - 2 * margin.value, printTitle.value)
+    drawTitle(ctxTitle, titleCanvas.height, titleCanvas.width, printTitle.value, mapTitle.value)
     refMap.value.mapRef.getElementsByClassName("ol-overlaycontainer")[0].insertAdjacentElement('beforebegin', titleCanvas)
     printPreview.value.append(titleCanvas)
     let imgTitle = titleCanvas.toDataURL('image/png')
@@ -327,7 +328,8 @@ function exportPNG({
   drawTitle,
   drawScale,
   printTitle,
-  refMap
+  refMap,
+  mapTitleElement
 }) {
   const pxPerMM = canvasMap.width / mapMMDimension.width;
 
@@ -359,8 +361,8 @@ function exportPNG({
       ctx,
       titlePxHeight,
       canvasMap.width,
-      mapMMDimension.width - 2 * margin,
-      printTitle
+      printTitle,
+      mapTitleElement
     );
     ctx.restore();
   }
