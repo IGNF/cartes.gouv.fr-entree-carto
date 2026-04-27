@@ -38,6 +38,8 @@ Corrections UI variées, amélioration de certaines performances de rendu.
   - Itinéraire/Isochrone(HOTFIX) : répare l'interface des widgets itinéraire et isochrone
   - Panels(HOTFIX): fixe un scroll sur la légende (#1041)
   - Panels(HOTFIX): fixe la largeur du sous panel Infos de LayerSwitcher (#1041)
+  - Isochrone(HOTFIX) : répare l'appel au service d'isochrone depuis le widget du même nom (#1045)
+
   
 #### 🔒 [Sécurité]
 

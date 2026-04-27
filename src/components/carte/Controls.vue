@@ -219,7 +219,7 @@ const isocurveOptions = {
   gutter: false,
   listable: true,
   isocurveOptions : {
-    serverUrl : `${baseUrlService}/navigation/isocurve`
+    serverUrl : `${baseUrlService}/navigation/isochrone`
   }
 };
 
