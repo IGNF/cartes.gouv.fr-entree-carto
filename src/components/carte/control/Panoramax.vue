@@ -5,6 +5,9 @@ import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
+import "@panoramax/web-viewer/build/photoviewer.js";
+import "@panoramax/web-viewer/build/photoviewer.css";
+
 import { Panoramax } from 'geopf-extensions-openlayers';
 
 // lib notification

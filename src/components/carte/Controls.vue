@@ -460,6 +460,19 @@ const panoramaxOptions = {
   position: useControlsExtensionPosition().panoramaxOptions,
   gutter: true,
   listable: true,
+  auto : false,
+  visualizationWindow : {
+    size : "fullscreen-map"
+  },
+  viewer : {
+    "widgets" : [
+      "btnClose",
+      "btnZoom",
+      "btnFullscreen",
+      // "cmpPictureLegend",
+      "cmpMinimap",
+    ]
+  }
 };
 
 onMounted(() => {
