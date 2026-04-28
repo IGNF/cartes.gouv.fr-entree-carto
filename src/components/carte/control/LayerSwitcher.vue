@@ -554,12 +554,17 @@ const onClickEditLayer = (e) => {
 .gpf-panel[id^="GPlayersList"] ~ .gpf-panel {
   right: calc(($widget-panel-width-lg - $widget-panel-multiple-width-lg) / 2) + $widget-btn-size + $gap !important;
   top: 4rem !important;
-  min-width: $widget-panel-multiple-width-lg !important;
-  max-width: $widget-panel-multiple-width-lg !important;
+  width: $widget-panel-multiple-width-lg;
+  max-width: min($widget-panel-multiple-width-lg, calc(100cqi - $widget-btn-size * 2 - $gap * 4 - ($widget-panel-width-lg - $widget-panel-multiple-width-lg))) !important;
 }
 // utilise un fond clair dans le panel
 .gpf-panel__content[id^="GPlayerSwitcher_ID_"][aria-current="true"],
 .gpf-panel__content[id^="GPlayerSwitcher_ID_"]:hover {
   background: var(--background-default-grey);
+}
+// panels spécifiques
+div[id^="GPlayerInfoContent"] {
+  width: initial;
+  padding: 10px;
 }
 </style>

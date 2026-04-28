@@ -47,7 +47,7 @@ export const getLayersFromPermalink = (url) => {
   }
   // HACK : on force un rafraichissement de la carte
   setTimeout(() => {
-    var map = store.map;
+    var map = store.getMap();
     map.getView().setZoom(store.zoom);
     map.getView().setCenter([store.x, store.y]);
   },100);
