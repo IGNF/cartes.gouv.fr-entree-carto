@@ -122,6 +122,12 @@ const searchEngineOptions = computed(() => {
     },
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+    advancedSearchOptions : {
+      searchOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`,
+        wfsServerUrl : `${baseUrlService}/wfs/ows?`,
+      }
+    }
   };
 });
 
