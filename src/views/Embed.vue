@@ -34,8 +34,8 @@ const selectedLayers = computed(() => {
 
 // Contrôles fixés par defaut
 const selectedControls = [
+  "LayerSwitcher",
   "ScaleLine", 
-  // "OverviewMap",
   "Zoom"
 ];
 
