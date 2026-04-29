@@ -119,7 +119,9 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
-          localStorage.removeItem(key);
+          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // la suppression du localStorage est répercutée sur tous les onglets !
+          // localStorage.removeItem(key);
         }
       });
     }
