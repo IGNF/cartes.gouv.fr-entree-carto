@@ -39,7 +39,7 @@ const log = useLogger();
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
-const insee = shallowRef(new InseeAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'INSEE CODE' }));
+const insee = shallowRef(new InseeAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Code INSEE' }));
 const location = shallowRef(new LocationAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Lieux et toponymes' }));
 const coordinates = shallowRef(new CoordinateAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Coordonnées' }));
 const parcels = shallowRef(new ParcelAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Parcelles cadastrales' }));
