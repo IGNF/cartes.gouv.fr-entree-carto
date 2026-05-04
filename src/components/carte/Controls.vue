@@ -467,7 +467,7 @@ onMounted(() => {
 -->
 <template>
   <CatalogManager
-    :visibility="true"
+    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
     :analytic="false"
     :map-id="mapId"
   />
