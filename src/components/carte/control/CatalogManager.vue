@@ -132,6 +132,7 @@ const onCatalogLayerRemove = (e) => {
 .gpf-catalog-tabs-fixe,
 .gpf-catalog-tabs-fixe-with-bar {
   --tabs-height: 100% !important;
+  height: var(--tabs-height); // réapplique pour aider purgecss
 }
 #GPcatalogContainerTabs .fr-tabs__panel {
   height: initial;

@@ -225,7 +225,7 @@ const isocurveOptions = {
   gutter: false,
   listable: true,
   isocurveOptions : {
-    serverUrl : `${baseUrlService}/navigation/isocurve`
+    serverUrl : `${baseUrlService}/navigation/isochrone`
   }
 };
 
@@ -473,7 +473,7 @@ onMounted(() => {
 -->
 <template>
   <CatalogManager
-    :visibility="true"
+    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
     :analytic="false"
     :map-id="mapId"
   />
@@ -772,9 +772,6 @@ onMounted(() => {
 }
 .gpf-panel__body_ls {
   max-height: initial !important;
-}
-.gpf-panel__content {
-  overflow: auto;
 }
 @include max(sm) {
   .gpf-panel {
