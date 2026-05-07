@@ -76,5 +76,82 @@ onUpdated(() => {
 </template>
 
 <style lang="scss">
+@use "@/assets/variables" as *;
 
+.gpf-widget[id^="GPpanoramax-"] {
+  // toujours en dernier dans la liste (tout en bas)
+  order: 1;
+}
+
+// double la classe (hack pour cascade)
+.gpf-panel.gpf-panel[id^="GPpanoramaxPanelButtons-"] {
+  top: initial !important;
+  bottom: 0 !important;
+  box-shadow: none;
+
+  .gpf-btn {
+    height: $widget-btn-size;
+    // cree l'effet du bouton
+    @include widget-btn-style;
+
+    &:not(:disabled):hover {
+      @include widget-btn-style-hover;
+    }
+    &[aria-pressed="true"],
+    &[aria-pressed="true"]:not(:disabled):hover {
+      @include widget-btn-style-active;
+    }
+  }
+}
+
+@include max(sm) {
+  // selecteur a rallonge obligatoire pour surclasser le style
+  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel[id^="GPpanoramaxPanelButtons-"] {
+    top: initial !important;
+    bottom: 0 !important;
+    left: $widget-btn-size + $gap !important;
+  }
+}
+
+.gpf-panel.gpf-panel[id^="GPpanoramaxPanelOptions-"] {
+  top: initial !important;
+  bottom: $widget-btn-size + $gap !important;
+}
+
+@include max(sm) {
+  // selecteur a rallonge obligatoire pour surclasser le style
+  .position .gpf-widget-button > button[aria-pressed] ~ form.gpf-panel[id^="GPpanoramaxPanelOptions-"] {
+    top: initial !important;
+    bottom: -$gap !important;
+    left: -$gap !important;
+    right: 0 !important;
+  }
+}
+
+
+.gpf-panel.gpf-panel[id^="GPpanoramaxPanelViewer-"] {
+  inset: 0px !important;
+  max-height: initial !important;
+  height: auto !important;
+  width: auto !important;
+  max-width: initial !important;
+
+  .gpf-panel__body {
+    max-height: initial !important;
+  }
+}
+
+@include max(sm) {
+  // selecteur a rallonge obligatoire pour surclasser le style
+  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel[id^="GPpanoramaxPanelViewer-"] {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+  }
+}
+
+// photo viewer au dessus
+.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax[aria-pressed="true"]) {
+  z-index: 3;
+}
 </style>
