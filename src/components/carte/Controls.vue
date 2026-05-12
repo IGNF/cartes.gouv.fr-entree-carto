@@ -458,6 +458,7 @@ const contextMenuOptions = computed(() => {
 const panoramaxOptions = {
   id: "23",
   position: useControlsExtensionPosition().panoramaxOptions,
+  panel: true,
   gutter: true,
   listable: true,
   auto : false,
@@ -469,10 +470,18 @@ const panoramaxOptions = {
       "btnClose",
       "btnZoom",
       "btnFullscreen",
-      // "cmpPictureLegend",
-      "cmpMinimap",
+      "cmpPictureLegend",
+      // "cmpMinimap",
     ]
-  }
+  },
+  buttonsWindow: {
+    hover: {
+      display: false,
+    },
+    background: {
+      display: false,
+    }
+  },
 };
 
 onMounted(() => {
