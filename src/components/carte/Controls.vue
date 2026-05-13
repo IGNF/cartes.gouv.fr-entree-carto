@@ -126,6 +126,7 @@ const searchEngineOptions = computed(() => {
       searchOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`,
         wfsServerUrl : `${baseUrlService}/wfs/ows?`,
+        geocodeGetCapabilitiesUrl : `${baseUrlService}/geocodage/getCapabilities`
       }
     }
   };
