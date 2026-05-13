@@ -141,7 +141,8 @@ const layerSwitcherOptions = {
     panel: true,
     counter: true,
     allowEdit: true,
-    allowGrayScale: true
+    allowGrayScale: true,
+    allowTooltips: true
   }
 };
 
