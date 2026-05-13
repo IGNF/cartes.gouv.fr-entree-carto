@@ -658,10 +658,10 @@ export function useControlsOptions () {
       position: useControlsExtensionPosition().overviewMapOptions,
       layers : [
         new GeoportalWMTS({
-          layer : "ORTHOIMAGERY.ORTHOPHOTOS",
+          layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
           configuration : {
-            ...dataStore.getLayerByName("HR.ORTHOIMAGERY.ORTHOPHOTOS", "WMTS"),
-            params : dataStore.getLayerParamsByName("HR.ORTHOIMAGERY.ORTHOPHOTOS", "WMTS")
+            ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+            params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
           }
         })
       ]
