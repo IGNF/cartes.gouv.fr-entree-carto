@@ -119,7 +119,7 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
-          localStorage.removeItem(key);
+          // localStorage.removeItem(key);
         }
       });
     }

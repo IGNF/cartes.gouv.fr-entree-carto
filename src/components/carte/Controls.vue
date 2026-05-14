@@ -471,7 +471,7 @@ const panoramaxOptions = {
       "btnZoom",
       "btnFullscreen",
       "cmpPictureLegend",
-      // "cmpMinimap",
+      "cmpMinimap"
     ]
   },
   buttonsWindow: {

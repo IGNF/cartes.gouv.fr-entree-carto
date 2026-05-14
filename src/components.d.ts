@@ -102,7 +102,6 @@ declare module 'vue' {
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
     TextCopyToClipboard: typeof import('./components/utils/TextCopyToClipboard.vue')['default']
     VIcon: typeof import('@gouvminint/vue-dsfr')['VIcon']
-    View: typeof import('./components/carte/View.vue')['default']
     Zoom: typeof import('./components/carte/control/Zoom.vue')['default']
   }
 }
