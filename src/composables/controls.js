@@ -229,7 +229,7 @@ export const useControls = {
     disable: false,
     analytic: true,
     default: true,
-    icon: "fr-icon-feedback-line"
+    icon: "gpf:panoramax"
   }
 }
 
@@ -447,11 +447,12 @@ export function useControlsMenuOptions() {
       icon: "ri:map-2-line"
     },
     {
-      label: 'Panoramax',
+      label: 'Visionneuse Panoramax',
       id: 'panoramax',
       name: useControls.Panoramax.id,
       disabled: useControls.Panoramax.disable,
-      icon: "ri:map-2-line",
+      hint: "Explorez les lieux photographiés et visionnez les photos",
+      icon: "gpf:panoramax",
       group: 'Affichage'
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
