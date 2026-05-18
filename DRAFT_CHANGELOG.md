@@ -15,6 +15,7 @@
 #### 🔨 [Evolution]
 
   - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
+  - Recherche : ajout d'une barre de séparataion entre la recherche simple et la recherche avancée
 
 #### 🔥 [Obsolète]
 
