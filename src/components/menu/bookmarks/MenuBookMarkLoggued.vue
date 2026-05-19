@@ -74,6 +74,14 @@ const IsEmpty = () => {
   return empty;
 };
 
+const hasInitializedAllCategories = () => {
+  if (!Array.isArray(service.labels) || service.labels.length === 0) {
+    return false;
+  }
+
+  return service.labels.every((label) => Array.isArray(service.documents?.[label]));
+};
+
 var toggle = ref(false);
 var documentsIsEmpty = computed(() => {
   // INFO
@@ -104,13 +112,21 @@ emitter.addEventListener("service:documents:completed", (payload) => {
   var loaded = Array.isArray(detail.data) ? detail.data.length : 0;
   var total = Number.isFinite(detail.total) ? detail.total : loaded;
 
-  documentsProgress.value = {
+  var nextProgress = {
     ...documentsProgress.value,
     [category]: {
       loaded,
       total
     }
   };
+
+  documentsProgress.value = nextProgress;
+
+  // Fallback: si l'evenement global loaded n'arrive pas, on sort du chargement
+  // une fois toutes les categories traitees.
+  if (Object.keys(nextProgress).length >= totalCategories.value) {
+    setLoadedWithDelay();
+  }
 });
 // INFO
 // abonnement à l'evenement du service afin de 
@@ -129,7 +145,7 @@ emitter.addEventListener("document:updated", () => {
 });
 
 onMounted(() => {
-  if (service.isAuthenticatedLocally() && !documentsIsEmpty.value) {
+  if (service.isAuthenticatedLocally() && (hasInitializedAllCategories() || !documentsIsEmpty.value)) {
     documentsLoadState.value = 'loaded';
   }
 })
