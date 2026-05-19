@@ -6,6 +6,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useRandomId } from "@gouvminint/vue-dsfr"
 import { useLogger } from 'vue-logger-plugin'
 import { useAuthentication } from '@/composables/useAuthentication';
+import { useServiceStore } from '@/stores/serviceStore';
 
 import CustomNavigationMenu from './CustomNavigationMenu.vue'
 
@@ -85,6 +86,7 @@ const checkTemporalDocument = () => {
   }
 }
 
+const serviceStore = useServiceStore();
 const { authenticated, checkAuthentication } = useAuthentication({
   onLogin: () => {
     checkTemporalDocument();
@@ -94,12 +96,13 @@ const { authenticated, checkAuthentication } = useAuthentication({
   }
 });
 
+
 onBeforeMount(() => {
   log.debug(`Navigation (${props.id}) before mount.`);
 });
 onMounted(() => {
   log.debug(`Navigation (${props.id}) mounted.`);
-  checkAuthentication();
+  checkAuthentication().then(() => serviceStore.setAuthentificated(authenticated.value));
 });
 onUnmounted(() => {
   // on s'assure d'enlever les events au unmount (même si c'est pas censé arriver)
