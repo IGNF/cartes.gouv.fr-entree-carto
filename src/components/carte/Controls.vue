@@ -100,6 +100,12 @@ if (!baseUrlService) {
   baseUrlService = "https://data.geopf.fr";
 }
 
+// FIXME : mauvais nom de resource alti en preprod
+var altiResource;
+if (baseUrlService === "https://data-pprd.priv.geopf.fr") {
+   altiResource = "rge_alti";
+}
+
 // liste des options pour les contrôles
 const searchEngineOptions = computed(() => {
   return {
@@ -271,7 +277,8 @@ const mousePositionOptions = {
   editCoordinates : true,
   altitude : {
     serviceOptions : {
-      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+      resource : altiResource
     }
   },
   // On ajoute les systemes UTM pour les territoires
@@ -420,7 +427,8 @@ const elevationPathOptions = {
   gutter: false,
   listable: true,
   elevationPathOptions : {
-    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`,
+    resource : altiResource
   }
 };
 
