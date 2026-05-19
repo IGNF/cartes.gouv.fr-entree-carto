@@ -12,13 +12,14 @@
 
 #### ✨ [Ajout]
   
-  - Footer : ajout d'un bandeau d'abonnement à la newsletetter cartes.gouv dans le footer (#1004)
+  - Footer : ajout d'un bandeau d'abonnement à la newsletter cartes.gouv dans le footer (#1004)
 
 #### 🔨 [Evolution]
 
   - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
   - Recherche : ajout d'une barre de séparataion entre la recherche simple et la recherche avancée (#1010)
   - Partage : le widget gestionnaire de couches et affiché dans les iframes à la place du widget catalogue (#1017)
+  - Deploiement : paramétrage de l'environnement géoplateforme utilisé par les services (#1034)
 
 #### 🔥 [Obsolète]
 
