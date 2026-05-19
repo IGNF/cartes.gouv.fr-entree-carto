@@ -6,6 +6,8 @@
 
 ### 🎉 Résumé
 
+Evolutions et corrections sur le partage, la barre de recherche et l'impression. Amélioration du paramétrage du déploiement de l'applicatif.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -17,7 +19,7 @@
 #### 🔨 [Evolution]
 
   - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
-  - Recherche : ajout d'une barre de séparataion entre la recherche simple et la recherche avancée (#1010)
+  - Recherche : ajout d'une barre de séparation entre la recherche simple et la recherche avancée (#1010)
   - Partage : le widget gestionnaire de couches et affiché dans les iframes à la place du widget catalogue (#1017)
   - Deploiement : paramétrage de l'environnement géoplateforme utilisé par les services (#1034)
 
