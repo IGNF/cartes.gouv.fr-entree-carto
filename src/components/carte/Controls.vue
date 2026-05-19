@@ -451,6 +451,7 @@ const contextMenuOptions = computed(() => {
   return {
     reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
     altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
     contextMenuItemsOptions : [
       {
         text : "Signaler une anomalie",

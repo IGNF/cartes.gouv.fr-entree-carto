@@ -703,7 +703,7 @@
         "https://cartes.gouv.fr/rechercher-une-donnee/dataset/IGNF_BD-ORTHO"
       ],
       "key": "HR.ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS",
-      "base": false
+      "base": true
     },
     "POI.MUSEUM$GEOPORTAIL:OGC:WMS": {
       "name": "POI.MUSEUM",
