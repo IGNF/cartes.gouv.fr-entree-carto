@@ -27,6 +27,7 @@ ARG SOURCE_MAP="false"
 
 RUN sed -i 's/https/http/' /etc/apk/repositories
 RUN apk add bash
+RUN apk add --no-cache git
 
 WORKDIR /app
 COPY . .

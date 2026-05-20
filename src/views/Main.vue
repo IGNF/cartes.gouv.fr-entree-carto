@@ -12,7 +12,7 @@ import NotificationClose from '@/icons/NotificationClose.vue'
 import Alerts from '@/components/modals/Alerts.vue'
 import Modals from '@/components/modals/Modals.vue'
 import CustomHeader from '@/components/header/CustomHeader.vue'
-import CustomFooter from '@/components/footer/CustomFooter.vue'
+import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
 
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'
@@ -103,12 +103,11 @@ onMounted(() => {
   <div class="futur-map-container Map">
     <router-view />
   </div>
-  
-  <CustomFooter
-    v-if="!mobileScreen && !isEmbedRoute"
-    compact
-    class="CustomFooter"
-  />
+
+  <div class="CustomFooter">
+  <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
+  </div>
+
 
   <Modals />
 </template>
@@ -146,6 +145,7 @@ body.modal-open {
 }
 .CustomFooter {
   grid-row: footer;
+  z-index: 10;
 }
 
 hr {

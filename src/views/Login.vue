@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const service = inject('services');
+const OAUTH_CALLBACK_URL_STORAGE_KEY = 'oauth2:callback-url';
 
 onMounted(() => {
   const queryString = location.search;
@@ -56,6 +57,8 @@ onMounted(() => {
   // Puis, on revient dans l'application !
   var value = 0;
   if (service.mode === "local" && code && session && state) {
+    // Preserve OAuth callback params in case routing rewrites the URL before token exchange.
+    sessionStorage.setItem(OAUTH_CALLBACK_URL_STORAGE_KEY, location.href);
     value = 1;
   } else if (service.mode === "remote" && auth !== null) {
     value = parseInt(auth, 10);

@@ -25,7 +25,11 @@ export default defineConfig({
     vue(),
     vueJsx(),
     htmlPurge({
-      safelist: [/^(?!fr-).*/], // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
+      safelist: [
+        /^(?!fr-).*/,  // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
+        /^fr-btn--/,   // préserver toutes les classes fr-btn-- (utilisées par DsfrShare avec ::before/::after)
+        /^fr-.+::/,    // préserver les sélecteurs avec pseudo-éléments
+      ],
       variables: true, // supprime les variables css inutilisées
     }),
     // INFO mode https
@@ -41,8 +45,6 @@ export default defineConfig({
         'vue',
         // @ts-expect-error
         'vue-router',
-        // @ts-expect-error
-        'vitest',
         // @ts-expect-error
         vueDsfrAutoimportPreset,
       ],
@@ -130,7 +132,7 @@ export default defineConfig({
     }
   },
   test: {
-    globals: true,
+    globals: false,
     environment: 'jsdom',
     setupFiles: ["tests/test/vitest.setup.js"],
     include: ["./tests/test/**/*.{test,spec}.{ts,js}"],

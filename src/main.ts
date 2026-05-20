@@ -2,6 +2,7 @@ import '@gouvfr/dsfr/dist/core/core.main.min.css'
 import '@gouvfr/dsfr/dist/component/component.main.min.css'
 import '@gouvfr/dsfr/dist/utility/utility.main.min.css'
 import '@gouvminint/vue-dsfr/styles'
+import 'cartes.gouv.fr-vue-components/dist/index.css'
 
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 

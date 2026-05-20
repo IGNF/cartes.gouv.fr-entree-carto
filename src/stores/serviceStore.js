@@ -12,12 +12,14 @@ export const useServiceStore = defineStore({
   id: 'service',
   state: () => ({
     connexion: {},
-    authentificateSyncNeeded: false
+    authentificateSyncNeeded: false,
+    authentificated : false
   }),
   getters: {
     // ex.
     // service: (state) => state.connexion
-    isAuthentificateSyncNeeded: (state) => state.authentificateSyncNeeded
+    isAuthentificateSyncNeeded: (state) => state.authentificateSyncNeeded,
+    isAuthentificated : (state) => state.authentificated
   },
   actions: {
     getService () {
@@ -32,6 +34,13 @@ export const useServiceStore = defineStore({
     },
     getAuthentificateSyncNeeded () {
       return this.authentificateSyncNeeded;
+    },
+    setAuthentificated (b) {
+      const value = Boolean(b);
+      this.authentificated = value;
+    },
+    getAuthentificated () {
+      return this.authentificated;
     }
   }
 });

@@ -119,6 +119,8 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
+          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // la suppression du localStorage est répercutée sur tous les onglets !
           // localStorage.removeItem(key);
         }
       });
@@ -292,7 +294,7 @@ export const useMapStore = defineStore('map', () => {
    * La liste des couches
    * ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
    */
-  var layers = useStorage(ns('layers'), DEFAULT.LAYERS);
+  var layers = useStorage(ns('layers'), DEFAULT.LAYERS, localStorage, { listenToStorageChanges: false });
   if (!layers.value) {
     var l = DEFAULT.LAYERS.split(",").filter(function (l) {
       return !!l;
@@ -312,7 +314,7 @@ export const useMapStore = defineStore('map', () => {
    * La liste des contrôles
    * ex. Isocurve(1)
    */
-  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
+  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS, localStorage, { listenToStorageChanges: false });
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
       return !!c;
@@ -334,7 +336,7 @@ export const useMapStore = defineStore('map', () => {
    *    visible=1&
    *    grayscale=0
    */
-  var bookmarks = useStorage(ns('bookmarks'), "");
+  var bookmarks = useStorage(ns('bookmarks'), "", localStorage, { listenToStorageChanges: false });
   if (!bookmarks.value) {
     bookmarks.value = "";
   } else {
