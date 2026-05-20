@@ -234,8 +234,21 @@ class ServiceLocal extends ServiceBase {
       this.authenticated = true;
       status = "login";
 
+      // Snapshot OAuth callback params to avoid races with router redirects
+      // that can remove code/state from window.location before token exchange.
+      const callbackUrlSnapshot = new URL(location.href);
+      const callbackState = urlParams.get('state');
+      if (callbackState && !callbackUrlSnapshot.searchParams.get('state')) {
+        callbackUrlSnapshot.searchParams.set('state', callbackState);
+      }
+
       try {
-        const token = await this.getAccessToken();
+        const token = await this.getAccessToken({
+          callbackUrl: callbackUrlSnapshot,
+          state: callbackState,
+          code,
+          session
+        });
         if (!token) {
           throw new Error('Token unavailable');
         }
@@ -438,9 +451,24 @@ class ServiceLocal extends ServiceBase {
    *    ...
    * }
   */
-  async getAccessToken () {
+  async getAccessToken (options = {}) {
+    const { callbackUrl, state, code, session } = options;
     const url = this.url.includes("login") ? this.url : this.url + "/login";
-    const urlParams = new URLSearchParams(location.search);
+    const resolvedCallbackUrl = callbackUrl
+      ? new URL(callbackUrl.toString())
+      : new URL(location.href);
+
+    if (code && !resolvedCallbackUrl.searchParams.get('code')) {
+      resolvedCallbackUrl.searchParams.set('code', code);
+    }
+    if (session && !resolvedCallbackUrl.searchParams.get('session_state')) {
+      resolvedCallbackUrl.searchParams.set('session_state', session);
+    }
+    if (state && !resolvedCallbackUrl.searchParams.get('state')) {
+      resolvedCallbackUrl.searchParams.set('state', state);
+    }
+
+    const urlParams = new URLSearchParams(resolvedCallbackUrl.search);
     const stateFromRedirect = urlParams.get('state');
     const storedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY);
     const storedStateDecrypted = storedState ? await decryptValue(storedState) : null;
@@ -461,7 +489,7 @@ class ServiceLocal extends ServiceBase {
     }
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
-      location,
+      resolvedCallbackUrl,
       {
         redirectUri: url,
         state: expectedState || undefined,
