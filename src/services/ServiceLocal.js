@@ -18,6 +18,7 @@ const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 12 * 60 * 60 * 1000;
 
 const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
 const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
+const OAUTH_CALLBACK_URL_STORAGE_KEY = "oauth2:callback-url";
 
 function buildOAuthState () {
   if (window.crypto && window.crypto.getRandomValues) {
@@ -454,18 +455,31 @@ class ServiceLocal extends ServiceBase {
   async getAccessToken (options = {}) {
     const { callbackUrl, state, code, session } = options;
     const url = this.url.includes("login") ? this.url : this.url + "/login";
-    const resolvedCallbackUrl = callbackUrl
+    let resolvedCallbackUrl = callbackUrl
       ? new URL(callbackUrl.toString())
       : new URL(location.href);
 
-    if (code && !resolvedCallbackUrl.searchParams.get('code')) {
-      resolvedCallbackUrl.searchParams.set('code', code);
+    const storedCallbackUrlRaw = sessionStorage.getItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+    if ((!code || !resolvedCallbackUrl.searchParams.get('code')) && storedCallbackUrlRaw) {
+      try {
+        resolvedCallbackUrl = new URL(storedCallbackUrlRaw);
+      } catch {
+        sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+      }
     }
-    if (session && !resolvedCallbackUrl.searchParams.get('session_state')) {
-      resolvedCallbackUrl.searchParams.set('session_state', session);
+
+    const resolvedCode = code || this.code || resolvedCallbackUrl.searchParams.get('code');
+    const resolvedSession = session || this.session || resolvedCallbackUrl.searchParams.get('session_state');
+    const resolvedStateOption = state || resolvedCallbackUrl.searchParams.get('state');
+
+    if (resolvedCode && !resolvedCallbackUrl.searchParams.get('code')) {
+      resolvedCallbackUrl.searchParams.set('code', resolvedCode);
     }
-    if (state && !resolvedCallbackUrl.searchParams.get('state')) {
-      resolvedCallbackUrl.searchParams.set('state', state);
+    if (resolvedSession && !resolvedCallbackUrl.searchParams.get('session_state')) {
+      resolvedCallbackUrl.searchParams.set('session_state', resolvedSession);
+    }
+    if (resolvedStateOption && !resolvedCallbackUrl.searchParams.get('state')) {
+      resolvedCallbackUrl.searchParams.set('state', resolvedStateOption);
     }
 
     const urlParams = new URLSearchParams(resolvedCallbackUrl.search);
@@ -487,6 +501,10 @@ class ServiceLocal extends ServiceBase {
     if (!codeVerifier) {
       throw new Error('Missing PKCE code verifier');
     }
+
+    if (!resolvedCallbackUrl.searchParams.get('code')) {
+      throw new Error('Missing authorization code in callback URL');
+    }
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
       resolvedCallbackUrl,
@@ -507,6 +525,7 @@ class ServiceLocal extends ServiceBase {
       sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${storedState}`);
     }
     sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
+    sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
     localStorage.removeItem("codeVerifier");
 
     var store = useServiceStore();
