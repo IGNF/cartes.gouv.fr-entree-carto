@@ -125,8 +125,9 @@ var GetDocuments = {
     var storage = store.getService();
     var document = storage.documents.service.find((doc) => doc._id === id);
 
+    // on est forcement en "external" !
     if (document.labels.includes("wmts") || document.labels.includes("wms")) {
-      // on est forcement en "external" !
+      document.labels.push("json"); // forcer le format json pour les services classiques
       promise = new Promise((resolve, reject) => {
         resolve(data); // retourne un json de parametres !
       });

@@ -100,6 +100,12 @@ if (!baseUrlService) {
   baseUrlService = "https://data.geopf.fr";
 }
 
+// FIXME : mauvais nom de resource alti en preprod
+var altiResource;
+if (baseUrlService === "https://data-pprd.priv.geopf.fr") {
+   altiResource = "rge_alti";
+}
+
 // liste des options pour les contrôles
 const searchEngineOptions = computed(() => {
   return {
@@ -115,13 +121,20 @@ const searchEngineOptions = computed(() => {
       prettifyResults : true,
       maximumEntries : 5
     },
-    geocodeOptions : {
+    searchOptions : {
       serviceOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`
       }
     },
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+    advancedSearchOptions : {
+      searchOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`,
+        wfsServerUrl : `${baseUrlService}/wfs/ows?`,
+        geocodeGetCapabilitiesUrl : `${baseUrlService}/geocodage/getCapabilities`
+      }
+    }
   };
 });
 
@@ -134,7 +147,8 @@ const layerSwitcherOptions = {
     panel: true,
     counter: true,
     allowEdit: true,
-    allowGrayScale: true
+    allowGrayScale: true,
+    allowTooltips: true
   }
 };
 
@@ -263,7 +277,8 @@ const mousePositionOptions = {
   editCoordinates : true,
   altitude : {
     serviceOptions : {
-      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+      resource : altiResource
     }
   },
   // On ajoute les systemes UTM pour les territoires
@@ -412,7 +427,8 @@ const elevationPathOptions = {
   gutter: false,
   listable: true,
   elevationPathOptions : {
-    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`,
+    resource : altiResource
   }
 };
 
@@ -433,6 +449,9 @@ const reportingOptions = {
 
 const contextMenuOptions = computed(() => {
   return {
+    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
+    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
     contextMenuItemsOptions : [
       {
         text : "Signaler une anomalie",
@@ -467,7 +486,7 @@ onMounted(() => {
 -->
 <template>
   <CatalogManager
-    :visibility="true"
+    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
     :analytic="false"
     :map-id="mapId"
   />

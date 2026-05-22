@@ -18,6 +18,7 @@ const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 12 * 60 * 60 * 1000;
 
 const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
 const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
+const OAUTH_CALLBACK_URL_STORAGE_KEY = "oauth2:callback-url";
 
 function buildOAuthState () {
   if (window.crypto && window.crypto.getRandomValues) {
@@ -208,24 +209,24 @@ class ServiceLocal extends ServiceBase {
 
   async resolveAccessStatus () {
     const emitter = this.getEmitter ? this.getEmitter() : null;
-    var store = useServiceStore();
+    const store = useServiceStore();
 
     // si IAM, on récupère les informations dans l'url
-    const queryString = location.search;
-    const urlParams = new URLSearchParams(queryString);
+    const urlParams = new URLSearchParams(location.search);
     // parametres
-    var code = urlParams.get('code');
-    var session = urlParams.get('session_state');
-    var error = urlParams.get('error');
+    const code = urlParams.get('code');
+    const session = urlParams.get('session_state');
+    const error = urlParams.get('error');
+    let status = "no-auth";
 
-    // INFO
-    // on retourne une promise avec le statut 
-    // - login
-    // - logout
-    // - unknow
-    var promise = null;
-
-    var status = "no-auth";
+    // On traite l'erreur IAM en priorité.
+    if (error) {
+      this.error = {
+        name: error,
+        message: urlParams.get('error_description')
+      };
+      throw this.error;
+    }
 
     // IAM login local
     if (code && session) {
@@ -233,56 +234,66 @@ class ServiceLocal extends ServiceBase {
       this.code = code;
       this.authenticated = true;
       status = "login";
-      // on demande un token...
-      // et, ensuite, on met en place une serie de promise chainées :
-      // - getUserMe
-      // - getDocuments
-      promise = this.getAccessToken()
-        .then((token) => {
-          if (token) {
-            // on execute une autre promise chainée
-            // ex. les informations de l'utilisateur !
-            return this.getUserMe()
-            .then((user) => {
-              if (!user) {
-                throw new Error('User profile unavailable from API');
-              }
-              console.debug(user);
-              if (emitter) {
-                emitter.dispatchEvent("service:user:loaded", {
-                  bubbles : true,
-                  detail : user
-                });
-              }
-              // on execute une autre promise chainée
-              // ex. les favoris !
-              return this.getDocuments()
-              .then((documents) => {
-                if (emitter) {
-                  emitter.dispatchEvent("service:documents:loaded", {
-                    bubbles : true,
-                    detail : documents
-                  });
-                }
-              })
-              .catch((e) => {
-                throw new Error('Error to get documents (' + e.message + ')');
-              }) 
-            })
-            .catch((e) => {
-              throw new Error('Error to get user info (' + e.message + ')');
-            })
+
+      // Snapshot OAuth callback params to avoid races with router redirects
+      // that can remove code/state from window.location before token exchange.
+      const callbackUrlSnapshot = new URL(location.href);
+      const callbackState = urlParams.get('state');
+      if (callbackState && !callbackUrlSnapshot.searchParams.get('state')) {
+        callbackUrlSnapshot.searchParams.set('state', callbackState);
+      }
+
+      try {
+        const token = await this.getAccessToken({
+          callbackUrl: callbackUrlSnapshot,
+          state: callbackState,
+          code,
+          session
+        });
+        if (!token) {
+          throw new Error('Token unavailable');
+        }
+
+        let user;
+        try {
+          user = await this.getUserMe();
+        } catch (e) {
+          throw new Error('Error to get user info (' + e.message + ')');
+        }
+
+        if (!user) {
+          throw new Error('User profile unavailable from API');
+        }
+
+        console.debug(user);
+        if (emitter) {
+          emitter.dispatchEvent("service:user:loaded", {
+            bubbles : true,
+            detail : user
+          });
+        }
+
+        try {
+          const documents = await this.getDocuments();
+          if (emitter) {
+            emitter.dispatchEvent("service:documents:loaded", {
+              bubbles : true,
+              detail : documents
+            });
           }
-        })
-        .then(() => {
-          // on enregistre le statut une fois toutes les données chargées
-          store.setService(this);
-          return status;
-        })
-        .catch((e) => {
-          throw new Error('Error to get token (' + e.message + ')');
-        })
+        } catch (e) {
+          throw new Error('Error to get documents (' + e.message + ')');
+        }
+
+        // on enregistre le statut une fois toutes les données chargées
+        store.setService(this);
+        return status;
+      } catch (e) {
+        this.authenticated = false;
+        throw new Error('Error to get token (' + e.message + ')');
+      }
     }
+
     // IAM logout local
     if (!code && (session !== null || session === this.session)) {
       this.session = null;
@@ -293,20 +304,6 @@ class ServiceLocal extends ServiceBase {
       this.documents = {};
       this.error = {};
       status = "logout";
-      promise = new Promise((resolve) => {
-        resolve(status);
-      });
-    }
-
-    // FIXME on ne traite pas les erreurs !?
-    if (error) {
-      this.error = {
-        name: error,
-        message: urlParams.get('error_description')
-      };
-      promise = new Promise((resolve, reject) => {
-        reject(this.error);
-      });
     }
 
     // enregistrement dans le storage du statut de la connexion
@@ -315,7 +312,7 @@ class ServiceLocal extends ServiceBase {
       store.setService(this);
     }
 
-    return promise || Promise.resolve(status);
+    return status;
   }
 
   /** 
@@ -455,9 +452,37 @@ class ServiceLocal extends ServiceBase {
    *    ...
    * }
   */
-  async getAccessToken () {
+  async getAccessToken (options = {}) {
+    const { callbackUrl, state, code, session } = options;
     const url = this.url.includes("login") ? this.url : this.url + "/login";
-    const urlParams = new URLSearchParams(location.search);
+    let resolvedCallbackUrl = callbackUrl
+      ? new URL(callbackUrl.toString())
+      : new URL(location.href);
+
+    const storedCallbackUrlRaw = sessionStorage.getItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+    if ((!code || !resolvedCallbackUrl.searchParams.get('code')) && storedCallbackUrlRaw) {
+      try {
+        resolvedCallbackUrl = new URL(storedCallbackUrlRaw);
+      } catch {
+        sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+      }
+    }
+
+    const resolvedCode = code || this.code || resolvedCallbackUrl.searchParams.get('code');
+    const resolvedSession = session || this.session || resolvedCallbackUrl.searchParams.get('session_state');
+    const resolvedStateOption = state || resolvedCallbackUrl.searchParams.get('state');
+
+    if (resolvedCode && !resolvedCallbackUrl.searchParams.get('code')) {
+      resolvedCallbackUrl.searchParams.set('code', resolvedCode);
+    }
+    if (resolvedSession && !resolvedCallbackUrl.searchParams.get('session_state')) {
+      resolvedCallbackUrl.searchParams.set('session_state', resolvedSession);
+    }
+    if (resolvedStateOption && !resolvedCallbackUrl.searchParams.get('state')) {
+      resolvedCallbackUrl.searchParams.set('state', resolvedStateOption);
+    }
+
+    const urlParams = new URLSearchParams(resolvedCallbackUrl.search);
     const stateFromRedirect = urlParams.get('state');
     const storedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY);
     const storedStateDecrypted = storedState ? await decryptValue(storedState) : null;
@@ -476,9 +501,13 @@ class ServiceLocal extends ServiceBase {
     if (!codeVerifier) {
       throw new Error('Missing PKCE code verifier');
     }
+
+    if (!resolvedCallbackUrl.searchParams.get('code')) {
+      throw new Error('Missing authorization code in callback URL');
+    }
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
-      location,
+      resolvedCallbackUrl,
       {
         redirectUri: url,
         state: expectedState || undefined,
@@ -496,6 +525,7 @@ class ServiceLocal extends ServiceBase {
       sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${storedState}`);
     }
     sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
+    sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
     localStorage.removeItem("codeVerifier");
 
     var store = useServiceStore();

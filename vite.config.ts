@@ -46,8 +46,6 @@ export default defineConfig({
         // @ts-expect-error
         'vue-router',
         // @ts-expect-error
-        'vitest',
-        // @ts-expect-error
         vueDsfrAutoimportPreset,
       ],
       vueTemplate: true,
@@ -134,7 +132,7 @@ export default defineConfig({
     }
   },
   test: {
-    globals: true,
+    globals: false,
     environment: 'jsdom',
     setupFiles: ["tests/test/vitest.setup.js"],
     include: ["./tests/test/**/*.{test,spec}.{ts,js}"],
