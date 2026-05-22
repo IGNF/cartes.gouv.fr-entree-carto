@@ -12,8 +12,6 @@
 
 #### ✨ [Ajout]
   
-  - Footer : ajout d'un bandeau d'abonnement à la newsletter cartes.gouv dans le footer (#1004)
-
 #### 🔨 [Evolution]
 
   - Gestionnaire de couche : au survol de son entrée, le titre de la couche s'affiche dans un tooltip (#505)
