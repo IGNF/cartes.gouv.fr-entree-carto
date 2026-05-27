@@ -11,6 +11,8 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+  - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées
   
 #### 🔨 [Evolution]
 

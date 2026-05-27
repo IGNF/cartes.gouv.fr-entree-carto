@@ -129,6 +129,29 @@ const searchEngineOptions = computed(() => {
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
     advancedSearchOptions : {
+      coordinateSearch : {
+        systems :
+          [{
+              label : "G\u00e9ographique",
+              crs : "EPSG:4326",
+              type : "Geographical"
+          }, 
+          {
+              label : "Web Mercator",
+              crs : "EPSG:3857",
+              type : "Metric"
+          }, 
+          {
+              label : "Lambert 93",
+              crs : "EPSG:2154",
+              type : "Metric"
+          },
+          {
+              label : "Lambert II \u00e9tendu",
+              crs : "EPSG:27572",
+              type : "Metric"
+          }]
+      },
       searchOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`,
         wfsServerUrl : `${baseUrlService}/wfs/ows?`,
