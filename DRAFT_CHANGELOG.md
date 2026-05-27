@@ -12,8 +12,9 @@
 
 #### ✨ [Ajout]
 
-  - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées
-  
+  - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
+  - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
+ 
 #### 🔨 [Evolution]
 
   - Gestionnaire de couche : au survol de son entrée, le titre de la couche s'affiche dans un tooltip (#505)
