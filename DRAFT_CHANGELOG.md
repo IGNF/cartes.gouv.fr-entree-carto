@@ -25,6 +25,8 @@
 
 #### 🐛 [Correction]
 
+- UI extensions: fixe la position d'un panel dans un panel (#1078)
+
 #### 🔒 [Sécurité]
 
 ---

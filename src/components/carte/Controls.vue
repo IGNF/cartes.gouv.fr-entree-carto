@@ -802,6 +802,12 @@ onMounted(() => {
 .position-container-bottom-right .gpf-panel {
   right: $widget-btn-size + $gap !important;
 }
+// fixe position d'un panel dans un panel
+.gpf-panel .gpf-panel {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: none;
+}
 .gpf-panel__body {
   max-height: calc(70vh) !important;
   max-height: calc(100cqb - $gap * 2) !important;
