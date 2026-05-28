@@ -866,6 +866,6 @@ onMounted(() => {
 
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
-  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
+  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * -99in);
 }
 </style>
