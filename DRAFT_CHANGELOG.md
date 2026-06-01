@@ -27,6 +27,7 @@
 
 - UI extensions: fixe la position d'un panel dans un panel (#1078)
 - UI: empêche le décalage de la page au focus clavier
+- UI: masque le badge en mobile
 
 #### 🔒 [Sécurité]
 
