@@ -34,17 +34,17 @@ const mapStore = useMapStore();
 const domStore = useDomStore();
 
 const map = inject(props.mapId)
-const panoramax = ref(new Panoramax(props.panoramaxOptions));
+const panoramax = new Panoramax(props.panoramaxOptions);
 
-panoramax.value.on("pnx:fullscreen", (e) => {
+panoramax.on("pnx:fullscreen", (e) => {
   domStore.isFullscreenPanoramax = e.data.fullscreen;
 });
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(panoramax.value)
+    map.addControl(panoramax)
     if (props.analytic) {
-      var el = panoramax.value.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
+      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
@@ -53,15 +53,15 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   if (!props.visibility) {
-    map.removeControl(panoramax.value);
+    map.removeControl(panoramax);
   }
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(panoramax.value);
+    map.addControl(panoramax);
     if (props.analytic) {
-      var el = panoramax.value.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
+      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
