@@ -3,6 +3,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
+import { useDomStore } from '@/stores/domStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import "@panoramax/web-viewer/build/photoviewer.js";
@@ -30,9 +31,14 @@ const props = defineProps({
 const log = useLogger();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
+const domStore = useDomStore();
 
 const map = inject(props.mapId)
 const panoramax = ref(new Panoramax(props.panoramaxOptions));
+
+panoramax.value.on("pnx:fullscreen", (e) => {
+  domStore.isFullscreenPanoramax = e.data.fullscreen;
+});
 
 onMounted(() => {
   if (props.visibility) {
@@ -132,6 +138,7 @@ onUpdated(() => {
 .gpf-panel.gpf-panel[id^="GPpanoramaxPanelViewer-"] {
   inset: 0px !important;
   max-height: initial !important;
+  min-height: initial !important;
   height: auto !important;
   width: auto !important;
   max-width: initial !important;
