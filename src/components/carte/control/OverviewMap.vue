@@ -69,7 +69,8 @@ function onToggleOverviewMap (e) {
 <style lang="scss">
 @use "@/assets/variables" as *;
 
-.gpf-widget[id^="GPoverviewMap-"] {
+// overviewmap uniquement en enfant direct de .position
+.position > .gpf-widget[id^="GPoverviewMap-"] {
   // toujours en premier dans la liste
   order: -1;
   // position relative pour que l'ouverture de la minimap soit par rapport au bouton
