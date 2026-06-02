@@ -257,6 +257,9 @@ const isocurveOptions = {
   listable: true,
   isocurveOptions : {
     serverUrl : `${baseUrlService}/navigation/isochrone`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
@@ -268,6 +271,9 @@ const routeOptions = {
   prettifyCompute: true,
   routeOptions : {
     serverUrl : `${baseUrlService}/navigation/itineraire`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
