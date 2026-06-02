@@ -1,9 +1,9 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.18-prerelease",
+  "version": "1.0.18-test-gatling",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "01/06/2026",
+  "date": "02/06/2026",
   "directories": {},
   "engines": {
     "node": ">=20"
