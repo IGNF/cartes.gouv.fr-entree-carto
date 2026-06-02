@@ -144,6 +144,7 @@ body.modal-open {
 }
 .Map {
   grid-row: map;
+  min-height: min(75vh, 500px); // hauteur minimum (utile quand footer ouvert)
 }
 .CustomFooter {
   grid-row: footer;

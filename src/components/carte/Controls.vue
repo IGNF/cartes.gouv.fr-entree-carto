@@ -129,6 +129,29 @@ const searchEngineOptions = computed(() => {
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
     advancedSearchOptions : {
+      coordinateSearch : {
+        systems :
+          [{
+              label : "G\u00e9ographique",
+              crs : "EPSG:4326",
+              type : "Geographical"
+          }, 
+          {
+              label : "Web Mercator",
+              crs : "EPSG:3857",
+              type : "Metric"
+          }, 
+          {
+              label : "Lambert 93",
+              crs : "EPSG:2154",
+              type : "Metric"
+          },
+          {
+              label : "Lambert II \u00e9tendu",
+              crs : "EPSG:27572",
+              type : "Metric"
+          }]
+      },
       searchOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`,
         wfsServerUrl : `${baseUrlService}/wfs/ows?`,
@@ -234,6 +257,9 @@ const isocurveOptions = {
   listable: true,
   isocurveOptions : {
     serverUrl : `${baseUrlService}/navigation/isochrone`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
@@ -245,6 +271,9 @@ const routeOptions = {
   prettifyCompute: true,
   routeOptions : {
     serverUrl : `${baseUrlService}/navigation/itineraire`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
@@ -815,6 +844,12 @@ onMounted(() => {
 .position-container-bottom-right .gpf-panel {
   right: $widget-btn-size + $gap !important;
 }
+// fixe position d'un panel dans un panel
+.gpf-panel .gpf-panel {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: none;
+}
 .gpf-panel__body {
   max-height: calc(70vh) !important;
   max-height: calc(100cqb - $gap * 2) !important;
@@ -896,6 +931,6 @@ onMounted(() => {
 
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
-  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
+  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * -99in);
 }
 </style>

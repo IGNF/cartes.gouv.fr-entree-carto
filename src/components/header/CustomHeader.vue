@@ -146,6 +146,11 @@ headerParams.value.quickLinks = [
       content: none;
     }
   }
+  @include max(sm) {
+    .fr-header__service-title .fr-badge {
+      display: none;
+    }
+  }
 }
 
 // hack vuedsfr
