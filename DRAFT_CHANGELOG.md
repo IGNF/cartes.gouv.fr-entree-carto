@@ -18,6 +18,7 @@
 #### 🔨 [Evolution]
 
   - Gestionnaire de couche : au survol de son entrée, le titre de la couche s'affiche dans un tooltip (#505)
+  - Header : la signature change pour "Notre territoire commun" (#1084)
 
 #### 🔥 [Obsolète]
 
