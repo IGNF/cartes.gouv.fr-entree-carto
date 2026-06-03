@@ -11,10 +11,9 @@
   };
 </script>
 <script setup lang="js">
-import { nextTick } from "vue";
+import { defineAsyncComponent, nextTick } from "vue";
 
 import Map from '@/components/carte/Map.vue'
-import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
 import { useMapStore } from "@/stores/mapStore";
@@ -39,6 +38,8 @@ const props = defineProps({
 const mapStore = useMapStore()
 const log = useLogger()
 
+const Controls = defineAsyncComponent(() => import('@/components/carte/Controls.vue'));
+
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
 // Ces listes sont reactives car le parent les produit via des 
@@ -57,6 +58,8 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
+
+const controlsCanLoad = ref(false);
 
 
 const hasInitialRecenter = ref(false);
@@ -92,6 +95,11 @@ const initialize = () => {
 
 onMounted(() => {
   log.debug("Carto component mounted") 
+
+  // Décale le chargement du chunk des contrôles pour laisser la carte s'afficher d'abord.
+  nextTick(() => {
+    controlsCanLoad.value = true;
+  });
 })
 
 </script>
@@ -106,7 +114,7 @@ onMounted(() => {
   >
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
-      v-if="mapIsReady"
+      v-if="mapIsReady && controlsCanLoad"
       :map-id="mainMap"
       :control-options="props.selectedControls"
     />
