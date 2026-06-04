@@ -38,7 +38,10 @@ const props = defineProps({
 const mapStore = useMapStore()
 const log = useLogger()
 
-const Controls = defineAsyncComponent(() => import('@/components/carte/Controls.vue'));
+const Controls = defineAsyncComponent({
+  loader: () => import('@/components/carte/Controls.vue'),
+  suspensible: false,
+});
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
