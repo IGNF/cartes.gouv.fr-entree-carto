@@ -26,11 +26,11 @@ export default defineConfig({
     vueJsx(),
     htmlPurge({
       safelist: [
-        /^(?!fr-).*/,  // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
-        /^fr-btn--/,   // préserver toutes les classes fr-btn-- (utilisées par DsfrShare avec ::before/::after)
-        /^fr-.+::/,    // préserver les sélecteurs avec pseudo-éléments
+        /^(?!fr-).*/,
+        /^fr-btn--/,
+        /^fr-.+::/,
       ],
-      variables: true, // supprime les variables css inutilisées
+      variables: true,
     }),
     // INFO mode https
     // basicSsl(),

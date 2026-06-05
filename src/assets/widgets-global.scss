@@ -1,0 +1,387 @@
+// =============================================================================
+// Styles globaux des contrôles de carte (OpenLayers / GeoPF)
+//
+// Ces règles ne peuvent pas être scopées dans les SFC Vue car les contrôles
+// injectent leur DOM directement dans l'arbre OpenLayers, hors du scope Vue.
+// Elles ont été centralisées ici depuis src/components/carte/control/*.vue
+// et sont importées une seule fois depuis src/main.ts, après les CSS OL/GeoPF
+// afin de garantir la priorité des surcharges.
+// =============================================================================
+
+@use "@/assets/variables" as *;
+
+// -----------------------------------------------------------------------------
+// CatalogManager.vue — bouton et panel du catalogue de données
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPcatalog"] {
+  button[id^=GPshowCatalogPicto-] {
+    background-color: var(--background-action-high-blue-france);
+    box-shadow: inset 0 0 0 $widget-btn-padding var(--background-action-high-blue-france);
+  }
+
+  button[id^=GPshowCatalogPicto-][aria-pressed=true],
+  button[id^=GPshowCatalogPicto-][aria-pressed=true]:not(:disabled):hover {
+    background-color: var(--hover-tint);
+  }
+}
+
+// autorise une hauteur maximale disponible et cree un scroll sur la liste
+[id^=GPcatalogPanel-] {
+  overflow: auto;
+}
+
+.gpf-catalog-tabs-fixe,
+.gpf-catalog-tabs-fixe-with-bar {
+  --tabs-height: 100% !important;
+  height: var(--tabs-height); // réapplique pour aider purgecss
+}
+
+#GPcatalogContainerTabs .fr-tabs__panel {
+  height: initial;
+  max-height: 100% !important;
+  overflow: initial !important;
+}
+
+// -----------------------------------------------------------------------------
+// Zoom.vue — boutons zoom in/out GeoportalZoom
+// -----------------------------------------------------------------------------
+
+// zoom: 2 boutons pour un seul controle
+.ol-custom-zoom {
+  height: $widget-btn-size * 2;
+}
+
+.ol-custom-zoom-in,
+.ol-custom-zoom-out {
+  height: 50%;
+
+  // supprime tooltip
+  &::before {
+    content: none !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ScaleLine.vue — barre d'échelle OL
+// -----------------------------------------------------------------------------
+
+.ol-scale-line {
+  z-index: auto;
+  left: auto;
+  right: $widget-panel-x;
+  background: var(--background-default-grey);
+}
+
+// déplace tout à droite si pas d'outil en bas/droite
+.position-container-bottom-right:empty ~ .ol-scale-line {
+  right: $gap;
+}
+
+// couleur en mode sombre
+html[data-fr-theme="dark"] .ol-scale-line-inner {
+  color: var(--text-action-high-blue-france);
+  border-color: var(--text-action-high-blue-france);
+}
+
+// -----------------------------------------------------------------------------
+// Drawing.vue — sous-panels "annoter la carte" (gp-label-div / gp-styling-div)
+// -----------------------------------------------------------------------------
+
+// positionne au même endroit qu'un panel de gauche
+.ol-overlay-container:has(.gp-label-div),
+.ol-overlay-container:has(.gp-styling-div) {
+  z-index: 4;
+  transform: none !important;
+  top: $gap;
+  left: $widget-panel-x;
+
+  @include max(sm) {
+    top: 0;
+    left: 0;
+
+    .gp-label-div,
+    .gp-styling-div {
+      width: 100vw;
+    }
+  }
+}
+
+.gp-label-div,
+.gp-styling-div {
+  transform: none;
+}
+
+// -----------------------------------------------------------------------------
+// LayerImport.vue — bouton caché (intégré dans les menus gauche et droite)
+// -----------------------------------------------------------------------------
+
+.position-container-top-left .gpf-btn-icon[id^=GPshowImportPicto-] {
+  display: none;
+}
+
+// -----------------------------------------------------------------------------
+// Share.vue + ShareModal.vue — icône Instagram DSFR et bouton copie masqué
+// -----------------------------------------------------------------------------
+
+.fr-btn--instagram::before {
+  -webkit-mask-image: url("../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
+  mask-image: url("../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
+}
+
+// le composant share de vue-dsfr ne permet pas de retirer le bouton de partage par défaut
+ul.fr-btns-group button.fr-btn--copy {
+  display: none;
+}
+
+// -----------------------------------------------------------------------------
+// Reporting.vue — bouton caché (intégré dans le menu gauche)
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPreporting-"] > .gpf-btn-icon {
+  display: none;
+}
+
+// -----------------------------------------------------------------------------
+// ContextMenu.vue — panel du menu contextuel (GPpointInfo)
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPpointInfo-"] {
+  top: $widget-btn-size + $gap * 2;
+  left: $widget-panel-x;
+
+  @include max(sm) {
+    top: 0;
+    left: 0;
+    width: 100vw;
+
+    .gpf-panel {
+      width: inherit;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ControlList.vue — liste des contrôles disponibles
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPcontrolList-"] {
+  height: $widget-btn-size;
+  box-shadow: 0 3px 3px -1px var(--shadow-color);
+
+  .gpf-btn-icon span::before {
+    // supprime la séparation
+    content: none !important;
+  }
+}
+
+// le positionnement dynamique (en absolute) décale GPcontrolList ;
+// le panel passe en fixed pour rester aligné en haut de la map
+.gpf-widget[id^="GPcontrolList-"] .gpf-panel {
+  position: fixed;
+}
+
+// -----------------------------------------------------------------------------
+// GetFeatureInfo.vue — bouton caché + z-index du panel
+// -----------------------------------------------------------------------------
+
+// bouton caché (intégré dans le menu contextuel)
+.position-container-top-left .gpf-btn-icon[id^=GPgetFeatureInfoPicto-] {
+  display: none;
+}
+
+// modale au-dessus — spécifique à GFI car aria-pressed reste à false
+.position:has(> .gpf-widget[id^="GPgetFeatureInfo-"] > .gpf-btn-icon[aria-pressed]) {
+  z-index: 2;
+
+  @include max(sm) {
+    z-index: 4;
+  }
+}
+
+// surcharge style renvoyé dans getFeatureInfo pour meilleur rendu (#695)
+.geoportail-popup-content :is(h1, h2, h3, h4, h5) {
+  font-size: 1.25rem;
+}
+
+// -----------------------------------------------------------------------------
+// Print.vue — canvas superposé pour l'impression
+// -----------------------------------------------------------------------------
+
+canvas.fixedoverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// -----------------------------------------------------------------------------
+// FullScreen.vue — bouton plein écran
+// -----------------------------------------------------------------------------
+
+.ol-custom-full-screen .gpf-btn-icon {
+  width: $widget-btn-size;
+  height: $widget-btn-size;
+}
+
+// -----------------------------------------------------------------------------
+// Legends.vue — bouton légende masqué en mobile (panel toujours accessible)
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPlegends-"] {
+  @include max(sm) {
+    margin-top: -$gap;
+
+    & > .gpf-btn-icon {
+      display: none;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Territories.vue — formulaire et liste des vues territoires
+// -----------------------------------------------------------------------------
+
+#add-view-form-fieldset {
+  margin-bottom: 0;
+}
+
+#gpf-territories-views-container-id {
+  bottom: 0;
+}
+
+#gpf-territories-views-container-id,
+.gpf-panel__body_territories,
+.gpf-panel__views_territories-listview-entries {
+  max-height: initial;
+}
+
+// -----------------------------------------------------------------------------
+// LayerSwitcher.vue — bouton, compteur et panels couches
+// -----------------------------------------------------------------------------
+
+// surclasse hauteur du widget/bouton
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  height: $widget-btn-size;
+
+  .gpf-btn-icon {
+    width: $widget-btn-size;
+    height: $widget-btn-size;
+    @include widget-btn-style;
+  }
+}
+
+// counter
+.GPlayerCounter {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  left: auto;
+}
+
+// largeur du panel
+.gpf-panel[id^="GPlayersList"] {
+  width: $widget-panel-width-lg !important;
+}
+
+// panels multiple
+.gpf-panel[id^="GPlayersList"] ~ .gpf-panel {
+  right: calc(($widget-panel-width-lg - $widget-panel-multiple-width-lg) / 2) + $widget-btn-size + $gap !important;
+  top: 4rem !important;
+  width: $widget-panel-multiple-width-lg;
+  max-width: min($widget-panel-multiple-width-lg, calc(100cqi - $widget-btn-size * 2 - $gap * 4 - ($widget-panel-width-lg - $widget-panel-multiple-width-lg))) !important;
+}
+
+// fond clair dans le panel
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"][aria-current="true"],
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"]:hover {
+  background: var(--background-default-grey);
+}
+
+// panels spécifiques
+div[id^="GPlayerInfoContent"] {
+  width: initial;
+  padding: 10px;
+}
+
+// -----------------------------------------------------------------------------
+// OverviewMap.vue — miniature de carte en bas à gauche
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPoverviewMap-"] {
+  // toujours en premier dans la liste
+  order: -1;
+  // position relative pour que la minimap s'ouvre par rapport au bouton
+  position: relative !important;
+  left: auto;
+  bottom: auto;
+
+  .ol-overviewmap-map {
+    position: absolute;
+    top: 0;
+    left: $widget-btn-size + $gap;
+    border-radius: $widget-btn-radius;
+    width: $widget-btn-size * 2 + $gap;
+    height: $widget-btn-size * 2 + $gap;
+    border: solid $widget-btn-padding var(--background-default-grey);
+    background-color: var(--background-default-grey);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SearchEngine.vue — barre de recherche avancée GeoportalSearchEngine
+// -----------------------------------------------------------------------------
+
+.gpf-widget[id^="GPsearchEngine-Advanced"] {
+  left: $widget-panel-x - 5; // marge 5 interne
+  box-shadow: none;
+
+  .GPSearchBar .GPInputGroup,
+  .GPSearchBar .GPInputGroup > input,
+  button[id^="GPshowSearchEnginePicto-"].fr-btn {
+    height: $widget-btn-size;
+  }
+
+  .GPSearchBar .GPInputGroup {
+    border-top-right-radius: 0;
+  }
+
+  @include min(sm) {
+    width: 420px;
+  }
+
+  @include max(sm) {
+    top: $gap;
+    left: $gap - 5; // 5 interne
+    max-width: calc(100% - 6px); // 6px un peu magique
+
+    &:has(.GPSearchEngine-advanced-btn[aria-expanded="true"]),
+    .GPautoCompleteContainer {
+      z-index: 4;
+    }
+  }
+}
+
+// empeche le retrecissement dans un contexte flex et fixe la largeur min
+.GPsearchInputSubmit {
+  flex: 0 0 $widget-btn-size;
+}
+
+// centre l'icone
+.GPsearchInputSubmit::before {
+  margin: 0 auto !important;
+}
+
+// -----------------------------------------------------------------------------
+// PrintModal.vue — surcharge de la modale DSFR pour l'impression
+// -----------------------------------------------------------------------------
+
+// hack pour surcharger le style modal dsfr
+.modal-override {
+  max-width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}

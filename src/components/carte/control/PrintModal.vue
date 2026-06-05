@@ -627,13 +627,3 @@ const scaleLineOptions = {
     transform-origin: top left;
   }
 </style>
-
-<style>
-/* hack pour surcharger le style modal dsfr */
-  .modal-override {
-    max-width: 80vw;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-  }
-</style>

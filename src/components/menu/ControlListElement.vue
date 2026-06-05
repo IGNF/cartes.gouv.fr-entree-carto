@@ -99,15 +99,3 @@ onUpdated(() => {})
 }
 </style>
 
-<style lang="scss">
-// augmente la zone cliquable du label
-.control-list-element {
-  .fr-toggle__label:has(+ .fr-hint-text) {
-    padding-bottom: 1.75rem;
-  }
-  .fr-hint-text {
-    margin-top: -1.5rem;
-    pointer-events: none;
-  }
-}
-</style>

@@ -1,7 +1,7 @@
 import '@gouvfr/dsfr/dist/core/core.main.min.css'
 import '@gouvfr/dsfr/dist/component/component.main.min.css'
 import '@gouvfr/dsfr/dist/utility/utility.main.min.css'
-import '@gouvminint/vue-dsfr/styles'
+
 import 'cartes.gouv.fr-vue-components/dist/index.css'
 
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
@@ -12,6 +12,10 @@ import 'notivue/animations.css'
 // chargement des CSS de la carte et des extensions
 import "ol/ol.css";
 import "geopf-extensions-openlayers/css/Dsfr.css";
+import "@/assets/header-global.scss";
+import "@/assets/menu-global.scss";
+import "@/assets/controls-global.scss";
+import "@/assets/widgets-global.scss";
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

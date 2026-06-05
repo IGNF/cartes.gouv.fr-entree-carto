@@ -459,31 +459,3 @@ const onExportVector = (e) => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-// gp-label-div/gp-styling-div sont les sous-panel de "annoter la carte"
-// positionne au même endroit qu'un panel de gauche
-.ol-overlay-container:has(.gp-label-div),
-.ol-overlay-container:has(.gp-styling-div) {
-  z-index: 4;
-  transform: none !important;
-  top: $gap;
-  left: $widget-panel-x;
-
-  @include max(sm) {
-    top: 0;
-    left: 0;
-
-    .gp-label-div,
-    .gp-styling-div {
-      width: 100vw;
-    }
-  }
-}
-.gp-label-div,
-.gp-styling-div {
-  transform: none;
-}
-</style>

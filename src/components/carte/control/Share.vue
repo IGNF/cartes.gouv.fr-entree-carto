@@ -64,14 +64,6 @@ const onModalShareOpen = () => {
     <ShareModal ref="refModalShare" />
   </div>
 </template>
-
-<style>
-  .fr-btn--instagram::before {
-    -webkit-mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
-    mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
-  }
-</style>
-
 <style scoped>
   #share-container {}
   #share-button-position {

@@ -211,19 +211,3 @@ const onRemoveTerritories = (e) => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-#add-view-form-fieldset {
-  margin-bottom: 0;
-}
-
-#gpf-territories-views-container-id {
-  bottom: 0;
-}
-
-#gpf-territories-views-container-id,
-.gpf-panel__body_territories,
-.gpf-panel__views_territories-listview-entries {
-  max-height: initial;
-}
-</style>

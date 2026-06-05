@@ -471,11 +471,3 @@ const getDataServiceWMTS = (data) => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-// le widget est intégré dans le container gauche
-// mais le bouton est caché (car intégré dans menus gauche et droite)
-.position-container-top-left .gpf-btn-icon[id^=GPshowImportPicto-] {
-  display: none;
-}
-</style>

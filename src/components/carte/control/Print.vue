@@ -55,16 +55,6 @@ onUpdated(() => {
     />
   </div>
 </template>
-<style>
-canvas.fixedoverlay {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-}
-</style>
 <style scoped>
   #print-button-position {
     position: absolute;

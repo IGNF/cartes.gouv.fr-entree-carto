@@ -122,9 +122,3 @@ onUnmounted(() => {
     @toggle-id="toggle($event)"
   />
 </template>
-
-<style>
-.fr-nav__list {
-  position: relative;
-}
-</style>

@@ -393,15 +393,6 @@ onMounted(() => {});
   </div>
 </template>
 
-<style>
-.container-bookmark-map-name {
-  display: flex;
-}
-.container-bookmark-map-buttons-name {
-  display: flex;
-}
-</style>
-
 <style lang="css" scoped>
 #tab-content-bookmark-maps,
 #tab-content-bookmark-data {
