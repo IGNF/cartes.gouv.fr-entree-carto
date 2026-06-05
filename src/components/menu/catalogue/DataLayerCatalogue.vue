@@ -104,12 +104,3 @@ const activeAccordion2 = ref(-1)
     </div>
   </div>
 </template>
-
-<style>
-.catalogue-content-with-radio-btn {
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  overflow-x: hidden;
-  max-height: calc(76.8vh - 327px);
-}
-</style>

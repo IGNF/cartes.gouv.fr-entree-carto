@@ -44,22 +44,3 @@ const onContextMenuOpen = () => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-.gpf-widget[id^="GPpointInfo-"] {
-  top: $widget-btn-size + $gap * 2;
-  left: $widget-panel-x;
-
-  @include max(sm) {
-    top: 0;
-    left: 0;
-    width: 100vw;
-
-    .gpf-panel {
-      width: inherit;
-    }
-  }
-}
-</style>

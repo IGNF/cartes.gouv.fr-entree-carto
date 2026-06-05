@@ -34,12 +34,3 @@ onBeforeUpdate(() => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-.ol-custom-full-screen .gpf-btn-icon {
-  width: $widget-btn-size;
-  height: $widget-btn-size;
-}
-</style>

@@ -164,23 +164,10 @@ const buttons = [
 }
 #location-france {
   display: inline-block;
-  background-image: url(../../../assets/location-france.svg);
+  background-image: url(../../../assets/img/location-france.svg);
   background-repeat: no-repeat;
   height: 80px;
   width: 80px;
 }
 .bookmark-buttons-container {}
-</style>
-
-<style>
-/* HACK : centrage des boutons */
-.bookmark-button-container {
-  display: flex;
-  width: 100%;
-  justify-content: center !important;
-}
-/* HACK : sinon imposible d'avoir l'icone et le label */
-.fr-btns-group:not(.fr-btns-group--sm):not(.fr-btns-group--lg):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn[class*=" fr-icon-"] {
-  max-width: unset;
-}
 </style>

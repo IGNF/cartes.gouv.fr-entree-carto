@@ -65,23 +65,3 @@ onUpdated(() => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-.gpf-widget[id^="GPcontrolList-"] {
-  height: $widget-btn-size;
-  box-shadow: 0 3px 3px -1px var(--shadow-color);
-
-  .gpf-btn-icon span::before {
-    // supprime la séparation
-    content: none !important;
-  }
-}
-
-// le positionnement dynamique des widgets basé sur la hauteur modifie la position de GPcontrolList (en absolute)
-// du coup, le panel doit être en fixed pour être aligné en haut de la map
-.gpf-widget[id^="GPcontrolList-"] .gpf-panel {
-  position: fixed;
-}
-</style>

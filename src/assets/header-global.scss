@@ -1,0 +1,103 @@
+// =============================================================================
+// Styles globaux du header (DSFR)
+//
+// Ces règles ne peuvent pas être scopées dans les SFC Vue car elles s'appliquent
+// aux éléments du header DSFR chargé potentiellement en lazy-loading.
+// Elles ont été centralisées ici depuis src/components/header/*.vue
+// et sont importées une seule fois depuis src/main.ts.
+// =============================================================================
+
+@use "@/assets/variables" as *;
+
+// -----------------------------------------------------------------------------
+// CustomHeader.vue — en-tête DSFR avec logo et mode compact
+// -----------------------------------------------------------------------------
+
+// fixe taille du logo
+.fr-header__operator img {
+  min-width: 0;
+  width: 55px;
+  height: 60px;
+}
+
+// mobile (SM/MD): le menu ne couvre pas toute la page
+@include between(sm, lg) {
+  .fr-header__menu {
+    max-width: 360px;
+    left: auto;
+    right: 0;
+    box-shadow: var(--raised-shadow);
+  }
+}
+
+/**
+ * Header mode compact
+ * 
+ * hauteur totale = 56px
+ * hauteur du contenu = 40px
+ * 
+ */
+.fr-header--compact {
+  .fr-header__body-row {
+    padding: 0.5rem;
+  }
+  .fr-header__brand {
+    padding: 0.125rem 0;
+  }
+  .fr-header__logo {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    .fr-logo {
+      padding-top: 0.9rem; // vertical-align
+      transform: scale(1.33);
+    }
+    .fr-logo::after {
+      content: none; // Supprime le pseudo-élément
+    }
+  }
+  .fr-header__operator {
+    padding: 0;
+    margin-left: 0.75rem;
+
+    img {
+      // conserve les pixels nets
+      width: 33px;
+      height: 36px;
+    }
+  }
+  .fr-header__service {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0.75rem;
+  }
+  /* mobile */
+  @include max(lg) {
+    .fr-header__body-row {
+      padding: 0;
+    }
+    .fr-header__brand {
+      padding: 0.625rem 0.5rem;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CustomNavigationMenu.vue — alignements du menu mobile
+// -----------------------------------------------------------------------------
+
+.fr-nav__btn span {
+  margin-right: auto;
+}
+
+.fr-header__menu-links::after {
+  content: none !important;
+}
+
+// -----------------------------------------------------------------------------
+// CustomNavigation.vue — navigation DSFR
+// -----------------------------------------------------------------------------
+
+.fr-nav__list {
+  position: relative;
+}

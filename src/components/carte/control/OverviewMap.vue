@@ -65,27 +65,3 @@ function onToggleOverviewMap (e) {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-.gpf-widget[id^="GPoverviewMap-"] {
-  // toujours en premier dans la liste
-  order: -1;
-  // position relative pour que l'ouverture de la minimap soit par rapport au bouton
-  position: relative !important;
-  left: auto;
-  bottom: auto;
-
-  .ol-overviewmap-map {
-    position: absolute;
-    top: 0;
-    left: $widget-btn-size + $gap;
-    border-radius: $widget-btn-radius;
-    width: $widget-btn-size * 2 + $gap;
-    height: $widget-btn-size * 2 + $gap;
-    border: solid $widget-btn-padding var(--background-default-grey);
-    background-color: var(--background-default-grey);
-  }
-}
-</style>

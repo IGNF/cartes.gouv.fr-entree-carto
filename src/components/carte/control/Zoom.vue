@@ -51,21 +51,3 @@ function onClickZoomOut (e) {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-// zoom: 2 boutons pour un seul controle
-.ol-custom-zoom {
-  height: $widget-btn-size * 2;
-}
-.ol-custom-zoom-in,
-.ol-custom-zoom-out {
-  height: 50%;
-
-  // supprime tooltip
-  &::before {
-    content: none !important;
-  }
-}
-</style>

@@ -453,26 +453,9 @@ const buttonsData = [
       />
     </div>
   </div>
-  <slot />
 </template>
 
-<style>
-.container-bookmark-entry {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-content: center;
-  align-items: baseline;
-}
-.button-bookmark-entry {
-  width: 210px;
-}
-.button-bookmark-entry > span {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
+<style scoped>
 
 .container-bookmark-entry-rename {
   display: flex;

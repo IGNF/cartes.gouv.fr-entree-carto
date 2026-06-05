@@ -49,10 +49,3 @@ onUpdated(() => {
     :description="layer.description"
   />
 </template>
-
-<style>
-.layer-description {
-    margin-left: 40px;
-    margin-bottom: 2em;
-}
-</style>

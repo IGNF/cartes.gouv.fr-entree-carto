@@ -26,11 +26,11 @@ export default defineConfig({
     vueJsx(),
     htmlPurge({
       safelist: [
-        /^(?!fr-).*/,  // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
-        /^fr-btn--/,   // préserver toutes les classes fr-btn-- (utilisées par DsfrShare avec ::before/::after)
-        /^fr-.+::/,    // préserver les sélecteurs avec pseudo-éléments
+        /^(?!fr-).*/,
+        /^fr-btn--/,
+        /^fr-.+::/,
       ],
-      variables: true, // supprime les variables css inutilisées
+      variables: true,
     }),
     // INFO mode https
     // basicSsl(),
@@ -92,6 +92,74 @@ export default defineConfig({
   },
   build: {
     sourcemap: process.env.SOURCE_MAP === 'true',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // ── Libs cartographiques de base ──────────────────────────────────
+          if (id.includes('node_modules/ol/') ||
+              id.includes('node_modules/ol-contextmenu/')) {
+            return 'vendor-ol';
+          }
+          if (id.includes('node_modules/ol-mapbox-style/') ||
+              id.includes('node_modules/@maplibre/')) {
+            return 'vendor-mapbox-style';
+          }
+          // ── Extensions GPF (contrôles métier lourds) ─────────────────────
+          if (id.includes('node_modules/geopf-extensions-openlayers/') ||
+              id.includes('node_modules/geoportal-access-lib/')) {
+            return 'vendor-geopf';
+          }
+          // ── Libs de projection ────────────────────────────────────────────
+          if (id.includes('node_modules/proj4/') ||
+              id.includes('node_modules/wkt-parser/') ||
+              id.includes('node_modules/mgrs/')) {
+            return 'vendor-proj';
+          }
+          // ── Validation de schéma ──────────────────────────────────────────
+          if (id.includes('node_modules/ajv/') ||
+              id.includes('node_modules/fast-uri/') ||
+              id.includes('node_modules/fast-deep-equal/') ||
+              id.includes('node_modules/json-schema-traverse/')) {
+            return 'vendor-ajv';
+          }
+          // ── DSFR / UI ─────────────────────────────────────────────────────
+          if (id.includes('node_modules/@gouvminint/vue-dsfr/') ||
+              id.includes('node_modules/cartes.gouv.fr-vue-components/') ||
+              id.includes('node_modules/@iconify/') ||
+              id.includes('node_modules/notivue/')) {
+            return 'vendor-ui';
+          }
+          // ── Auth ──────────────────────────────────────────────────────────
+          if (id.includes('node_modules/keycloak-js/') ||
+              id.includes('node_modules/@badgateway/')) {
+            return 'vendor-auth';
+          }
+          // ── Vue / router / state ──────────────────────────────────────────
+          if (id.includes('node_modules/vue/') ||
+              id.includes('node_modules/@vue/') ||
+              id.includes('node_modules/vue-router/') ||
+              id.includes('node_modules/pinia/') ||
+              id.includes('node_modules/pinia-plugin-store/') ||
+              id.includes('node_modules/@vueuse/') ||
+              id.includes('node_modules/vue-logger-plugin/')) {
+            return 'vendor-vue';
+          }
+          // ── Utilitaires divers ────────────────────────────────────────────
+          if (id.includes('node_modules/sortablejs/') ||
+              id.includes('node_modules/html2canvas/') ||
+              id.includes('node_modules/marked/') ||
+              id.includes('node_modules/dompurify/') ||
+              id.includes('node_modules/mitt/') ||
+              id.includes('node_modules/eventbusjs/') ||
+              id.includes('node_modules/clusterize.js/') ||
+              id.includes('node_modules/rbush/') ||
+              id.includes('node_modules/pbf/') ||
+              id.includes('node_modules/quickselect/')) {
+            return 'vendor-misc';
+          }
+        }
+      }
+    },
   },
   server: {
     allowedHosts: true,

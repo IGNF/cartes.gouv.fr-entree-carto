@@ -250,14 +250,3 @@ a[target=_blank]::after {
   }
 }
 </style>
-
-<style lang="scss">
-// alignements des boutons du menu mobile
-.fr-nav__btn span {
-  margin-right: auto;
-}
-
-.fr-header__menu-links::after {
-  content: none !important;
-}
-</style>

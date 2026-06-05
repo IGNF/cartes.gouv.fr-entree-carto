@@ -93,11 +93,3 @@ const onSendingReporting = (e) => {
   <ReportingSuccessSentModal ref="refModalReportingSent" />
   <ReportingStartModal ref="refModalReportingStart" />
 </template>
-
-<style lang="scss">
-// le widget est intégré dans le container gauche
-// mais le bouton est caché (car intégré dans menu gauche)
-.gpf-widget[id^="GPreporting-"] > .gpf-btn-icon {
-  display: none;
-}
-</style>

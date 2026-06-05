@@ -167,19 +167,6 @@ defineExpose({
     </div>
   </DsfrModal>
 </template>
-
-<style>
-  .fr-btn--instagram::before {
-    -webkit-mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
-    mask-image: url("../../../../node_modules/@gouvfr/dsfr/dist/icons/logo/instagram-line.svg");
-  }
-
-  /* le composant share de vue dsfr ne permet pas de retirer le bouton de partage par défaut. On le cache en css */
-  ul.fr-btns-group button.fr-btn--copy {
-    display: none;
-  }
-</style>
-
 <style scoped>
   
   .share-iframe-input {

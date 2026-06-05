@@ -110,33 +110,3 @@ const onCatalogLayerRemove = (e) => {
 <template>
   <div />
 </template>
-
-<style lang="scss">
-@use "@/assets/variables" as *;
-
-.gpf-widget[id^="GPcatalog"] {
-  button[id^=GPshowCatalogPicto-] {
-    background-color: var(--background-action-high-blue-france);
-    box-shadow: inset 0 0 0 $widget-btn-padding var(--background-action-high-blue-france);
-  }
-  button[id^=GPshowCatalogPicto-][aria-pressed=true],
-  button[id^=GPshowCatalogPicto-][aria-pressed=true]:not(:disabled):hover {
-    background-color: var(--hover-tint);
-  }
-}
-// autorise une hauteur maximale disponible
-// et cree un scroll sur la liste
-[id^=GPcatalogPanel-] {
-  overflow: auto;
-}
-.gpf-catalog-tabs-fixe,
-.gpf-catalog-tabs-fixe-with-bar {
-  --tabs-height: 100% !important;
-  height: var(--tabs-height); // réapplique pour aider purgecss
-}
-#GPcatalogContainerTabs .fr-tabs__panel {
-  height: initial;
-  max-height: 100% !important;
-  overflow: initial !important;
-}
-</style>
