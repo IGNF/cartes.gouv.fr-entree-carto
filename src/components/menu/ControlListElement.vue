@@ -50,11 +50,12 @@ onUpdated(() => {})
       <div>
         <VIcon
           v-if="!dsfrIcon"
-          scale="1.25"
+          scale="0.833"
           :name="controlListElementOptions.icon"
         />
         <span 
           v-else
+          class="fr-icon--sm"
           :class="controlListElementOptions.icon" 
           aria-hidden="true"
         />
@@ -68,7 +69,6 @@ onUpdated(() => {})
         :label="controlListElementOptions.label"
         class="fr-toggle--label-left"
         no-text
-        :hint="controlListElementOptions.hint"
         :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
         v-bind="$attrs"
       />
@@ -76,12 +76,13 @@ onUpdated(() => {})
   </div> 
 </template>
 
-<style scoped>
+<style>
 .control-list-element {
   display: flex;
   align-items: center;
-  margin: 0 0.5rem;
-  padding: 1rem 0;
+  margin: 0 1rem;
+  padding: 0.75rem 0;
+  font-weight: 500;
 }
 .control-list-element + .control-list-element {
   border-top: 1px solid var(--border-default-grey);
@@ -90,8 +91,8 @@ onUpdated(() => {})
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 40px;
-  height: 40px;
+  flex: 0 0 16px;
+  height: 16px;
   margin-right: 0.5rem;
 }
 .control-list-element-toggle {
