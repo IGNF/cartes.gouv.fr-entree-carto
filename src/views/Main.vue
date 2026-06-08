@@ -21,10 +21,12 @@ import { useMatchMedia } from '@/composables/matchMedia'
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
-import { useAppStore } from "@/stores/appStore"
+import { useAppStore } from "@/stores/appStore";
+import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
 
 const appStore = useAppStore()
+const domStore = useDomStore()
 const route = useRoute()
 const { theme } = useScheme()
 
@@ -83,7 +85,7 @@ onMounted(() => {
 
 <template>
   <CustomHeader
-    v-if="!isEmbedRoute"
+    v-if="!isEmbedRoute && !domStore.isFullscreenPanoramax"
     class="CustomHeader"
   />
 
@@ -104,8 +106,8 @@ onMounted(() => {
     <router-view />
   </div>
 
-  <div class="CustomFooter">
-  <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
+  <div class="CustomFooter" v-if="!domStore.isFullscreenPanoramax">
+    <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
   </div>
 
 

@@ -35,19 +35,19 @@ import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
 import Reporting from './control/Reporting.vue';
 import CatalogManager from './control/CatalogManager.vue';
+import Panoramax from './control/Panoramax.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useMatchMedia } from '@/composables/matchMedia';
-let isMobile = useMatchMedia('SM');
-
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+let isMobile = useMatchMedia('SM');
 const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
@@ -503,6 +503,38 @@ const contextMenuOptions = computed(() => {
   }
 })
 
+const panoramaxOptions = {
+  id: "23",
+  position: useControlsExtensionPosition().panoramaxOptions,
+  panel: true,
+  gutter: true,
+  listable: true,
+  auto : false,
+  visualizationWindow : {
+    size : "fullscreen-map"
+  },
+  viewer : {
+    "widgets" : [
+      "btnClose",
+      "btnZoom",
+      "btnFullscreen",
+      "cmpPictureLegend",
+      "cmpMinimap"
+    ]
+  },
+  buttonsWindow: {
+    hover: {
+      display: false,
+    },
+    background: {
+      display: false,
+    },
+    layerswitcher: {
+      display: false,
+    }
+  },
+};
+
 onMounted(() => {
   log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
@@ -670,6 +702,13 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.Reporting.id)"
     :analytic="useControls.Reporting.analytic"
     :reporting-options="reportingOptions"
+    :map-id="mapId"
+  />
+  <Panoramax
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
+    :analytic="useControls.Panoramax.analytic"
+    :panoramax-options="panoramaxOptions"
     :map-id="mapId"
   />
 </template>

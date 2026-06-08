@@ -20,6 +20,7 @@ export const useDomStore = defineStore('dom', () => {
   var leftControlMenu = ref();
   var rightControlMenu = ref();
   var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
+  let isFullscreenPanoramax = ref(false);
 
   function getBookmarksButton () {
     return BookmarksButton.value;
@@ -51,6 +52,7 @@ export const useDomStore = defineStore('dom', () => {
 
   return {
     isHeaderCompact,
+    isFullscreenPanoramax,
     menuCatalogueButton,
     leftControlMenu,
     rightControlMenu,

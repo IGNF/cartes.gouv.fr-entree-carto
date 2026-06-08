@@ -222,6 +222,14 @@ export const useControls = {
     analytic: true,
     default: true,
     icon: "fr-icon-feedback-line"
+  },
+  Panoramax: {
+    id: 'Panoramax',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "gpf:panoramax"
   }
 }
 
@@ -437,6 +445,15 @@ export function useControlsMenuOptions() {
       name: useControls.Catalog.id,
       disabled: useControls.Catalog.disable,
       icon: "ri:map-2-line"
+    },
+    {
+      label: 'Visionneuse Panoramax',
+      id: 'panoramax',
+      name: useControls.Panoramax.id,
+      disabled: useControls.Panoramax.disable,
+      hint: "Explorez les lieux photographiés et visionnez les photos",
+      icon: "gpf:panoramax",
+      group: 'Affichage'
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
@@ -469,7 +486,8 @@ export function useControlsExtensionPosition() {
     mousePositionOptions : 'top-right',
     drawingOptions : 'top-right',
     reportingOptions : 'top-left',
-    catalogOptions : 'top-right'
+    catalogOptions : 'top-right',
+    panoramaxOptions : 'bottom-left'
   }
 }
 
@@ -574,6 +592,10 @@ export function useControlsPosition() {
     rightC.push(useControls.Catalog.id)
   if (useControlsExtensionPosition().catalogOptions.includes("left"))
     leftC.push(useControls.Catalog.id)
+  if (useControlsExtensionPosition().panoramaxOptions.includes("right"))
+    rightC.push(useControls.Panoramax.id)
+  if (useControlsExtensionPosition().panoramaxOptions.includes("left"))
+    leftC.push(useControls.Panoramax.id)
   return {
     left : leftC,
     right : rightC
