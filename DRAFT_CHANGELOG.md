@@ -32,6 +32,7 @@ Nouveau widget Panoramax.
 - UI : empêche le décalage de la page au focus clavier (#1082)
 - UI : masque le badge en mobile (#1082)
 - UI : les icones des thèmes Société et Océans du catalogue sont correctement affichés (#1083)
+- Partage : les données issues de l'espace personnel sont correctement affichées dans les iframes (#1090)
 
 #### 🔒 [Sécurité]
 
