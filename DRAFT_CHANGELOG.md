@@ -6,12 +6,15 @@
 
 ### 🎉 Résumé
 
+Nouveau widget Panoramax.
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
 
 #### ✨ [Ajout]
 
+  - Panoramax : Ajout du nouveau widget Panoramax (#1046)
   - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
   - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
  
