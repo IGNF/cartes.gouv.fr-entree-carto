@@ -509,7 +509,7 @@
           "format": ""
         },
         {
-          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_BD-ORTHO",
+          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml",
           "format": ""
         }
       ],
@@ -543,7 +543,7 @@
       ],
       "metadata_urls": [
         "https://data-pprd.priv.geopf.fr/csw?REQUEST=GetRecordById&SERVICE=CSW&VERSION=2.0.2&OUTPUTSCHEMA=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&elementSetName=full&ID=IGNF_BD-ORTHO",
-        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_BD-ORTHO"
+        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml"
       ],
       "base": true,
       "key": "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS"
@@ -666,7 +666,7 @@
           "format": ""
         },
         {
-          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_BD-ORTHO",
+          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml",
           "format": ""
         }
       ],
@@ -700,7 +700,7 @@
       ],
       "metadata_urls": [
         "https://data-pprd.priv.geopf.fr/csw?REQUEST=GetRecordById&SERVICE=CSW&VERSION=2.0.2&OUTPUTSCHEMA=http://standards.iso.org/iso/19115/-3/mdb/2.0&elementSetName=full&ID=IGNF_BD-ORTHO",
-        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_BD-ORTHO"
+        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml"
       ],
       "key": "HR.ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS",
       "base": true
@@ -988,7 +988,7 @@
       },
       "metadata": [
         {
-          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_PLAN-IGN",
+          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml",
           "format": ""
         },
         {
@@ -1025,7 +1025,7 @@
         "Carte de référence de la couverture terrestre"
       ],
       "metadata_urls": [
-        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_PLAN-IGN",
+        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml",
         "https://data-pprd.priv.geopf.fr/csw?REQUEST=GetRecordById&SERVICE=CSW&VERSION=2.0.2&OUTPUTSCHEMA=http://standards.iso.org/iso/19115/-3/mdb/2.0&elementSetName=full&ID=IGNF_PLAN-IGN"
       ],
       "base": true,
@@ -1094,7 +1094,7 @@
         {
           "name": "IGNF_PLAN-IGN",
           "title": "IGNF_PLAN-IGN",
-          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_PLAN-IGN"
+          "url": "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml"
         },
         {
           "name": "gris",
@@ -1186,7 +1186,7 @@
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/standard.json",
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/toponymes.json",
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/sans_toponymes.json",
-        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_PLAN-IGN",
+        "https://qlf-cartes.ign.fr/rechercher-une-donnee/dataset/IGNF_GEOFLA_2060.xml",
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/transparent.json",
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/classique.json",
         "https://data-pprd.priv.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/epure.json",
