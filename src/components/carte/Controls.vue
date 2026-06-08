@@ -528,6 +528,9 @@ const panoramaxOptions = {
     },
     background: {
       display: false,
+    },
+    layerswitcher: {
+      display: false,
     }
   },
 };
