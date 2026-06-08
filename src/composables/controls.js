@@ -365,7 +365,6 @@ export function useControlsMenuOptions() {
       name: useControls.FullScreen.id,
       disabled: useControls.FullScreen.disable,
       icon: "ri:fullscreen-line",
-      group: 'Affichage',
     },
     {
       label: 'Barre de Recherche',

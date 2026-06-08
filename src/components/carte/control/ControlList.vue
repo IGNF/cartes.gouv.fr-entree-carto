@@ -133,4 +133,22 @@ onMounted(() => {
   top: $widget-btn-size * 2 + $gap * 2 !important;
   max-height: calc(100cqb - ($widget-btn-size * 2 + $gap * 4)) !important;
 }
+
+@include max(sm) {
+  .gpf-widget[id^="GPcontrolList-"] .gpf-panel {
+    max-height: 100cqb !important;
+  }
+}
+
+@include min(sm) {
+  @container map (max-height: 500px) {
+    .gpf-widget[id^="GPcontrolList-"] .gpf-panel {
+      top: 0 !important;
+      max-height: calc(100cqb - ($gap * 2)) !important;
+    }
+  }
+}
+
+
+
 </style>
