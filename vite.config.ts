@@ -92,6 +92,10 @@ export default defineConfig({
   },
   build: {
     sourcemap: process.env.SOURCE_MAP === 'true',
+    // un seul fichier CSS pour tout le bundle
+    cssCodeSplit: false,
+    // minification du CSS
+    cssMinify: true,
     rollupOptions: {
       output: {
         manualChunks(id) {

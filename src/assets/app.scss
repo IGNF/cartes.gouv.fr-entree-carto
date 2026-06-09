@@ -1,0 +1,31 @@
+/*
+ * Point d'entree unique des styles globaux.
+ * La cascade est pilotee par @layer (et non par l'ordre physique du bundle).
+ */
+
+@use 'sass:meta';
+
+@layer dsfr, ui, map, app;
+
+/* DSFR */
+@import '@gouvfr/dsfr/dist/core/core.main.min.css' layer(dsfr);
+@import '@gouvfr/dsfr/dist/component/component.main.min.css' layer(dsfr);
+@import '@gouvfr/dsfr/dist/utility/utility.main.min.css' layer(dsfr);
+@import '@gouvfr/dsfr/dist/scheme/scheme.min.css' layer(dsfr);
+
+/* Composants UI */
+@import 'cartes.gouv.fr-vue-components/dist/index.css' layer(ui);
+@import 'notivue/notification.css' layer(ui);
+@import 'notivue/animations.css' layer(ui);
+
+/* Carte et extensions */
+@import 'ol/ol.css' layer(map);
+@import 'geopf-extensions-openlayers/css/Dsfr.css' layer(map);
+
+/* Styles globaux applicatifs */
+@layer app {
+  @include meta.load-css('@/assets/header-global.scss');
+  @include meta.load-css('@/assets/menu-global.scss');
+  @include meta.load-css('@/assets/controls-global.scss');
+  @include meta.load-css('@/assets/widgets-global.scss');
+}
