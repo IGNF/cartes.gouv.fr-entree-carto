@@ -16,8 +16,8 @@
  * //   "population": 520774,
  * //   "coordonnees": [],
  * //   "arrondissement": "691",
- * //   "departement": "Rhône",
- * //   "region": "Auvergne-Rhône-Alpes",
+ * //   "departement": "69",
+ * //   "region": "84",
  * //   "statut": "chef_lieu_de_region",
  * //   "enveloppe": {
  * //   "enveloppe": {
