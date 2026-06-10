@@ -24,6 +24,6 @@ export class MainPage {
   }
 
   async checkMainPageTitle() {
-    await expect(this.page).toHaveTitle(/Le service public des cartes et données du territoire | cartes.gouv.fr/);
+    await expect(this.page).toHaveTitle(/cartes.gouv.fr | Explorer les cartes/);
   }
 }
