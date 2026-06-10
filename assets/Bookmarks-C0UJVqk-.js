@@ -1,0 +1,2 @@
+import{A as n,l as r,o as c,c as l,b as e,C as i,d as _,bq as d,r as f,F as p,U as u,q as m}from"./index-CdKmrRPL.js";const B={class:"fr-container fr-p-2w"},b={},v=Object.assign(b,{__name:"Bookmarks",setup(k){u(),m("services");const s="Favoris",t="Not yet implemented !";return n(()=>{}),r(()=>{}),(o,g)=>{const a=d;return c(),l(p,null,[e("div",B,[e("h2",null,i(s)),_(a,{type:"info",title:"Information",description:t,closed:!1,closeable:!1})]),f(o.$slots,"default")],64)}}});export{v as default};
+//# sourceMappingURL=Bookmarks-C0UJVqk-.js.map
