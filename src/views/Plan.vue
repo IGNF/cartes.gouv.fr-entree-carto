@@ -122,9 +122,11 @@ onMounted(async () => {
   // on redirige vers la page d'accueil en passant les informations 
   // de la ville dans le state de la route
   if (cityinfo && Object.keys(cityinfo).length > 0) {
-    router.replace({ path: '/', state: { cityinfo: cityinfo } });
     // on génère aussi une URL de permalien pour la carte
     var permalink = createPermalinkUrl();
+    // Redirection vers la page d'accueil avec les données de la ville dans le state
+    await router.replace({ path: '/', state: { cityinfo: cityinfo } });
+    // On charge le permalien pour afficher la carte centrée sur la ville avec les bonnes couches
     getLayersFromPermalink(permalink);
   }
 })
