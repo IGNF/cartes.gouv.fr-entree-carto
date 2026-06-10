@@ -87,7 +87,7 @@ onBeforeUnmount(() => {});
 
 </script>
 
-<template>     
+<template>
   <nav
     :id="menu.title.trim().toLowerCase().replaceAll(' ', '-')"
     class="fr-nav"
@@ -151,16 +151,13 @@ onBeforeUnmount(() => {});
               :id="idx" 
               class="w100"
             >
+
               <div class="fr-grid-row fr-grid-row--center w100">
-                <button 
-                  class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right w100 justify-center"
-                  :class="link.icon"
-                >
-                  <a
-                    :href="link.to"
-                    :target="link.target"
-                  >{{ link.text }}</a>
-                </button>
+                <a
+                  :href="link.to"
+                  :target="link.target || '_blank'"
+                  class="fr-m-3v fr-btn w100 justify-center link__as__fr-primary-btn"
+                >{{ link.text }}</a>
               </div>
             </div>
             <a 
@@ -255,6 +252,32 @@ a[target=_blank]::after {
 // alignements des boutons du menu mobile
 .fr-nav__btn span {
   margin-right: auto;
+}
+
+// rendu du liens dans le menu de navigation
+a.link__as__fr-primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-action-high-blue-france) !important;
+  color: var(--text-inverted-blue-france) !important;
+  --hover: var(--background-action-high-blue-france-hover);
+  --active: var(--background-action-high-blue-france-active);
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn:hover {
+  background-color: var(--background-action-high-blue-france-hover) !important;
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn:active {
+  background-color: var(--background-action-high-blue-france-active) !important;
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn::after {
+  content: none !important;
 }
 
 .fr-header__menu-links::after {
