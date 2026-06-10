@@ -65,7 +65,7 @@ export function useHeaderParams() {
               {
                   text: "Découvrir cartes.gouv.fr ",
                   to: useBaseUrl() + '/decouvrir',
-                  target: "_blank",
+                  target: "",
                   button : true
               }
             ]   

@@ -155,7 +155,7 @@ onBeforeUnmount(() => {});
               <div class="fr-grid-row fr-grid-row--center w100">
                 <a
                   :href="link.to"
-                  :target="link.target || '_blank'"
+                  :target="link.target"
                   class="fr-m-3v fr-btn w100 justify-center link__as__fr-primary-btn"
                 >{{ link.text }}</a>
               </div>
