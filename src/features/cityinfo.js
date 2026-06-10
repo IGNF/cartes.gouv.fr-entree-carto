@@ -98,10 +98,21 @@ const _getFeatureWfs = async (insee) => {
 
   // ex : 
   // curl 'https://data.geopf.fr/wfs/ows?request=GetFeature&service=WFS&version=2.0.0&TypeNames=BDTOPO_V3:commune&count=1&CQL_FILTER=code_insee=%2775056%27&outputFormat=application/json'
-  var url = WFS_BASE_URL + '?request=GetFeature&service=WFS&version=2.0.0&TypeNames=';
-  url = url + WFS_WORKSPACE_CITY + ':' + WFS_TYPENAME_CITY;
-  url = url + '&count=1&CQL_FILTER=code_insee=\'' + insee + '\'';
-  url = url + '&outputFormat=' + WFS_OUTPUT_FORMAT;
+  if (!/^\d{5}$/.test(insee)) {
+    throw new Error(`Code INSEE invalide : "${insee}".`);
+  }
+
+  const params = new URLSearchParams({
+    request: 'GetFeature',
+    service: 'WFS',
+    version: '2.0.0',
+    TypeNames: `${WFS_WORKSPACE_CITY}:${WFS_TYPENAME_CITY}`,
+    count: '1',
+    CQL_FILTER: `code_insee='${insee}'`,
+    outputFormat: WFS_OUTPUT_FORMAT,
+    srsName: 'EPSG:4326',
+  });
+  const url = `${WFS_BASE_URL}?${params.toString()}`;
 
   try {
     const response = await fetch(url);
