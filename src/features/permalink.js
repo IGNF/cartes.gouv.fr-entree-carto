@@ -1,6 +1,26 @@
 import { useUrlParams } from "@/composables/urlParams";
 import { useMapStore } from "@/stores/mapStore";
 
+const waitForMapReady = (store, maxAttempts = 30, interval = 100) => {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    const timer = setInterval(() => {
+      const map = store.getMap();
+      if (map && typeof map.getView === 'function' && map.getView()) {
+        clearInterval(timer);
+        resolve(map);
+        return;
+      }
+
+      attempts += 1;
+      if (attempts >= maxAttempts) {
+        clearInterval(timer);
+        resolve(null);
+      }
+    }, interval);
+  });
+};
+
 /** 
  * Ajoute le paramètre permalink=yes dans l'URL
  */
@@ -46,9 +66,12 @@ export const getLayersFromPermalink = (url) => {
     }
   }
   // HACK : on force un rafraichissement de la carte
-  setTimeout(() => {
-    var map = store.getMap();
-    map.getView().setZoom(store.zoom);
-    map.getView().setCenter([store.x, store.y]);
-  },100);
+  waitForMapReady(store).then((map) => {
+    if (!map) {
+      return;
+    }
+    const view = map.getView();
+    view.setZoom(store.zoom);
+    view.setCenter([store.x, store.y]);
+  });
 };
