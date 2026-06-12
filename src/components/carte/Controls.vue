@@ -531,8 +531,20 @@ const panoramaxOptions = {
     },
     layerswitcher: {
       display: false,
+    },
+    filters : {
+      display : true,
+      label : "Effacer les filtres",
+      description : "Réinitialiser les filtres",
+      content : {
+          types : {
+             value : "360°"
+          },
+          dates : true,
+          periodes : true
+      }
     }
-  },
+  }
 };
 
 onMounted(() => {
