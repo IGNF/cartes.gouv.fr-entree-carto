@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <!-- Affichage ou chargement dynamique selon le slug -->
-    <h1>Chargement du plan : {{ city }}</h1>
+  <div class="plan-loading-view">
+    <Patience />
+    <p
+      v-if="city"
+      class="plan-loading-label"
+    >
+      Chargement du plan : {{ city }}
+    </p>
   </div>
 </template>
 
@@ -11,6 +16,7 @@ import { onMounted } from 'vue';
 import View from 'ol/View';
 import { transformExtent as olTransformExtent } from 'ol/proj';
 
+import Patience from '@/components/utils/Patience.vue';
 import { getCityInfo } from '@/features/cityinfo';
 import { getLayersFromPermalink } from '@/features/permalink.js';
 
@@ -131,3 +137,17 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.plan-loading-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.plan-loading-label {
+  margin-top: 1rem;
+}
+</style>
