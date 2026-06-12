@@ -15,7 +15,7 @@
 #----------------------------------------------------------------------
 # cartesgouvfr-entree_carto : Génération d'un build statique
 #----------------------------------------------------------------------
-FROM node:23-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Les arguments de construction de l'image
 # - BASE_URL : URL de base de l'application
