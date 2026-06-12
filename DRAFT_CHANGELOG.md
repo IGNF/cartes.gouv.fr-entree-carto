@@ -6,7 +6,8 @@
 
 ### 🎉 Résumé
 
-Nouveau widget Panoramax.
+Nouveau widget Panoramax qui permet de visualiser des photos immersives libres via des instances de contribution collaboratives.
+Refonte du menu de gestion des widgets sur l'interface.
 
 ### 💥 Breaking changes
 
@@ -24,6 +25,7 @@ Nouveau widget Panoramax.
   - Header : la signature change pour "Notre territoire commun" (#1084)
   - Gestionnaire d’outils : intégration du «nouveau» widget ControlList (#998)
   - Gestionnaire d’outils : déplacement des autres outils dans «Préférences d’affichage» (#998)
+  - Panoramax : filtre image 360 actif par défaut (#1098)
 
 #### 🔥 [Obsolète]
 
