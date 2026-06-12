@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Carto from "@/components/carte/Carto.vue";
 import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
-import RightMenuTool from "@/components/menu/RightMenuTool.vue";
 
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from "@/components/carte/control/ShareModal.vue";
@@ -186,12 +185,6 @@ provide("selectedLayers", selectedLayers);
       @on-modal-share-open="onModalShareOpen"
       @on-modal-print-open="onModalPrintOpen"
       @on-modal-login-open="onModalLoginOpen"
-    />
-
-    <!-- Le menu des contrôles et le catalogue -->
-    <RightMenuTool
-      :selected-layers="selectedLayers"
-      :selected-controls="selectedControls"
     />
   </div>
   <!-- Liste des modales -->

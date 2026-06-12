@@ -228,7 +228,9 @@ const controlListOptions = {
   id: "10",
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
-}
+  header: false,
+  sortable: true,
+};
 
 const drawingOptions = {
   id: "11",
@@ -465,14 +467,12 @@ const layerImportOptions = {
   id: "20",
   position: useControlsExtensionPosition().layerImportOptions,
   gutter: true,
-  listable: true,
 };
 
 const reportingOptions = {
   id: "21",
   position: useControlsExtensionPosition().reportingOptions,
   gutter: true,
-  listable: true,
   format : "kml"
 };
 
@@ -788,17 +788,6 @@ onMounted(() => {
     content: none;
   }
 }
-// conteneur top-right
-.position-container-top-right {
-  // cree un espace vide au-dessus du 3e widget (pour insérer le controleur de widgets)
-  .gpf-widget-button:nth-child(3) {
-    margin-top: $widget-btn-size;
-  }
-  // enleve le border-radius (en haut)
-  .gpf-widget-button:nth-child(3) .gpf-btn-icon {
-    border-radius: 0;
-  }
-}
 // tooltips: position
 .position-container-top-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
 .position-container-bottom-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
@@ -885,55 +874,51 @@ onMounted(() => {
  *  gestion du nombre de widget en fonction de la hauteur
  */
 
-// le widget GPcontrolList est caché par défaut (pas d'outils)
+// le widget GPcontrolList est toujours affiché
 .gpf-widget[id^="GPcontrolList-"] {
-  display: none;
-}
-// puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
-.position-container-top-right > .gpf-widget-button:nth-child(3) ~ .gpf-widget-button[id^="GPcontrolList-"] {
   position: absolute !important;
-  display: block;
-  // le controlList est affiché tout en bas, sous la liste
-  // --diff-widgets
-  // si le nombre max (--nb-widgets) est plus grand que le nombre de widget (--count +1 car controlList)
-  // alors, --diff-widgets > 0 et bottom = 9999px * n, sinon --diff-widgets = 0 et bottom = 0
-  --diff-widgets: max(var(--nb-widgets) - var(--count) + 1, 0);
-  bottom: calc(var(--diff-widgets) * 9999px) !important;
+  // tout en bas, sous la liste
+  bottom: 0 !important;
 }
 
-// on ajoute un border-radius sur l'avant dernier élément, a partir du 3e (celui avant controlList)
-.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:nth-last-child(2) > .gpf-btn-icon {
-  border-radius: 0 0 $widget-btn-radius $widget-btn-radius;
+// puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
+.position-container-top-right > .gpf-widget-button:nth-child(3) ~ .gpf-widget-button[id^="GPcontrolList-"] .gpf-btn-icon {
+
+  $border-radius: calc((1 - min(1, max(0, calc(var(--nb-widgets) - 1)))) * $widget-btn-radius);
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+}
+
+.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:has(> button[aria-pressed="true"]) ~  .gpf-widget-button[id^="GPcontrolList-"] > button {
+  background-image: linear-gradient(rgba(227, 227, 253, max(var(--pressed) - var(--nb-widgets) + 1, 0)) 0 0);
 }
 
 // on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
 .position-container-top-right {
-  --nb-widgets: 0;
+  --nb-widgets: 1;
   position: relative;
-  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 4) + ($gap * 2));
+  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 2) + ($gap * 2));
 }
 
 // on défini le nombre de widgets max en fonction de la hauteur de map
-@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 0 } }
+@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 1 } }
 @container map (min-height: 550px) { .position-container-top-right { --nb-widgets: 2 } }
 @container map (min-height: 600px) { .position-container-top-right { --nb-widgets: 3 } }
 @container map (min-height: 650px) { .position-container-top-right { --nb-widgets: 4 } }
 @container map (min-height: 700px) { .position-container-top-right { --nb-widgets: 5 } }
-@container map (min-height: 750px) { .position-container-top-right { --nb-widgets: 6 } }
-@container map (min-height: 850px) { .position-container-top-right { --nb-widgets: 8 } }
-@container map (min-height: 900px) { .position-container-top-right { --nb-widgets: 10 } }
-@container map (min-height: 950px) { .position-container-top-right { --nb-widgets: 20 } }
 
 // creation des selecteurs pour 20 outils
 @for $i from 1 through 20 {
   // defini la position du widget (i) (n=3 est le premier widget)
   .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
   // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
-  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 3})) { --count: #{$i} }
-}
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2})) { --count: #{$i} }
 
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2}) > button[aria-pressed="true"]) { --pressed: #{$i} }
+  
+}
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
-  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * -99in);
+  margin-left: calc(max(var(--i) - var(--nb-widgets) + 1, 0) * -99in);
 }
 </style>

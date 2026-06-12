@@ -17,6 +17,7 @@
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
 import { useDomStore } from "@/stores/domStore"
+import { selectedControls } from '@/composables/mapControls';
 
 const emitter = inject('emitter');
 
@@ -115,16 +116,14 @@ onMounted(() => {
     >
       Signaler une anomalie
     </DsfrButton>
+
     <hr>
 
-    <div class="fr-btn fr-btn--tertiary-no-outline fr-btn--md fr-btn--icon-left fr-icon-layout-top-line">
-      <DsfrToggleSwitch
-        v-model="domStore.isHeaderCompact"
-        label="Affichage compact"
-        no-text
-        class="fr-toggle--label-left"
-      />
-    </div>
+    <MenuControl
+      :selected-controls="selectedControls"
+      theme="Affichage"
+      theme-title="Préférences d’affichage"
+    />
   </div>
 </template>
 

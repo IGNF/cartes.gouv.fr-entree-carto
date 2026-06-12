@@ -5,7 +5,7 @@ import {
   createWebHistory } 
 from 'vue-router'
 
-const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
+const MAIN_TITLE = 'cartes.gouv.fr | Explorer les cartes'
 
 // liste des routes disponibles
 const routes: Array<RouteRecordRaw> = [
