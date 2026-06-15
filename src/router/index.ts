@@ -1,4 +1,5 @@
 import { 
+  type RouteLocationNormalized,
   type RouteRecordRaw, 
   createRouter, 
   createWebHistory } 
@@ -32,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/bookmarks',
     name: 'Favoris',
     component: () => import('../views/Bookmarks.vue'), // Lazy loading
+  },
+  {
+    path: '/plan/:slug(.*)*',
+    name: 'Plan',
+    component: () => import('../views/Plan.vue'), // Lazy loading
+    props: true
   }
 ]
 
@@ -63,7 +70,8 @@ function updateTitle(to: RouteLocationNormalized) {
 
 function handleAccueilRedirect(to: RouteLocationNormalized) {
   if (!window.location.href.includes('/accueil')) {
-    window.open(to.href)
+    const resolved = router.resolve(to.fullPath)
+    window.open(resolved.href)
     return false
   }
   return true

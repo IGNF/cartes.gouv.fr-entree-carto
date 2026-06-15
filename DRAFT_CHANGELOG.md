@@ -18,6 +18,7 @@ Refonte du menu de gestion des widgets sur l'interface.
   - Panoramax : Ajout du nouveau widget Panoramax (#1046)
   - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
   - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
+  - PLan : Ajout de la route "/plan/:insee" pour afficher le plan d'une ville (#1094)
  
 #### 🔨 [Evolution]
 
