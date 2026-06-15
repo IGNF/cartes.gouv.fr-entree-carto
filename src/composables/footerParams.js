@@ -7,7 +7,7 @@ import { useBaseUrl } from '@/composables/baseUrl';
 export function useFooterParams() {
 
     const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
-
+    
     // Paramètres pour le Footer
     const footerParams = {
         beforeMandatoryLinks: [
@@ -49,23 +49,23 @@ export function useFooterParams() {
             title: "Nos partenaires",
             mainPartner: {
               href: "https://www.ign.fr/",
-              logo: isStaticService ? "https://cartes.gouv.fr/img/footer/partenaires/ign.png" : "https://data.geopf.fr/annexes/ressources/footer/ign.png",
+              logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/ign.png' : useBaseUrl() + '/annexes/ressources/footer/ign.png',
               name: "IGN"
           },
             subPartners: [
                 {
                     href: "https://www.transformation.gouv.fr/",
-                    logo: isStaticService ? "https://cartes.gouv.fr/img/footer/partenaires/min_fp.jpg" : "https://data.geopf.fr/annexes/ressources/footer/min_fp.jpg",
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/min_fp.jpg' : useBaseUrl() + '/annexes/ressources/footer/min_fp.jpg',
                     name: "Ministère de la transformation et de la fonction publiques"
                 },
                 {
                     href: "https://www.ecologie.gouv.fr/",
-                    logo: isStaticService ? "https://cartes.gouv.fr/img/footer/partenaires/min_ecologie.jpg" : "https://data.geopf.fr/annexes/ressources/footer/min_ecologie.jpg",
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/min_ecologie.jpg' : useBaseUrl() + '/annexes/ressources/footer/min_ecologie.jpg',
                     name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
                 },
                 {
                     href: "https://cnig.gouv.fr/",
-                    logo: isStaticService ? "https://cartes.gouv.fr/img/footer/partenaires/logo-rf-cnig.jpg" : "https://data.geopf.fr/annexes/ressources/footer/rf_cnig.jpg",
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/logo-rf-cnig.jpg' : useBaseUrl() + '/annexes/ressources/footer/rf_cnig.jpg',
                     name: "Conseil national de l’information géolocalisée"
                 },
             ]
