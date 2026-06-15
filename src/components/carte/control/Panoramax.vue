@@ -1,8 +1,5 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
-import { useMapStore } from '@/stores/mapStore';
 import { useDomStore } from '@/stores/domStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
@@ -11,16 +8,16 @@ import "@panoramax/web-viewer/build/photoviewer.css";
 
 import { Panoramax } from 'geopf-extensions-openlayers';
 
-// lib notification
-import { push } from 'notivue';
-import t from '@/features/translation';
-
 const props = defineProps({
   mapId: {
     type: String,
     default: ''
   },
   visibility: Boolean,
+  layersReady: {
+    type: Boolean,
+    default: false
+  },
   analytic: Boolean,
   panoramaxOptions: {
     type: Object,
@@ -28,9 +25,6 @@ const props = defineProps({
   }
 });
 
-const log = useLogger();
-const dataStore = useDataStore();
-const mapStore = useMapStore();
 const domStore = useDomStore();
 
 const map = inject(props.mapId);
@@ -54,15 +48,34 @@ const getHistoryState = () => {
   return { picture, sequence };
 }
 
+const clearHistoryState = () => {
+  const state = window.history.state ?? {};
+  if (!state) {
+    return;
+  }
+
+  const { picture, sequence, ...rest } = state;
+  if (!picture && !sequence) {
+    return;
+  }
+
+  window.history.replaceState(rest, document.title, window.location.href);
+}
+
 const openPanoramaxViewer = ({ picture, sequence }) => {
   if (!picture || !sequence) {
     return;
   }
-  // FIXME comment attendre que toutes les couches soient chargées avant d'ouvrir le widget ?
+  if (!props.layersReady) {
+    return;
+  }
+
   panoramax.setCollapsed(false);
   // TODO ajouter un mécanisme sur le widget pour prendre en compte les changements
   panoramax.set("sequence", sequence);
   panoramax.set("picture", picture);
+  // on supprime les infos de l'historique
+  clearHistoryState();
 };
 
 onMounted(() => {
@@ -72,7 +85,6 @@ onMounted(() => {
       var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
       useActionButtonEulerian(el);
     }
-    /* abonnement au widget */
     openPanoramaxViewer(getHistoryState());
   }
 })
@@ -90,16 +102,9 @@ onUpdated(() => {
       var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
       useActionButtonEulerian(el);
     }
-    /* abonnement au widget */
     openPanoramaxViewer(getHistoryState());
   }
 })
-
-/** 
- * gestionnaire d'evenement sur les abonnements
- * @description
- * ...
- */
 
 </script>
 

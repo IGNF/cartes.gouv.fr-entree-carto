@@ -60,11 +60,13 @@ const mapIsReady = computed(() => {
 
 
 const hasInitialRecenter = ref(false);
+const layersReady = ref(false);
 
 // INFO
 // On écoute l'événement "ready" émis par le composant Layers lorsque 
 // la dernière couche est montée.
 const onLayersReady = () => {
+  layersReady.value = true;
   if (hasInitialRecenter.value) {
     return;
   }
@@ -109,6 +111,7 @@ onMounted(() => {
       v-if="mapIsReady"
       :map-id="mainMap"
       :control-options="props.selectedControls"
+      :layers-ready="layersReady"
     />
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers

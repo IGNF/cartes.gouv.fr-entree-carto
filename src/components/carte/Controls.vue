@@ -65,6 +65,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  layersReady: {
+    type: Boolean,
+    default: false
+  },
   mapId: {
     type: String,
     default: ''
@@ -721,6 +725,7 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
     :analytic="useControls.Panoramax.analytic"
     :panoramax-options="panoramaxOptions"
+    :layers-ready="props.layersReady"
     :map-id="mapId"
   />
 </template>
