@@ -39,6 +39,7 @@ Refonte du menu de gestion des widgets sur l'interface.
 - UI : masque le badge en mobile (#1082)
 - UI : les icones des thèmes Société et Océans du catalogue sont correctement affichés (#1083)
 - Partage : les données issues de l'espace personnel sont correctement affichées dans les iframes (#1090)
+- Panoramax : les filtres sur les photos ne sont plus exclusifs
 
 #### 🔒 [Sécurité]
 
