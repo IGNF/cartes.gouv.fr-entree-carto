@@ -2,18 +2,20 @@
 import { useDomStore } from "@/stores/domStore";
 import { useHeaderParams } from '@/composables/headerParams';
 import { useMatchMedia } from '@/composables/matchMedia';
+import { useBaseUrl } from '@/composables/baseUrl';
 import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
 import CustomNavigation from '@/components/header/CustomNavigation.vue';
 
 const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
 
+const baseUrl = useBaseUrl();
 const domStore = useDomStore();
 const { theme } = useScheme();
 const mobileScreen = useMatchMedia('LG');
 
 let operatorImgSrc = computed(() => {
   let lightOrDark = theme.value === 'light' ? '' : '-dark';
-  return isStaticService ? `https://cartes.gouv.fr/img/header/cartes-gouv-logo${lightOrDark}.svg` : `https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo${lightOrDark}.svg`;
+  return isStaticService ? `${baseUrl}/img/header/cartes-gouv-logo${lightOrDark}.svg` : `${baseUrl}/annexes/ressources/header/cartes-gouv-logo${lightOrDark}.svg`;
 });
 
 const headerParams = useHeaderParams();

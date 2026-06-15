@@ -1,6 +1,8 @@
 <script setup>
+import { useBaseUrl } from '@/composables/baseUrl';
 const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
 
+const baseUrl = useBaseUrl();
 const logoText = "République Française";
 const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
 </script>
@@ -14,7 +16,7 @@ const iconProps = ref({ scale: 1.25, name: 'ri:map-2-line' });
         class="maxwidth"
       />
       <img
-        :src="isStaticService ? 'https://cartes.gouv.fr/img/header/cartes-gouv-logo.svg' : 'https://data.geopf.fr/annexes/ressources/header/cartes-gouv-logo.svg'"
+        :src="isStaticService ? `${baseUrl}/img/header/cartes-gouv-logo.svg` : `${baseUrl}/annexes/ressources/header/cartes-gouv-logo.svg`"
         alt=""
       >
     </div>
