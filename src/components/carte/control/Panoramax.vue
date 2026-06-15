@@ -33,21 +33,47 @@ const dataStore = useDataStore();
 const mapStore = useMapStore();
 const domStore = useDomStore();
 
-const map = inject(props.mapId)
+const map = inject(props.mapId);
+
 const panoramax = new Panoramax(props.panoramaxOptions);
 
 panoramax.on("pnx:fullscreen", (e) => {
   domStore.isFullscreenPanoramax = e.data.fullscreen;
 });
+ 
+const getHistoryState = () => {
+  const state = window.history.state ?? {};
+  if (!state) {
+    return {};
+  }
+  const { picture, sequence } = state;
+  console.warn("getHistoryState", state);
+  if (!picture || !sequence) {
+    return {};
+  }
+  return { picture, sequence };
+}
+
+const openPanoramaxViewer = ({ picture, sequence }) => {
+  if (!picture || !sequence) {
+    return;
+  }
+  // FIXME comment attendre que toutes les couches soient chargées avant d'ouvrir le widget ?
+  panoramax.setCollapsed(false);
+  // TODO ajouter un mécanisme sur le widget pour prendre en compte les changements
+  panoramax.set("sequence", sequence);
+  panoramax.set("picture", picture);
+};
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(panoramax)
+    map.addControl(panoramax);
     if (props.analytic) {
       var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
+    openPanoramaxViewer(getHistoryState());
   }
 })
 
@@ -65,7 +91,7 @@ onUpdated(() => {
       useActionButtonEulerian(el);
     }
     /* abonnement au widget */
-    
+    openPanoramaxViewer(getHistoryState());
   }
 })
 
