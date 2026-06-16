@@ -49,13 +49,18 @@ const createPermalinkUrl = () => {
 };
 
 onMounted(async () => {
+  if (!isValidSlug) {
+    await router.replace('/');
+    return;
+  }
+
   // On génère aussi une URL de permalien pour la carte
   var permalink = createPermalinkUrl();
 
   // Retour sur la Home Page pour chargement du widget Panoramax avec les informations suivantes :
   // - l'ID de la photo
   // - l'ID de la séquence de la photo
-  await router.replace({ path: '/', state: { picture : pictureID, sequence: sequenceID } });
+  await router.replace({ path: '/', state: { picture: pictureID, sequence: sequenceID } });
   
   // On charge le permalien pour afficher la carte centrée sur la photo 
   // sans detruire les couches déjà chargées
