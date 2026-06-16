@@ -24,20 +24,17 @@ const router = useRouter();
 // Exemple de route : 
 //   /photo/:sequenceID/:pictureID/:center/:zoom/
 //   /photo/46480052-0064-401a-96d7-4e3ff001fb56/db63cd7e-91f4-49d2-8540-f8d8c4773b52/2.321082,48.848713/18
-let slug = route.params.slug;
-let slugArray = [];
-if (Array.isArray(slug)) {
-  slugArray = slug;
-} else if (typeof slug === 'string') {
-  slugArray = slug.split('/');
-}
+const slug = route.params.slug;
+const slugArray = Array.isArray(slug)
+  ? slug
+  : (typeof slug === 'string' ? slug.split('/') : []);
 
-// TODO : vérifier que slugArray contient bien 4 éléments
-// TODO : vérifier que les éléments sont valides (ID de séquence, ID de photo, coordonnées, zoom)
-let sequenceID = slugArray[0];  // ID de la séquence
-let pictureID  = slugArray[1];  // ID de la photo
-let center     = slugArray[2];  // coordonnées du centre de la photo : "lat,lon"
-let zoom       = slugArray[3];  // zoom de la photo
+const sequenceID = slugArray[0];  // ID de la séquence
+const pictureID  = slugArray[1];  // ID de la photo
+const center     = slugArray[2];  // coordonnées du centre de la photo : "lon,lat"
+const zoom       = Number.parseInt(slugArray[3], 10);  // zoom de la photo
+
+const isValidSlug = slugArray.length === 4 && sequenceID && pictureID && center && Number.isFinite(zoom);
 
 const createPermalinkUrl = () => {
   // On génère une URL de permalien pour la carte centrée sur la photo
