@@ -15,13 +15,113 @@
  */
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useDataStore } from "@/stores/dataStore";
-import { 
-  LayerWMTS as GeoportalWMTS
-} from 'geopf-extensions-openlayers';
+import { LayerWMTS as GeoportalWMTS } from 'geopf-extensions-openlayers';
 
 let isMobile = useMatchMedia('SM');
 
+
+// la gestion des controles, l'ordre est important:
+// 1. Catalog 2. Layerswitcher
+// 3 à ControlList - 1 Outils à droite
+// ControlList
+// les autres (ordre non important)
 export const useControls = {
+  Catalog: {
+    id: 'Catalog',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-feedback-line"
+  },
+  LayerSwitcher: {
+    id: 'LayerSwitcher',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-stack-line"
+  },
+  MeasureLength: {
+    id: 'MeasureLength',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:ruler-line"
+  },
+  MeasureArea: {
+    id: 'MeasureArea',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:custom-size"
+  },
+  Drawing: {
+    id: 'Drawing',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:pencil-line"
+  },
+  Route: {
+    id: 'Route',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:route-line"
+  },
+  Isocurve: {
+    id: 'Isocurve',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:map-pin-time-line"
+  },
+  ReverseGeocode: {
+    id: 'ReverseGeocode',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:signpost-line"
+  },
+  MousePosition: {
+    id: 'MousePosition',
+    active: true,
+    disable: false,
+    analytic: false,
+    default: true,
+    icon: "gpf:coordonnee"
+  },
+  ElevationPath: {
+    id: 'ElevationPath',
+    active: true,
+    disable: false,
+    analytic: false,
+    default: true,
+    icon: "ri:line-chart-line"
+  },
+  MeasureAzimuth: {
+    id: 'MeasureAzimuth',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:compasses-2-line"
+  },
+  ControlList: {
+    id: 'ControlList',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "ri:list-check"
+  },
   OverviewMap: {
     id: 'OverviewMap',
     active: false,
@@ -47,14 +147,6 @@ export const useControls = {
     // The ScaleLine control is a non-interactive widget and does not require an icon.
     icon: ""
   },
-  LayerSwitcher: {
-    id: 'LayerSwitcher',
-    active: true,
-    disable: true,
-    analytic: true,
-    default: true,
-    icon: "fr-icon-stack-line"
-  },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
     active: true,
@@ -71,30 +163,6 @@ export const useControls = {
     default: true,
     icon: "ri:list-indefinite"
   },
-  Drawing: {
-    id: 'Drawing',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:pencil-line"
-  },
-  Isocurve: {
-    id: 'Isocurve',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:map-pin-time-line"
-  },
-  ReverseGeocode: {
-    id: 'ReverseGeocode',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:signpost-line"
-  },
   Zoom: {
     id: 'Zoom',
     active: true,
@@ -103,14 +171,6 @@ export const useControls = {
     default: !isMobile.value,
     icon: "ri:zoom-in-line"
   },
-  Route: {
-    id: 'Route',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:route-line"
-  },
   FullScreen: {
     id: 'FullScreen',
     active: true,
@@ -118,30 +178,6 @@ export const useControls = {
     analytic: false,
     default: true,
     icon: "ri:fullscreen-line"
-  },
-  MeasureLength: {
-    id: 'MeasureLength',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:ruler-line"
-  },
-  MeasureArea: {
-    id: 'MeasureArea',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:custom-size"
-  },
-  MeasureAzimuth: {
-    id: 'MeasureAzimuth',
-    active: true,
-    disable: false,
-    analytic: true,
-    default: false,
-    icon: "ri:compasses-2-line"
   },
   Share: {
     id: 'Share',
@@ -159,14 +195,6 @@ export const useControls = {
     default: true,
     icon: "fr-icon-printer-line"
   },
-  MousePosition: {
-    id: 'MousePosition',
-    active: true,
-    disable: false,
-    analytic: false,
-    default: false,
-    icon: "gpf:coordonnee"
-  },
   Territories: {
     id: 'Territories',
     active: true,
@@ -175,14 +203,6 @@ export const useControls = {
     default: true,
     icon: "fr-icon-france-line"
   },
-  ElevationPath: {
-    id: 'ElevationPath',
-    active: true,
-    disable: false,
-    analytic: false,
-    default: false,
-    icon: "ri:line-chart-line"
-  },
   LayerImport: {
     id: 'LayerImport',
     active: true,
@@ -190,14 +210,6 @@ export const useControls = {
     analytic: true,
     default: true,
     icon: "ri:file-upload-line"
-  },
-  ControlList: {
-    id: 'ControlList',
-    active: true,
-    disable: true,
-    analytic: true,
-    default: true,
-    icon: "ri:list-check"
   },
   ContextMenu: {
     id: 'ContextMenu',
@@ -214,14 +226,6 @@ export const useControls = {
     analytic: true,
     default: true,
     icon: "fr-icon-feedback-line" // ri:feedback-line
-  },
-  Catalog: {
-    id: 'Catalog',
-    active: true,
-    disable: true,
-    analytic: true,
-    default: true,
-    icon: "fr-icon-feedback-line"
   },
   Panoramax: {
     id: 'Panoramax',
@@ -361,7 +365,6 @@ export function useControlsMenuOptions() {
       name: useControls.FullScreen.id,
       disabled: useControls.FullScreen.disable,
       icon: "ri:fullscreen-line",
-      group: 'Affichage',
     },
     {
       label: 'Barre de Recherche',
