@@ -1,6 +1,6 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.17...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.18...HEAD>
 
 ## 🔖 version 1.0.18 - __DATE__
 
@@ -18,7 +18,7 @@ Refonte du menu de gestion des widgets sur l'interface.
   - Panoramax : Ajout du nouveau widget Panoramax (#1046)
   - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
   - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
-  - PLan : Ajout de la route "/plan/:insee" pour afficher le plan d'une ville (#1094)
+  - Plan : Ajout de la route "/plan/:insee" pour afficher le plan d'une ville (#1094)
  
 #### 🔨 [Evolution]
 
@@ -39,7 +39,7 @@ Refonte du menu de gestion des widgets sur l'interface.
 - UI : masque le badge en mobile (#1082)
 - UI : les icones des thèmes Société et Océans du catalogue sont correctement affichés (#1083)
 - Partage : les données issues de l'espace personnel sont correctement affichées dans les iframes (#1090)
-- Panoramax : les filtres sur les photos ne sont plus exclusifs
+- Panoramax : les filtres sur les photos ne sont plus exclusifs (#1101)
 
 #### 🔒 [Sécurité]
 
