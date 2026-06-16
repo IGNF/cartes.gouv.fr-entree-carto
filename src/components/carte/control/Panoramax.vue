@@ -41,7 +41,6 @@ const getHistoryState = () => {
     return {};
   }
   const { picture, sequence } = state;
-  console.warn("getHistoryState", state);
   if (!picture || !sequence) {
     return {};
   }
