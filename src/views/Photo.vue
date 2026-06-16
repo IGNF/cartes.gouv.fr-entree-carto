@@ -2,7 +2,7 @@
   <div class="plan-loading-view">
     <Patience />
     <p
-      v-if="picture"
+      v-if="pictureID"
       class="plan-loading-label"
     >
       Chargement de la photo : {{ pictureID }}
