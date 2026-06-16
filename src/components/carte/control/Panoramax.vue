@@ -71,9 +71,12 @@ const openPanoramaxViewer = ({ picture, sequence }) => {
   }
 
   panoramax.setCollapsed(false);
-  // TODO ajouter un mécanisme sur le widget pour prendre en compte les changements
+  // mécanisme sur le widget pour prendre en compte les changements
+  // si les properties suivantes sont modifiées, le widget ouvre automatiquement
+  // une photo dans le viewer
   panoramax.set("sequence", sequence);
   panoramax.set("picture", picture);
+  panoramax.set("display", true);
   // on supprime les infos de l'historique
   clearHistoryState();
 };
