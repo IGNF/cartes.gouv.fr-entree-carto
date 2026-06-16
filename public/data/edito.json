@@ -148,7 +148,7 @@
     "opened": false,
     "version": 1
   },
- "featured": [
+  "featured": [
     "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
     "ORTHOIMAGERY.ORTHOPHOTOS",
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR",
@@ -156,12 +156,6 @@
     "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
     "CADASTRALPARCELS.PARCELS",
     "CADASTRALPARCELS.HISTO.2008-2013.PARCELS",
-    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
-    "GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1",
-    "PLAN.IGN",
-    "BDTOPO",
-    "GEOGRAPHICALNAMES.NAMES",
-    "PCRS.LAMB93",
     "ORTHOIMAGERY.ORTHOPHOTOS.1965-1980",
     "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965",
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950",
@@ -169,25 +163,31 @@
     "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
     "TRANSPORTS.DRONES.RESTRICTIONS",
     "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI",
-    "TRANSPORTNETWORKS.ROADS",
     "dgac_peb_plan_wmsv",
-    "",
+    "TRANSPORTNETWORKS.ROADS",
+    "SECUROUTE.TE.1TE",
     "SECUROUTE.TE.ALL",
     "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN",
     "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW",
     "IGNF_LIDAR-HD_MNS_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW",
-    "EL.GridCoverage",
+    "ELEVATION.SLOPES",
     "GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS",
     "ELEVATION.CONTOUR.LINE",
-    "LANDUSE.AGRICULTURE.LATEST",
-    "HYDROGRAPHY.BCAE.LATEST",
-    "hedge.hedge",
     "DEBROUSSAILLEMENT",
     "FORETS.PUBLIQUES",
     "INRA.CARTE.SOLS",
     "TRACES.RANDO.HIVERNALE",
     "HYDROGRAPHY.HYDROGRAPHY",
-    "LANDCOVER.FORESTINVENTORY.V2"
+    "LANDCOVER.FORESTINVENTORY.V2",
+    "LANDUSE.AGRICULTURE.LATEST",
+    "HYDROGRAPHY.BCAE.2026",
+    "hedge.hedge",
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1",
+    "PLAN.IGN",
+    "BDTOPO",
+    "GEOGRAPHICALNAMES.NAMES",
+    "PCRS.LAMB93"
   ],
   "topics": {
     "thematic" : [
@@ -218,15 +218,161 @@
     ]
   },
   "layers": {
-    "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2": {
       "base": true,
-      "globalConstraint": {
-          "noConstraint": true
-      }
+      "title": "Plan IGN"
     },
-    "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
+    "ORTHOIMAGERY.ORTHOPHOTOS": {
+      "base": true,
+      "title": "Photographies aériennes"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR": {
+      "base": true,
+      "title": "Carte topo 25 (SCAN)"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS": {
+      "base": true,
+      "title": "Cartes IGN"
+    },
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS": {
+      "base": true,
+      "title": "Parcelles cadastrales"
+    },
+    "CADASTRALPARCELS.PARCELS": {
+      "base": true,
+      "title": "Parcelles cadastrales 2013-2018"
+    },
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCELS": {
+      "base": true,
+      "title": "Parcelles cadastrales 2008-2013"
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1965-1980": {
+      "base": true,
+      "title": "Photographies aériennes 1965-1980"
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965": {
+      "base": true,
+      "title": "Photographies aériennes 1950-1965"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950": {
+      "base": true,
+      "title": "Carte 1950 (SCAN)"
+    },
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI": {
+      "base": true,
+      "title": "Carte de Cassini"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40": {
+      "base": true,
+      "title": "Carte de l'État-major 1820-1866"
+    },
+    "TRANSPORTS.DRONES.RESTRICTIONS": {
+      "base": true,
+      "title": "Restrictions UAS catégorie Ouverte et Aéromodélisme"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI": {
+      "base": true,
+      "title": "Carte OACI-VFR 2026"
+    },
+    "dgac_peb_plan_wmsv": {
+      "base": true,
+      "title": "Plan d'exposition au bruit (PEB)"
+    },
+    "TRANSPORTNETWORKS.ROADS": {
+      "base": true,
+      "title": "Routes"
+    },
+    "SECUROUTE.TE.1TE": {
+      "base": true,
+      "title": "Transport exceptionnel - réseaux routiers 1TE"
+    },
+    "SECUROUTE.TE.ALL": {
+      "base": true,
+      "title": "Transport exceptionnel - franchissements"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN": {
+      "base": true,
+      "title": "Carte des pentes"
+    },
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW": {
+      "base": true,
+      "title": "Relief du terrain HD (MNT LIDAR HD)"
+    },
+    "IGNF_LIDAR-HD_MNS_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW": {
+      "base": true,
+      "title": "Relief du sursol HD (MNS LIDAR HD)"
+    },
+    "ELEVATION.SLOPES": {
+      "base": true,
+      "title": "Relief du terrain (MNT BD ALTI®)"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS": {
+      "base": true,
+      "title": "Carte littorale"
+    },
+    "ELEVATION.CONTOUR.LINE": {
+      "base": true,
+      "title": "Courbes de niveau"
+    },
+    "DEBROUSSAILLEMENT": {
+      "base": true,
+      "title": "Obligations Légales de Débroussaillement (OLD)"
+    },
+    "FORETS.PUBLIQUES": {
+      "base": true,
+      "title": "Forêts publiques"
+    },
+    "INRA.CARTE.SOLS": {
+      "base": true,
+      "title": "Carte des sols"
+    },
+    "TRACES.RANDO.HIVERNALE": {
+      "base": true,
+      "title": "Traces de randonnée hivernale"
+    },
+    "HYDROGRAPHY.HYDROGRAPHY": {
+      "base": true,
+      "title": "Réseau hydrographique"
+    },
+    "LANDCOVER.FORESTINVENTORY.V2": {
+      "base": true,
+      "title": "Carte forestière (BD FORÊT V2)"
+    },
+    "LANDUSE.AGRICULTURE.LATEST": {
+      "base": true,
+      "title": "Registre Parcellaire Graphique (RPG) 2024"
+    },
+    "HYDROGRAPHY.BCAE.2026": {
+      "base": true,
+      "title": "Cours d'eau BCAE 2026"
+    },
+    "hedge.hedge": {
+      "base": true,
+      "title": "Haies linéaires"
+    },
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST": {
+      "base": true,
+      "title": "Limites administratives"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1": {
+      "base": true,
+      "title": "Plan IGN J+1"
+    },
+    "PLAN.IGN": {
       "base": true,
       "title": "Plan IGN personnalisable"
+    },
+    "BDTOPO": {
+      "base": true,
+      "title": "BD TOPO® personnalisable"
+    },
+    "GEOGRAPHICALNAMES.NAMES": {
+      "base": true,
+      "title": "Dénominations géographiques"
+    },
+    "PCRS.LAMB93": {
+      "base": true,
+      "title": "PCRS"
     }
   }
 }
