@@ -891,14 +891,13 @@ onMounted(() => {
   position: absolute !important;
   // tout en bas, sous la liste
   bottom: 0 !important;
-}
-
-// puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
-.position-container-top-right > .gpf-widget-button:nth-child(3) ~ .gpf-widget-button[id^="GPcontrolList-"] .gpf-btn-icon {
-
-  $border-radius: calc((1 - min(1, max(0, calc(var(--nb-widgets) - 1)))) * $widget-btn-radius);
-  border-top-left-radius: $border-radius;
-  border-top-right-radius: $border-radius;
+  
+  .gpf-btn-icon {
+    // calcul du border-radius top de controllist
+    $border-radius: calc((1 - min(1, max(0, calc(var(--nb-widgets) - 1)))) * $widget-btn-radius);
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+  }
 }
 
 // ajoute un fond sur le controllist si l'outil sélectionné est masqué
