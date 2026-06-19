@@ -901,8 +901,20 @@ onMounted(() => {
   border-top-right-radius: $border-radius;
 }
 
+// ajoute un fond sur le controllist si l'outil sélectionné est masqué
 .position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:has(> button[aria-pressed="true"]) ~  .gpf-widget-button[id^="GPcontrolList-"] > button {
-  background-image: linear-gradient(rgba(227, 227, 253, max(var(--pressed) - var(--nb-widgets) + 1, 0)) 0 0);
+  // on cree un dégradé conic de deux fois la largeur du bouton (cree un damier)
+  background-image: conic-gradient(var(--background-open-blue-france) 50%, transparent 0);
+  background-size: 200% 100%;
+  // n = si l'element cliqué est visible alors n=0, sinon n=N
+  --n: max(var(--pressed) - var(--nb-widgets) + 1, 0); // 0 ou N
+  // on positionne le fond en fonction de N
+  // si n=0, bgp = 0
+  // si n=1, bgp = 48px * 1
+  // si n=2, bgp = 48px * 3
+  // si n=3, bgp = 48px * 5
+  // soit, bpg = N + N-1 * 48px
+  background-position: calc((var(--n) + max(var(--n) - 1, 0)) * $widget-btn-size) 0;
 }
 
 // on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
