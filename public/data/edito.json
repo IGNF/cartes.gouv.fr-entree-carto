@@ -328,14 +328,14 @@
        },
       "title": "Photographies aériennes"
     },
-    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR": {
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR$GEOPORTAIL:OGC:WMTS": {
       "base": true,
       "globalConstraint": {
         "noConstraint": true
        },
       "title": "Carte topo 25 (SCAN)"
     },
-    "GEOGRAPHICALGRIDSYSTEMS.MAPS": {
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
       "base": true,
       "globalConstraint": {
         "noConstraint": true
