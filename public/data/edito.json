@@ -605,22 +605,22 @@
     "PLAN.OSM$GEOPORTAIL:GPP:TMS" : {
       "title": "Plan avec OpenStreetMap (PLAN OSM)"
     }, 
-    "DGCL.2025.voirie-communale": {
+    "DGF_2026-voirie-retenue-communes$GEOPORTAIL:OGC:WMTS": {
       "globalConstraint": {
         "noConstraint": true
       }
     },
-    "DGCL.2025.voirie-departementale": {
+    "DGF_2026-voirie-retenue-departements$GEOPORTAIL:OGC:WMTS": {
       "globalConstraint": {
         "noConstraint": true
       }
     },
-    "DGCL.2026.communale": {
+    "DGF_2025-voirie-retenue-communes$GEOPORTAIL:OGC:WMTS": {
       "globalConstraint": {
         "noConstraint": true
       }
     },
-    "DGCL.2026.voirie-departementale": {
+    "DGF_2025-voirie-retenue-departements$GEOPORTAIL:OGC:WMTS": {
       "globalConstraint": {
         "noConstraint": true
       }
