@@ -101,7 +101,7 @@ onMounted(() => {
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
@@ -135,7 +135,7 @@ onUpdated(() => {
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);

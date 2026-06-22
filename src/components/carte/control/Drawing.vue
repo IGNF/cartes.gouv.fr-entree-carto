@@ -218,7 +218,11 @@ const saveTemporaryDocument = (payload) => {
   if (!payload) {
     return;
   }
-  if (!payload.type) {
+  // INFO
+  // si le type n'est pas fourni, on le déduit de l'ID 
+  // de la couche (ex. drawing, import, bookmark...)
+  // mais, la couche doit exister !
+  if (!payload.type && payload.layer) {
     var id = payload.layer.gpResultLayerId.toLowerCase();
     var type = id.split(':')[0];
     payload.type = type.replace("layer", ""); // ex. drawing, import, bookmark...
@@ -310,14 +314,14 @@ const onToggleShowVector = (e) => {
         format : drawing.value.getExportFormat(),
         layer : drawing.value.getLayer(),
       });
+      // dissociation de la couche du widget 
+      // pour permettre une autre saisie dans 
+      // une autre couche
+      drawing.value.setLayer();
+      btnExport.value.inputName.value = "";
+      btnExport.value.setFormat(formatByDefault);
+      btnSave.value.setFormat(formatByDefault);
     }
-    // dissociation de la couche du widget 
-    // pour permettre une autre saisie dans 
-    // une autre couche
-    drawing.value.setLayer();
-    btnExport.value.inputName.value = "";
-    btnExport.value.setFormat(formatByDefault);
-    btnSave.value.setFormat(formatByDefault);
   }
 }
 
