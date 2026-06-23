@@ -1,27 +1,23 @@
-<script lang="js">
-/**
- * @description
- * Panneau de partage de carte
- *
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrButton}
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
- */
-export default {};
-</script>
-
 <script lang="js" setup>
-import PrintModal from './PrintModal.vue';
+import PrintModal from '@/components/carte/control/print/PrintModal.vue';
+
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  printOptions: Object
+  printOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
-const printModal = ref(null)
+const refPrintModal = ref(null)
 const modal = ref(null)
 
 function onModalPrintOpen() {
-  printModal.value.onModalPrintOpen()
+  refPrintModal.value.onModalPrintOpen()
 }
 
 onUpdated(() => {
@@ -49,8 +45,8 @@ onUpdated(() => {
       no-outline
       @click="onModalPrintOpen"
     />
-    <printModal
-      ref="printModal"
+    <PrintModal
+      ref="refPrintModal"
       :print-options="printOptions"
     />
   </div>

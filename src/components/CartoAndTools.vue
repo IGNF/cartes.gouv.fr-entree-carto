@@ -4,13 +4,12 @@ import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
 
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from "@/components/carte/control/ShareModal.vue";
-import PrintModal from "@/components/carte/control/PrintModal.vue";
+import PrintModal from "@/components/carte/control/print/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
-import { useLogger } from 'vue-logger-plugin';
 import { useAppStore } from "@/stores/appStore"
 
 import { fromShare } from "@/features/share";
@@ -31,6 +30,7 @@ const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
+provide("refModalPrint", refModalPrint);
 provide("refModalWelcome", refModalWelcome);
 
 // Les gestionnaires d'évenements des modales

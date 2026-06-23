@@ -76,13 +76,15 @@ export function getFakeMapCanvas(mapRef, canvasWidth, canvasHeight) {
 }
 
 /**
- * Crée une image de l'échelle sur un canavs
+ * Crée une image de l'échelle sur un canvas
  * @param { * } ctx Context d'un canvas
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer contenant une échelle
- * @param { Number } canvasHeight Hauteur du canvas
+ * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
+ * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
+ * @param { Number } dpiCoeff Coefficient DPI (dpi / 96) - optionnel
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, dpiCoeff = 1) {
     // DEBUG
     // ctx.fillStyle = "rgb(0,255,0, 0.5)";
     // ctx.fillRect(0, 0, canvasWidth,canvasHeight);   
@@ -91,11 +93,11 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     const scaleLineInner = scaleLine.children[0]  
     const style = getComputedStyle(scaleLine)
     const styleInner = getComputedStyle(scaleLineInner)
-    const scaleLeft = parseInt(style.left)
-    const scaleBottom = parseInt(style.bottom)
+    const scaleLeft = parseInt(style.left) * dpiCoeff
+    const scaleBottom = parseInt(style.bottom) * dpiCoeff
     const scaleContent = scaleLineInner.innerHTML;
-    const scaleWidth = parseInt(styleInner.width) 
-    const scaleHeight = parseInt(styleInner.lineHeight)
+    const scaleWidth = parseInt(styleInner.width) * dpiCoeff
+    const scaleHeight = parseInt(styleInner.lineHeight) * dpiCoeff
     const y1 = canvasHeight - scaleBottom - scaleHeight
     
     // rect
@@ -104,7 +106,8 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     ctx.rect(scaleLeft, y1, scaleWidth, scaleHeight)
     ctx.fillRect(scaleLeft,y1,scaleWidth,scaleHeight)
     // Text
-    ctx.font = styleInner.font
+    const baseFontSize = parseInt(styleInner.fontSize)
+    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * dpiCoeff) + 'px ' + styleInner.fontFamily
     ctx.textAlign="center"; 
     ctx.fillStyle = "#000000";
     ctx.fillText(scaleContent, scaleLeft+(scaleWidth/2),y1+(scaleHeight/2));
@@ -115,21 +118,23 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     ctx.lineTo(scaleLeft, y1 + scaleHeight);
     ctx.lineTo(scaleLeft + scaleWidth, y1 + scaleHeight);
     ctx.lineTo(scaleLeft + scaleWidth, y1);
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * dpiCoeff;
     ctx.lineCap = "round";
     ctx.strokeStyle = "#666666"
     ctx.stroke();
 };
 
 /**
- * Crée une image de l'échelle sur un canavs
+ * Crée une image du titre sur un canvas
  * @param { * } ctx Context d'un canvas
  * @param { Number } canvasHeight Hauteur du canvas
  * @param { Number } canvasWidth Largeur du canvas
  * @param { String } printTitle titre
+ * @param { Element } titleElement élément du titre du DOM
+ * @param { Number } dpiCoeff Coefficient DPI (dpi / 96) - optionnel
  * @returns
  */
-export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle, titleElement) {
+export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle, titleElement, dpiCoeff = 1) {
         // DEBUG visuel optionnel : permet de voir le bloc titre dans le canvas
         // ctx.fillStyle = "rgb(0,0,255, 0.5)";
         // ctx.fillRect(0, 0, canvasWidth,canvasHeight);
@@ -138,13 +143,13 @@ export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle, titleEleme
         const style = getComputedStyle(titleElement)
 
         // Largeur de référence utilisée pour mettre à l'échelle le texte vers le canvas d'export
-        const titleDivWidth = titleElement.clientWidth || canvasWidth
-        const scaleX = titleDivWidth > 0 ? (canvasWidth / titleDivWidth) : 1
+        const titleDivWidth = titleElement.clientWidth || canvasWidth / dpiCoeff
+        const scaleX = titleDivWidth > 0 ? (canvasWidth / (titleDivWidth * dpiCoeff)) : 1
         
         // Calcul de la taille de police et de l'interligne à partir du style DOM, mis à l'échelle pour le canvas d'export
         const fontSizeValue = parseInt(style.fontSize, 10)
-        const fontSize = (fontSizeValue > 0 ? fontSizeValue : 16) * scaleX
-        const lineHeight = parseInt(style.lineHeight, 10) * scaleX
+        const fontSize = (fontSizeValue > 0 ? fontSizeValue : 16) * scaleX * dpiCoeff
+        const lineHeight = parseInt(style.lineHeight, 10) * scaleX * dpiCoeff
 
         // Configuration du contexte 2D pour mimer le style DOM
         ctx.font = `${style.fontStyle} ${style.fontVariant} ${style.fontWeight} ${fontSize}px ${style.fontFamily}`
@@ -154,7 +159,7 @@ export function drawTitle(ctx, canvasHeight, canvasWidth, printTitle, titleEleme
 
         // Récupère le découpage réel des lignes puis dessine chaque ligne au centre
         const lines = getRenderedLines(titleElement, printTitle)
-        let y = 10 // Marge supérieure pour le titre dans le canvas d'export
+        let y = 10 * dpiCoeff // Marge supérieure pour le titre dans le canvas d'export
         lines.forEach((line) => {
             ctx.fillText(line, canvasWidth / 2, y, canvasWidth)
             y += lineHeight

@@ -162,6 +162,7 @@ const updateSize = () => {
   
 // on expose en publique la reference au DOM
 defineExpose({
+  map,
   mapRef,
   updateSize
 });

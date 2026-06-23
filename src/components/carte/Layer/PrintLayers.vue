@@ -1,4 +1,6 @@
 <script setup lang="js">
+import { nextTick, onMounted, inject } from 'vue';
+
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';

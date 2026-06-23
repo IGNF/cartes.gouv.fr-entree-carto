@@ -1,29 +1,29 @@
-<script lang="js">
-/**
- * @description
- * Panneau de partage de carte
- *
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrButton}
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
- */
-export default {};
-</script>
-
 <script lang="js" setup>
 import { useElementSize } from '@vueuse/core'
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
-import Map from '../Map.vue';
+
+import Map from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
+
 import { printMap } from '@/composables/keys';
-import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
+import { 
+  computeScaleCoeff, 
+  drawScale, 
+  drawTitle } 
+from './printUtils.js';
+import { injectDpiInPng } from './pngUtils.js';
+import { renderMapCanvasForExport } from './mapExportUtils.js';
+
 import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
+
 const props = defineProps({
   visibility: Boolean,
 });
+
 const emitter = inject('emitter');
 
 /**
@@ -65,9 +65,10 @@ const onModalPrintClose = () => {
 };
 
 defineExpose({
-    onModalPrintClose,
-    onModalPrintOpen
-})
+  onModalPrintClose,
+  onModalPrintOpen
+});
+
 /**
  * Ref sur les elements du DOM
  */
@@ -76,7 +77,6 @@ const mapTitle = ref(null);
 const printPage = ref(null)
 const printForm = ref(null)
 const printPreview = ref(null)
-
 
 const formMarginRight = "10px"
 const coeffPX2MM = 0.264583333
@@ -97,6 +97,7 @@ const printTitle = ref("Ma carte")
 const pageOrientation = ref("portrait");
 const margin = ref(5)
 const paperFormat = ref("A4")
+const dpi = ref(96)
 const paperDimension = computed(() => {
   var dimension = { 
     'A0': { width : 841, height: 1189 },
@@ -109,18 +110,18 @@ const paperDimension = computed(() => {
     'B5' : { width : 176, height: 250 }
   }
   if (pageOrientation.value == "portrait") {
-      return {
+    return {
       width : dimension[paperFormat.value].width,
       height : dimension[paperFormat.value].height
     }
   }
   if (pageOrientation.value == "landscape") {
-      return {
+    return {
       width : dimension[paperFormat.value].height,
       height : dimension[paperFormat.value].width
     }
   }
-
+  return dimension['A4'];
 })
 
 /**
@@ -144,7 +145,6 @@ const printFormSize = reactive(
     { box: 'border-box' },
   ),
 )
-
 /**
  * Taille du titre de la carte 
  * sur la prévisualisation (DOM)
@@ -176,7 +176,6 @@ const paper2PreviewScaleCoeff = computed(() => {
   let containerWidth = printPageSize.width - printFormSize.width
   return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height)
 })
-
 
 /**
  *  Dimensions de la carte en mm
@@ -253,151 +252,120 @@ const cssPreviewPXDimension = computed(() => {
 
 const format = ref('PNG');
 
-function exportMap() {
-  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
-  if (format.value === 'PDF') {
-    exportPDF();
-    return;
-  }
-  exportPNG({
-    canvasMap: canvas,
-    mapMMDimension: mapMMDimension.value,
-    titleHeightMM: titleHeightMM.value,
-    margin: margin.value,
-    hasTitle: hasTitle.value,
-    hasScale: hasScale.value,
-    drawTitle,
-    drawScale,
-    printTitle: printTitle.value,
-    refMap: refMap.value,
-    mapTitleElement: mapTitle.value
-  })
+function getPrintMapInstance() {
+  return refMap.value?.map ?? mapStore.getMap();
 }
 
-// /**
-//  * Fonction d'export de la carte
-//  */
-const exportPDF = () => {
-  const opts = {
-    orientation : pageOrientation.value,
-    unit : "mm",
-    format : [paperDimension.value.width, paperDimension.value.height],
-  } 
-  const doc = new jsPDF(opts)
+async function buildRasterExportCanvas() {
+  const dpiValue = dpi.value;
+  const dpiCoeff = dpiValue / 96;
+  const mapWidthPx = Math.round((mapMMDimension.value.width / 25.4) * dpiValue);
+  const mapHeightPx = Math.round((mapMMDimension.value.height / 25.4) * dpiValue);
+  const marginPx = Math.round((margin.value / 25.4) * dpiValue);
+  const titleHeightPx = hasTitle.value ? Math.round((titleHeightMM.value / 25.4) * dpiValue) : 0;
+  const mapCanvas = await renderMapCanvasForExport(getPrintMapInstance(), mapWidthPx, mapHeightPx);
+  const finalCanvas = document.createElement('canvas');
 
-  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
-  let opt = getMapImgParams(canvas, margin.value, titleHeightMM.value, mapMMDimension.value)
-  doc.addImage(opt.img, opt.format, opt.imgPosX, opt.imgPosY, opt.imgWidth, opt.imgHeight)
+  finalCanvas.width = mapWidthPx + (marginPx * 2);
+  finalCanvas.height = mapHeightPx + titleHeightPx + (marginPx * 2);
+
+  const finalCtx = finalCanvas.getContext('2d');
+  finalCtx.fillStyle = '#ffffff';
+  finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+  finalCtx.drawImage(mapCanvas, marginPx, marginPx + titleHeightPx);
+
+  const mapElement = refMap.value.mapRef;
+
+  if (hasTitle.value) {
+    const titleCanvas = document.createElement('canvas');
+    titleCanvas.width = mapWidthPx;
+    titleCanvas.height = titleHeightPx;
+
+    const ctxTitle = titleCanvas.getContext('2d');
+    drawTitle(ctxTitle, titleHeightPx, mapWidthPx, printTitle.value, mapTitle.value, dpiCoeff);
+    finalCtx.drawImage(titleCanvas, marginPx, marginPx);
+    titleCanvas.remove();
+  }
 
   if (hasScale.value) {
-    // Fake canvas
-    const fakeCanvas = getFakeMapCanvas(refMap.value.mapRef, canvas.width, canvas.height)
-    let ctx = fakeCanvas.getContext("2d");
-    ctx.reset()
-    // Dessine l'échelle
-    drawScale(ctx, refMap.value.mapRef, canvas.width, canvas.height)
-    let opt = getMapImgParams(fakeCanvas, margin.value, titleHeightMM.value, mapMMDimension.value)
-    doc.addImage(opt.img, opt.format, opt.imgPosX, opt.imgPosY, opt.imgWidth, opt.imgHeight)
-    fakeCanvas.remove()
-  } 
-  if (hasTitle.value) {
-    // Dessine le titre
-    const titleCanvas = document.createElement('canvas');
-    titleCanvas.width = canvas.width;
-    // canvas HTML a besoin d'unité en px
-    // conversion mm vers px doit passer par une proportion car coeffPX2MM pas assez précis
-    titleCanvas.height = (titleHeightMM.value / mapMMDimension.value.height) * canvas.height;
-    let ctxTitle = titleCanvas.getContext('2d');
-    drawTitle(ctxTitle, titleCanvas.height, titleCanvas.width, printTitle.value, mapTitle.value)
-    refMap.value.mapRef.getElementsByClassName("ol-overlaycontainer")[0].insertAdjacentElement('beforebegin', titleCanvas)
-    printPreview.value.append(titleCanvas)
-    let imgTitle = titleCanvas.toDataURL('image/png')
-    doc.addImage(imgTitle, 'PNG', margin.value, margin.value, mapMMDimension.value.width, titleHeightMM.value)
-    titleCanvas.remove()
+    const scaleCanvas = document.createElement('canvas');
+    scaleCanvas.width = mapWidthPx;
+    scaleCanvas.height = mapHeightPx;
+
+    const ctxScale = scaleCanvas.getContext('2d');
+    drawScale(ctxScale, mapElement, mapWidthPx, mapHeightPx, dpiCoeff);
+    finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
+    scaleCanvas.remove();
   }
-  doc.save('carte.pdf')
+
+  mapCanvas.remove();
+
+  return {
+    dpiValue,
+    mapHeightPx,
+    mapWidthPx,
+    finalCanvas,
+    titleHeightPx,
+  };
 }
 
-function exportPNG({
-  canvasMap,
-  mapMMDimension,
-  titleHeightMM,
-  margin,
-  hasTitle,
-  hasScale,
-  drawTitle,
-  drawScale,
-  printTitle,
-  refMap,
-  mapTitleElement
-}) {
-  const pxPerMM = canvasMap.width / mapMMDimension.width;
-
-  const marginPx = margin * pxPerMM;
-  const titlePxHeight = hasTitle ? titleHeightMM * pxPerMM : 0;
-
-  const finalWidth =
-    canvasMap.width + marginPx * 2;
-
-  const finalHeight =
-    canvasMap.height +
-    titlePxHeight +
-    marginPx * 2;
-
-  const finalCanvas = document.createElement('canvas');
-  finalCanvas.width = finalWidth;
-  finalCanvas.height = finalHeight;
-
-  const ctx = finalCanvas.getContext('2d');
-
-  // FOND BLANC
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, finalWidth, finalHeight);
-
-  if (hasTitle) {
-    ctx.save();
-    ctx.translate(marginPx, marginPx);
-    drawTitle(
-      ctx,
-      titlePxHeight,
-      canvasMap.width,
-      printTitle,
-      mapTitleElement
-    );
-    ctx.restore();
+async function exportMap() {
+  if (format.value === 'PDF') {
+    await exportPDF();
+    return;
   }
+  await exportHighResMap();
+}
 
-  const mapOffsetY = marginPx + titlePxHeight;
-  ctx.drawImage(
-    canvasMap,
-    marginPx,
-    mapOffsetY
-  );
+// Export haute résolution de la map
+const exportHighResMap = async () => {
+  const { dpiValue, finalCanvas } = await buildRasterExportCanvas();
+  const dataUrl = finalCanvas.toDataURL('image/png');
 
-  if (hasScale) {
-    drawScale(
-      ctx,
-      refMap.mapRef,
-      canvasMap.width,
-      canvasMap.height + mapOffsetY
-    );
-  }
-
-  const link = document.createElement('a');
+  // Injecter DPI et télécharger
   if (format.value === 'PNG') {
+    const finalUrl = await injectDpiInPng(dataUrl, dpiValue);
+    const link = document.createElement('a');
     link.download = 'carte.png';
-    link.href = finalCanvas.toDataURL('image/png');
-  }
-  if (format.value === 'JPEG') {
+    link.href = finalUrl;
+    link.click();
+  } else if (format.value === 'JPEG') {
+    const jpegUrl = finalCanvas.toDataURL('image/jpeg', 0.95);
+    const link = document.createElement('a');
     link.download = 'carte.jpeg';
-    link.href = finalCanvas.toDataURL('image/jpeg', 1);
+    link.href = jpegUrl;
+    link.click();
   }
-
-  link.click();
 
   finalCanvas.remove();
 }
+// Export PDF de la map
+const exportPDF = async () => {
+  const { finalCanvas } = await buildRasterExportCanvas();
 
+  // Créer le PDF
+  const opts = {
+    orientation: pageOrientation.value,
+    unit: "mm",
+    format: [paperDimension.value.width, paperDimension.value.height],
+  };
+  const doc = new jsPDF(opts);
+
+  // Convertir le canvas en image
+  const mapImgUrl = finalCanvas.toDataURL('image/png');
+  doc.addImage(
+    mapImgUrl,
+    'PNG',
+    0,
+    0,
+    paperDimension.value.width,
+    paperDimension.value.height,
+  );
+
+  doc.save('carte.pdf');
+
+  finalCanvas.remove();
+}
 
 const scaleLineOptions = {
   id: "4",
@@ -475,6 +443,14 @@ const scaleLineOptions = {
           v-model="format"
           label="Format d'export"
           :options="[ 'PDF', 'PNG', 'JPEG']"
+        />
+        <DsfrSelect
+          v-model.number="dpi"
+          label="Résolution"
+          :options="[
+            { value: 96, text: '96 DPI (écran)' },
+            { value: 300, text: '300 DPI (impression)' }
+          ]"
         />
         <DsfrButton
           id="print-page-export"
