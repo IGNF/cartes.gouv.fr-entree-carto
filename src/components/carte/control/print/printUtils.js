@@ -28,76 +28,34 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
 }
 
 /**
- * 
- * 
- * CANVAS METHOD TO DRAW ELEMENTS ON EXPORTED PDF
- * 
- * 
- */
-/**
- * Initialise les options pour la fonction addImage de la librairie JSPDF
- * @param {*} canvas canvas contenant la carte
- * @returns
- */
-export function getMapImgParams(canvas, marge, titleHeight, mapMMDimension) {
-    const img = canvas.toDataURL('image/png')
-    return {
-        img : img,
-        format: 'PNG',
-        imgPosX : marge,
-        imgPosY : titleHeight + marge,
-        imgWidth : mapMMDimension.width,
-        imgHeight : mapMMDimension.height
-    }
-}
-
-
-/**
- * Crée une image de l'échelle 
- * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
- * @param { Number } canvasWidth Largeur du canvas
- * @param { Number } canvasHeight Hauteur du canvas
- * @returns
- */
-export function getFakeMapCanvas(mapRef, canvasWidth, canvasHeight) {
-    if (mapRef.getElementsByTagName('canvas').length < 2) {
-        var fakeCanvas = document.createElement('canvas')
-        fakeCanvas.classList = ['fixedoverlay']
-        fakeCanvas.width = canvasWidth
-        fakeCanvas.height = canvasHeight
-        mapRef.getElementsByClassName("ol-overlaycontainer")[0].insertAdjacentElement('beforebegin', fakeCanvas)
-    }
-    // Cas où le fake canvas a déjà été créé
-    else {
-      var fakeCanvas = mapRef.getElementsByTagName('canvas')[1]
-    }
-    fakeCanvas.style.display = "none"
-    return fakeCanvas
-}
-
-/**
  * Crée une image de l'échelle sur un canvas
  * @param { * } ctx Context d'un canvas
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer contenant une échelle
  * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
  * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
- * @param { Number } dpiCoeff Coefficient DPI (dpi / 96) - optionnel
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, dpiCoeff = 1) {
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     // DEBUG
     // ctx.fillStyle = "rgb(0,255,0, 0.5)";
     // ctx.fillRect(0, 0, canvasWidth,canvasHeight);   
+    
+    // Calculer les proportions entre la taille actuelle du mapRef et les dimensions cibles du canvas
+    const actualWidth = mapRef.offsetWidth || mapRef.clientWidth || canvasWidth;
+    const actualHeight = mapRef.offsetHeight || mapRef.clientHeight || canvasHeight;
+    const scaleFactorX = canvasWidth / actualWidth;
+    const scaleFactorY = canvasHeight / actualHeight;
+    const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2;
     
     const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]  
     const scaleLineInner = scaleLine.children[0]  
     const style = getComputedStyle(scaleLine)
     const styleInner = getComputedStyle(scaleLineInner)
-    const scaleLeft = parseInt(style.left) * dpiCoeff
-    const scaleBottom = parseInt(style.bottom) * dpiCoeff
+    const scaleLeft = parseInt(style.left) * scaleFactorX
+    const scaleBottom = parseInt(style.bottom) * scaleFactorY
     const scaleContent = scaleLineInner.innerHTML;
-    const scaleWidth = parseInt(styleInner.width) * dpiCoeff
-    const scaleHeight = parseInt(styleInner.lineHeight) * dpiCoeff
+    const scaleWidth = parseInt(styleInner.width) * scaleFactorX
+    const scaleHeight = parseInt(styleInner.lineHeight) * scaleFactorY
     const y1 = canvasHeight - scaleBottom - scaleHeight
     
     // rect
@@ -107,7 +65,7 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, dpiCoeff = 1) 
     ctx.fillRect(scaleLeft,y1,scaleWidth,scaleHeight)
     // Text
     const baseFontSize = parseInt(styleInner.fontSize)
-    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * dpiCoeff) + 'px ' + styleInner.fontFamily
+    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor) + 'px ' + styleInner.fontFamily
     ctx.textAlign="center"; 
     ctx.fillStyle = "#000000";
     ctx.fillText(scaleContent, scaleLeft+(scaleWidth/2),y1+(scaleHeight/2));
@@ -118,7 +76,7 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, dpiCoeff = 1) 
     ctx.lineTo(scaleLeft, y1 + scaleHeight);
     ctx.lineTo(scaleLeft + scaleWidth, y1 + scaleHeight);
     ctx.lineTo(scaleLeft + scaleWidth, y1);
-    ctx.lineWidth = 1 * dpiCoeff;
+    ctx.lineWidth = 1 * avgScaleFactor;
     ctx.lineCap = "round";
     ctx.strokeStyle = "#666666"
     ctx.stroke();

@@ -66,6 +66,7 @@ export async function renderMapCanvasForExport(map, widthPx, heightPx) {
   const originalH = viewportEl.style.height;
   const originalExtent = view.calculateExtent(originalSize);
 
+  // Crée un canvas pour le rendu final
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = widthPx;
   exportCanvas.height = heightPx;
@@ -74,6 +75,9 @@ export async function renderMapCanvasForExport(map, widthPx, heightPx) {
     map.setSize([widthPx, heightPx]);
     viewportEl.style.width = `${widthPx}px`;
     viewportEl.style.height = `${heightPx}px`;
+    // Ajuste la vue pour que l'emprise reste la même malgré le changement de taille
+    // On utilise fit() avec nearest: true pour éviter les ajustements de résolution
+    // On utilise duration: 0 pour que le rendu soit immédiat
     view.fit(originalExtent, {
       size: [widthPx, heightPx],
       nearest: true,
@@ -81,15 +85,18 @@ export async function renderMapCanvasForExport(map, widthPx, heightPx) {
     });
 
     await new Promise((resolve) => {
+      // On attend que le rendu soit terminé avant de capturer le canvas
       map.once('rendercomplete', resolve);
       map.renderSync();
     });
 
+    // Fusionne tous les canvas des couches dans le canvas d'export
     const exportCtx = exportCanvas.getContext('2d');
     mergeMapCanvases(map.getViewport(), exportCtx);
 
     return exportCanvas;
   } finally {
+    // Restaure l'état initial de la map
     map.setSize(originalSize);
     viewportEl.style.width = originalW;
     viewportEl.style.height = originalH;

@@ -1,5 +1,6 @@
 <script lang="js" setup>
-import { useElementSize } from '@vueuse/core'
+import { useElementSize } from '@vueuse/core';
+import { reactive } from 'vue';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 
@@ -20,7 +21,7 @@ import { jsPDF } from "jspdf";
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 
-const props = defineProps({
+defineProps({
   visibility: Boolean,
 });
 
@@ -36,17 +37,17 @@ const size = "xl";
  * Conf formulaire orientation du papier
  * Menu déroulant
  */
- const pageOrientationOptions = [
+const pageOrientationOptions = [
   {
-    "label": "Portrait",
-    "value": "portrait",
-    "icon": "material-symbols:crop-portrait-outline-sharp"
+    label: 'Portrait',
+    value: 'portrait',
+    icon: 'material-symbols:crop-portrait-outline-sharp',
   },
   {
-    "label": "Paysage",
-    "value": "landscape",
-    "icon": "material-symbols:crop-landscape-outline-sharp"
-  }
+    label: 'Paysage',
+    value: 'landscape',
+    icon: 'material-symbols:crop-landscape-outline-sharp',
+  },
 ];
 
 /**
@@ -74,14 +75,13 @@ defineExpose({
  */
 const refMap = ref(null);
 const mapTitle = ref(null);
-const printPage = ref(null)
-const printForm = ref(null)
-const printPreview = ref(null)
+const printPage = ref(null);
+const printForm = ref(null);
 
-const formMarginRight = "10px"
-const coeffPX2MM = 0.264583333
+const formMarginRight = '10px';
+const coeffPX2MM = 0.264583333;
 
-/**
+/*************************************************************************
  *  Paramètres de la carte à imprimer
  *  {Boolean} hasScale - ajoute une échelle ou pas à la carte
  *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
@@ -89,40 +89,43 @@ const coeffPX2MM = 0.264583333
  *  {String} pageOrientation - Orientation du papier
  *  {Number} margin - marge en mm 
  *  {String} paperFormat - Format standard de papier
- *  {Object} dimension - Dimension du papier selon format choisi
- */
-const hasScale = ref(true)
-const hasTitle = ref(true)
-const printTitle = ref("Ma carte")
-const pageOrientation = ref("portrait");
-const margin = ref(5)
-const paperFormat = ref("A4")
-const dpi = ref(96)
+ *  {Number} dpi - Résolution d'impression en DPI
+ *  {Object} paperDimension - Dimension du papier selon format choisi
+ **************************************************************************/
+
+const hasScale = ref(true);
+const hasTitle = ref(true);
+const printTitle = ref('Ma carte');
+const pageOrientation = ref('portrait');
+const margin = ref(5);
+const paperFormat = ref('A4');
+const dpi = ref(96);
 const paperDimension = computed(() => {
-  var dimension = { 
-    'A0': { width : 841, height: 1189 },
-    'A1' : { width : 594, height: 841 },
-    'A2' : { width : 420, height: 594 },
-    'A3' : { width : 297, height: 420 },
-    'A4' : { width : 210, height: 297 },
-    'A5' : { width : 148, height: 210 },
-    'B4' : { width : 250, height: 353 },
-    'B5' : { width : 176, height: 250 }
-  }
-  if (pageOrientation.value == "portrait") {
+  const dimension = {
+    A0: { width: 841, height: 1189 },
+    A1: { width: 594, height: 841 },
+    A2: { width: 420, height: 594 },
+    A3: { width: 297, height: 420 },
+    A4: { width: 210, height: 297 },
+    A5: { width: 148, height: 210 },
+    B4: { width: 250, height: 353 },
+    B5: { width: 176, height: 250 },
+  };
+  if (pageOrientation.value === 'portrait') {
     return {
-      width : dimension[paperFormat.value].width,
-      height : dimension[paperFormat.value].height
-    }
+      width: dimension[paperFormat.value].width,
+      height: dimension[paperFormat.value].height,
+    };
   }
-  if (pageOrientation.value == "landscape") {
+  if (pageOrientation.value === 'landscape') {
     return {
-      width : dimension[paperFormat.value].height,
-      height : dimension[paperFormat.value].width
-    }
+      width: dimension[paperFormat.value].height,
+      height: dimension[paperFormat.value].width,
+    };
   }
   return dimension['A4'];
-})
+});
+
 
 /**
  * Taille de la page print (DOM)
@@ -134,7 +137,7 @@ const printPageSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
+);
 /**
  * Taille du formualaire (DOM)
  */
@@ -144,7 +147,7 @@ const printFormSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
+);
 /**
  * Taille du titre de la carte 
  * sur la prévisualisation (DOM)
@@ -155,115 +158,141 @@ const titleSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
+);
 
 /**
  * Dimensions du papier en pixel
  */
 const pixelPaperDimension = computed(() => {
   return {
-    width : paperDimension.value.width / coeffPX2MM,
-    height : paperDimension.value.height / coeffPX2MM
-  }
-})
+    width: paperDimension.value.width / coeffPX2MM,
+    height: paperDimension.value.height / coeffPX2MM,
+  };
+});
 
 /**
  *  Coefficient de conversion dimension papier vers preview (EN PIXEL)
  *  coeff * dimContenu = newDimensionFitContenant
  */
 const paper2PreviewScaleCoeff = computed(() => {
-  let containerHeight = printPageSize.height
-  let containerWidth = printPageSize.width - printFormSize.width
-  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height)
-})
+  const containerHeight = printPageSize.height;
+  const containerWidth = printPageSize.width - printFormSize.width;
+  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height);
+});
 
 /**
  *  Dimensions de la carte en mm
  */
 const mapMMDimension = computed(() => {
-  var w = paperDimension.value.width - 2 * margin.value
-  var h = paperDimension.value.height - 2 *  margin.value
+  const w = paperDimension.value.width - (2 * margin.value);
+  let h = paperDimension.value.height - (2 * margin.value);
   if (hasTitle.value) {
     /**
      * on utilise la part que représente le titre dans la preview car
      * la conversion avec pixel2mm est trop approximative
      * */
-    h -= (titleSize.height / previewPXDimension.value.height) * h
+    h -= (titleSize.height / previewPXDimension.value.height) * h;
   }
   return {
-    width : w,
-    height : h
-  }
-})
+    width: w,
+    height: h,
+  };
+});
 /**
- *  Dimensions de la carte en mm 
+ * Dimensions de la carte en mm 
  * String pour CSS
  */
- const CSSMapMMDimension = computed(() => {
+const CSSMapMMDimension = computed(() => {
   return {
-    width : mapMMDimension.value.width + "mm",
-    height : mapMMDimension.value.height + "mm"
-  }
-})
-
-const titleHeightMM = computed(() => {
-  return paperDimension.value.height - mapMMDimension.value.height - 2* margin.value
-})
+    width: `${mapMMDimension.value.width}mm`,
+    height: `${mapMMDimension.value.height}mm`,
+  };
+});
 
 /**
- *  Dimensions de la carte en px 
+ * Hauteur du titre de la carte en mm
+ * (pour le calcul de la hauteur de la carte)
  */
- const mapPXDimension = computed(() => {
-  return {
-    width : mapMMDimension.value.width / coeffPX2MM,
-    height : mapMMDimension.value.height / coeffPX2MM
-  }
-})
+const titleHeightMM = computed(() => {
+  return paperDimension.value.height - mapMMDimension.value.height - (2 * margin.value);
+});
 
 /**
  * Dimensions du bloc de prévisualisation en px
  */
- const previewPXDimension = computed(() => {
+const previewPXDimension = computed(() => {
   return {
-    width : pixelPaperDimension.value.width * paper2PreviewScaleCoeff.value,
-    height : pixelPaperDimension.value.height * paper2PreviewScaleCoeff.value
-  }
-})
+    width: pixelPaperDimension.value.width * paper2PreviewScaleCoeff.value,
+    height: pixelPaperDimension.value.height * paper2PreviewScaleCoeff.value,
+  };
+});
 
 /**
  * Dimensions du bloc de prévisualisation en px
  */
 const cssPreviewPXDimension = computed(() => {
   return {
-    width : previewPXDimension.value.width + "px",
-    height : previewPXDimension.value.height + "px"
-  }
-})
+    width: `${previewPXDimension.value.width}px`,
+    height: `${previewPXDimension.value.height}px`,
+  };
+});
 
 /**
  * Marge Gauche de la preview en pixel
  */
- const CSSPreviewPadding = computed(() => {
+const CSSPreviewPadding = computed(() => {
   return {
-    left : (margin.value / paperDimension.value.width) * previewPXDimension.value.width + "px",
-    top : (margin.value / paperDimension.value.height) * previewPXDimension.value.height + "px",
-  }
-})
+    left: `${(margin.value / paperDimension.value.width) * previewPXDimension.value.width}px`,
+    top: `${(margin.value / paperDimension.value.height) * previewPXDimension.value.height}px`,
+  };
+});
 
+/************************************************************************************
+ * Fonctions d'export de la carte
+ *  - getPrintMapInstance() : retourne l'instance de la carte à imprimer
+ *  - buildRasterExportCanvas() : construit le canvas final de la carte à exporter
+ *  - exportMap() : fonction principale qui appelle les fonctions d'export selon le format
+ *  - exportHighResMap() : export de la carte en PNG ou JPEG
+ *  - exportPDF() : export de la carte en PDF
+ *************************************************************************************/
+
+ /**
+ * Format d'export de la carte
+ *  - PDF
+ *  - PNG
+ *  - JPEG
+ */
 const format = ref('PNG');
 
-function getPrintMapInstance() {
+const getPrintMapInstance = () => {
   return refMap.value?.map ?? mapStore.getMap();
 }
 
-async function buildRasterExportCanvas() {
+/**
+ * Construit le canvas final de la carte à exporter
+ *  - Récupère l'instance de la carte à imprimer
+ *  - Redimensionne la carte pour correspondre aux dimensions d'export
+ *  - Récupère le canvas de la carte
+ *  - Dessine le titre et l'échelle si nécessaire
+ *  - Retourne le canvas final
+ *  - Restaure la taille initiale de la carte
+ *  - Restaure la vue initiale de la carte
+ *  - Restaure le style initial du viewport de la carte
+ *  - Restaure la taille initiale du viewport de la carte  
+ */
+const buildRasterExportCanvas = async () => {
   const dpiValue = dpi.value;
   const dpiCoeff = dpiValue / 96;
   const mapWidthPx = Math.round((mapMMDimension.value.width / 25.4) * dpiValue);
   const mapHeightPx = Math.round((mapMMDimension.value.height / 25.4) * dpiValue);
   const marginPx = Math.round((margin.value / 25.4) * dpiValue);
   const titleHeightPx = hasTitle.value ? Math.round((titleHeightMM.value / 25.4) * dpiValue) : 0;
-  const mapCanvas = await renderMapCanvasForExport(getPrintMapInstance(), mapWidthPx, mapHeightPx);
+  // Récupère l'instance de la carte à imprimer
+  const map = getPrintMapInstance();
+  // Récupère le canvas de la carte à exporter
+  const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
+
+  // Crée un canvas final pour l'export
   const finalCanvas = document.createElement('canvas');
 
   finalCanvas.width = mapWidthPx + (marginPx * 2);
@@ -276,6 +305,7 @@ async function buildRasterExportCanvas() {
 
   const mapElement = refMap.value.mapRef;
 
+  // Dessine le titre si nécessaire
   if (hasTitle.value) {
     const titleCanvas = document.createElement('canvas');
     titleCanvas.width = mapWidthPx;
@@ -287,17 +317,19 @@ async function buildRasterExportCanvas() {
     titleCanvas.remove();
   }
 
+  // Dessine l'échelle si nécessaire
   if (hasScale.value) {
     const scaleCanvas = document.createElement('canvas');
     scaleCanvas.width = mapWidthPx;
     scaleCanvas.height = mapHeightPx;
 
     const ctxScale = scaleCanvas.getContext('2d');
-    drawScale(ctxScale, mapElement, mapWidthPx, mapHeightPx, dpiCoeff);
+    drawScale(ctxScale, mapElement, mapWidthPx, mapHeightPx);
     finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
     scaleCanvas.remove();
   }
 
+  // Supprime le canvas temporaire de la carte
   mapCanvas.remove();
 
   return {
@@ -307,9 +339,9 @@ async function buildRasterExportCanvas() {
     finalCanvas,
     titleHeightPx,
   };
-}
+};
 
-async function exportMap() {
+const exportMap = async () => {
   if (format.value === 'PDF') {
     await exportPDF();
     return;
@@ -338,7 +370,7 @@ const exportHighResMap = async () => {
   }
 
   finalCanvas.remove();
-}
+};
 // Export PDF de la map
 const exportPDF = async () => {
   const { finalCanvas } = await buildRasterExportCanvas();
@@ -365,10 +397,13 @@ const exportPDF = async () => {
   doc.save('carte.pdf');
 
   finalCanvas.remove();
-}
+};
 
+/**
+ * Options de l'échelle pour le composant ScaleLine
+ */
 const scaleLineOptions = {
-  id: "4",
+  id: '4',
   units: 'metric',
   bar: false,
 };
@@ -564,7 +599,7 @@ const scaleLineOptions = {
   .print-page{
     display: flex;
     flex-direction: row;
-    height: 36rem;
+    height: 44rem;
   }
   /*
   TODO gestion des titres trop longs : le rapport de taille de la prévisualisation 
