@@ -6,6 +6,7 @@ import { useEulerian } from '@/plugins/Eulerian.js';
 
 import Map from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
+import Patience from '@/components/utils/Patience.vue';
 
 import { printMap } from '@/composables/keys';
 import { 
@@ -54,12 +55,15 @@ const pageOrientationOptions = [
  * Gestion ouverture et fermeture de la Modal d'impression
  */
 const printModalOpened = ref(false);
+const isExportInProgress = ref(false);
+
 const onModalPrintOpen = () => {
   emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
   eulerian.pause();
 };
 const onModalPrintClose = () => {
+  isExportInProgress.value = false;
   printModalOpened.value = false;
   eulerian.resume();
   mapStore.getMap().renderSync();
@@ -182,7 +186,6 @@ const paperDimension = computed(() => {
   }
   return paperFormats.A4;
 });
-
 
 /**
  * Taille de la page print (DOM)
@@ -466,11 +469,20 @@ const buildRasterExportCanvas = async () => {
 };
 
 const exportMap = async () => {
-  if (printFormState.format === 'PDF') {
-    await exportPDF();
+  if (isExportInProgress.value) {
     return;
   }
-  await exportHighResMap();
+
+  isExportInProgress.value = true;
+  try {
+    if (printFormState.format === 'PDF') {
+      await exportPDF();
+      return;
+    }
+    await exportHighResMap();
+  } finally {
+    isExportInProgress.value = false;
+  }
 }
 
 // Export haute résolution de la map
@@ -604,8 +616,9 @@ const scaleLineOptions = {
         />
         <DsfrButton
           id="print-page-export"
-          label="Imprimer la carte"
-          title="Imprimer la carte"
+          :label="isExportInProgress ? 'Traitement en cours...' : 'Imprimer la carte'"
+          :title="isExportInProgress ? 'Traitement en cours...' : 'Imprimer la carte'"
+          :disabled="isExportInProgress"
           icon=""
           no-outline
           @click="exportMap"
@@ -643,7 +656,13 @@ const scaleLineOptions = {
             />
           </Map>
         </div>
-      </div>    
+      </div>
+      <div
+        v-if="isExportInProgress"
+        class="print-patience-overlay"
+      >
+        <Patience />
+      </div>
     </div>
   </DsfrModal>
 </template>
@@ -715,6 +734,14 @@ const scaleLineOptions = {
     display: flex;
     flex-direction: row;
     height: 44rem;
+    position: relative;
+  }
+
+  .print-patience-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.75);
+    z-index: 2;
   }
   /*
   TODO gestion des titres trop longs : le rapport de taille de la prévisualisation 
