@@ -83,6 +83,7 @@ const printPage = ref(null);
 const printForm = ref(null);
 
 const formMarginRight = '10px';
+const PREVIEW_REDUCTION_COEFF = 0.9;
 
 const COEFF_PX2MM = 0.264583333;
 const MM_PER_INCH = 25.4;
@@ -237,7 +238,7 @@ const pixelPaperDimension = computed(() => {
 const paper2PreviewScaleCoeff = computed(() => {
   const containerHeight = printPageSize.height;
   const containerWidth = printPageSize.width - printFormSize.width;
-  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height);
+  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height) * PREVIEW_REDUCTION_COEFF;
 });
 
 /**
@@ -722,18 +723,18 @@ const scaleLineOptions = {
   }
 
   .mb-20 {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
   .mb-10 {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .mt-10 {
-    margin-top: 10px;
+    margin-top: 6px;
   }
   .print-page{
     display: flex;
     flex-direction: row;
-    height: 44rem;
+    height: 35rem;
     position: relative;
   }
 
@@ -764,9 +765,16 @@ const scaleLineOptions = {
     flex: 0 0;
   }
   .print-form {
-    flex: 0 0 260px;
+    flex: 0 0 230px;
     margin-right: v-bind(formMarginRight);
-    /* max-width: 260px; */
+    /* max-width: 230px; */
+  }
+
+  .print-form :deep(.fr-select-group),
+  .print-form :deep(.fr-input-group),
+  .print-form :deep(.fr-checkbox-group),
+  .print-form :deep(.fr-fieldset) {
+    margin-bottom: 8px;
   }
 
   .map-title {
