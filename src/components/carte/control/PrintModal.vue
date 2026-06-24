@@ -22,6 +22,8 @@ import { jsPDF } from "jspdf";
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 
+// INFO
+// Les options sont definies dans CartoAndTools.vue et passées en props à la modale
 const props = defineProps({
   printOptions: {
     type: Object,
@@ -38,8 +40,7 @@ const title = "Imprimer une carte";
 const size = "xl"; // taille de la modale : sm, md, lg, xl, full
 
 /**
- * Conf formulaire orientation du papier
- * Menu déroulant
+ * Liste des orientations du papier pour le menu déroulant
  */
 const pageOrientationOptions = [
   {
@@ -54,9 +55,10 @@ const pageOrientationOptions = [
   },
 ];
 
-/**
+/*************************************************************************
  * Gestion ouverture et fermeture de la Modal d'impression
- */
+ **************************************************************************/
+
 const printModalOpened = ref(false);
 const isExportInProgress = ref(false);
 
@@ -77,17 +79,27 @@ defineExpose({
   onModalPrintOpen
 });
 
-/**
+/*************************************************************************
  * Ref sur les elements du DOM
- */
+ **************************************************************************/
 const refMap = ref(null);
 const mapTitle = ref(null);
 const printPage = ref(null);
 const printForm = ref(null);
 
 const formMarginRight = '10px';
-const PREVIEW_REDUCTION_COEFF = 0.9;
 
+/*************************************************************************
+ * Constantes et paramètres pour le calcul des dimensions de la carte à imprimer
+ *  - PREVIEW_REDUCTION_COEFF : coefficient de réduction de la prévisualisation par rapport à la taille réelle du papier
+ *  - COEFF_PX2MM : coefficient de conversion pixel -> mm
+ *  - MM_PER_INCH : nombre de mm par pouce
+ *  - BASE_DPI : résolution d'écran standard (96 DPI)
+ *  - HIGH_DPI_VALUE : résolution d'impression haute (300 DPI)
+ *  - MAX_HIGH_DPI_PAPER_AREA : surface maximale du papier pour l'impression haute résolution (en mm²)
+ **************************************************************************/
+
+const PREVIEW_REDUCTION_COEFF = 0.9;
 const COEFF_PX2MM = 0.264583333;
 const MM_PER_INCH = 25.4;
 const BASE_DPI = 96;
@@ -358,7 +370,7 @@ const getPrintMapInstance = () => {
 };
 
 /************************************************************************************
- * Fonctions utilitaires
+ * → Fonctions utilitaires
  *************************************************************************************/
 
  /**

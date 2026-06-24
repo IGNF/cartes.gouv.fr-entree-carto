@@ -4,7 +4,7 @@
  * @param {HTMLElement} mapViewport - Viewport de la map OL (map.getViewport())
  * @param {CanvasRenderingContext2D} targetCtx - Contexte du canvas de destination
  */
-export function mergeMapCanvases(mapViewport, targetCtx) {
+function mergeMapCanvases(mapViewport, targetCtx) {
   const canvases = mapViewport.querySelectorAll('.ol-layer canvas, canvas.ol-layer');
 
   targetCtx.setTransform(1, 0, 0, 1, 0, 0);
@@ -49,8 +49,8 @@ export function mergeMapCanvases(mapViewport, targetCtx) {
 }
 
 /**
- * Rend la map OpenLayers à une taille pixel donnée en conservant l'emprise,
- * capture le résultat dans un canvas, puis restaure l'état initial.
+ * Rendu de la carte OpenLayers dans un canvas haute résolution pour l'export.
+ * @async
  * @param {import('ol/Map').default} map - Instance OpenLayers
  * @param {number} widthPx - Largeur cible en pixels
  * @param {number} heightPx - Hauteur cible en pixels
