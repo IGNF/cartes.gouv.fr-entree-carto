@@ -3,7 +3,7 @@
  * @param {Uint8Array} data
  * @returns {number}
  */
-export function crc32(data) {
+function crc32(data) {
   let crc = 0xffffffff;
   for (let i = 0; i < data.length; i++) {
     crc = crc ^ data[i];
@@ -20,7 +20,7 @@ export function crc32(data) {
  * @param {Uint8Array} data
  * @returns {Uint8Array}
  */
-export function buildPngChunk(type, data) {
+function buildPngChunk(type, data) {
   const typeBytes = new TextEncoder().encode(type);
   const length = data.length;
 

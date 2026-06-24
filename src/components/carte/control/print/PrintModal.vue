@@ -31,7 +31,7 @@ const emitter = inject('emitter');
  * Paramètres du composant de la modale
  */
 const title = "Imprimer une carte";
-const size = "xl";
+const size = "xl"; // taille de la modale : sm, md, lg, xl, full
 
 /**
  * Conf formulaire orientation du papier
@@ -79,10 +79,13 @@ const printPage = ref(null);
 const printForm = ref(null);
 
 const formMarginRight = '10px';
-const coeffPX2MM = 0.264583333;
+
+const COEFF_PX2MM = 0.264583333;
+const MM_PER_INCH = 25.4;
+const BASE_DPI = 96;
 
 /*************************************************************************
- *  Paramètres de la carte à imprimer
+ *  Paramètres formulaire de la carte à imprimer
  *  {Boolean} hasScale - ajoute une échelle ou pas à la carte
  *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
  *  {String} printTitle - Titre de la carte
@@ -93,13 +96,17 @@ const coeffPX2MM = 0.264583333;
  *  {Object} paperDimension - Dimension du papier selon format choisi
  **************************************************************************/
 
-const hasScale = ref(true);
-const hasTitle = ref(true);
-const printTitle = ref('Ma carte');
-const pageOrientation = ref('portrait');
-const margin = ref(5);
-const paperFormat = ref('A4');
-const dpi = ref(96);
+const printFormState = reactive({
+  hasScale: true,
+  hasTitle: true,
+  printTitle: 'Ma carte',
+  pageOrientation: 'portrait',
+  margin: 5,
+  paperFormat: 'A4',
+  dpi: 96,
+  format: 'PNG',
+});
+
 const paperDimension = computed(() => {
   const dimension = {
     A0: { width: 841, height: 1189 },
@@ -111,16 +118,16 @@ const paperDimension = computed(() => {
     B4: { width: 250, height: 353 },
     B5: { width: 176, height: 250 },
   };
-  if (pageOrientation.value === 'portrait') {
+  if (printFormState.pageOrientation === 'portrait') {
     return {
-      width: dimension[paperFormat.value].width,
-      height: dimension[paperFormat.value].height,
+      width: dimension[printFormState.paperFormat].width,
+      height: dimension[printFormState.paperFormat].height,
     };
   }
-  if (pageOrientation.value === 'landscape') {
+  if (printFormState.pageOrientation === 'landscape') {
     return {
-      width: dimension[paperFormat.value].height,
-      height: dimension[paperFormat.value].width,
+      width: dimension[printFormState.paperFormat].height,
+      height: dimension[printFormState.paperFormat].width,
     };
   }
   return dimension['A4'];
@@ -165,8 +172,8 @@ const titleSize = reactive(
  */
 const pixelPaperDimension = computed(() => {
   return {
-    width: paperDimension.value.width / coeffPX2MM,
-    height: paperDimension.value.height / coeffPX2MM,
+    width: paperDimension.value.width / COEFF_PX2MM,
+    height: paperDimension.value.height / COEFF_PX2MM,
   };
 });
 
@@ -184,9 +191,9 @@ const paper2PreviewScaleCoeff = computed(() => {
  *  Dimensions de la carte en mm
  */
 const mapMMDimension = computed(() => {
-  const w = paperDimension.value.width - (2 * margin.value);
-  let h = paperDimension.value.height - (2 * margin.value);
-  if (hasTitle.value) {
+  const w = paperDimension.value.width - (2 * printFormState.margin);
+  let h = paperDimension.value.height - (2 * printFormState.margin);
+  if (printFormState.hasTitle) {
     /**
      * on utilise la part que représente le titre dans la preview car
      * la conversion avec pixel2mm est trop approximative
@@ -214,7 +221,7 @@ const CSSMapMMDimension = computed(() => {
  * (pour le calcul de la hauteur de la carte)
  */
 const titleHeightMM = computed(() => {
-  return paperDimension.value.height - mapMMDimension.value.height - (2 * margin.value);
+  return paperDimension.value.height - mapMMDimension.value.height - (2 * printFormState.margin);
 });
 
 /**
@@ -242,8 +249,8 @@ const cssPreviewPXDimension = computed(() => {
  */
 const CSSPreviewPadding = computed(() => {
   return {
-    left: `${(margin.value / paperDimension.value.width) * previewPXDimension.value.width}px`,
-    top: `${(margin.value / paperDimension.value.height) * previewPXDimension.value.height}px`,
+      left: `${(printFormState.margin / paperDimension.value.width) * previewPXDimension.value.width}px`,
+      top: `${(printFormState.margin / paperDimension.value.height) * previewPXDimension.value.height}px`,
   };
 });
 
@@ -256,17 +263,106 @@ const CSSPreviewPadding = computed(() => {
  *  - exportPDF() : export de la carte en PDF
  *************************************************************************************/
 
- /**
- * Format d'export de la carte
- *  - PDF
- *  - PNG
- *  - JPEG
- */
-const format = ref('PNG');
-
 const getPrintMapInstance = () => {
   return refMap.value?.map ?? mapStore.getMap();
-}
+};
+
+/************************************************************************************
+ * Fonctions utilitaires
+ *************************************************************************************/
+
+ /**
+ * Convertit une valeur en millimètres en pixels en fonction du DPI
+ * @param {number} valueMm - Valeur en millimètres
+ * @param {number} dpiValue - Résolution en DPI
+ * @returns {number} Valeur en pixels
+ */
+const convertMmToPx = (valueMm, dpiValue) => {
+  return Math.round((valueMm / MM_PER_INCH) * dpiValue);
+};
+
+/**
+ * Récupère le contexte 2D d'un canvas
+ * @param {HTMLCanvasElement} canvas - Canvas HTML
+ * @param {string} errorMessage - Message d'erreur en cas d'échec
+ * @returns {CanvasRenderingContext2D} Contexte 2D du canvas
+ */
+const getCanvas2DContext = (canvas, errorMessage) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error(errorMessage);
+  }
+  return ctx;
+};
+
+/**
+ * Crée un canvas final pour l'export
+ * @param {number} width - Largeur du canvas en pixels
+ * @param {number} height - Hauteur du canvas en pixels
+ * @returns {{canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D}} Canvas et contexte 2D
+ */
+const createFinalExportCanvas = (width, height) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = getCanvas2DContext(canvas, 'Impossible de récupérer le contexte 2D du canvas final.');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  return { canvas, ctx };
+};
+
+/**
+ * Dessine le titre sur le canvas final
+ * @param {CanvasRenderingContext2D} finalCtx - Contexte 2D du canvas final
+ * @param {number} mapWidthPx - Largeur de la carte en pixels
+ * @param {number} titleHeightPx - Hauteur du titre en pixels
+ * @param {number} marginPx - Marge en pixels
+ * @param {number} dpiCoeff - Coefficient DPI
+ */
+const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoeff) => {
+  const titleCanvas = document.createElement('canvas');
+  titleCanvas.width = mapWidthPx;
+  titleCanvas.height = titleHeightPx;
+
+  const titleCtx = getCanvas2DContext(titleCanvas, 'Impossible de récupérer le contexte 2D du titre.');
+  drawTitle(titleCtx, titleHeightPx, mapWidthPx, printFormState.printTitle, mapTitle.value, dpiCoeff);
+  finalCtx.drawImage(titleCanvas, marginPx, marginPx);
+  titleCanvas.remove();
+};
+
+/**
+ * Dessine l'échelle sur le canvas final
+ * @param {CanvasRenderingContext2D} finalCtx - Contexte 2D du canvas final
+ * @param {number} mapWidthPx - Largeur de la carte en pixels
+ * @param {number} mapHeightPx - Hauteur de la carte en pixels
+ * @param {number} marginPx - Marge en pixels
+ * @param {number} titleHeightPx - Hauteur du titre en pixels
+ * @param {HTMLElement} mapElement - Élément HTML de la carte
+ */
+const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement) => {
+  const scaleCanvas = document.createElement('canvas');
+  scaleCanvas.width = mapWidthPx;
+  scaleCanvas.height = mapHeightPx;
+
+  const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx);
+  finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
+  scaleCanvas.remove();
+};
+
+/**
+ * Déclenche le téléchargement d'un fichier
+ * @param {string} fileName - Nom du fichier à télécharger
+ * @param {string} url - URL du fichier à télécharger
+ */
+const triggerDownload = (fileName, url) => {
+  const link = document.createElement('a');
+  link.download = fileName;
+  link.href = url;
+  link.click();
+};
 
 /**
  * Construit le canvas final de la carte à exporter
@@ -281,52 +377,33 @@ const getPrintMapInstance = () => {
  *  - Restaure la taille initiale du viewport de la carte  
  */
 const buildRasterExportCanvas = async () => {
-  const dpiValue = dpi.value;
-  const dpiCoeff = dpiValue / 96;
-  const mapWidthPx = Math.round((mapMMDimension.value.width / 25.4) * dpiValue);
-  const mapHeightPx = Math.round((mapMMDimension.value.height / 25.4) * dpiValue);
-  const marginPx = Math.round((margin.value / 25.4) * dpiValue);
-  const titleHeightPx = hasTitle.value ? Math.round((titleHeightMM.value / 25.4) * dpiValue) : 0;
+  const dpiValue = printFormState.dpi;
+  const dpiCoeff = dpiValue / BASE_DPI;
+  const mapWidthPx = convertMmToPx(mapMMDimension.value.width, dpiValue);
+  const mapHeightPx = convertMmToPx(mapMMDimension.value.height, dpiValue);
+  const marginPx = convertMmToPx(printFormState.margin, dpiValue);
+  const titleHeightPx = printFormState.hasTitle ? convertMmToPx(titleHeightMM.value, dpiValue) : 0;
+
   // Récupère l'instance de la carte à imprimer
   const map = getPrintMapInstance();
   // Récupère le canvas de la carte à exporter
   const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
+  const mapElement = refMap.value?.mapRef;
 
   // Crée un canvas final pour l'export
-  const finalCanvas = document.createElement('canvas');
-
-  finalCanvas.width = mapWidthPx + (marginPx * 2);
-  finalCanvas.height = mapHeightPx + titleHeightPx + (marginPx * 2);
-
-  const finalCtx = finalCanvas.getContext('2d');
-  finalCtx.fillStyle = '#ffffff';
-  finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+  const finalWidthPx = mapWidthPx + (marginPx * 2);
+  const finalHeightPx = mapHeightPx + titleHeightPx + (marginPx * 2);
+  const { canvas: finalCanvas, ctx: finalCtx } = createFinalExportCanvas(finalWidthPx, finalHeightPx);
   finalCtx.drawImage(mapCanvas, marginPx, marginPx + titleHeightPx);
 
-  const mapElement = refMap.value.mapRef;
-
   // Dessine le titre si nécessaire
-  if (hasTitle.value) {
-    const titleCanvas = document.createElement('canvas');
-    titleCanvas.width = mapWidthPx;
-    titleCanvas.height = titleHeightPx;
-
-    const ctxTitle = titleCanvas.getContext('2d');
-    drawTitle(ctxTitle, titleHeightPx, mapWidthPx, printTitle.value, mapTitle.value, dpiCoeff);
-    finalCtx.drawImage(titleCanvas, marginPx, marginPx);
-    titleCanvas.remove();
+  if (printFormState.hasTitle) {
+    drawTitleOverlay(finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoeff);
   }
 
   // Dessine l'échelle si nécessaire
-  if (hasScale.value) {
-    const scaleCanvas = document.createElement('canvas');
-    scaleCanvas.width = mapWidthPx;
-    scaleCanvas.height = mapHeightPx;
-
-    const ctxScale = scaleCanvas.getContext('2d');
-    drawScale(ctxScale, mapElement, mapWidthPx, mapHeightPx);
-    finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
-    scaleCanvas.remove();
+  if (printFormState.hasScale && mapElement) {
+    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement);
   }
 
   // Supprime le canvas temporaire de la carte
@@ -334,15 +411,12 @@ const buildRasterExportCanvas = async () => {
 
   return {
     dpiValue,
-    mapHeightPx,
-    mapWidthPx,
     finalCanvas,
-    titleHeightPx,
   };
 };
 
 const exportMap = async () => {
-  if (format.value === 'PDF') {
+  if (printFormState.format === 'PDF') {
     await exportPDF();
     return;
   }
@@ -355,18 +429,12 @@ const exportHighResMap = async () => {
   const dataUrl = finalCanvas.toDataURL('image/png');
 
   // Injecter DPI et télécharger
-  if (format.value === 'PNG') {
+  if (printFormState.format === 'PNG') {
     const finalUrl = await injectDpiInPng(dataUrl, dpiValue);
-    const link = document.createElement('a');
-    link.download = 'carte.png';
-    link.href = finalUrl;
-    link.click();
-  } else if (format.value === 'JPEG') {
+    triggerDownload('carte.png', finalUrl);
+  } else if (printFormState.format === 'JPEG') {
     const jpegUrl = finalCanvas.toDataURL('image/jpeg', 0.95);
-    const link = document.createElement('a');
-    link.download = 'carte.jpeg';
-    link.href = jpegUrl;
-    link.click();
+    triggerDownload('carte.jpeg', jpegUrl);
   }
 
   finalCanvas.remove();
@@ -377,7 +445,7 @@ const exportPDF = async () => {
 
   // Créer le PDF
   const opts = {
-    orientation: pageOrientation.value,
+    orientation: printFormState.pageOrientation,
     unit: "mm",
     format: [paperDimension.value.width, paperDimension.value.height],
   };
@@ -427,7 +495,7 @@ const scaleLineOptions = {
         class="print-form"
       >
         <DsfrSegmentedSet
-          v-model="pageOrientation"
+          v-model="printFormState.pageOrientation"
           :inline="false"
           :options="pageOrientationOptions"
           :small="false"
@@ -439,12 +507,12 @@ const scaleLineOptions = {
           </template>
         </DsfrSegmentedSet>
         <DsfrSelect
-          v-model="paperFormat"
+          v-model="printFormState.paperFormat"
           label="Dimensions"
           :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
         />
         <DsfrSelect
-          v-model.number="margin"
+          v-model.number="printFormState.margin"
           label="Marge"
           :options="[
             { value : 0, text : 'Pas de marge - 0mm' },
@@ -453,8 +521,8 @@ const scaleLineOptions = {
           ]"
         />
         <DsfrInput
-          v-model="printTitle"
-          :disabled="!hasTitle"
+          v-model="printFormState.printTitle"
+          :disabled="!printFormState.hasTitle"
           label="Titre de la carte"
           label-visible
           name="titre"
@@ -462,25 +530,25 @@ const scaleLineOptions = {
         />
         <div class="mt-10">
           <DsfrCheckbox
-            v-model="hasTitle"
+            v-model="printFormState.hasTitle"
             name="checkbox-simple"
-            :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
+            :label="!printFormState.hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
           />
         </div>
         <div class="mt-10">
           <DsfrCheckbox
-            v-model="hasScale"
+            v-model="printFormState.hasScale"
             name="checkbox-simple"
-            :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
+            :label="!printFormState.hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
           />
         </div>
         <DsfrSelect
-          v-model="format"
+          v-model="printFormState.format"
           label="Format d'export"
           :options="[ 'PDF', 'PNG', 'JPEG']"
         />
         <DsfrSelect
-          v-model.number="dpi"
+          v-model.number="printFormState.dpi"
           label="Résolution"
           :options="[
             { value: 96, text: '96 DPI (écran)' },
@@ -503,12 +571,12 @@ const scaleLineOptions = {
           class="print-preview"
         >
           <div
-            v-if="hasTitle"
+            v-if="printFormState.hasTitle"
             id="map-title"
             ref="mapTitle"
             class="map-title"
           >
-            {{ printTitle }}
+            {{ printFormState.printTitle }}
           </div>
           <Map
             v-if="printModalOpened" 
@@ -522,7 +590,7 @@ const scaleLineOptions = {
               :print-map-id="printMap"
             />
             <ScaleLine
-              :visibility="hasScale"
+              :visibility="printFormState.hasScale"
               :scale-line-options="scaleLineOptions"
               :map-id="printMap"
             />

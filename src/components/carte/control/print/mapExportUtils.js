@@ -90,9 +90,14 @@ export async function renderMapCanvasForExport(map, widthPx, heightPx) {
       map.renderSync();
     });
 
+    // Récupère le contexte 2D du canvas d'export, nécessaire pour dessiner
+    const export2dContext = exportCanvas.getContext('2d');
+    if (!export2dContext) {
+      throw new Error('Impossible de récupérer le contexte 2D pour le canvas d\'export.');
+    }
+
     // Fusionne tous les canvas des couches dans le canvas d'export
-    const exportCtx = exportCanvas.getContext('2d');
-    mergeMapCanvases(map.getViewport(), exportCtx);
+    mergeMapCanvases(map.getViewport(), export2dContext);
 
     return exportCanvas;
   } finally {
