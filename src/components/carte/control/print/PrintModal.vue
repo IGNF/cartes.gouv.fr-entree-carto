@@ -83,6 +83,8 @@ const formMarginRight = '10px';
 const COEFF_PX2MM = 0.264583333;
 const MM_PER_INCH = 25.4;
 const BASE_DPI = 96;
+const HIGH_DPI_VALUE = 300;
+const MAX_HIGH_DPI_PAPER_AREA = 210 * 297;
 
 /*************************************************************************
  *  Paramètres formulaire de la carte à imprimer
@@ -107,30 +109,78 @@ const printFormState = reactive({
   format: 'PNG',
 });
 
+const paperFormats = {
+  A0: { width: 841, height: 1189 },
+  A1: { width: 594, height: 841 },
+  A2: { width: 420, height: 594 },
+  A3: { width: 297, height: 420 },
+  A4: { width: 210, height: 297 },
+  A5: { width: 148, height: 210 },
+  B4: { width: 250, height: 353 },
+  B5: { width: 176, height: 250 },
+};
+
+const isPaperFormatAllowedAtHighDpi = (paperFormat) => {
+  const selectedFormat = paperFormats[paperFormat];
+  if (!selectedFormat) {
+    return false;
+  }
+
+  return (selectedFormat.width * selectedFormat.height) <= MAX_HIGH_DPI_PAPER_AREA;
+};
+
+const isCurrentPaperFormatAllowedAtHighDpi = computed(() => {
+  return isPaperFormatAllowedAtHighDpi(printFormState.paperFormat);
+});
+
+const paperFormatOptions = computed(() => {
+  return Object.entries(paperFormats).map(([format, dimension]) => {
+    const isDisabledAtHighDpi = printFormState.dpi === HIGH_DPI_VALUE
+      && !isPaperFormatAllowedAtHighDpi(format);
+
+    return {
+      value: format,
+      text: `${format} (${dimension.width} x ${dimension.height} mm)`,
+      disabled: isDisabledAtHighDpi,
+    };
+  });
+});
+
+const dpiOptions = computed(() => {
+  return [
+    { value: 96, text: '96 DPI (écran)' },
+    {
+      value: HIGH_DPI_VALUE,
+      text: '300 DPI (impression)',
+      disabled: !isCurrentPaperFormatAllowedAtHighDpi.value,
+    },
+  ];
+});
+
+watch(
+  () => [printFormState.dpi, printFormState.paperFormat],
+  ([dpiValue, paperFormat]) => {
+    if (dpiValue === HIGH_DPI_VALUE && !isPaperFormatAllowedAtHighDpi(paperFormat)) {
+      printFormState.paperFormat = 'A4';
+    }
+  },
+  { immediate: true },
+);
+
 const paperDimension = computed(() => {
-  const dimension = {
-    A0: { width: 841, height: 1189 },
-    A1: { width: 594, height: 841 },
-    A2: { width: 420, height: 594 },
-    A3: { width: 297, height: 420 },
-    A4: { width: 210, height: 297 },
-    A5: { width: 148, height: 210 },
-    B4: { width: 250, height: 353 },
-    B5: { width: 176, height: 250 },
-  };
   if (printFormState.pageOrientation === 'portrait') {
     return {
-      width: dimension[printFormState.paperFormat].width,
-      height: dimension[printFormState.paperFormat].height,
+      width: paperFormats[printFormState.paperFormat].width,
+      height: paperFormats[printFormState.paperFormat].height,
     };
   }
   if (printFormState.pageOrientation === 'landscape') {
     return {
-      width: dimension[printFormState.paperFormat].height,
-      height: dimension[printFormState.paperFormat].width,
+      width: paperFormats[printFormState.paperFormat].height,
+      height: paperFormats[printFormState.paperFormat].width,
     };
   }
-  return dimension['A4'];
+  return paperFormats.A4;
 });
 
 
@@ -509,7 +559,7 @@ const scaleLineOptions = {
         <DsfrSelect
           v-model="printFormState.paperFormat"
           label="Dimensions"
-          :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
+          :options="paperFormatOptions"
         />
         <DsfrSelect
           v-model.number="printFormState.margin"
@@ -550,10 +600,7 @@ const scaleLineOptions = {
         <DsfrSelect
           v-model.number="printFormState.dpi"
           label="Résolution"
-          :options="[
-            { value: 96, text: '96 DPI (écran)' },
-            { value: 300, text: '300 DPI (impression)' }
-          ]"
+          :options="dpiOptions"
         />
         <DsfrButton
           id="print-page-export"
