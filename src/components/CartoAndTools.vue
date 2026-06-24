@@ -4,7 +4,7 @@ import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
 
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from "@/components/carte/control/ShareModal.vue";
-import PrintModal from "@/components/carte/control/print/PrintModal.vue";
+import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
@@ -26,6 +26,13 @@ const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
 const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
+
+const printOptions = {
+  dpi: 96,
+  paperFormat: 'A4',
+  pageOrientation: 'portrait',
+  format: 'PDF',
+};
 
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
@@ -192,7 +199,10 @@ provide("selectedLayers", selectedLayers);
     <ShareModal ref="refModalShare" />
     <LoginModal ref="refModalLogin" />
     <SaveModal ref="refModalSave" />
-    <PrintModal ref="refModalPrint" />
+    <PrintModal
+      ref="refModalPrint"
+      :print-options="printOptions"
+    />
   </div>
 </template>
 

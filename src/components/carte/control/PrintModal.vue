@@ -13,17 +13,20 @@ import {
   computeScaleCoeff, 
   drawScale, 
   drawTitle } 
-from './printUtils.js';
-import { injectDpiInPng } from './pngUtils.js';
-import { renderMapCanvasForExport } from './mapExportUtils.js';
+from './printUtils/helper.js';
+import { injectDpiInPng } from './printUtils/png.js';
+import { renderMapCanvasForExport } from './printUtils/mapExport.js';
 
 import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
 
-defineProps({
-  visibility: Boolean,
+const props = defineProps({
+  printOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const emitter = inject('emitter');
@@ -103,7 +106,7 @@ const MAX_HIGH_DPI_PAPER_AREA = 210 * 297;
  *  {Object} paperDimension - Dimension du papier selon format choisi
  **************************************************************************/
 
-const printFormState = reactive({
+const defaultPrintFormState = {
   hasScale: true,
   hasTitle: true,
   printTitle: 'Ma carte',
@@ -112,7 +115,40 @@ const printFormState = reactive({
   paperFormat: 'A4',
   dpi: 96,
   format: 'PNG',
-});
+};
+
+const printFormState = reactive({ ...defaultPrintFormState });
+
+const allowedPrintOptionKeys = [
+  'hasScale',
+  'hasTitle',
+  'printTitle',
+  'pageOrientation',
+  'margin',
+  'paperFormat',
+  'dpi',
+  'format',
+];
+
+const applyPrintOptions = (options) => {
+  if (!options || typeof options !== 'object') {
+    return;
+  }
+
+  allowedPrintOptionKeys.forEach((key) => {
+    if (options[key] !== undefined) {
+      printFormState[key] = options[key];
+    }
+  });
+};
+
+watch(
+  () => props.printOptions,
+  (options) => {
+    applyPrintOptions(options);
+  },
+  { immediate: true, deep: true },
+);
 
 const paperFormats = {
   A0: { width: 841, height: 1189 },
