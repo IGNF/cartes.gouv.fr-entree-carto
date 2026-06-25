@@ -102,9 +102,10 @@ const printForm = ref(null);
 
 const COEFF_PX2MM = 0.264583333;
 const MM_PER_INCH = 25.4;
-const BASE_DPI = 96;
-const HIGH_DPI_VALUE = 300;
-const MAX_HIGH_DPI_PAPER_AREA = 210 * 297;
+const BASE_DPI = 96; // Résolution d'écran standard (96 DPI)
+const HIGH_DPI_VALUE = 300; // Résolution d'impression haute (300 DPI)
+// Surface maximale du papier pour l'impression haute résolution (en mm²)
+const MAX_HIGH_DPI_PAPER_AREA = 250 * 353; // B4 (250mm x 353mm)
 
 /*************************************************************************
  *  Paramètres formulaire de la carte à imprimer
@@ -580,7 +581,8 @@ const buildRasterExportCanvas = async () => {
   };
 };
 
-const exportMap = async () => {
+// Gestion du clic sur le bouton d'export de la carte
+const onClickExportMap = async () => {
   if (isExportInProgress.value) {
     return;
   }
@@ -733,7 +735,7 @@ const scaleLineOptions = {
           :disabled="isExportInProgress"
           icon=""
           no-outline
-          @click="exportMap"
+          @click="onClickExportMap"
         />
       </div>
       <!-- Dom de la prévisualisation de l'impression -->
