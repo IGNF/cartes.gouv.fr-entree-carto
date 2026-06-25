@@ -491,13 +491,15 @@ const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoef
  * @param {number} titleHeightPx - Hauteur du titre en pixels
  * @param {HTMLElement} mapElement - Élément HTML de la carte
  */
+const SCALE_LINE_PRINT_BOOST = 2; // Facteur d'agrandissement pour l'échelle lors de l'export
+
 const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement) => {
   const scaleCanvas = document.createElement('canvas');
   scaleCanvas.width = mapWidthPx;
   scaleCanvas.height = mapHeightPx;
 
   const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
-  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx);
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, SCALE_LINE_PRINT_BOOST);
   finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
   scaleCanvas.remove();
 };

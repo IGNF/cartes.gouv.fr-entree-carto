@@ -33,13 +33,10 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer contenant une échelle
  * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
  * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
+ * @param { Number } visibilityBoost Facteur d'agrandissement visuel pour l'export
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
-    // DEBUG
-    // ctx.fillStyle = "rgb(0,255,0, 0.5)";
-    // ctx.fillRect(0, 0, canvasWidth,canvasHeight);   
-    
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, visibilityBoost = 1) {
     // Calculer les proportions entre la taille actuelle du mapRef et les dimensions cibles du canvas
     const actualWidth = mapRef.offsetWidth || mapRef.clientWidth || canvasWidth;
     const actualHeight = mapRef.offsetHeight || mapRef.clientHeight || canvasHeight;
@@ -47,39 +44,78 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     const scaleFactorY = canvasHeight / actualHeight;
     const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2;
     
-    const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]  
-    const scaleLineInner = scaleLine.children[0]  
+    const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]
+    const scaleLineInner = scaleLine?.children[0]
+    if (!scaleLine || !scaleLineInner) {
+        return
+    }
+
     const style = getComputedStyle(scaleLine)
     const styleInner = getComputedStyle(scaleLineInner)
-    const scaleLeft = parseInt(style.left) * scaleFactorX
-    const scaleBottom = parseInt(style.bottom) * scaleFactorY
-    const scaleContent = scaleLineInner.innerHTML;
-    const scaleWidth = parseInt(styleInner.width) * scaleFactorX
-    const scaleHeight = parseInt(styleInner.lineHeight) * scaleFactorY
-    const y1 = canvasHeight - scaleBottom - scaleHeight
-    
-    // rect
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.75)"
-    ctx.rect(scaleLeft, y1, scaleWidth, scaleHeight)
-    ctx.fillRect(scaleLeft,y1,scaleWidth,scaleHeight)
-    // Text
-    const baseFontSize = parseInt(styleInner.fontSize)
-    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor) + 'px ' + styleInner.fontFamily
-    ctx.textAlign="center"; 
-    ctx.fillStyle = "#000000";
-    ctx.fillText(scaleContent, scaleLeft+(scaleWidth/2),y1+(scaleHeight/2));
-    // Line
-    ctx.beginPath();
-    ctx.moveTo(scaleLeft, y1)
-    ctx.lineTo(scaleLeft, y1 + scaleHeight);
-    ctx.lineTo(scaleLeft, y1 + scaleHeight);
-    ctx.lineTo(scaleLeft + scaleWidth, y1 + scaleHeight);
-    ctx.lineTo(scaleLeft + scaleWidth, y1);
-    ctx.lineWidth = 1 * avgScaleFactor;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#666666"
-    ctx.stroke();
+    const mapRect = mapRef.getBoundingClientRect()
+    const outerRect = scaleLine.getBoundingClientRect()
+    const innerRect = scaleLineInner.getBoundingClientRect()
+    const scaleContent = scaleLineInner.textContent || ''
+
+    const rightOffset = parseFloat(style.right || '0')
+    const bottomOffset = parseFloat(style.bottom || '0')
+    const outerWidth = outerRect.width * scaleFactorX * visibilityBoost
+    const outerHeight = outerRect.height * scaleFactorY * visibilityBoost
+    const rightAnchor = Number.isFinite(rightOffset)
+        ? canvasWidth - (rightOffset * scaleFactorX)
+        : (outerRect.left - mapRect.left) * scaleFactorX + outerWidth
+    const bottomAnchor = Number.isFinite(bottomOffset)
+        ? canvasHeight - (bottomOffset * scaleFactorY)
+        : (outerRect.top - mapRect.top) * scaleFactorY + outerHeight
+    const outerX = rightAnchor - outerWidth
+    const outerY = bottomAnchor - outerHeight
+    const innerOffsetX = (innerRect.left - outerRect.left) * scaleFactorX * visibilityBoost
+    const innerOffsetY = (innerRect.top - outerRect.top) * scaleFactorY * visibilityBoost
+    const innerWidth = innerRect.width * scaleFactorX * visibilityBoost
+    const innerHeight = innerRect.height * scaleFactorY * visibilityBoost
+    const innerX = outerX + innerOffsetX
+    const innerY = outerY + innerOffsetY
+
+    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorX * visibilityBoost
+    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorX * visibilityBoost
+    const borderBottomWidth = parseFloat(styleInner.borderBottomWidth || '0') * scaleFactorY * visibilityBoost
+    // const borderRadius = parseFloat(style.borderRadius || '0') * avgScaleFactor * visibilityBoost
+    const outerBorderWidth = Math.max(avgScaleFactor * 0.75, 1)
+
+    // Fond externe de la ScaleLine : padding, marge et arrondis inclus via la boîte DOM réelle.
+    ctx.beginPath()
+    ctx.fillStyle = style.backgroundColor || 'rgba(255, 255, 255, 0.75)'
+    // if (typeof ctx.roundRect === 'function' && borderRadius > 0) {
+    //     ctx.roundRect(outerX, outerY, outerWidth, outerHeight, borderRadius)
+    //     ctx.fill()
+    //     ctx.lineWidth = outerBorderWidth
+    //     ctx.strokeStyle = '#0000FF'
+    //     ctx.stroke()
+    // } else {
+        ctx.fillRect(outerX, outerY, outerWidth, outerHeight)
+        ctx.lineWidth = outerBorderWidth
+        ctx.strokeStyle = '#ffffff'
+        ctx.strokeRect(outerX, outerY, outerWidth, outerHeight)
+    // }
+
+    // Bordure interne OpenLayers : 3 côtés uniquement, sans border-top.
+    ctx.fillStyle = '#000000'
+    if (borderLeftWidth > 0) {
+        ctx.fillRect(innerX, innerY, borderLeftWidth, innerHeight)
+    }
+    if (borderRightWidth > 0) {
+        ctx.fillRect(innerX + innerWidth - borderRightWidth, innerY, borderRightWidth, innerHeight)
+    }
+    if (borderBottomWidth > 0) {
+        ctx.fillRect(innerX, innerY + innerHeight - borderBottomWidth, innerWidth, borderBottomWidth)
+    }
+
+    const baseFontSize = parseFloat(styleInner.fontSize || '10')
+    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor * visibilityBoost) + 'px ' + styleInner.fontFamily
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = styleInner.color || '#333333'
+    ctx.fillText(scaleContent, innerX + (innerWidth / 2), innerY + (innerHeight / 2))
 };
 
 /**
