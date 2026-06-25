@@ -53,10 +53,11 @@ let appStore = useAppStore();
 import { useEulerian } from '@/plugins/Eulerian.js';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useModals } from '@/composables/useModals';
+import { ROUTE_NAMES } from '@/router/routeNames';
 import { useRoute } from 'vue-router';
 let modals = useModals();
 const route = useRoute();
-const isEmbedRoute = () => route.path.includes('/embed');
+const isEmbedRoute = () => route.name === ROUTE_NAMES.EMBED;
 const eulerian = useEulerian();
 
 const setUrl = (url) => {
