@@ -17,9 +17,11 @@ export default {
 
 <script setup lang="js">
 
+import { inject, ref, useTemplateRef } from 'vue';
+
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
+
 import { useMapStore } from '@/stores/mapStore';
-import { inject } from 'vue';
 
 // lib notification
 import { push } from 'notivue'
@@ -31,7 +33,10 @@ const emitter = inject('emitter');
 
 // options
 const props = defineProps({
-  title: String
+  title: {
+    type: String,
+    default: ''
+  }
 });
 
 // recherche de données
@@ -113,13 +118,17 @@ const lstData = computed(() => {
           id : document._id,
           name : (ext) ? document.name.replace(ext, "").slice(0, -1) : document.name,
           type : type,
-          type_fr : "", // no translation; if needed, use i18n(type)
+          type_fr : i18n(type),
           icon : icon(type)
         });
       }
     }
   }
-  return data.filter((el) => !searchString.value || el.name.includes(searchString.value) );
+  // filtrage sur la recherche
+  return data.filter((el) => !searchString.value || 
+    el.name.includes(searchString.value) || 
+    el.type.includes(searchString.value) || 
+    el.type_fr.includes(searchString.value) );
 });
 
 //  liste des cartes avec filtre sur la recherche (sur le nom complet)
@@ -140,7 +149,7 @@ const lstMap = computed(() => {
       });
     }
   }
-  return map.filter((el) => !searchString.value || el.name.includes(searchString.value) );
+  return map.filter((el) => !searchString.value || el.name.includes(searchString.value) || el.type.includes(searchString.value) );
 });
 
 const onUpdateBookmark = (e) => {
@@ -188,7 +197,7 @@ const addData = () => {
 const refDivMapName = useTemplateRef('div-map-name');
 const name = ref('');
 
-const onClickMapButtonValidateName = (e) => {
+const onClickMapButtonValidateName = () => {
   refDivMapName.value.classList.toggle("fr-hidden");
   // recupèrer le permalien
   var permalink = mapStore.permalink;
@@ -230,7 +239,7 @@ const onClickMapButtonValidateName = (e) => {
   });
   
 };
-const onClickMapButtonCancelName  = (e) => {
+const onClickMapButtonCancelName  = () => {
   refDivMapName.value.classList.toggle("fr-hidden");
 };
 
@@ -264,8 +273,8 @@ onMounted(() => {});
 
 <template>
   <div class="fr-container fr-p-1w">
-    <h4 v-if="title">
-      {{ title }}
+    <h4 v-if="props.title">
+      {{ props.title }}
     </h4>
     <!-- Module de recherche des données utilisateur -->
     <div class="search-bookmark fr-p-1w">
@@ -349,6 +358,7 @@ onMounted(() => {});
           <!-- Affichage des cartes ou permaliens -->
           <div
             v-for="map in lstMap"
+            :key="map.id"
             class="container-bookmark-map-item fr-p-1w"
           >
             <MenuBookMarkEntry
@@ -380,6 +390,7 @@ onMounted(() => {});
           -->
           <div
             v-for="data in lstData"
+            :key="data.id"
             class="container-bookmark-data-item fr-p-1w"
           >
             <MenuBookMarkEntry

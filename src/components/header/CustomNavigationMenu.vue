@@ -7,7 +7,6 @@ import {
 } from "@gouvminint/vue-dsfr"
 
 import { useLogger } from 'vue-logger-plugin'
-import { useBaseUrl } from '@/composables/baseUrl';
 
 const log = useLogger();
 
@@ -50,12 +49,15 @@ watch(expanded, (newValue, oldValue) => {
   }
 })
 
-
 var service = inject('services');
+
 // variable locale pour stocker l'utilisateur
 const user = ref(service.user);
-// Base URL pour les routes login/logout
-const url = useBaseUrl() + import.meta.env.BASE_URL;
+
+// INFO
+// Les routes login/logout sont locales à l'application, 
+// donc on les construit à partir de la base URL
+const url = import.meta.env.BASE_URL;
 
 // INFO
 // Écouter l'événement service:user:loaded pour mettre à jour l'utilisateur
