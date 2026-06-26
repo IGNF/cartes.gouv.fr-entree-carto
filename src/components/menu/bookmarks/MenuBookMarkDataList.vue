@@ -93,6 +93,14 @@ const icon = (label) => {
 
 const update = ref(null);
 
+const getTimestamp = (value) => {
+  if (!value) {
+    return null;
+  }
+  const timestamp = new Date(value).getTime();
+  return Number.isNaN(timestamp) ? null : timestamp;
+};
+
 // liste des données avec filtre sur la recherche (sur le nom complet)
 const lstData = computed(() => {
   if (update.value) {
@@ -117,13 +125,33 @@ const lstData = computed(() => {
         data.push({
           id : document._id,
           name : (ext) ? document.name.replace(ext, "").slice(0, -1) : document.name,
+          date : document.update,
+          date_create : document.creation,
           type : type,
-          type_fr : i18n(type),
+          type_fr : i18n(type) || type, // traduction du type de document
           icon : icon(type)
         });
       }
     }
   }
+
+  // tri par date : plus recent en premier
+  data.sort((a, b) => {
+    const timestampA = getTimestamp(a.date) ?? getTimestamp(a.date_create);
+    const timestampB = getTimestamp(b.date) ?? getTimestamp(b.date_create);
+
+    if (timestampA !== null && timestampB !== null) {
+      return timestampB - timestampA;
+    }
+    if (timestampA !== null) {
+      return -1;
+    }
+    if (timestampB !== null) {
+      return 1;
+    }
+    return 0;
+  });
+
   // filtrage sur la recherche
   return data.filter((el) => !searchString.value || 
     el.name.includes(searchString.value) || 
@@ -143,6 +171,8 @@ const lstMap = computed(() => {
       map.push({
         id : document._id,
         name : document.name,
+        date : document.update,
+        date_create : document.creation,
         type : "carte",
         type_fr : "", // no translation, otherwise e.g. "carte", "permalien"
         icon : "ri-map-2-line",
