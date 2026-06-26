@@ -95,6 +95,7 @@ declare module 'vue' {
     SearchEngine: typeof import('./components/carte/control/SearchEngine.vue')['default']
     Share: typeof import('./components/carte/control/Share.vue')['default']
     ShareModal: typeof import('./components/carte/control/ShareModal.vue')['default']
+    Sort: typeof import('./components/utils/Sort.vue')['default']
     StoreData: typeof import('./components/StoreData.vue')['default']
     Territories: typeof import('./components/carte/control/Territories.vue')['default']
     TextCopyToClipboard: typeof import('./components/utils/TextCopyToClipboard.vue')['default']

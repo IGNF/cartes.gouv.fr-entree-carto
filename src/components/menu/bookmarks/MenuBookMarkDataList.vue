@@ -19,6 +19,7 @@ export default {
 
 import { inject, ref, useTemplateRef } from 'vue';
 
+import Sort from '@/components/utils/Sort.vue';
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
 
 import { useMapStore } from '@/stores/mapStore';
@@ -39,13 +40,19 @@ const props = defineProps({
   }
 });
 
-// recherche de données
+/************************************************************************
+ * Recherche de données
+ ***********************************************************************/
+
 const searchString = ref('');
 function updateSearch(e) {
   searchString.value = e;
 }
 
-// gestion des onglets
+/************************************************************************
+ * Gestion des onglets
+ ************************************************************************/
+
 const tabListName = 'Liste des données';
 const tabTitles = [
   { title: "Cartes", tabId: 'tab-bookmark-maps', panelId: 'tab-content-bookmark-maps'},
@@ -53,6 +60,10 @@ const tabTitles = [
 ];
 
 const selectedIndex = ref(0);
+
+/************************************************************************
+ * Gestion des données et des cartes
+ ************************************************************************/
 
 // mapping label i18n FR
 const i18n = (label) => {
@@ -101,10 +112,16 @@ const getTimestamp = (value) => {
   return Number.isNaN(timestamp) ? null : timestamp;
 };
 
-// liste des données avec filtre sur la recherche (sur le nom complet)
+// liste des données avec filtre sur la recherche
 const lstData = computed(() => {
   if (update.value) {
     console.log("update data !");
+  }
+  if (sortField.value) {
+    console.log("sort data by", sortField.value);
+  }
+  if (sortOrder.value) {
+    console.log("sort data by", sortOrder.value);
   }
   var data = [];
   for (const type in service.documents) {
@@ -135,21 +152,32 @@ const lstData = computed(() => {
     }
   }
 
-  // tri par date : plus recent en premier
+  // tri par date par defaut : plus recent en premier
   data.sort((a, b) => {
-    const timestampA = getTimestamp(a.date) ?? getTimestamp(a.date_create);
-    const timestampB = getTimestamp(b.date) ?? getTimestamp(b.date_create);
+    if (sortField.value === "date") {
+      const fieldA = getTimestamp(a[sortField.value]);
+      const fieldB = getTimestamp(b[sortField.value]);
 
-    if (timestampA !== null && timestampB !== null) {
-      return timestampB - timestampA;
+      if (fieldA !== null && fieldB !== null) {
+        return sortOrder.value === "desc" ? fieldB - fieldA : fieldA - fieldB;
+      }
+      if (fieldA !== null) {
+        return 1;
+      }
+      if (fieldB !== null) {
+        return -1;
+      }
+      return 0;
     }
-    if (timestampA !== null) {
-      return -1;
-    }
-    if (timestampB !== null) {
-      return 1;
-    }
-    return 0;
+
+    const fieldA = String(a[sortField.value] || "");
+    const fieldB = String(b[sortField.value] || "");
+    const compare = fieldA.localeCompare(fieldB, 'fr', {
+      numeric: true,
+      sensitivity: 'base'
+    });
+
+    return sortOrder.value === "desc" ? -compare : compare;
   });
 
   // filtrage sur la recherche
@@ -159,7 +187,7 @@ const lstData = computed(() => {
     el.type_fr.includes(searchString.value) );
 });
 
-//  liste des cartes avec filtre sur la recherche (sur le nom complet)
+//  liste des cartes avec filtre sur la recherche
 const lstMap = computed(() => {
   if (update.value) {
     console.log("update map !");
@@ -179,6 +207,22 @@ const lstMap = computed(() => {
       });
     }
   }
+  // tri par date uniquement : plus recent en premier
+  map.sort((a, b) => {
+    const timestampA = getTimestamp(a.date) ?? getTimestamp(a.date_create);
+    const timestampB = getTimestamp(b.date) ?? getTimestamp(b.date_create);
+    if (timestampA !== null && timestampB !== null) {
+      return timestampB - timestampA;
+    }
+    if (timestampA !== null) {
+      return 1;
+    }
+    if (timestampB !== null) {
+      return -1;
+    }
+    return 0;
+  });
+  // filtrage sur la recherche
   return map.filter((el) => !searchString.value || el.name.includes(searchString.value) || el.type.includes(searchString.value) );
 });
 
@@ -213,16 +257,20 @@ const addMap = () => {
 const addData = () => {
   // envoi d'un evenement pour l'ouverture du contrôle d'import de données
   // et le widget realise l'enregistrement automatique dans l'espace personnel
-      // envoi d'un evenement pour l'ouverture du contrôle d'import de données
-      emitter.dispatchEvent("layerimport:open:clicked", {
-        open : true,
-        componentName: "LayerImport"
-      });
-      emitter.dispatchEvent("leftmenu:close", {
-        open : false,
-        componentName: "LeftMenu"
-      });
+  // envoi d'un evenement pour l'ouverture du contrôle d'import de données
+  emitter.dispatchEvent("layerimport:open:clicked", {
+    open : true,
+    componentName: "LayerImport"
+  });
+  emitter.dispatchEvent("leftmenu:close", {
+    open : false,
+    componentName: "LeftMenu"
+  });
 };
+
+/************************************************************************
+ * Gestion de l'enregistrement d'un permalien
+ ************************************************************************/
 
 const refDivMapName = useTemplateRef('div-map-name');
 const name = ref('');
@@ -293,6 +341,28 @@ const createCarteDocument = async (data) => {
     console.error(e);
     throw e;
   }
+};
+
+/************************************************************************
+ * Gestion du tri
+ ***********************************************************************/
+
+const sortFields = [
+  { label: "Nom", value: "name" },
+  { label: "Type", value: "type" },
+  { label: "Date", value: "date" }
+];
+
+const sortField = ref("date");
+const sortOrder = ref("desc"); // desc ou asc
+
+const onUpdateSortField = (value) => {
+  sortField.value = value;
+  onUpdateBookmark();
+};
+const onUpdateSortOrder = (value) => {
+  sortOrder.value = value;
+  onUpdateBookmark();
 };
 
 onBeforeMount(() => {});
@@ -411,22 +481,36 @@ onMounted(() => {});
             icon="fr-icon-upload-line"
             @click="addData()"
           />
-          <!-- Affichage des données :
-            - nom
-            - icone en fonction du type de données
-            - type de données
-            - date
-            - menu options : renommer, partager, supprimer
-          -->
-          <div
-            v-for="data in lstData"
-            :key="data.id"
-            class="container-bookmark-data-item fr-p-1w"
-          >
-            <MenuBookMarkEntry
-              :data="data"
-              type="data"
+          <div class="fr-mb-2w">
+            <!-- Menu de tri :
+              - 2 boutons pour l'action : croissant / decroissant
+              - un menu déroulant pour choisir le champ de tri
+            -->
+            <Sort 
+              v-model:sort-field="sortField"
+              v-model:sort-order="sortOrder"
+              sort-id="sort-bookmark-data"
+              :sort-fields="sortFields"
+              @update:sort-field="onUpdateSortField"
+              @update:sort-order="onUpdateSortOrder"
             />
+            <!-- Affichage des données :
+              - nom
+              - icone en fonction du type de données
+              - type de données
+              - date
+              - menu options : renommer, partager, supprimer
+            -->
+            <div
+              v-for="data in lstData"
+              :key="data.id"
+              class="container-bookmark-data-item fr-p-1w"
+            >
+              <MenuBookMarkEntry
+                :data="data"
+                type="data"
+              />
+            </div>
           </div>
         </DsfrTabContent>
       </DsfrTabs>
