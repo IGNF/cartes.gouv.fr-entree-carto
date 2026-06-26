@@ -49,6 +49,69 @@ function updateSearch(e) {
   searchString.value = e;
 }
 
+const normalizeSearchValue = (value = "") => {
+  return String(value)
+    .toLowerCase()
+    .normalize("NFD") // normalisation Unicode
+    .replace(/[\u0300-\u036f]/g, "") // supprime les accents
+    .trim();
+};
+
+/**
+ * Parse une requête de recherche en tokens.
+ * Chaque token peut être de la forme "field:value" 
+ * ou simplement "value".
+ */
+const parseSearchQuery = (rawQuery = "") => {
+  const normalized = normalizeSearchValue(rawQuery);
+  if (!normalized) {
+    return [];
+  }
+
+  return normalized
+    .split(/\s+/)
+    .map((token) => {
+      const sepIndex = token.indexOf(":");
+      if (sepIndex > 0) {
+        return {
+          field: token.slice(0, sepIndex),
+          value: token.slice(sepIndex + 1)
+        };
+      }
+      return { field: null, value: token };
+    })
+    .filter((token) => token.value);
+};
+
+/**
+ * 
+ * @param item 
+ * @param token 
+ * @param fieldMap 
+ */
+const matchesToken = (item, token, fieldMap) => {
+  const allFields = Object.values(fieldMap).flat();
+  const fields = token.field && fieldMap[token.field] ? fieldMap[token.field] : allFields;
+
+  return fields.some((field) => normalizeSearchValue(item[field]).includes(token.value));
+};
+
+/**
+ * 
+ * @param item 
+ * @param rawQuery 
+ * @param fieldMap 
+ */
+const matchesQuery = (item, rawQuery, fieldMap) => {
+  const tokens = parseSearchQuery(rawQuery);
+  if (!tokens.length) {
+    return true;
+  }
+
+  // Tous les tokens doivent matcher: "name:croquis type:service"
+  return tokens.every((token) => matchesToken(item, token, fieldMap));
+};
+
 /************************************************************************
  * Gestion des onglets
  ************************************************************************/
@@ -180,11 +243,13 @@ const lstData = computed(() => {
     return sortOrder.value === "desc" ? -compare : compare;
   });
 
-  // filtrage sur la recherche
-  return data.filter((el) => !searchString.value || 
-    el.name.includes(searchString.value) || 
-    el.type.includes(searchString.value) || 
-    el.type_fr.includes(searchString.value) );
+  // filtrage sur la recherche (globale ou par préfixe)
+  return data.filter((el) =>
+    matchesQuery(el, searchString.value, {
+      name: ["name"],
+      type: ["type", "type_fr"]
+    })
+  );
 });
 
 //  liste des cartes avec filtre sur la recherche
@@ -222,8 +287,13 @@ const lstMap = computed(() => {
     }
     return 0;
   });
-  // filtrage sur la recherche
-  return map.filter((el) => !searchString.value || el.name.includes(searchString.value) || el.type.includes(searchString.value) );
+  // filtrage sur la recherche (globale ou par préfixe)
+  return map.filter((el) =>
+    matchesQuery(el, searchString.value, {
+      name: ["name"],
+      type: ["type", "type_fr"]
+    })
+  );
 });
 
 const onUpdateBookmark = (e) => {
@@ -381,6 +451,7 @@ onMounted(() => {});
       <DsfrSearchBar
         v-model="searchString"
         label="Rechercher un enregistrement"
+        placeholder="Ex: name:mes_croquis type:service"
         @update:model-value="updateSearch"
       />
     </div>
