@@ -197,6 +197,8 @@ var Documents = {
     } catch (error) {
       console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   },
 
@@ -246,6 +248,8 @@ var Documents = {
     } catch (error) {
       console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   },
   
@@ -324,6 +328,8 @@ var Documents = {
     } catch (error) {
       console.error(`Erreur lors de la récupération du document avec l'id ${id} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   },
 

@@ -172,7 +172,7 @@ var SetDocuments = {
       
       if (response.status !== 200 && response.status !== 201) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document n'a pas été enregistré !`, { cause: data });
       }
 
       // enregistrer la réponse
@@ -250,7 +250,7 @@ var SetDocuments = {
       
       if (response.status !== 200) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, { cause: data });
       }
   
       // enregistrer la réponse
@@ -325,7 +325,7 @@ var SetDocuments = {
       
       if (response.status !== 200) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, { cause: data });
       }
   
       // enregistrer la réponse
@@ -396,7 +396,7 @@ var SetDocuments = {
       
       if (response.status !== 200) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document ${uuid} n'a pas été partagé !`, { cause: data });
       }
   
       // enregistrer la réponse
@@ -479,7 +479,7 @@ var SetDocuments = {
       
       if (response.status !== 200 && response.status !== 201) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document ${uuid} n'a pas été renommé !`, { cause: data });
       }
   
       // enregistrer la réponse
@@ -540,7 +540,7 @@ var SetDocuments = {
   
       if (response.status !== 204) {
         // ERROR !
-        throw response;
+        throw new Error(`Le document ${uuid} n'a pas été supprimé !`, { cause: response });
       }
   
       // supprimer la réponse
@@ -598,7 +598,9 @@ var SetDocuments = {
     var content = await this.getFileById(uuid);
     if (!content) {
       // ERROR !
-      throw new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      var error = new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      console.error("Erreur dans l'export du document :", error);
+      this.throwError(error);
     }
     return {
       uuid : uuid,
