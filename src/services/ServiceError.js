@@ -12,6 +12,37 @@
  * @property {Number} status - Statut HTTP éventuel, -1 sinon.
  * @property {String} type - Type d'erreur (TYPE_SRVERR, TYPE_USEERR, TYPE_AUTHERR, TYPE_SYNCERR, TYPE_NETERR, TYPE_TIMEOUT ou TYPE_UNKERR).
  * @property {String} [code] - Code fonctionnel optionnel (ex: DOC_DELETED_REMOTELY)
+ * 
+ * @example
+ * // Création d'une erreur de service
+ * const error = new ServiceError({
+ *   message: "Le service est indisponible",
+ *   status: 503,
+ *   type: ServiceError.TYPE_SRVERR
+ * });
+ * 
+ * // Création d'une erreur de synchronisation
+ * const syncError = new ServiceError({
+ *   message: "Le document n'existe plus sur le serveur.",
+ *   status: 404,
+ *   type: ServiceError.TYPE_SYNCERR,
+ *   code: "DOC_DELETED_REMOTELY"
+ * });
+ * 
+ * {
+ *   "message": "Le document (2afd1652-d22b-499e-88d0-384bfd09130d) n'existe plus sur le serveur.",
+ *   "type": "SYNCHRONIZATION_ERROR",
+ *   "status": 404,
+ *   "code": "DOC_DELETED_REMOTELY",
+ *   "name": "ServiceError",
+ *   "stack": "...",
+ *   "cause": {
+ *     "name": "Error",
+ *     "message": "Le document (2afd1652-d22b-499e-88d0-384bfd09130d) n'existe plus sur le serveur.",
+ *     "status": 404,
+ *     "code": "DOC_DELETED_REMOTELY"
+ *   }
+ * }
  */
 
 class ServiceError {
@@ -43,6 +74,53 @@ class ServiceError {
 
         this.name = "ServiceError";
         this.stack = (new Error()).stack;
+    }
+
+    /**
+     * Convertit une cause en objet sérialisable.
+     * @param {*} cause
+     * @returns {*}
+     */
+    static serializeCause (cause) {
+        if (!cause) {
+            return cause;
+        }
+
+        if (cause instanceof Error) {
+            return {
+                name: cause.name,
+                message: cause.message,
+                stack: cause.stack,
+                status: cause.status,
+                code: cause.code,
+                cause: ServiceError.serializeCause(cause.cause)
+            };
+        }
+
+        if (typeof cause === "object") {
+            return {
+                ...cause,
+                cause: ServiceError.serializeCause(cause.cause)
+            };
+        }
+
+        return cause;
+    }
+
+    /**
+     * Rend l'erreur sérialisable en JSON.
+     * @returns {Object}
+     */
+    toJSON () {
+        return {
+            message: this.message,
+            type: this.type,
+            status: this.status,
+            code: this.code,
+            name: this.name,
+            stack: this.stack,
+            cause: ServiceError.serializeCause(this.cause)
+        };
     }
 
     /**
@@ -85,6 +163,10 @@ class ServiceError {
         if (typeof causeStatus === "number") {
             status = causeStatus;
         }
+        var causeCode = error?.cause?.code;
+        if (causeCode) {
+            code = causeCode;
+        }
 
         // Classification auto si le type n'est pas explicitement donné.
         if (type === ServiceError.TYPE_UNKERR) {
@@ -117,7 +199,7 @@ class ServiceError {
         });
 
         if (error) {
-            serviceError.cause = error;
+            serviceError.cause = ServiceError.serializeCause(error);
         }
 
         return serviceError;
