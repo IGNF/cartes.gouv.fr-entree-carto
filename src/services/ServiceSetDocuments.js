@@ -656,25 +656,8 @@ var SetDocuments = {
   
       // on verifie si le document supprimé est encore present dans un document de type carte,
       // si oui, on precise un message d'avertissement
-      var isPresentInBookmarksCarte = false;
-      const type = "carte";
-      if (!this.documents[type] || this.documents[type].length === 0) {
-        console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
-      }
-      for (let i = 0; i < this.documents[type].length; i++) {
-        const document = this.documents[type][i];
-        if (document.extra && document.extra.bookmarks) {
-          const bookmarks = document.extra.bookmarks;
-          if (bookmarks.includes(uuid)) {
-            isPresentInBookmarksCarte = true;
-            break;
-          }
-        }
-      }
-  
-      if (isPresentInBookmarksCarte) {
-        console.warn(`Le document ${uuid} a été supprimé, mais il est encore présent dans une carte !`);
-      } 
+      var isPresentInBookmarksCarte = this.findInCarte(uuid);
+      
       return {
         uuid : uuid,
         action : "deleted",

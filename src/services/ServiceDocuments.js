@@ -103,6 +103,37 @@ var Documents = {
     return null;
   },
 
+  /**
+   * Recherche un document par son uuid dans les documents de type carte
+   * 
+   * @param {*} uuid 
+   * @returns {Boolean} - Vrai si le document est trouvé dans les documents de type carte
+   */
+  findInCarte: function (uuid) {
+    var isPresentInBookmarksCarte = false;
+    
+    const type = "carte";
+    if (!this.documents[type] || this.documents[type].length === 0) {
+      console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
+    }
+    
+    for (let i = 0; i < this.documents[type].length; i++) {
+      const document = this.documents[type][i];
+      if (document.extra && document.extra.bookmarks) {
+        const bookmarks = document.extra.bookmarks;
+        if (bookmarks.includes(uuid)) {
+          isPresentInBookmarksCarte = true;
+          break;
+        }
+      }
+    }
+  
+    if (isPresentInBookmarksCarte) {
+      console.warn(`Le document ${uuid} est présent dans une carte !`);
+    }
+    return isPresentInBookmarksCarte;
+  },
+
   //////////////////////////
   // Méthodes de service
   //////////////////////////

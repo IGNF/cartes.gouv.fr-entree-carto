@@ -178,10 +178,18 @@ const onClickButtonRename = (e) => {
 };
 const onClickButtonDelete = (e) => {
   console.debug(e);
+
   var data = {
     uuid : props.data.id,
     type : props.data.type
   };
+
+  // TODO
+  // demander confirmation avant suppression
+  if (!confirm(t.bookmark.confirm_delete_document)) {
+    return;
+  }
+  
   service.deleteDocument(data)
     .then((o) => {
       // emettre un event pour prévenir de la suppression d'un document
