@@ -275,6 +275,18 @@ var Documents = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
+
+      if (response.status !== 200) {
+        if (response.status === 404) {
+          throw new Error(`Le document (${id}) n'existe plus sur le serveur.`, {
+            cause: { status: response.status, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        throw new Error(`Erreur HTTP lors de la récupération du document (${id}).`, {
+          cause: { status: response.status }
+        });
+      }
+
       var data = await response.json();
   
       // on ajoute des informations utiles sous forme de key/value
@@ -351,6 +363,18 @@ var Documents = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
+
+      if (response.status !== 200) {
+        if (response.status === 404) {
+          throw new Error(`Le fichier du document (${id}) n'existe plus sur le serveur.`, {
+            cause: { status: response.status, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        throw new Error(`Erreur HTTP lors de la récupération du fichier (${id}).`, {
+          cause: { status: response.status }
+        });
+      }
+
       var type = response.headers.get("content-type");
       var data = null;
       if (type === "application/json") {
