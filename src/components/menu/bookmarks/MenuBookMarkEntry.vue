@@ -190,12 +190,18 @@ const onClickButtonDelete = (e) => {
         uuid : o.uuid,
         action : o.action // added, updated, deleted
       });
+      return o;
     })
-    .then(() => {
-      // TODO
+    .then((o) => {
       // prevenir l'utilisateur que le document supprimé
       // ne sera plus disponible sur les cartes enregistrées
       // et donc sur le permalien !
+      if (o.extra.isPresentInBookmarksCarte) {
+        push.warning({
+          title: t.bookmark.title,
+          message: t.bookmark.warning_delete_document_in_bookmarks_carte
+        });
+      }
     });
 };
 const onClickButtonExport = (e) => {
