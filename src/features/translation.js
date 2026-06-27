@@ -26,6 +26,10 @@ export default {
     success_copy_permalink: "Le permalien est copié",
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
+    failed_export_data: (value) => { return `Erreur sur l'export de la donnée : ${value}` },
+    failed_copy_permalink: (value) => { return `Erreur sur la copie du permalien : ${value}` },
+    failed_delete_data: (value) => { return `Erreur sur la suppression de la donnée : ${value}` },
+    failed_rename_data: (value) => { return `Erreur sur le renommage de la donnée : ${value}` }
   },
   drawing: {
     title: "Croquis",
