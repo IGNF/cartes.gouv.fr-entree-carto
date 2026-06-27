@@ -159,7 +159,7 @@ const onAddData = (data) => {
     console.error(e);
     push.error({
       title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
+      message: t.bookmark.failed_add_data(e.message || e),
     });
   })
 };
@@ -196,7 +196,14 @@ const onClickButtonDelete = (e) => {
       // prevenir l'utilisateur que le document supprimé
       // ne sera plus disponible sur les cartes enregistrées
       // et donc sur le permalien !
-    });
+    })
+    .catch((e) => {
+      console.error(e); // on catch directement la response du service
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_delete_data(e.message || e),
+      });
+    })
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
@@ -235,7 +242,13 @@ const onClickButtonExport = (e) => {
     } else {
       link.click();
     }
-  });
+  }).catch((e) => {
+    console.error(e);
+    push.error({
+      title: t.bookmark.title,
+      message: t.bookmark.failed_export_data(e.message || e),
+    });
+  })
 };
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
@@ -258,7 +271,7 @@ const onClickButtonCopyPermalink = (e) => {
     console.error(e);
     push.error({
       title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
+      message: t.bookmark.failed_copy_permalink(e.message || e),
     });
   });
 
@@ -294,6 +307,13 @@ const onClickButtonValidateRename = (e) => {
     // FIXME
     // doit on modifier les informations du gestionnaire de couche ?
     // ex. modifier Name
+  })
+  .catch((e) => {
+    console.error(e);
+    push.error({
+      title: t.bookmark.title,
+      message: t.bookmark.failed_rename_data(e.message || e),
+    });
   });
 
 };
