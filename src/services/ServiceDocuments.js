@@ -164,7 +164,7 @@ var Documents = {
    * 
    * @example
    * curl -X 'GET' \
-   * 'https://data.geopf.fr/api/users/me/documents?owned=true&shared=false&labels=cartes.gouv.fr&page=1&limit=10' \
+   * 'https://data.geopf.fr/api/users/me/documents?fields=name&fields=size&fields=description&fields=extra&fields=labels&fields=public_url&fields=mime_type&owned=true&shared=false&labels=cartes.gouv.fr&labels=carte&page=1&limit=10' \
    * -H 'accept: application/json' \
    * -H 'Authorization: Bearer ....
    * 
@@ -252,6 +252,7 @@ var Documents = {
         `limit=${limit}`
       ];
       var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
+      kvp += "&fields=name&fields=description&fields=extra&fields=labels&fields=public_url&fields=mime_type";
       var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
         method: 'GET',
         headers: {
