@@ -28,6 +28,7 @@ export default {
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
     warning_delete_document_in_bookmarks_carte: "Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !",
     confirm_delete_document: "Voulez-vous vraiment supprimer le document ?",
+    confirm_delete_document_with_name: (value) => { return `Voulez-vous vraiment supprimer le document ${value} ?` },
     confirm_delete_document_in_bookmarks_carte: "Voulez-vous vraiment supprimer le document ? Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !"
   },
   drawing: {

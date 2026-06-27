@@ -69,6 +69,7 @@ declare module 'vue' {
     MenuLateralWrapper: typeof import('./components/menu/MenuLateralWrapper.vue')['default']
     MenuTierce: typeof import('./components/menu/MenuTierce.vue')['default']
     Modal: typeof import('./components/modals/Modal.vue')['default']
+    ModalConfirm: typeof import('./components/modals/ModalConfirm.vue')['default']
     ModalConsent: typeof import('./components/modals/ModalConsent.vue')['default']
     ModalConsentCustom: typeof import('./components/modals/ModalConsentCustom.vue')['default']
     ModalLogin: typeof import('./components/modals/ModalLogin.vue')['default']
