@@ -28,6 +28,7 @@ export default {
 
 import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 
+import ServiceError from '@/services/ServiceError';
 import { getLayersFromPermalink } from '@/features/permalink.js';
 import { toShare } from '@/features/share.js';
 
@@ -63,6 +64,18 @@ const props = defineProps({
 
 const service = inject('services');
 const emitter = inject('emitter');
+
+const isNeedToReSync = async (id, type) => {
+  // on informe l'utilisateur
+  push.warning({ title: t.bookmark.title, message: "Ce document n'est plus disponible, mise à jour en cours..." });
+  // on resynchronise uniquement le label concerné
+  await service.getDocumentsByLabel(type); // type = "drawing"|"import"|...
+  // on emet un event pour prévenir le composant des favoris
+  emitter.dispatchEvent("document:synchronized", {
+    uuid: id,
+    action: "synchronized"
+  });
+};
 
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
@@ -157,10 +170,14 @@ const onAddData = (data) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message || e),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.id, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_add_data(e.message || e),
+      });
+    }
   })
 };
 
@@ -198,11 +215,15 @@ const onClickButtonDelete = (e) => {
       // et donc sur le permalien !
     })
     .catch((e) => {
-      console.error(e); // on catch directement la response du service
-      push.error({
-        title: t.bookmark.title,
-        message: t.bookmark.failed_delete_data(e.message || e),
-      });
+      console.error(e);
+      if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+        isNeedToReSync(data.uuid, data.type);
+      } else {
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_delete_data(e.message || e),
+        });
+      }
     })
 };
 const onClickButtonExport = (e) => {
@@ -244,10 +265,14 @@ const onClickButtonExport = (e) => {
     }
   }).catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_export_data(e.message || e),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_export_data(e.message || e),
+      });
+    }
   })
 };
 const onClickButtonCopyPermalink = (e) => {
@@ -269,13 +294,16 @@ const onClickButtonCopyPermalink = (e) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_copy_permalink(e.message || e),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_copy_permalink(e.message || e),
+      });
+    }
   });
-
-}
+};
 
 const onClickButtonValidateRename = (e) => {
   log.debug(e);
@@ -310,12 +338,15 @@ const onClickButtonValidateRename = (e) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_rename_data(e.message || e),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_rename_data(e.message || e),
+      });
+    }
   });
-
 };
 const onClickButtonCancelRename  = (e) => {
   log.debug(e);
