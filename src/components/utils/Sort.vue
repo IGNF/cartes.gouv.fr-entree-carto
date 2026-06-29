@@ -126,7 +126,6 @@ defineEmits([
     }
     button.fr-btn {
       /* surcharge la classe fr-btn du DSFR */
-      position: absolute;
     }
   }
 </style>
