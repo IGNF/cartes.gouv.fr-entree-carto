@@ -20,4 +20,6 @@
 
 #### 🐛 [Correction]
 
+- UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
+
 #### 🔒 [Sécurité]
