@@ -215,32 +215,14 @@ const lstData = computed(() => {
     }
   }
 
-  // tri par date par defaut : plus recent en premier
+  // tri combiné : le champ peut être de la forme "field1+field2"
   data.sort((a, b) => {
-    if (sortField.value === "date") {
-      const fieldA = getTimestamp(a[sortField.value]);
-      const fieldB = getTimestamp(b[sortField.value]);
-
-      if (fieldA !== null && fieldB !== null) {
-        return sortOrder.value === "desc" ? fieldB - fieldA : fieldA - fieldB;
-      }
-      if (fieldA !== null) {
-        return 1;
-      }
-      if (fieldB !== null) {
-        return -1;
-      }
-      return 0;
+    const fields = sortField.value.split("+");
+    for (const field of fields) {
+      const result = compareByField(a, b, field, sortOrder.value);
+      if (result !== 0) return result;
     }
-
-    const fieldA = String(a[sortField.value] || "");
-    const fieldB = String(b[sortField.value] || "");
-    const compare = fieldA.localeCompare(fieldB, 'fr', {
-      numeric: true,
-      sensitivity: 'base'
-    });
-
-    return sortOrder.value === "desc" ? -compare : compare;
+    return 0;
   });
 
   // filtrage sur la recherche (globale ou par préfixe)
@@ -420,8 +402,30 @@ const createCarteDocument = async (data) => {
 const sortFields = [
   { label: "Nom", value: "name" },
   { label: "Type", value: "type" },
-  { label: "Date", value: "date" }
+  { label: "Date", value: "date" },
+  { label: "Type + Nom", value: "type+name" },
+  { label: "Type + Date", value: "type+date" },
 ];
+
+/**
+ * Compare deux éléments sur un champ unique, en tenant compte du type date.
+ */
+const compareByField = (a, b, field, order) => {
+  if (field === "date" || field === "date_create") {
+    const tsA = getTimestamp(a[field]);
+    const tsB = getTimestamp(b[field]);
+    if (tsA !== null && tsB !== null) {
+      return order === "desc" ? tsB - tsA : tsA - tsB;
+    }
+    if (tsA !== null) return -1;
+    if (tsB !== null) return 1;
+    return 0;
+  }
+  const strA = String(a[field] || "");
+  const strB = String(b[field] || "");
+  const cmp = strA.localeCompare(strB, "fr", { numeric: true, sensitivity: "base" });
+  return order === "desc" ? -cmp : cmp;
+};
 
 const sortField = ref("date");
 const sortOrder = ref("desc"); // desc ou asc

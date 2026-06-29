@@ -84,12 +84,12 @@ defineEmits([
   <div class="container-sort">
     <label 
       :for="sortId" 
-      class="fr-label"
+      class="fr-label-no"
     >Trier par</label>
     <select 
       :id="sortId" 
       :value="sortField" 
-      class="fr-select"
+      class="fr-select-no" 
       @change="$emit('update:sort-field', $event.target.value)" 
     >
       <option 
@@ -101,7 +101,8 @@ defineEmits([
       </option>
     </select>
     <button 
-      class="fr-btn fr-btn--sm fr-btn--tertiary"
+      :id="`${sortId}-order`"
+      class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
       @click="$emit('update:sort-order', sortOrder === 'asc' ? 'desc' : 'asc')" 
     >
       {{ sortOrder === 'asc' ? '↑' : '↓' }}
@@ -113,14 +114,19 @@ defineEmits([
   .container-sort {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    color: var(--text-action-high-blue-france);
 
-    select.fr-select {
+    select.fr-select-no {
       /* surcharge la classe fr-select du DSFR */
       margin: unset;
       padding: 0.5rem;
       width: 30%;
+    }
+    button.fr-btn {
+      /* surcharge la classe fr-btn du DSFR */
+      position: absolute;
     }
   }
 </style>
