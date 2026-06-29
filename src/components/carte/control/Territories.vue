@@ -154,8 +154,8 @@ const onOrderTerritories = (e) => {
   // on réordonne les territoires dans le store en fonction de l'ordre défini 
   // par l'utilisateur dans le widget
   const territoryIds = e.territories.map((territory) => territory.id);
-  const territories = mapStore.getTerritories();
-  mapStore.addTerritories(setReorderTerritories(territoryIds, territories));
+  const storeTerritories = mapStore.getTerritories();
+  mapStore.addTerritories(setReorderTerritories(territoryIds, storeTerritories));
 
   push.info({
     title: t.territories.title,
