@@ -31,17 +31,11 @@ const mapStore = useMapStore();
 const map = inject(props.mapId)
 const territories = ref(new Territories(props.territoriesOptions));
 
-// FIXME : à revoir...
-// trop complexe et pas optimal pour reordonner les territoires
-
-function getTerritories () {
-  return territories.value.territories;
-}
-
-function findTerritoryById (id) {
-  return getTerritories().find((territory) => territory.data.id === id);
-}
-
+/**
+ * Récupère les territoires par défaut
+ * On écarte les territoires ATF et IDF qui ne sont pas pertinents pour l'affichage
+ * @returns {Array} Liste des territoires par défaut
+ */
 function getDefaultTerritories () {
   return dataStore.getTerritories().filter((territory) => {
     territory.default = true;
@@ -49,20 +43,12 @@ function getDefaultTerritories () {
   });
 }
 
-function getMissingDefaultTerritoriesFromStore () {
-  // on recupère les territoires sélectionnés par l'utilisateur
-  // on filtre les territoires par défaut pour ne garder que ceux qui ne sont plus présents dans le store
-  const selectedTerritoryIds = new Set(mapStore.getTerritories().map((territory) => territory.id));
-  return getDefaultTerritories().filter((territory) => territory.default && !selectedTerritoryIds.has(territory.id));
-}
-
-function getCustomTerritoriesFromStore () {
-  // on recupère les territoires par défaut
-  // on filtre les territoires du store pour ne garder que ceux qui ne sont pas des territoires par défaut
-  const defaultTerritoryIds = new Set(getDefaultTerritories().map((territory) => territory.id));
-  return mapStore.getTerritories().filter((territory) => !defaultTerritoryIds.has(territory.id));
-}
-
+/**
+ * Réordonne les territoires dans le store en fonction de l'ordre défini par l'utilisateur dans le widget
+ * @param {Array} territoryIds - Liste des identifiants des territoires dans l'ordre défini par l'utilisateur
+ * @param {Array} territories - Liste des territoires dans le store
+ * @returns {Array} Liste des territoires réordonnés
+ */
 function setReorderTerritories (territoryIds = [], territories) {
   const orderedTerritories = [];
   const storeById = new Map(territories.map((territory) => [territory.id, territory]));
@@ -88,47 +74,29 @@ function setReorderTerritories (territoryIds = [], territories) {
   return orderedTerritories;
 }
 
-function addDefaultTerritories () {
-  // on recupère les territoires par défaut et on les ajoute au widget
-  // on alimente le store utilisateur avec les territoires par défaut 
-  // uniquement si le store est vide (première ouverture de la carte) !
-  var toBeSaveToStore = (mapStore.getTerritories().length === 0);
-  var t = getDefaultTerritories();
+/**
+ * Ajoute les territoires dans le widget et dans le store si nécessaire
+ * @description
+ * On vérifie si les territoires sont déjà présents dans le store, 
+ * - si oui on les récupère, 
+ * - sinon on utilise les territoires par défaut. 
+ */
+function addTerritories () {
+  var hadTerritoriesIntoStore = (mapStore.getTerritories().length !== 0);
+  var t = (hadTerritoriesIntoStore) ? mapStore.getTerritories() : getDefaultTerritories();
+
   for (let i = 0; i < t.length; i++) {
     var territory = t[i];
     territories.value.setTerritory(territory);
-    if (toBeSaveToStore) {
+    if (!hadTerritoriesIntoStore) {
       mapStore.addTerritory(territory);
     }
   }
 }
 
-function addCustomTerritories () {
-  // on supprime les territoires (default) qui ont été écartés par l'utilisateur
-  const missingDefaultTerritories = getMissingDefaultTerritoriesFromStore();
-  missingDefaultTerritories.forEach((territory) => {
-    territories.value.removeTerritory(findTerritoryById(territory.id));
-  });
-
-  // on ajoute les territoires customisés par l'utilisateur
-  const customTerritories = getCustomTerritoriesFromStore();
-  customTerritories.forEach((territory) => {
-    territories.value.setTerritory(territory, true);
-  });
-
-  // FIXME : à revoir..., ça ne marche pas.
-  // on ordonne les territoires dans le widget en fonction de l'ordre défini 
-  // par l'utilisateur dans le store
-  const territoryIds = mapStore.getTerritories().map((territory) => territory.id);
-  const territoriesList = territories.value.getTerritories();
-  const territoriesOrdered = setReorderTerritories(territoryIds, territoriesList);
-  territories.value.setTerritories(territoriesOrdered);
-}
-
 onMounted(() => {
   if (props.visibility) {
-    addDefaultTerritories();
-    addCustomTerritories();
+    addTerritories();
     map.addControl(territories.value)
     if (props.analytic) {
       var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
@@ -150,8 +118,7 @@ onBeforeUpdate(() => {
 
 onUpdated(() => {
   if (props.visibility) {
-    addDefaultTerritories();
-    addCustomTerritories();
+    addTerritories();
     map.addControl(territories.value);
     if (props.analytic) {
       var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
@@ -172,7 +139,10 @@ onUpdated(() => {
  */
 const onResetTerritories = (e) => {
   log.debug(e);
+  // on ajoute les territoires par défaut dans le widget et dans le store
   mapStore.addTerritories(getDefaultTerritories());
+  territories.value.removeTerritories();
+  addTerritories();
   push.info({
     title: t.territories.title,
     message: t.territories.reset,
@@ -181,6 +151,8 @@ const onResetTerritories = (e) => {
 const onOrderTerritories = (e) => {
   log.debug(e);
 
+  // on réordonne les territoires dans le store en fonction de l'ordre défini 
+  // par l'utilisateur dans le widget
   const territoryIds = e.territories.map((territory) => territory.id);
   const territories = mapStore.getTerritories();
   mapStore.addTerritories(setReorderTerritories(territoryIds, territories));
@@ -192,6 +164,7 @@ const onOrderTerritories = (e) => {
 }
 const onAddTerritories = (e) => {
   log.debug(e);
+  // on ajoute le territoire dans le store
   mapStore.addTerritory(e.territory);
   push.info({
     title: t.territories.title,
@@ -200,6 +173,7 @@ const onAddTerritories = (e) => {
 }
 const onRemoveTerritories = (e) => {
   log.debug(e);
+  // on supprime le territoire du store
   mapStore.removeTerritory(e.territory);
   push.info({
     title: t.territories.title,
