@@ -467,8 +467,11 @@ const buttonsData = [
 }
 .button-bookmark-entry {
   width: 210px;
+  overflow: hidden;
 }
 .button-bookmark-entry > span {
+  display: inline-block;
+  max-width: calc(100% - 1.75rem);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
