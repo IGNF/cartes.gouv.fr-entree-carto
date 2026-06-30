@@ -541,7 +541,7 @@ const onModalExportClose = () => {
             v-model="modelValueFormatExport"
             legend="Format (obligatoire)"
             :options="optionsFormatExport"
-            name="format-export"
+            :name="'format-export-' + data.id"
             inline
           />
         </div>
