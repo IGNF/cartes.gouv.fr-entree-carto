@@ -29,7 +29,11 @@ export default {
     failed_export_data: (value) => { return `Erreur sur l'export de la donnée : ${value}` },
     failed_copy_permalink: (value) => { return `Erreur sur la copie du permalien : ${value}` },
     failed_delete_data: (value) => { return `Erreur sur la suppression de la donnée : ${value}` },
-    failed_rename_data: (value) => { return `Erreur sur le renommage de la donnée : ${value}` }
+    failed_rename_data: (value) => { return `Erreur sur le renommage de la donnée : ${value}` },
+    warning_delete_document_in_bookmarks_carte: "Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !",
+    confirm_delete_document: "Voulez-vous vraiment supprimer le document ?",
+    confirm_delete_document_with_name: (value) => { return `Voulez-vous vraiment supprimer le document ${value} ?` },
+    confirm_delete_document_in_bookmarks_carte: "Voulez-vous vraiment supprimer le document ? Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !"
   },
   drawing: {
     title: "Croquis",
