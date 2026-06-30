@@ -24,13 +24,14 @@ import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from '
 import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
+import { ROUTE_NAMES } from '@/router/routeNames';
 
 const appStore = useAppStore()
 const domStore = useDomStore()
 const route = useRoute()
 const { theme } = useScheme()
 
-const isEmbedRoute = computed(() => route.path === '/embed')
+const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')

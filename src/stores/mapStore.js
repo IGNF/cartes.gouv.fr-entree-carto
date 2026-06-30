@@ -16,7 +16,7 @@ import { useDefaultControls } from '@/composables/controls';
 var defaultControls = useDefaultControls();
 
 const DEFAULT = {
-  LAYERS: "PLAN.IGN$GEOPORTAIL:GPP:TMS(1;1;1;0;standard)",
+  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)",
   CONTROLS: defaultControls.toString(),
   X: 289739.8968702704,
   Y: 5859851.607344459,
@@ -666,6 +666,7 @@ export const useMapStore = defineStore('map', () => {
     updateLayerPosition,
     getLayerProperty,
     getBookmarks,
+    getBookmarksByID,
     addBookmark,
     removeBookmark,
     removeBookmarkByID,

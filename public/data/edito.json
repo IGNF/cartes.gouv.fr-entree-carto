@@ -6,8 +6,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-9.86, 41.15, 10.38, 51.56],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/fxx.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/fxx.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/fxx.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/fxx.svg"
     },
     {
         "id": "IDF",
@@ -15,8 +15,8 @@
         "description": "",
         "zoom": null,
         "bbox": [2.18, 48.77, 2.52, 48.95],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/idf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/idf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/idf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/idf.svg"
     },
     {
         "id": "GLP",
@@ -24,8 +24,8 @@
         "description": "",
         "zoom": null,
         "bbox": [ -61.97, 15.72, -60.93, 16.66],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/glp.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/glp.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/glp.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/glp.svg"
     },
     {
         "id": "MTQ",
@@ -33,8 +33,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-61.40, 14.25, -60.67, 15.04],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/mtq.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/mtq.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/mtq.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/mtq.svg"
     },
     {
         "id": "GUF",
@@ -42,8 +42,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-55.65, 1.49, -51.20, 6.21],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/guf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/guf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/guf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/guf.svg"
     },
     {
         "id": "REU",
@@ -51,8 +51,8 @@
         "description": "",
         "zoom": null,
         "bbox": [55.07, -21.46, 55.86, -20.79],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/reu.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/reu.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/reu.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/reu.svg"
     },
     {
         "id": "SPM",
@@ -60,8 +60,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-56.48, 46.69, -56.07, 47.19],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/spm.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/spm.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/spm.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/spm.svg"
     },
     {
         "id": "MYT",
@@ -69,8 +69,8 @@
         "description": "",
         "zoom": null,
         "bbox": [44.95, -13.049, 45.32, -12.57],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/myt.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/myt.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/myt.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/myt.svg"
     },
     {
         "id": "BLM",
@@ -78,8 +78,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-62.95, 17.85, -62.75, 17.95],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/blm.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/blm.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/blm.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/blm.svg"
     },
     {
         "id": "MAF",
@@ -87,8 +87,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-63.2, 18.0, -62.9, 18.2],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/maf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/maf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/maf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/maf.svg"
     },
     {
         "id": "WLF",
@@ -96,8 +96,8 @@
         "description": "",
         "zoom": null,
         "bbox": [180.3, -15.2, 185.3, -12.25],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/wlf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/wlf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/wlf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/wlf.svg"
     },
     {
         "id": "PYF",
@@ -105,8 +105,8 @@
         "description": "",
         "zoom": null,
         "bbox": [-154.83, -27.60, -134.32, -7.25],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/pyf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/pyf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/pyf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/pyf.svg"
     },
     {
         "id": "NCL",
@@ -114,8 +114,8 @@
         "description": "",
         "zoom": null,
         "bbox": [163.02,-23.08, 167.86,-19.50],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/ncl.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/ncl.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/ncl.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/ncl.svg"
     },
     {
         "id": "ATF",
@@ -123,8 +123,8 @@
         "description": "",
         "zoom": null,
         "bbox": [50.00, -60.00, 90.00, -45.00],
-        "thumbnail": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/atf.png",
-        "icon": "https://data-pprd.priv.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/atf.svg"
+        "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/atf.png",
+        "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/atf.svg"
     }
   ],
   "contacts": {
@@ -137,9 +137,25 @@
     }
   },
   "thematics": [
+    "Biologie, faune et flore",
     "Limites politiques et administratives",
+    "Climatologie, météorologie, atmosphère",
+    "Économie",
+    "Altimétrie",
+    "Environnement",
+    "Agriculture",
+    "Sciences de la terre, géosciences",
+    "Santé",
     "Carte de référence de la couverture terrestre",
-    "Cadastre, aménagement"
+    "Infrastructures militaires",
+    "Eaux intérieures, Hydrographie",
+    "Localisation",
+    "Océans",
+    "Cadastre, aménagement",
+    "Société",
+    "Constructions et ouvrages",
+    "Infrastructures de transport",
+    "Télécommunication, approvisionnement et énergie"
   ],
   "informations": {
     "title": "Intervention technique",
@@ -149,25 +165,142 @@
     "version": 1
   },
   "featured": [
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
     "ORTHOIMAGERY.ORTHOPHOTOS",
-    "PLAN.IGN"
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS",
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST",
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
+    "CADASTRALPARCELS.PARCELS",
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCELS",
+    "ORTHOIMAGERY.ORTHOPHOTOS.1965-1980",
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950",
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI",
+    "TRANSPORTS.DRONES.RESTRICTIONS",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI",
+    "dgac_peb_plan_wmsv",
+    "TRANSPORTNETWORKS.ROADS",
+    "SECUROUTE.TE.1TE",
+    "SECUROUTE.TE.ALL",
+    "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN",
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW",
+    "IGNF_LIDAR-HD_MNS_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW",
+    "ELEVATION.SLOPES",
+    "GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS",
+    "ELEVATION.CONTOUR.LINE",
+    "DEBROUSSAILLEMENT",
+    "FORETS.PUBLIQUES",
+    "INRA.CARTE.SOLS",
+    "TRACES.RANDO.HIVERNALE",
+    "HYDROGRAPHY.HYDROGRAPHY",
+    "LANDCOVER.FORESTINVENTORY.V2",
+    "LANDUSE.AGRICULTURE.LATEST",
+    "HYDROGRAPHY.BCAE.2026",
+    "hedge.hedge",
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1",
+    "PLAN.IGN",
+    "BDTOPO",
+    "GEOGRAPHICALNAMES.NAMES",
+    "PCRS.LAMB93"
   ],
   "topics": {
     "thematic" : [
+        {
+            "id" : "biota",
+            "name" : "Biologie, faune et flore",
+            "icon" : "fr-icon-plant-fill"
+        },
         { 
             "id" : "boundaries",
             "name" : "Limites politiques et administratives",
             "icon" : "fr-icon-france-line"
         },
         { 
+            "id" : "climatologyMeteorologyAtmosphere",
+            "name" : "Climatologie, météorologie, atmosphère",
+            "icon" : "fr-icon-heavy-showers-fill"
+        },
+        { 
+            "id" : "economy",
+            "name" : "Économie",
+            "icon" : "fr-icon-bar-chart-box-fill"
+        },
+        { 
+            "id" : "elevation",
+            "name" : "Altimétrie",
+            "icon" : "fr-icon-line-chart-fill"
+        },
+        { 
+            "id" : "environment",
+            "name" : "Environnement",
+            "icon" : "fr-icon-leaf-fill"
+        },
+        { 
+            "id" : "farming",
+            "name" : "Agriculture",
+            "icon" : "fr-icon-seedling-fill"
+        },
+        { 
+            "id" : "geoscientificInformation",
+            "name" : "Sciences de la terre, géosciences",
+            "icon" : "fr-icon-earth-fill"
+        },
+        { 
+            "id" : "health",
+            "name" : "Santé",
+            "icon" : "fr-icon-first-aid-kit-fill"
+        },
+        { 
             "id" : "imageryBaseMapsEarthCover",
             "name" : "Carte de référence de la couverture terrestre",
             "icon" : "fr-icon-global-fill"
+        },
+        {
+            "id" : "intelligenceMilitary", 
+            "name" : "Infrastructures militaires",
+            "icon" : "fr-icon-medal-fill"
+        },
+        { 
+            "id" : "inlandWaters",
+            "name" : "Eaux intérieures, Hydrographie",
+            "icon" : "fr-icon-drop-fill"
+        },
+        { 
+            "id" : "location",
+            "name" : "Localisation",
+            "icon" : "fr-icon-road-map-fill"
+        },
+        { 
+            "id" : "oceans",
+            "name" : "Océans",
+            "icon" : "fr-icon-submersion-fill"
         },
         { 
             "id" : "planningCadastre",
             "name" : "Cadastre, aménagement",
             "icon" : "fr-icon-layout-grid-fill"
+        },
+        { 
+            "id" : "society",
+            "name" : "Société",
+            "icon" : "fr-icon-team-fill"
+        },
+        { 
+            "id" : "structure",
+            "name" : "Constructions et ouvrages",
+            "icon" : "fr-icon-community-fill"
+        },
+        { 
+            "id" : "transportation",
+            "name" : "Infrastructures de transport",
+            "icon" : "fr-icon-bus-fill"
+        },
+        {
+            "id" : "utilitiesCommunication",
+            "name" : "Télécommunication, approvisionnement et énergie",
+            "icon" : "fr-icon-lightbulb-fill"
         }
     ],
     "service" : [
@@ -181,15 +314,701 @@
     ]
   },
   "layers": {
+    "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Plan IGN"
+    },
     "ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS": {
       "base": true,
       "globalConstraint": {
-          "noConstraint": true
-      }
+        "noConstraint": true
+       },
+      "title": "Photographies aériennes"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN25TOUR$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte topo 25 (SCAN)"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Cartes IGN"
+    },
+    "CADASTRALPARCELS.PARCELLAIRE_EXPRESS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Parcelles cadastrales"
+    },
+    "CADASTRALPARCELS.PARCELS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Parcelles cadastrales 2013-2018"
+    },
+    "CADASTRALPARCELS.HISTO.2008-2013.PARCELS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Parcelles cadastrales 2008-2013"
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1965-1980$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Photographies aériennes 1965-1980"
+    },
+    "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Photographies aériennes 1950-1965"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN50.1950$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte 1950 (SCAN)"
+    },
+    "BNF-IGNF_GEOGRAPHICALGRIDSYSTEMS.CASSINI$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte de Cassini"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte de l'État-major 1820-1866"
+    },
+    "TRANSPORTS.DRONES.RESTRICTIONS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Restrictions UAS catégorie Ouverte et Aéromodélisme"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte OACI-VFR 2026"
+    },
+    "dgac_peb_plan_wmsv$GEOPORTAIL:OGC:WMS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Plan d'exposition au bruit (PEB)"
+    },
+    "TRANSPORTNETWORKS.ROADS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Routes"
+    },
+    "SECUROUTE.TE.1TE$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Transport exceptionnel - réseaux routiers 1TE"
+    },
+    "SECUROUTE.TE.ALL$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Transport exceptionnel - franchissements"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.SLOPES.MOUNTAIN$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte des pentes"
+    },
+    "IGNF_LIDAR-HD_MNT_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Relief du terrain HD (MNT LIDAR HD)"
+    },
+    "IGNF_LIDAR-HD_MNS_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Relief du sursol HD (MNS LIDAR HD)"
+    },
+    "ELEVATION.SLOPES$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Relief du terrain (MNT BD ALTI®)"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.COASTALMAPS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte littorale"
+    },
+    "ELEVATION.CONTOUR.LINE$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Courbes de niveau"
+    },
+    "DEBROUSSAILLEMENT$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Obligations Légales de Débroussaillement (OLD)"
+    },
+    "FORETS.PUBLIQUES$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Forêts publiques"
+    },
+    "INRA.CARTE.SOLS$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte des sols"
+    },
+    "TRACES.RANDO.HIVERNALE$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Traces de randonnée hivernale"
+    },
+    "HYDROGRAPHY.HYDROGRAPHY$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Réseau hydrographique"
+    },
+    "LANDCOVER.FORESTINVENTORY.V2$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Carte forestière (BD FORÊT V2)"
+    },
+    "LANDUSE.AGRICULTURE.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Registre Parcellaire Graphique (RPG) 2024"
+    },
+    "HYDROGRAPHY.BCAE.2026$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Cours d'eau BCAE 2026"
+    },
+    "hedge.hedge$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Haies linéaires"
+    },
+    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Limites administratives"
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.MAPS.BDUNI.J1$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Plan IGN J+1"
     },
     "PLAN.IGN$GEOPORTAIL:GPP:TMS": {
       "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
       "title": "Plan IGN personnalisable"
+    },
+    "BDTOPO$GEOPORTAIL:GPP:TMS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "BD TOPO® personnalisable"
+    },
+    "GEOGRAPHICALNAMES.NAMES$GEOPORTAIL:OGC:WMTS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "Dénominations géographiques"
+    },
+    "PCRS.LAMB93$GEOPORTAIL:OGC:WMS": {
+      "base": true,
+      "globalConstraint": {
+        "noConstraint": true
+       },
+      "title": "PCRS"
+    },
+    "ADMIN_EXPRESS$GEOPORTAIL:GPP:TMS" : {
+      "title": "Limites administratives des collectivités territoriales (ADMIN EXPRESS)"
+    },
+    "ISOHYPSE$GEOPORTAIL:GPP:TMS" : {
+      "title": "Courbes de niveau (ISOHYPSE)"
+    },
+    "OCSGE_2016$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2016 (OCSGE)"
+    },
+    "OCSGE_2019$GEOPORTAIL:GPP:TMS" : {
+      "title": "Occupation du sol 2019 (OCSGE)"
+    },
+    "PCI$GEOPORTAIL:GPP:TMS" : {
+      "title": "Parcellaire Express (PCI)"
+    },
+    "PLAN.OSM$GEOPORTAIL:GPP:TMS" : {
+      "title": "Plan avec OpenStreetMap (PLAN OSM)"
+    }, 
+    "DGF_2026-voirie-retenue-communes$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "DGF_2026-voirie-retenue-departements$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "DGF_2025-voirie-retenue-communes$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "DGF_2025-voirie-retenue-departements$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ELEVATION.ELEVATIONGRIDCOVERAGE.THRESHOLD$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "IGNF_ELEVATION.ELEVATIONGRIDCOVERAGE.SHADOW$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "PROTECTEDAREAS.PRSF$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.2TE48$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.OA$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.PN$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.PND$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.TE120$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.TE72$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "SECUROUTE.TE.TE94$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2021$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2022$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.2025$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "HYDROGRAPHY.BCAE.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2018$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2019$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2021$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2022$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2025$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.2026$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG-CARTO.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG-CARTO-PE.2025$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMINEXPRESS-COG-CARTO-PE.2026$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "ADMIN-EXPRESS-COG-CARTO-PE.LATEST$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "IGNF_RPG_PARCELLES-AGRICOLES-CATEGORISEES_2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "IGNF_RPG_PARCELLES-ELIGIBLES-IAE$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "IGNF_RPG_PRAIRIES-PERMANENTES_2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "IGNF_RPG_ZONES-DENSITE-HOMOGENE_2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDCOVER.FORESTINVENTORY.V1$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2007$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2008$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2009$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2010$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2011$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2012$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2013$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2014$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2015$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2016$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2018$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2019$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2021$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2022$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LANDUSE.AGRICULTURE2024$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "LOCALISATION.MATS.EOLIEN$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.ARTIF.2016-2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.ARTIF.2017-2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.ARTIF.2021-2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.CONSTRUCTION.2016-2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.CONSTRUCTION.2017-2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.CONSTRUCTION.2021-2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.CONSTRUCTION.2024-2026$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.CONSTRUCTIONS$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.COUVERTURE$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.COUVERTURE.2016-2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.COUVERTURE.2017-2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.COUVERTURE.2021-2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.COUVERTURE.2024-2026$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.USAGE$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.USAGE.2016-2017$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.USAGE.2017-2020$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.USAGE.2021-2023$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "OCSGE.USAGE.2024-2026$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "PRAIRIES.SENSIBLES.BCAE$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "TOURBIERES_ZONES-HUMIDES.BCAE$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
+    },
+    "GEOGRAPHICALGRIDSYSTEMS.SLOPES.PAC$GEOPORTAIL:OGC:WMTS": {
+      "globalConstraint": {
+        "noConstraint": true
+      }
     }
   }
 }

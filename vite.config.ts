@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import { URL, fileURLToPath } from 'node:url'
 
-import { defineConfig, ProxyOptions, ViteDevServer } from 'vite'
+import { defineConfig, /* ProxyOptions, ViteDevServer */ } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import EnvRuntime from 'vite-plugin-env-runtime';
@@ -10,7 +10,8 @@ import htmlPurge from 'vite-plugin-purgecss'
 // INFO 
 // mode https avec certificats unsecure (dev)
 // import basicSsl from '@vitejs/plugin-basic-ssl'
-import { compression, defineAlgorithm } from 'vite-plugin-compression2'
+
+import { compression } from 'vite-plugin-compression2'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {
@@ -24,6 +25,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    // @ts-expect-error htmlPurge types not fully compatible with Vite plugin interface
     htmlPurge({
       safelist: [
         /^(?!fr-).*/,  // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
@@ -41,11 +43,8 @@ export default defineConfig({
         /\.vue\?vue/,
       ],
       imports: [
-        // @ts-expect-error
         'vue',
-        // @ts-expect-error
         'vue-router',
-        // @ts-expect-error
         vueDsfrAutoimportPreset,
       ],
       vueTemplate: true,
@@ -91,6 +90,10 @@ export default defineConfig({
     },
   },
   build: {
+    // Permet de garder les classes CSS dans un seul bundle de production
+    cssCodeSplit: false,
+    // Permet de garder le CSS lisible dans un bundle de production
+    cssMinify: false,
     sourcemap: process.env.SOURCE_MAP === 'true',
   },
   server: {
