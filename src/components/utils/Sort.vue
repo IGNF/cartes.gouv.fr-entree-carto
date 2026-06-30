@@ -89,7 +89,7 @@ defineEmits([
     <select 
       :id="sortId" 
       :value="sortField" 
-      class="fr-select-no" 
+      class="fr-select" 
       @change="$emit('update:sort-field', $event.target.value)" 
     >
       <option 
@@ -118,8 +118,11 @@ defineEmits([
     gap: 0.5rem;
     color: var(--text-action-high-blue-france);
 
-    select.fr-select-no {
+    select.fr-select {
       /* surcharge la classe fr-select du DSFR */
+      background-color: unset;
+      background-image: unset;
+      font-size: 0.75rem;
       margin: unset;
       padding: 0.5rem;
       width: 30%;
