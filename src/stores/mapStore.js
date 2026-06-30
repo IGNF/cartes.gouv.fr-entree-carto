@@ -666,6 +666,7 @@ export const useMapStore = defineStore('map', () => {
     updateLayerPosition,
     getLayerProperty,
     getBookmarks,
+    getBookmarksByID,
     addBookmark,
     removeBookmark,
     removeBookmarkByID,
