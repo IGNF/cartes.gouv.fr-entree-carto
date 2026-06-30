@@ -655,12 +655,13 @@ const transformVectorLayerFormat = (layer, format, settings) => {
   }
 
   if (!ClassName) {
-    throw new Error("Impossible to export : format unknown !?");
+    throw new Error(`Unable to export: unknown format "${format}".`);
   }
 
-  var features = layer.getSource().getFeatures();
+  var source = layer && typeof layer.getSource === "function" ? layer.getSource() : null;
+  var features = source && typeof source.getFeatures === "function" ? source.getFeatures() : null;
   if (!features || features.length === 0) {
-    throw new Error("Impossible to export : no features !?");
+    throw new Error("Unable to export: layer has no features.");
   }
 
   // INFO
