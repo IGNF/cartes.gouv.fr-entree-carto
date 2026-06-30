@@ -159,6 +159,7 @@ emitter.addEventListener("document:saved", onUpdateBookmark);
 emitter.addEventListener("document:updated", onUpdateBookmark);
 emitter.addEventListener("document:deleted", onUpdateBookmark);
 emitter.addEventListener("document:exported", onUpdateBookmark);
+emitter.addEventListener("document:synchronized", onUpdateBookmark);
 
 /**
  * gestionnaire d'evenements
@@ -193,7 +194,7 @@ const onClickMapButtonValidateName = (e) => {
   // recupèrer le permalien
   var permalink = mapStore.permalink;
   
-  // fournir un nom au document via UI avec bouton valider / annuler 
+  // fournir un nom au document via UI
   const data = {
     name : name.value,
     description : "permalien",
@@ -204,7 +205,10 @@ const onClickMapButtonValidateName = (e) => {
       name : name.value,
       date : new Date().toISOString(),
       permalink : permalink
-    })
+    }),
+    extra : {
+      bookmarks : mapStore.getBookmarksByID() // lien vers les bookmarks de la carte
+    }
   };
 
   createCarteDocument(data)
@@ -248,6 +252,16 @@ const createCarteDocument = async (data) => {
       uuid : uuid,
       action : action // added, updated, deleted
     });
+
+    // mise à jour des extras du document
+    // transmission des bookmarks de la carte afin d'avoir une trace 
+    // de l'état de la carte dans le temps (suppresion des bookmarks, etc.)
+    const x = await service.updateMetadataDocument({
+      uuid : uuid,
+      type : data.type,
+      extra : data.extra
+    });
+    console.debug(x);
 
     return o;
   } catch (e) {

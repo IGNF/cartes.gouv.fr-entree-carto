@@ -15,9 +15,6 @@
  * - enregistrement de l'ID dans la couche native : 
  *   ex. gpResultLayerId = 'bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
- * @todo gestion des exceptions sur les actions avec notification
- * @todo le type service mapbox est à mettre en place
- * @todo le type compute est à mettre en place
  */
 export default {
   name: 'MenuBookMarkEntry'
@@ -27,6 +24,9 @@ export default {
 <script setup lang="js">
 
 import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
+
+import ServiceError from '@/services/ServiceError';
+import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
 import { toShare } from '@/features/share.js';
@@ -67,6 +67,18 @@ const props = defineProps({
 
 const service = inject('services');
 const emitter = inject('emitter');
+
+const isNeedToReSync = async (id, type) => {
+  // on informe l'utilisateur
+  push.warning({ title: t.bookmark.title, message: "Ce document n'est plus disponible, mise à jour en cours..." });
+  // on resynchronise uniquement le label concerné
+  await service.getDocumentsByLabel(type); // type = "drawing"|"import"|...
+  // on emet un event pour prévenir le composant des favoris
+  emitter.dispatchEvent("document:synchronized", {
+    uuid: id,
+    action: "synchronized"
+  });
+};
 
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
@@ -161,10 +173,14 @@ const onAddData = (data) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.id, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_add_data(e.message || e),
+      });
+    }
   })
 };
 
@@ -174,6 +190,7 @@ onMounted(() => {});
 
 const refDivRename = useTemplateRef('div-rename');
 const rename = ref('');
+const isConfirmDeleteModalOpened = ref(false);
 
 const onClickButtonRename = (e) => {
   console.debug(e);
@@ -182,10 +199,25 @@ const onClickButtonRename = (e) => {
 };
 const onClickButtonDelete = (e) => {
   console.debug(e);
+
+  // on verifie si le document est présent dans les cartes enregistrées
+  var isPresentInBookmarksCarte = service.findInCarte(props.data.id);
+  // si oui, on ouvre un modal de confirmation pour prévenir l'utilisateur
+  if (isPresentInBookmarksCarte) {
+    isConfirmDeleteModalOpened.value = true;
+  }
+  // sinon, on supprime directement le document
+  else {
+    onConfirmDeleteDocument();
+  }
+};
+
+const onConfirmDeleteDocument = () => {
   var data = {
     uuid : props.data.id,
     type : props.data.type
   };
+
   service.deleteDocument(data)
     .then((o) => {
       // emettre un event pour prévenir de la suppression d'un document
@@ -194,13 +226,30 @@ const onClickButtonDelete = (e) => {
         uuid : o.uuid,
         action : o.action // added, updated, deleted
       });
+      return o;
     })
-    .then(() => {
-      // TODO
+    .then((o) => {
       // prevenir l'utilisateur que le document supprimé
       // ne sera plus disponible sur les cartes enregistrées
       // et donc sur le permalien !
-    });
+     if (o.extra.isPresentInBookmarksCarte) {
+        push.warning({
+          title: t.bookmark.title,
+          message: t.bookmark.warning_delete_document_in_bookmarks_carte
+        });
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+      if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+        isNeedToReSync(data.uuid, data.type);
+      } else {
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_delete_data(e.message || e),
+        });
+      }
+    })
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
@@ -277,8 +326,18 @@ const onConfirmExportDocument = (format) => {
     } else {
       link.click();
     }
-  });
-}
+  }).catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_export_data(e.message || e),
+      });
+    }
+  })
+};
 
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
@@ -299,13 +358,16 @@ const onClickButtonCopyPermalink = (e) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_copy_permalink(e.message || e),
+      });
+    }
   });
-
-}
+};
 
 const onClickButtonValidateRename = (e) => {
   log.debug(e);
@@ -337,8 +399,18 @@ const onClickButtonValidateRename = (e) => {
     // FIXME
     // doit on modifier les informations du gestionnaire de couche ?
     // ex. modifier Name
+  })
+  .catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_rename_data(e.message || e),
+      });
+    }
   });
-
 };
 const onClickButtonCancelRename  = (e) => {
   log.debug(e);
@@ -548,6 +620,17 @@ const onModalExportClose = () => {
       </template>
     </DsfrModal>
   </slot>
+  <ModalConfirm
+    v-model="isConfirmDeleteModalOpened"
+    :title="t.bookmark.title"
+    :message="t.bookmark.confirm_delete_document_with_name(data.name)"
+    confirm-label="Valider"
+    cancel-label="Annuler"
+    @confirm="onConfirmDeleteDocument"
+  >
+    {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
+  </ModalConfirm>  
+  <slot />
 </template>
 
 <style>
