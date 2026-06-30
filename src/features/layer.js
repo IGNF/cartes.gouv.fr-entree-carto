@@ -50,10 +50,14 @@ import t from './translation';
  * @property {*} options.id - uuid de l'API Entrepôt
  * @property {*} options.name
  * @property {*} options.description
- * @property {*} options.format
+ * @property {*} options.format - format du fichier (geojson, gpx, kml)
+ * @property {*} options.type - type de couche (drawing, import, bookmark)
+ * @property {*} options.visible - boolean
+ * @property {*} options.opacity - float
  * @property {*} options.extended - mode étendu des formats
- * @property {*} options.data | @property {*} options.url
+ * @property {*} options.data | @property {*} options.url 
  * @fixme hack sur le format GPX à reporter sur les extensions !
+ * @returns {Promise<VectorLayer>} - couche vectorielle
  */
 const createVectorLayer = async (options) => {
   var vectorFormat = null;
@@ -176,9 +180,14 @@ const createVectorLayer = async (options) => {
  * @property {*} options.id - uuid de l'API Entrepôt
  * @property {*} options.name
  * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.compute
+ * @property {*} options.format - format du fichier (geojson)
+ * @property {*} options.extended - mode étendu des formats
+ * @property {*} options.compute - type de calcul (route, isocurve, profil)
+ * @property {*} options.type - type de couche (compute)
+ * @property {*} options.visible - boolean
+ * @property {*} options.opacity - float
  * @property {*} options.data | @property {*} options.url
+ * @returns {Promise<VectorLayer>} - couche vectorielle
  */
 const createComputeLayer = async (options) => {
   var vectorFormat = null;
@@ -304,11 +313,14 @@ const createComputeLayer = async (options) => {
  * @property {*} options.id - uuid de l'API Entrepôt
  * @property {*} options.name
  * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.kind
- * @property {*} options.type
+ * @property {*} options.format - format du fichier (wms, wmts)
+ * @property {*} options.visible - boolean
+ * @property {*} options.opacity - float
+ * @property {*} options.kind - type de service (wms, wmts)
+ * @property {*} options.type - type de service (wms, wmts) // compatibilité avec les anciennes versions
  * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer dans les getCapabilities ?
+ * @returns {Promise<TileLayer>} - couche de service
  */
 const createServiceLayer = async (options) => {
 
@@ -454,10 +466,13 @@ const createServiceLayer = async (options) => {
  * @property {*} options.id - uuid de l'API Entrepôt
  * @property {*} options.name
  * @property {*} options.description
- * @property {*} options.format
+ * @property {*} options.format - format du fichier (mapbox)
+ * @property {*} options.visible - boolean
+ * @property {*} options.opacity - float
  * @property {*} options.data | @property {*} options.url
  * @fixme extent à récuperer
  * @todo messages
+ * @returns {Promise<VectorTileLayer>} - couche vectorielle
  */
 const createMapBoxLayer = async (options) => {
 
@@ -598,9 +613,77 @@ const getOpacity = (o) => {
   return opacity;
 };
 
+/**
+ * Fonction pour transformer le format d'une couche vectorielle
+ * @param {*} layer - couche vectorielle (VectorLayer)
+ * @param {*} format - format de sortie (kml, gpx, geojson)
+ * @param {*} settings - options supplémentaires (defaultStyle, description)
+ * @returns {*} - {content: null, ext: null, mimeType: null}
+ */
+const transformVectorLayerFormat = (layer, format, settings) => {
+  var results = {
+    content : null,
+    ext : null,
+    mimeType : null
+  };
+  var options = {
+    defaultStyle : settings && settings.defaultStyle ? settings.defaultStyle : null,
+    extensions : {}
+  };
+  if (settings && settings.description) {
+    // TODO on peut ajouter la description dans les extensions
+  }
+
+  var ClassName = null;
+  switch (format.toUpperCase()) {
+    case "KML":
+      options.writeStyles = true;
+      options.showPointNames = true;
+      ClassName = new KMLExtended(options);
+      results.mimeType = "application/vnd.google-earth.kml+xml";
+      break;
+    case "GPX":
+      ClassName = new GPXExtended(options);
+      results.mimeType = "application/gpx+xml";
+      break;
+    case "GEOJSON":
+      ClassName = new GeoJSONExtended(options);
+      results.mimeType = "application/geo+json";
+      break;
+    default:
+      break;
+  }
+
+  if (!ClassName) {
+    throw new Error(`Unable to export: unknown format "${format}".`);
+  }
+
+  var source = layer && typeof layer.getSource === "function" ? layer.getSource() : null;
+  var features = source && typeof source.getFeatures === "function" ? source.getFeatures() : null;
+  if (!features || features.length === 0) {
+    throw new Error("Unable to export: layer has no features.");
+  }
+
+  // INFO
+  // par defaut, webmercator ou "EPSG:3857"
+  var content = ClassName.writeFeatures(features, {
+      dataProjection : "EPSG:4326",
+      featureProjection : "EPSG:3857"
+  });
+
+  if (!content) {
+    throw new Error("Impossible to export : no content !?");
+  }
+
+  results.content = content;
+  results.ext = format.toLowerCase();
+  return results;
+}
+
 export {
   createVectorLayer,
   createComputeLayer,
   createServiceLayer,
-  createMapBoxLayer
+  createMapBoxLayer,
+  transformVectorLayerFormat
 }
