@@ -26,6 +26,7 @@ export default {
     success_copy_permalink: "Le permalien est copié",
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
+    failed_transform_format: "Une erreur est survenue sur la transformation du format de la couche",
     failed_export_data: (value) => { return `Erreur sur l'export de la donnée : ${value}` },
     failed_copy_permalink: (value) => { return `Erreur sur la copie du permalien : ${value}` },
     failed_delete_data: (value) => { return `Erreur sur la suppression de la donnée : ${value}` },

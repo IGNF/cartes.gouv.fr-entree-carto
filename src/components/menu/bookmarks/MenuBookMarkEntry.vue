@@ -30,6 +30,10 @@ import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
 import { toShare } from '@/features/share.js';
+import { 
+  createVectorLayer, 
+  transformVectorLayerFormat 
+} from '@/features/layer.js';
 
 // lib notification
 import { push } from 'notivue'
@@ -249,6 +253,17 @@ const onConfirmDeleteDocument = () => {
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
+  // pas de transformation de format pour les cartes et les services
+  // on exporte directement le document
+  // FIXME comment connaitre le format mapbox !?
+  if (props.data.type === "carte" || props.data.type === "service" || props.data.type === "compute") {
+    onConfirmExportDocument();
+    return;
+  }
+  openedFormatExport.value = true;
+};
+const onConfirmExportDocument = (format) => {
+  log.debug("onConfirmExportDocument", format);
   var data = {
     uuid : props.data.id,
     type : props.data.type
@@ -261,6 +276,33 @@ const onClickButtonExport = (e) => {
       uuid : o.uuid,
       action : o.action // added, updated, deleted
     });
+    return o;
+  })
+  .then(async (o) => {
+    // si le format est different du format d'origine, on transforme le format
+    if (format && o.extra.ext !== format) {
+      try {
+        // on crée une couche vectorielle temporaire pour transformer le format
+        var layer = await createVectorLayer({
+          id : o.uuid,
+          name: o.extra.name,
+          format: o.extra.ext,
+          data: o.extra.content
+        });
+        // transformer le format de la couche vectorielle
+        // ex. geojson -> gpx, kml...
+        var results = transformVectorLayerFormat(layer, format);
+        o.extra.content = results.content;
+        o.extra.ext = results.ext;
+        o.extra.mimeType = results.mimeType;
+      } catch (e) {
+        console.error(e);
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_transform_format,
+        });
+      }
+    }
     return o;
   })
   .then((o) => {
@@ -296,6 +338,7 @@ const onClickButtonExport = (e) => {
     }
   })
 };
+
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
   var data = {
@@ -448,6 +491,34 @@ const buttonsData = [
   }
 ];
 
+const openedFormatExport = ref(false);
+const modelValueFormatExport = ref('geojson');
+const optionsFormatExport = [
+  { label: 'GPX', value: 'gpx' },
+  { label: 'GeoJSON', value: 'geojson' },
+  { label: 'KML', value: 'kml' }
+];
+const actionsformatExport = [
+  {
+    label: 'Exporter',
+    onClick () {
+      openedFormatExport.value = false;
+      var format = modelValueFormatExport.value;
+      onConfirmExportDocument(format);
+    }
+  },  
+  {
+    label: 'Annuler',
+    tertiary: true,
+    onClick () {
+      openedFormatExport.value = false;
+    }
+  },
+];
+const onModalExportClose = () => {
+  openedFormatExport.value = false;
+};
+
 </script>
 
 <template>
@@ -525,6 +596,30 @@ const buttonsData = [
       />
     </div>
   </div>
+  <slot name="slot-bookmark-entry">
+    <!-- Modale d'export avec changement de format -->
+    <DsfrModal 
+      :opened="openedFormatExport" 
+      title="Exporter"
+      size="md" 
+      :is-alert="true"
+      :actions="actionsformatExport"
+      @close="onModalExportClose"
+    >
+      <!-- slot : c'est ici que l'on customise le contenu ! -->
+      <template #default>
+        <div class="">
+          <DsfrRadioButtonSet
+            v-model="modelValueFormatExport"
+            legend="Format (obligatoire)"
+            :options="optionsFormatExport"
+            :name="'format-export-' + data.id"
+            inline
+          />
+        </div>
+      </template>
+    </DsfrModal>
+  </slot>
   <ModalConfirm
     v-model="isConfirmDeleteModalOpened"
     :title="t.bookmark.title"
