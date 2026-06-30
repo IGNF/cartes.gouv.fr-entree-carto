@@ -159,6 +159,7 @@ emitter.addEventListener("document:saved", onUpdateBookmark);
 emitter.addEventListener("document:updated", onUpdateBookmark);
 emitter.addEventListener("document:deleted", onUpdateBookmark);
 emitter.addEventListener("document:exported", onUpdateBookmark);
+emitter.addEventListener("document:synchronized", onUpdateBookmark);
 
 /**
  * gestionnaire d'evenements

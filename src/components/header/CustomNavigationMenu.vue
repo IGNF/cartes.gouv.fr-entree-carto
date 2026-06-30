@@ -7,7 +7,6 @@ import {
 } from "@gouvminint/vue-dsfr"
 
 import { useLogger } from 'vue-logger-plugin'
-import { useBaseUrl } from '@/composables/baseUrl';
 
 const log = useLogger();
 

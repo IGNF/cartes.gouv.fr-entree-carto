@@ -25,6 +25,7 @@ export default {
 
 import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 
+import ServiceError from '@/services/ServiceError';
 import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 import { getLayersFromPermalink } from '@/features/permalink.js';
@@ -62,6 +63,18 @@ const props = defineProps({
 
 const service = inject('services');
 const emitter = inject('emitter');
+
+const isNeedToReSync = async (id, type) => {
+  // on informe l'utilisateur
+  push.warning({ title: t.bookmark.title, message: "Ce document n'est plus disponible, mise à jour en cours..." });
+  // on resynchronise uniquement le label concerné
+  await service.getDocumentsByLabel(type); // type = "drawing"|"import"|...
+  // on emet un event pour prévenir le composant des favoris
+  emitter.dispatchEvent("document:synchronized", {
+    uuid: id,
+    action: "synchronized"
+  });
+};
 
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
@@ -156,10 +169,14 @@ const onAddData = (data) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.id, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_add_data(e.message || e),
+      });
+    }
   })
 };
 
@@ -211,7 +228,7 @@ const onConfirmDeleteDocument = () => {
       // prevenir l'utilisateur que le document supprimé
       // ne sera plus disponible sur les cartes enregistrées
       // et donc sur le permalien !
-      if (o.extra.isPresentInBookmarksCarte) {
+     if (o.extra.isPresentInBookmarksCarte) {
         push.warning({
           title: t.bookmark.title,
           message: t.bookmark.warning_delete_document_in_bookmarks_carte
@@ -220,11 +237,15 @@ const onConfirmDeleteDocument = () => {
     })
     .catch((e) => {
       console.error(e);
-      push.error({
-        title: t.bookmark.title,
-        message: t.bookmark.failed_add_data(e.message),
-      });
-    });
+      if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+        isNeedToReSync(data.uuid, data.type);
+      } else {
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_delete_data(e.message || e),
+        });
+      }
+    })
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
@@ -263,7 +284,17 @@ const onClickButtonExport = (e) => {
     } else {
       link.click();
     }
-  });
+  }).catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_export_data(e.message || e),
+      });
+    }
+  })
 };
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
@@ -284,13 +315,16 @@ const onClickButtonCopyPermalink = (e) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_copy_permalink(e.message || e),
+      });
+    }
   });
-
-}
+};
 
 const onClickButtonValidateRename = (e) => {
   log.debug(e);
@@ -322,8 +356,18 @@ const onClickButtonValidateRename = (e) => {
     // FIXME
     // doit on modifier les informations du gestionnaire de couche ?
     // ex. modifier Name
+  })
+  .catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_rename_data(e.message || e),
+      });
+    }
   });
-
 };
 const onClickButtonCancelRename  = (e) => {
   log.debug(e);

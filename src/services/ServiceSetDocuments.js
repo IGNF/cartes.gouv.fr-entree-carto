@@ -172,7 +172,7 @@ var SetDocuments = {
       
       if (response.status !== 200 && response.status !== 201) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document n'a pas été enregistré !`, { cause: data });
       }
 
       // enregistrer la réponse
@@ -249,8 +249,19 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
@@ -337,8 +348,19 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
@@ -493,8 +515,19 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été partagé !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
@@ -576,8 +609,19 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200 && response.status !== 201) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été renommé !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
@@ -639,8 +683,19 @@ var SetDocuments = {
       });
   
       if (response.status !== 204) {
-        // ERROR !
-        throw response;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, response, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, response, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été supprimé !`, {
+          cause: { status: response.status, response }
+        });
       }
   
       // supprimer la réponse
@@ -705,7 +760,9 @@ var SetDocuments = {
     var content = await this.getFileById(uuid);
     if (!content) {
       // ERROR !
-      throw new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      var error = new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      console.error("Erreur dans l'export du document :", error);
+      this.throwError(error);
     }
     return {
       uuid : uuid,
