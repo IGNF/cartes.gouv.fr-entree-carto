@@ -45,6 +45,14 @@ import t from './translation';
 * - une url pour le type external
 * - le fichier pour le type internal
 * 
+* Gestion des erreurs de téléchargement du fichier :
+*  Par url, on met un loader pour gérer les erreurs de téléchargement du fichier.
+*  La source transmet un évènement "featuresloaderror" ou "featuresloadend" selon le cas.
+*  Si une exception survient, on met la source en état "error" et on stocke les détails 
+*  de l'erreur dans la source (propriété "error_details").
+*  Un builder d'erreur est mis en place pour construire un objet Error à partir 
+*  des détails de l'erreur.
+*
 * Les options
 * @param {*} options 
 * @property {*} options.id - uuid de l'API Entrepôt
@@ -55,6 +63,7 @@ import t from './translation';
 * @property {*} options.visible - boolean
 * @property {*} options.opacity - float
 * @property {*} options.extended - mode étendu des formats
+* @property {*} options.loader - mode loader pour les url (par défaut)
 * @property {*} options.data | @property {*} options.url 
 * @fixme hack sur le format GPX à reporter sur les extensions !
 * @returns {Promise<VectorLayer>} - couche vectorielle
@@ -64,6 +73,7 @@ const createVectorLayer = async (options) => {
   var vectorSource = null;
   var vectorLayer = null;
   
+  var loader = (options.loader === undefined) ? true : options.loader;
   var extended = (options.extended === undefined) ? true : options.extended;
   switch (options.format.toLowerCase()) {
     case "geojson":
@@ -117,16 +127,56 @@ const createVectorLayer = async (options) => {
     });
   }
   
-  // FIXME utiliser le loader pour les fichiers externes (url) afin de gérer les erreurs
-  // > vectorSource.once("featuresloaderror", function() { ... });
-  // > vectorSource.once("featuresloadend", function() { ... });
-  // > vectorSource.removeLoadedExtent(extent);
-  // > vectorSource.setState("error");
   if (options.url) {
-    vectorSource = new VectorSource({
-      format: vectorFormat,
-      url: options.url
-    });
+    if (!loader) {
+      vectorSource = new VectorSource({
+        format: vectorFormat,
+        url: options.url
+      });
+    } else {
+      // mise en place d'un loader pour gérer les erreurs de téléchargement
+      vectorSource = new VectorSource({
+        format: vectorFormat,
+        loader : function (extent, resolution, projection, success, failure) {
+          const mapProj = projection.getCode();
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', options.url);
+          const onError = function(details) {
+            const error = buildError(details);
+            vectorSource.set("error_details", error);
+            failure(error);
+          }
+          xhr.onerror = function() {
+            onError({
+              type: "error",
+              status: 0,
+              statusText: "",
+              url: options.url
+            });
+          };
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              var fileProj = vectorFormat.readProjection(xhr.responseText);
+              const features = vectorFormat.readFeatures(xhr.responseText, {
+                dataProjection : fileProj,
+                featureProjection : mapProj
+              });
+              vectorSource.unset("error_details", true);
+              vectorSource.addFeatures(features);
+              success(features);
+            } else {
+              onError({
+                type: "http",
+                status: xhr.status,
+                statusText: xhr.statusText,
+                url: options.url
+              });
+            }
+          }
+          xhr.send();
+        }
+      });
+    }
   }
   
   if (!vectorSource) {
@@ -169,6 +219,19 @@ const createVectorLayer = async (options) => {
   // permalink
   vectorLayer.set("permalink", options.permalink || false);
   
+  const failedLoadData = (e) => {
+    const errorFromEvent = e && e.error ? e.error : null;
+    const errorFromSource = vectorSource.get ? vectorSource.get("error_details") : null;
+    vectorSource.set("error_details", errorFromEvent || errorFromSource || buildError());
+    vectorSource.setState("error");
+  }
+  const successLoadData = () => {
+    // pas grand chose à faire ici...
+  };
+  
+  vectorLayer.getSource().once("featuresloadend", successLoadData);
+  vectorLayer.getSource().once("featuresloaderror", failedLoadData);
+
   return vectorLayer;
 };
 
@@ -179,6 +242,14 @@ const createVectorLayer = async (options) => {
 * - Profil (?)
 * 
 * On transmet le fichier GeoJSON avec le type internal
+*
+* Gestion des erreurs de téléchargement du fichier :
+*  Par url, on met un loader pour gérer les erreurs de téléchargement du fichier.
+*  La source transmet un évènement "featuresloaderror" ou "featuresloadend" selon le cas.
+*  Si une exception survient, on met la source en état "error" et on stocke les détails 
+*  de l'erreur dans la source (propriété "error_details").
+*  Un builder d'erreur est mis en place pour construire un objet Error à partir 
+*  des détails de l'erreur.
 * 
 * Les options
 * @param {*} options 
