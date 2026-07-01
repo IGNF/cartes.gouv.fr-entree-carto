@@ -59,7 +59,8 @@ export function useUrlParams(url) {
             params.layers = urlParams[key];
             break;
           case "w":
-            params.controls = urlParams[key] + "," + useDefaultControls().toString();
+            // on ne traite plus le param "w" = pas de changement des outils en chargeant un permalink
+            // params.controls = urlParams[key] + "," + useDefaultControls().toString();
             break;
           case "d":
             params.bookmarks = urlParams[key];
