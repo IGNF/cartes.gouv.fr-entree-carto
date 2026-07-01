@@ -469,7 +469,7 @@ onMounted(() => {});
       <DsfrSearchBar
         v-model="searchString"
         label="Rechercher un enregistrement"
-        placeholder="Ex: name:mes_croquis type:service"
+        placeholder="Nom ou type du document recherché"
         @update:model-value="updateSearch"
       />
     </div>
