@@ -206,44 +206,54 @@ onMounted(() => {
         return;
       }
 
-      layer = await promise;
-      log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
-      if (position !== layer.getZIndex()) {
-        if (Number(position) === -1) {
-          log.debug(name, "| position auto");
-        } else {
-          log.debug(name, "| change position", position);
-          layer.setZIndex(Number(position));
-        }
-      }
+      try {
 
-      map.addLayer(layer);
-      emit('mounted');
-      // zoom sur la couche sauf si la couche vient du permalien
-      if (mapStore.isPermalink()) {
-        return;
+        layer = await promise;
+        log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+        if (position !== layer.getZIndex()) {
+          if (Number(position) === -1) {
+            log.debug(name, "| position auto");
+          } else {
+            log.debug(name, "| change position", position);
+            layer.setZIndex(Number(position));
+          }
+        }
+  
+        map.addLayer(layer);
+        emit('mounted');
+        // zoom sur la couche sauf si la couche vient du permalien
+        if (mapStore.isPermalink()) {
+          return;
+        }
+        // INFO : 
+        // on desactive le zoom to extent...
+        // var source = layer.getSource();
+        // if (map.getView() && map.getSize()) {
+        //   var sourceExtent = null;
+        //   if (source && source.getExtent) {
+        //     sourceExtent = source.getExtent();
+        //   } else if (source && source.getTileGrid) {
+        //     // INFO : pour les couches mapbox
+        //     sourceExtent = source.getTileGrid().getExtent();
+        //   }
+        //   if (sourceExtent && sourceExtent[0] !== Infinity) {
+        //     map.getView().fit(sourceExtent,  { size : map.getSize() });
+        //   } else {
+        //     layer.once('change', () => {
+        //       if (layer.getSource().getExtent()) {
+        //         map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
+        //       }
+        //     });
+        //   }
+        // }  
+      } catch (e) {
+        log.warn("Exception sur la couche " + name + " !");
+        console.warn(e);
+        push.warning({
+          title: t.notification.title,
+          message: t.notification.exception_add_layer(name, e.message)
+        });
       }
-      // INFO : 
-      // on desactive le zoom to extent...
-      // var source = layer.getSource();
-      // if (map.getView() && map.getSize()) {
-      //   var sourceExtent = null;
-      //   if (source && source.getExtent) {
-      //     sourceExtent = source.getExtent();
-      //   } else if (source && source.getTileGrid) {
-      //     // INFO : pour les couches mapbox
-      //     sourceExtent = source.getTileGrid().getExtent();
-      //   }
-      //   if (sourceExtent && sourceExtent[0] !== Infinity) {
-      //     map.getView().fit(sourceExtent,  { size : map.getSize() });
-      //   } else {
-      //     layer.once('change', () => {
-      //       if (layer.getSource().getExtent()) {
-      //         map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
-      //       }
-      //     });
-      //   }
-      // }  
     }
   };
 

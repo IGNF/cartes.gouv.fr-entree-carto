@@ -117,6 +117,11 @@ const createVectorLayer = async (options) => {
       });
     }
   
+    // FIXME utiliser le loader pour les fichiers externes (url) afin de gérer les erreurs
+    // > vectorSource.once("featuresloaderror", function() { ... });
+    // > vectorSource.once("featuresloadend", function() { ... });
+    // > vectorSource.removeLoadedExtent(extent);
+    // > vectorSource.setState("error");
     if (options.url) {
       vectorSource = new VectorSource({
         format: vectorFormat,
@@ -226,7 +231,8 @@ const createComputeLayer = async (options) => {
           const xhr = new XMLHttpRequest();
           xhr.open('GET', options.url);
           const onError = function() {
-            vectorSource.removeLoadedExtent(extent);
+            // vectorSource.removeLoadedExtent(extent);
+            vectorSource.setState("error");
             failure();
           }
           xhr.onerror = onError;
