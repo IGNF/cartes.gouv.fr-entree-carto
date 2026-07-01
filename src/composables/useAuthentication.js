@@ -114,6 +114,22 @@ export function useAuthentication(deps = {}) {
           return;
         }
 
+        if (isValid) {
+          log.debug('Session locale valide, synchronisation des documents...');
+          try {
+            const documents = await service.getDocuments();
+            const emitter = typeof service.getEmitter === 'function' ? service.getEmitter() : null;
+            if (emitter) {
+              emitter.dispatchEvent('service:documents:loaded', {
+                bubbles: true,
+                detail: documents
+              });
+            }
+          } catch (syncError) {
+            console.warn('Unable to refresh documents after page reload:', syncError);
+          }
+        }
+
         log.debug('validateAuthentication() finished !');
       } else {
         if (IAM_CHECK_SSO_DISABLE !== '1') {

@@ -491,6 +491,21 @@ const buttonsData = [
   }
 ];
 
+const convertTime = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+};
+const convertDate = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
 const openedFormatExport = ref(false);
 const modelValueFormatExport = ref('geojson');
 const optionsFormatExport = [
@@ -564,8 +579,12 @@ const onModalExportClose = () => {
   -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span v-if="data.type_fr"> {{ data.type_fr }}</span>
+    <span v-if="data.type_fr && (data.format || data.date)"> - </span>
     <span v-if="data.format"> {{ data.format }}</span>
-    <span v-if="data.date"> {{ data.date }}</span>
+    <span v-if="data.format && data.date"> - </span>
+    <span 
+      v-if="data.date" 
+      :title="convertTime(data.date)">{{ convertDate(data.date) }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
   <div
