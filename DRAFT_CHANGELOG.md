@@ -14,6 +14,7 @@
 
 #### 🔨 [Evolution]
 
+- Espace personnel : recherche et tri des documents (#1128)
 - Espace personnel : transformation de format de l'export pour les couches vectorielles (#1140)
 - Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
 - Espace personnel : suppression d'un favori présent dans un permalien (#1130)
