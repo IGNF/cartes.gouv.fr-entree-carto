@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+- Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
