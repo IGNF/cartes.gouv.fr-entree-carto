@@ -445,7 +445,7 @@ var SetDocuments = {
       
       if (response.status !== 200) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, { cause: data });
       }
   
       // enregistrer la réponse
