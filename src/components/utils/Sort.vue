@@ -81,7 +81,7 @@ defineEmits([
    émettre les événements update:sort-field et update:sort-order lors de la sélection d'un champ de tri ou d'un ordre de tri
    utiliser les classes CSS appropriées pour le style et l'accessibilité
   -->
-  <div class="container-sort">
+  <div class="container-sort fr-mt-2w">
     <label 
       :for="sortId" 
       class="fr-label-no"
@@ -103,6 +103,11 @@ defineEmits([
     <button 
       :id="`${sortId}-order`"
       class="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
+      :class="{
+        'fr-icon-sort-desc': sortOrder === 'asc',
+        'fr-icon-sort-asc': sortOrder === 'desc',
+      }"
+      title="Modifier l’ordre de tri"
       @click="$emit('update:sort-order', sortOrder === 'asc' ? 'desc' : 'asc')" 
     >
       {{ sortOrder === 'asc' ? '↑' : '↓' }}
@@ -116,16 +121,14 @@ defineEmits([
     align-items: center;
     justify-content: flex-end;
     gap: 0.5rem;
+    font-size: 0.75rem;
     color: var(--text-action-high-blue-france);
 
     select.fr-select {
       /* surcharge la classe fr-select du DSFR */
-      background-color: unset;
-      background-image: unset;
       font-size: 0.75rem;
-      margin: unset;
-      padding: 0.5rem;
-      width: 30%;
+      padding: .5em 2.5em .5em 1em;
+      width: 50%;
     }
     button.fr-btn {
       /* surcharge la classe fr-btn du DSFR */
