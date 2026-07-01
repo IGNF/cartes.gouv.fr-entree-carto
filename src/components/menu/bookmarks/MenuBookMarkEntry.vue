@@ -190,20 +190,23 @@ onMounted(() => {});
 
 const refDivRename = useTemplateRef('div-rename');
 const rename = ref('');
-const isConfirmDeleteModalOpened = ref(false);
 
 const onClickButtonRename = (e) => {
   console.debug(e);
   refDivRename.value.classList.toggle("fr-hidden");
   rename.value = props.data.name;
 };
+
+const isConfirmDeleteModalOpened = ref(false);
+var lstDocumentsCarte = []; 
+
 const onClickButtonDelete = (e) => {
   console.debug(e);
 
-  // on verifie si le document est présent dans les cartes enregistrées
-  var isPresentInBookmarksCarte = service.findInCarte(props.data.id);
+  // on recherche si le document est présent dans les cartes enregistrées
+  lstDocumentsCarte = service.findInCartes(props.data.id);
   // si oui, on ouvre un modal de confirmation pour prévenir l'utilisateur
-  if (isPresentInBookmarksCarte) {
+  if (lstDocumentsCarte.length > 0) {
     isConfirmDeleteModalOpened.value = true;
   }
   // sinon, on supprime directement le document
@@ -648,6 +651,13 @@ const onModalExportClose = () => {
     @confirm="onConfirmDeleteDocument"
   >
     {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
+    <div v-if="lstDocumentsCarte.length > 0">
+      <ul class="fr-mt-2w">
+        <li v-for="doc in lstDocumentsCarte" :key="doc.id">
+          {{ doc.name }}
+        </li>
+      </ul>
+    </div>
   </ModalConfirm>  
   <slot />
 </template>
