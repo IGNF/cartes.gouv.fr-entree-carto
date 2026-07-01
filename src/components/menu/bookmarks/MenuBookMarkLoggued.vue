@@ -12,8 +12,7 @@ export default {
 </script>
 
 <script setup lang="js">
-import { ref, computed, onMounted, onUnmounted, inject, watch } from 'vue';
-import { useServiceStore } from '@/stores/serviceStore';
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 
 import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.vue';
 import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
@@ -21,7 +20,6 @@ import Patience from '@/components/utils/Patience.vue';
 
 var service = inject('services');
 const emitter = inject('emitter');
-const serviceStore = useServiceStore();
 
 const LOADED_DELAY_MS = 1500;
 
@@ -52,10 +50,6 @@ const toDocumentsCompletedPayload = (payload) => {
   return payload && payload.detail ? payload.detail : payload;
 };
 
-const documentsFromStore = computed(() => {
-  return serviceStore?.connexion?.documents || {};
-});
-
 const setLoadedWithDelay = () => {
   documentsLoadState.value = 'finishing';
   if (loadedDelayTimer) {
@@ -69,10 +63,9 @@ const setLoadedWithDelay = () => {
 
 const IsEmpty = () => {
   var empty = true;
-  const docs = documentsFromStore.value;
-  for (const key in docs) {
-    if (Object.prototype.hasOwnProperty.call(docs, key)) {
-      const element = docs[key];
+  for (const key in service.documents) {
+    if (Object.prototype.hasOwnProperty.call(service.documents, key)) {
+      const element = service.documents[key];
       if (element && element.length) {
         empty = false;
       }
@@ -86,8 +79,7 @@ const hasInitializedAllCategories = () => {
     return false;
   }
 
-  const docs = documentsFromStore.value;
-  return service.labels.every((label) => Array.isArray(docs?.[label]));
+  return service.labels.every((label) => Array.isArray(service.documents?.[label]));
 };
 
 var toggle = ref(false);
@@ -157,18 +149,6 @@ onMounted(() => {
     documentsLoadState.value = 'loaded';
   }
 })
-
-// Fallback reactif: meme sans emitter, la synchro via store met a jour le composant.
-watch(documentsFromStore, () => {
-  if (!service.isAuthenticatedLocally()) {
-    return;
-  }
-
-  if (hasInitializedAllCategories() || !IsEmpty()) {
-    documentsLoadState.value = 'loaded';
-    toggle.value = !toggle.value;
-  }
-}, { deep: true });
 
 onUnmounted(() => {
   if (loadedDelayTimer) {
