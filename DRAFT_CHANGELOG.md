@@ -18,6 +18,7 @@
 - Espace personnel : transformation de format de l'export pour les couches vectorielles (#1140)
 - Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
 - Espace personnel : suppression d'un favori présent dans un permalien (#1130)
+- Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
 - Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
 
 #### 🔥 [Obsolète]
