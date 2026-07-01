@@ -44,6 +44,61 @@ const emit = defineEmits(['mounted', 'unmounted']);
 const map = inject(props.mapId);
 var layer = null;
 
+const catchErrorAndCleanup = (targetLayer, name, type) => {
+  if (!targetLayer) {
+    return;
+  }
+
+  const source = targetLayer.getSource ? targetLayer.getSource() : null;
+  if (!source || !source.on || !source.getState) {
+    return;
+  }
+
+  const layerName = name || props.layerOptions.name || props.layerOptions.id || "inconnue";
+  const layerType = type || props.layerOptions.type || "inconnue";
+
+  const cleanup = (error) => {
+    if (layer !== targetLayer) {
+      return;
+    }
+
+    var removed = false;
+    if (map && map.getLayers && map.removeLayer) {
+      const layers = map.getLayers();
+      const hasLayer = layers && layers.getArray && layers.getArray().includes(targetLayer);
+      if (hasLayer) {
+        map.removeLayer(targetLayer);
+        removed = true;
+      }
+    }
+
+    if (layer === targetLayer) {
+      layer = null;
+    }
+
+    if (removed) {
+      emit('unmounted');
+    }
+
+    push.warning({
+      title: t.notification.title,
+      message: t.notification.exception_add_layer(layerName, (error && error.message) || t.ol.failed_layer(layerType))
+    });
+  };
+
+  const onSourceChange = () => {
+    if (source.getState() !== "error") {
+      return;
+    }
+    source.un("change", onSourceChange);
+    const sourceError = source.get ? source.get("error_details") : null;
+    cleanup(sourceError || new Error(t.ol.failed_layer(layerType)));
+  };
+
+  source.on("change", onSourceChange);
+  onSourceChange();
+};
+
 onMounted(() => {
   // les options sont obligatoires pour configurer une couche
   if (!props.layerOptions || Object.keys(props.layerOptions).length === 0) {
@@ -218,6 +273,9 @@ onMounted(() => {
             layer.setZIndex(Number(position));
           }
         }
+
+        // on attache un listener de nettoyage si la source OpenLayers passe en erreur
+        catchErrorAndCleanup(layer, name, type);
   
         map.addLayer(layer);
         emit('mounted');

@@ -96,7 +96,8 @@ export default {
     failed_format: (value) => { return `Le format n'est pas reconnu : ${value}` },
     failed_source: (value) => { return `Exception sur l'initialisation de la source de type ${value} !` },
     failed_layer: (value) => { return `Exception sur l'initialisation de la couche de type ${value} !` },
-    failed_mapbox: (value) => { return `Exception de la couche MapBox : ${value} !` }
+    failed_mapbox: (value) => { return `Exception de la couche MapBox : ${value} !` },
+    exception_load_layer: "Exception lors du chargement de la couche !",
   },
   notification: {
     title: "Ajout de couche",
