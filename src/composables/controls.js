@@ -458,7 +458,8 @@ export function useControlsMenuOptions() {
       icon: "gpf:panoramax",
       group: 'Affichage'
     }
-  ].filter(opt => Object.keys(useControls).includes(opt.name))
+  ]
+  .filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
 }
 
