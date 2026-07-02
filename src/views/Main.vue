@@ -162,13 +162,21 @@ hr {
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /*
-  .Notivue__content-message {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
+  
+  .Notivue__content {
+    width: min(92vw, 34rem);
+    max-width: min(92vw, 34rem);
   }
-  */
+
+  .Notivue__content-message {
+    max-height: min(32vh, 12rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
   /*
   .Notivue__icon {
     color: white;

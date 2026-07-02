@@ -31,10 +31,9 @@ export default {
     failed_copy_permalink: (value) => { return `Erreur sur la copie du permalien : ${value}` },
     failed_delete_data: (value) => { return `Erreur sur la suppression de la donnée : ${value}` },
     failed_rename_data: (value) => { return `Erreur sur le renommage de la donnée : ${value}` },
-    warning_delete_document_in_bookmarks_carte: "Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !",
+    warning_delete_document_in_bookmarks_carte: "Attention : le document supprimé est encore présent dans le(s) document(s) de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !",
     confirm_delete_document: "Voulez-vous vraiment supprimer le document ?",
-    confirm_delete_document_with_name: (value) => { return `Voulez-vous vraiment supprimer le document ${value} ?` },
-    confirm_delete_document_in_bookmarks_carte: "Voulez-vous vraiment supprimer le document ? Attention : le document supprimé est encore présent dans un document de type carte, il ne sera plus disponible sur les cartes enregistrées et donc sur le permalien !"
+    confirm_delete_document_with_name: (value) => { return `Voulez-vous vraiment supprimer le document "${value}" ?` },
   },
   drawing: {
     title: "Croquis",
@@ -46,8 +45,8 @@ export default {
     title: "Import de couche",
     save_success: "L'import est enregistré dans l'espace personnel",
     save_failed: "Une erreur est survenue sur l'enregistrement de l'import",
-    add_success_service: (value) => { return `La couche du service ${value} est ajoutée à la carte` },
-    add_failed_service: (value) => { return `Une erreur est survenue dans l'ajout de la couche ${value} !` },
+    add_success_service: (value) => { return `La couche du service "${value}" est ajoutée à la carte` },
+    add_failed_service: (value) => { return `Une erreur est survenue dans l'ajout de la couche "${value}" !` },
     add_success_mapbox: "La couche MapBox est ajoutée à la carte",
     add_failed_mapbox: "Une erreur est survenue dans l'ajout de la couche MapBox !",
   },
@@ -87,20 +86,21 @@ export default {
     title: 'Territoires',
     change: "Les territoires ont été modifiés",
     reset: "Tous les territoires ont été réinitialisés",
-    remove: (value) => { return `Le territoire ${value} a été supprimé` },
-    add: (value) => { return `Le territoire ${value} a été ajouté` }
+    remove: (value) => { return `Le territoire "${value}" a été supprimé` },
+    add: (value) => { return `Le territoire "${value}" a été ajouté` }
   },
   ol: {
     title: "OpenLayers",
     failed: (value) => { return `Exception sur OpenLayers : ${value}` },
     failed_format: (value) => { return `Le format n'est pas reconnu : ${value}` },
-    failed_source: (value) => { return `Exception sur l'initialisation de la source de type ${value} !` },
-    failed_layer: (value) => { return `Exception sur l'initialisation de la couche de type ${value} !` },
-    failed_mapbox: (value) => { return `Exception de la couche MapBox : ${value} !` }
+    failed_source: (value) => { return `Exception sur l'initialisation de la source de type "${value}" !` },
+    failed_layer: (value) => { return `Exception sur l'initialisation de la couche de type "${value}" !` },
+    failed_mapbox: (value) => { return `Exception de la couche MapBox : ${value} !` },
+    exception_load_layer: "Exception lors du chargement de la couche !",
   },
   notification: {
     title: "Ajout de couche",
-    unknown_add_layer: (name, service) => { return `La couche ${name} du service ${service} n'est pas reconnue dans le catalogue !` },
-    exception_add_layer: (name, message) => { return `Exception lors de l'ajout de la couche ${name} : ${message}` }
+    unknown_add_layer: (name, service) => { return `La couche "${name}" du service "${service}" n'est pas reconnue dans le catalogue !` },
+    exception_add_layer: (name, message) => { return `Exception lors de l'ajout de la couche "${name}" : ${message}` }
   }
 }
