@@ -1,7 +1,6 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
@@ -22,14 +21,19 @@ const emitter = inject('emitter');
 var service = inject('services');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  routeOptions: Object
+  routeOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
-const store = useDataStore();
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
@@ -172,6 +176,7 @@ const onCompute = (e) => {
   layer.set("geojson", widget.getGeoJSON());
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -249,6 +254,10 @@ const onSaveRoute = (e) => {
 
   promise
   .then((o) => {
+    btnSave.value.button.setAttribute("disabled", "disabled");
+    return o;
+  })
+  .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, { 
@@ -278,6 +287,11 @@ const onSaveRoute = (e) => {
       title: t.route.title,
       message: t.route.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 /**

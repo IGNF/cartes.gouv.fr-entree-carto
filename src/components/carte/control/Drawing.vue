@@ -325,6 +325,7 @@ const onToggleShowVector = (e) => {
   }
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /** 
  * Gestionnaire d'evenement
  * 
@@ -400,6 +401,11 @@ const onSaveVector = (e) => {
   
   promise
   .then((o) => {
+    // le bouton est desactivé pour éviter un double clic
+    btnSave.value.button.setAttribute("disabled", "disabled");
+    return o;
+  })
+  .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = null;
@@ -443,6 +449,11 @@ const onSaveVector = (e) => {
       title: t.drawing.title,
       message: t.drawing.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
