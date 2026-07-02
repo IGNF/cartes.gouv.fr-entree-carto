@@ -314,14 +314,14 @@ const onToggleShowVector = (e) => {
         format : drawing.value.getExportFormat(),
         layer : drawing.value.getLayer(),
       });
-      // dissociation de la couche du widget 
-      // pour permettre une autre saisie dans 
-      // une autre couche
-      drawing.value.setLayer();
-      btnExport.value.inputName.value = "";
-      btnExport.value.setFormat(formatByDefault);
-      btnSave.value.setFormat(formatByDefault);
     }
+    // dissociation de la couche du widget 
+    // pour permettre une autre saisie dans 
+    // une autre couche
+    drawing.value.setLayer();
+    btnExport.value.inputName.value = "";
+    btnExport.value.setFormat(formatByDefault);
+    btnSave.value.setFormat(formatByDefault);
   }
 }
 
