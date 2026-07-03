@@ -59,7 +59,7 @@ onMounted(() => {
     searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
     searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
-    searchEngineAdvanced.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
+    searchEngineAdvanced.value.on("searchengineadvanced:geolocation:click", onClickSearchGeolocationOpen);
     searchEngineAdvanced.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
   }
 })
@@ -98,8 +98,8 @@ const onClickSearchGeolocationOpen = (e) => {
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
   // on passe en geographique
-  mapStore.geolocation = toLonLatProj(e.coordinates).toString();
-  emitter.emit("searchengine:geolocation:clicked", e.coordinates);
+  mapStore.geolocation = e.coordinates.toString();
+  // emitter.emit("searchengineadvanced:geolocation:clicked", e.coordinates);
 }
 const onClickSearchGeolocationRemove = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationRemove", e);
@@ -107,7 +107,7 @@ const onClickSearchGeolocationRemove = (e) => {
   // on enlève l'information dans le permalien...
   // on passe par le mapStore
   mapStore.geolocation = "";
-  emitter.emit("searchengine:geolocation:removed");
+  // emitter.emit("searchengine:geolocation:removed");
 }
 
 </script>

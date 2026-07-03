@@ -51,8 +51,8 @@ var EVENTS = {
     "drawing:open:clicked",
     "drawing:close",
     "layerimport:open:clicked",
-    "searchengine:open:displayed",
-    "searchengine:geolocation:clicked",
+    "searchengineadvanced:open:displayed",
+    "searchengineadvanced:geolocation:clicked",
     "searchengine:geolocation:removed",
     "reporting:open:clicked",
     // edition

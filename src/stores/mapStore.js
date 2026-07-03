@@ -204,7 +204,7 @@ export const useMapStore = defineStore('map', () => {
     if (localStorage.getItem(ns('geolocation')) !== "") {
       var coordinates = localStorage.getItem(ns('geolocation')).split(",");
       // envoi d'un evenement pour afficher la geolocalisation
-      emitter.dispatchEvent("searchengine:open:displayed", {
+      emitter.dispatchEvent("searchengineadvanced:open:displayed", {
         position : coordinates
       });
     }
