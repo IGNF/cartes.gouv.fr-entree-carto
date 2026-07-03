@@ -681,19 +681,19 @@ const buildError = (details) => {
   const status = details && typeof details.status === "number" ? details.status : 0;
   const statusText = details && details.statusText ? details.statusText : "";
   const type = details && details.type ? details.type : "load";
-  const url = details && details.url ? details.url : "";
-  
-  let message = t.ol.exception_load_layer;
-  if (status > 0) {
-    message += ` (HTTP ${status}${statusText ? ` ${statusText}` : ""})`;
+  const url = details && details.url ? details.url.split("/").pop().split("?")[0]: "";
+
+  let message = "";
+  if (status && url) {
+    if (status === 404) {
+      message += `Document ${url} introuvable (erreur ${status})`;
+    } else {
+      message += `Impossible de récupérer le document ${url} (erreur ${status})`;
+    }
   } else if (type === "error") {
-    message += " (erreur réseau)";
+    message += "Impossible de récupérer le document";
   }
-  
-  if (url) {
-    message += ` : ${url}`;
-  }
-  
+
   const error = new Error(message);
   error.status = status;
   error.statusText = statusText;
