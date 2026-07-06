@@ -24,13 +24,14 @@ import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from '
 import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
+import { ROUTE_NAMES } from '@/router/routeNames';
 
 const appStore = useAppStore()
 const domStore = useDomStore()
 const route = useRoute()
 const { theme } = useScheme()
 
-const isEmbedRoute = computed(() => route.path === '/embed')
+const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
@@ -161,13 +162,21 @@ hr {
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /*
-  .Notivue__content-message {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
+  
+  .Notivue__content {
+    width: min(92vw, 34rem);
+    max-width: min(92vw, 34rem);
   }
-  */
+
+  .Notivue__content-message {
+    max-height: min(32vh, 12rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
   /*
   .Notivue__icon {
     color: white;

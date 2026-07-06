@@ -626,7 +626,7 @@ export function useControlsOptions () {
       optimisation : "on-demand",
       search : {
         display : false,
-        criteria : ["name","title","description"]
+        criteria : ["name","title","description","producer","thematic"]
       },
       categories : [
         {

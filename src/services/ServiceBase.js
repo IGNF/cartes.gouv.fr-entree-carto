@@ -1,5 +1,6 @@
 import Users from '@/services/ServiceUsers';
 import Documents from '@/services/ServiceDocuments';
+import ServiceError from '@/services/ServiceError';
 
 import { useServiceStore } from '@/stores/serviceStore';
 // client keycloak pour vérifier la session (iframe)
@@ -104,7 +105,7 @@ class ServiceBase {
    */
   throwError (error) {
     this.#pending = false;
-    throw error;
+    throw ServiceError.from(error);
   }
 
   /**

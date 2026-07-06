@@ -29,6 +29,19 @@ controlList.on('controllist:sorted', (e) => {
   mapStore.controls = controls.join(',');
 });
 
+controlList.on('change:collapsed', () => {
+  let opened = !controlList.collapsed;
+  if (opened) {
+    document.addEventListener('click', onDocumentClick);
+  } else {
+    document.removeEventListener('click', onDocumentClick);
+  }
+});
+
+let onDocumentClick = () => {
+  controlList.setCollapsed(true);
+};
+
 // sélecteurs pour chaque chaque widget OL
 let controlSelectors = {
   MeasureLength:  'div[id^="GPmeasureLength-"]',
@@ -59,13 +72,13 @@ function applyControlsOrder() {
   const container = document.getElementById('position-container-top-right');
   if (!container) return;
 
-  const controlListWidget = container.querySelector('[id^="GPcontrolList-"]');
+  const controlListWidget = document.querySelector('#position-container-top-right > [id^="GPcontrolList-"]');
 
   // reordonne les 9 contrôles gérés
   orderedManagedControls.value.forEach((control) => {
     const selector = controlSelectors[control];
     if (!selector) return;
-    const widget = document.querySelector(selector);
+    const widget = document.querySelector('#position-container-top-right > ' + selector);
     if (!widget) return;
     if (controlListWidget) {
       container.insertBefore(widget, controlListWidget);

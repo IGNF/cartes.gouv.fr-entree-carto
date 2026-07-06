@@ -1,13 +1,10 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.18...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.19...HEAD>
 
-## 🔖 version 1.0.18 - __DATE__
+## 🔖 version 1.0.19 - __DATE__
 
 ### 🎉 Résumé
-
-Nouveau widget Panoramax qui permet de visualiser des photos immersives libres via des instances de contribution collaboratives.
-Refonte du menu de gestion des widgets sur l'interface.
 
 ### 💥 Breaking changes
 
@@ -15,18 +12,17 @@ Refonte du menu de gestion des widgets sur l'interface.
 
 #### ✨ [Ajout]
 
-  - Panoramax : Ajout du nouveau widget Panoramax (#1046)
-  - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
-  - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
-  - Plan : Ajout de la route "/plan/:insee" pour afficher le plan d'une ville (#1094)
- 
 #### 🔨 [Evolution]
 
-  - Gestionnaire de couche : au survol de son entrée, le titre de la couche s'affiche dans un tooltip (#505)
-  - Header : la signature change pour "Notre territoire commun" (#1084)
-  - Gestionnaire d’outils : intégration du «nouveau» widget ControlList (#998)
-  - Gestionnaire d’outils : déplacement des autres outils dans «Préférences d’affichage» (#998)
-  - Panoramax : filtre image 360 actif par défaut (#1098)
+- Espace personnel : recherche et tri des documents (#1128)
+- Espace personnel : transformation de format de l'export pour les couches vectorielles (#1140)
+- Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
+- Espace personnel : suppression d'un favori présent dans un permalien (#1130)
+- Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
+- Espace personnel : gestion des documents supprimés dans un permalien (#1146)
+- Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
+- ControlList : Ferme le panel au click dans la page (#1151)
+- Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
 
 #### 🔥 [Obsolète]
 
@@ -34,14 +30,8 @@ Refonte du menu de gestion des widgets sur l'interface.
 
 #### 🐛 [Correction]
 
-- UI extensions : fixe la position d'un panel dans un panel (#1078)
-- UI : empêche le décalage de la page au focus clavier (#1082)
-- UI : masque le badge en mobile (#1082)
-- UI : les icones des thèmes Société et Océans du catalogue sont correctement affichés (#1083)
-- UI : correction du fond de controllist en mode sombre (#1120)
-- Partage : les données issues de l'espace personnel sont correctement affichées dans les iframes (#1090)
-- Panoramax : les filtres sur les photos ne sont plus exclusifs (#1101)
+- UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
+- Territories : Corrige et sérialise l'ordre des territoires (#1132)
+- Map: Empêche la rotation de la carte (#1148)
 
 #### 🔒 [Sécurité]
-
----
