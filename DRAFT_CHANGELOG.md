@@ -33,5 +33,6 @@
 - UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
 - Map: Empêche la rotation de la carte (#1148)
-
+- Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
+ 
 #### 🔒 [Sécurité]

@@ -247,7 +247,7 @@ export const useMapStore = defineStore('map', () => {
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var realpath = path.replace(/\/logout|\/login/, "");
     var url = location.origin + realpath.replace("/embed", "");
-    permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
+    permalinkUrl = `${url}/?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
       geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
