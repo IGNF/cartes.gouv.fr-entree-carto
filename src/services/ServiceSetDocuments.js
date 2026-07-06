@@ -711,7 +711,7 @@ var SetDocuments = {
   
       // on verifie si le document supprimé est encore present dans un document de type carte,
       // si oui, on precise un message d'avertissement
-      var isPresentInBookmarksCarte = this.findInCarte(uuid);
+      var isPresentInBookmarksCarte = this.hasDocumentInCarte(uuid);
       
       return {
         uuid : uuid,

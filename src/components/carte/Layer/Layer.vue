@@ -44,6 +44,61 @@ const emit = defineEmits(['mounted', 'unmounted']);
 const map = inject(props.mapId);
 var layer = null;
 
+const catchErrorAndCleanup = (targetLayer, name, type) => {
+  if (!targetLayer) {
+    return;
+  }
+
+  const source = targetLayer.getSource ? targetLayer.getSource() : null;
+  if (!source || !source.on || !source.getState) {
+    return;
+  }
+
+  const layerName = name || props.layerOptions.name || props.layerOptions.id || "inconnue";
+  const layerType = type || props.layerOptions.type || "inconnue";
+
+  const cleanup = (error) => {
+    if (layer !== targetLayer) {
+      return;
+    }
+
+    var removed = false;
+    if (map && map.getLayers && map.removeLayer) {
+      const layers = map.getLayers();
+      const hasLayer = layers && layers.getArray && layers.getArray().includes(targetLayer);
+      if (hasLayer) {
+        map.removeLayer(targetLayer);
+        removed = true;
+      }
+    }
+
+    if (layer === targetLayer) {
+      layer = null;
+    }
+
+    if (removed) {
+      emit('unmounted');
+    }
+
+    push.warning({
+      title: t.notification.title,
+      message: t.notification.exception_add_layer(layerName, (error && error.message) || t.ol.failed_layer(layerType))
+    });
+  };
+
+  const onSourceChange = () => {
+    if (source.getState() !== "error") {
+      return;
+    }
+    source.un("change", onSourceChange);
+    const sourceError = source.get ? source.get("error_details") : null;
+    cleanup(sourceError || new Error(t.ol.failed_layer(layerType)));
+  };
+
+  source.on("change", onSourceChange);
+  onSourceChange();
+};
+
 onMounted(() => {
   // les options sont obligatoires pour configurer une couche
   if (!props.layerOptions || Object.keys(props.layerOptions).length === 0) {
@@ -206,44 +261,57 @@ onMounted(() => {
         return;
       }
 
-      layer = await promise;
-      log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
-      if (position !== layer.getZIndex()) {
-        if (Number(position) === -1) {
-          log.debug(name, "| position auto");
-        } else {
-          log.debug(name, "| change position", position);
-          layer.setZIndex(Number(position));
-        }
-      }
+      try {
 
-      map.addLayer(layer);
-      emit('mounted');
-      // zoom sur la couche sauf si la couche vient du permalien
-      if (mapStore.isPermalink()) {
-        return;
+        layer = await promise;
+        log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+        if (position !== layer.getZIndex()) {
+          if (Number(position) === -1) {
+            log.debug(name, "| position auto");
+          } else {
+            log.debug(name, "| change position", position);
+            layer.setZIndex(Number(position));
+          }
+        }
+
+        // on attache un listener de nettoyage si la source OpenLayers passe en erreur
+        catchErrorAndCleanup(layer, name, type);
+  
+        map.addLayer(layer);
+        emit('mounted');
+        // zoom sur la couche sauf si la couche vient du permalien
+        if (mapStore.isPermalink()) {
+          return;
+        }
+        // INFO : 
+        // on desactive le zoom to extent...
+        // var source = layer.getSource();
+        // if (map.getView() && map.getSize()) {
+        //   var sourceExtent = null;
+        //   if (source && source.getExtent) {
+        //     sourceExtent = source.getExtent();
+        //   } else if (source && source.getTileGrid) {
+        //     // INFO : pour les couches mapbox
+        //     sourceExtent = source.getTileGrid().getExtent();
+        //   }
+        //   if (sourceExtent && sourceExtent[0] !== Infinity) {
+        //     map.getView().fit(sourceExtent,  { size : map.getSize() });
+        //   } else {
+        //     layer.once('change', () => {
+        //       if (layer.getSource().getExtent()) {
+        //         map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
+        //       }
+        //     });
+        //   }
+        // }  
+      } catch (e) {
+        log.warn("Exception sur la couche " + name + " !");
+        console.warn(e);
+        push.warning({
+          title: t.notification.title,
+          message: t.notification.exception_add_layer(name, e.message)
+        });
       }
-      // INFO : 
-      // on desactive le zoom to extent...
-      // var source = layer.getSource();
-      // if (map.getView() && map.getSize()) {
-      //   var sourceExtent = null;
-      //   if (source && source.getExtent) {
-      //     sourceExtent = source.getExtent();
-      //   } else if (source && source.getTileGrid) {
-      //     // INFO : pour les couches mapbox
-      //     sourceExtent = source.getTileGrid().getExtent();
-      //   }
-      //   if (sourceExtent && sourceExtent[0] !== Infinity) {
-      //     map.getView().fit(sourceExtent,  { size : map.getSize() });
-      //   } else {
-      //     layer.once('change', () => {
-      //       if (layer.getSource().getExtent()) {
-      //         map.getView().fit(layer.getSource().getExtent(),  { size : map.getSize() });
-      //       }
-      //     });
-      //   }
-      // }  
     }
   };
 

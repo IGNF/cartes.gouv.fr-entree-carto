@@ -19,6 +19,7 @@
 - Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
 - Espace personnel : suppression d'un favori présent dans un permalien (#1130)
 - Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
+- Espace personnel : gestion des documents supprimés dans un permalien (#1146)
 - Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
 - ControlList : Ferme le panel au click dans la page (#1151)
 - Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
