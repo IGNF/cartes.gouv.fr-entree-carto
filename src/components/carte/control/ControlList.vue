@@ -29,6 +29,19 @@ controlList.on('controllist:sorted', (e) => {
   mapStore.controls = controls.join(',');
 });
 
+controlList.on('change:collapsed', () => {
+  let opened = !controlList.collapsed;
+  if (opened) {
+    document.addEventListener('click', onDocumentClick);
+  } else {
+    document.removeEventListener('click', onDocumentClick);
+  }
+});
+
+let onDocumentClick = () => {
+  controlList.setCollapsed(true);
+};
+
 // sélecteurs pour chaque chaque widget OL
 let controlSelectors = {
   MeasureLength:  'div[id^="GPmeasureLength-"]',
