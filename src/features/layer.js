@@ -345,10 +345,6 @@ const createComputeLayer = async (options) => {
     opacity : getOpacity(options.opacity)
   });
   
-  if (!vectorLayer) {
-    throw new Error(t.ol.failed_layer("compute"));
-  }
-  
   if (options.compute) {
     vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
   } else {
