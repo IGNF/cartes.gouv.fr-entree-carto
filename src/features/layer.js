@@ -192,10 +192,6 @@ const createVectorLayer = async (options) => {
     opacity : getOpacity(options.opacity)
   });
   
-  if (!vectorLayer) {
-    throw new Error(t.ol.failed_layer("vecteur"));
-  }
-  
   if (options.id) {
     vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
   } else {
