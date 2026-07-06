@@ -399,12 +399,10 @@ const onSaveVector = (e) => {
     promise = useUpdateDocument(data, emitter, service);
   }
   
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
-  .then((o) => {
-    // le bouton est desactivé pour éviter un double clic
-    btnSave.value.button.setAttribute("disabled", "disabled");
-    return o;
-  })
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
