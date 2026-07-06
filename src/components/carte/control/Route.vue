@@ -252,11 +252,9 @@ const onSaveRoute = (e) => {
     return; // pas plus loin...
   }
 
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
-  .then((o) => {
-    btnSave.value.button.setAttribute("disabled", "disabled");
-    return o;
-  })
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
