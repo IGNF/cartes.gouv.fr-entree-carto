@@ -275,10 +275,6 @@ const createComputeLayer = async (options) => {
     }); 
   }
   
-  if (!vectorFormat) {
-    throw new Error(t.ol.failed_format(options.format));
-  }
-  
   if (options.data) {
     const proj = vectorFormat.readProjection(options.data);
     vectorSource = new VectorSource({
