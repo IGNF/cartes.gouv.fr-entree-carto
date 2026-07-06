@@ -61,6 +61,7 @@ const map = new Map({
     center: fromLonLat(props.center),
     minZoom : 0,
     maxZoom : 21,
+    enableRotation: false,
     projection : "EPSG:3857"
   }),
 })

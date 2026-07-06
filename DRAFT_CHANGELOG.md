@@ -21,6 +21,8 @@
 - Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
 - Espace personnel : gestion des documents supprimés dans un permalien (#1146)
 - Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
+- ControlList : Ferme le panel au click dans la page (#1151)
+- Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
 
 #### 🔥 [Obsolète]
 
@@ -30,5 +32,6 @@
 
 - UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
+- Map: Empêche la rotation de la carte (#1148)
 
 #### 🔒 [Sécurité]
