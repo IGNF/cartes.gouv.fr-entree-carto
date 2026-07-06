@@ -368,7 +368,7 @@ const createComputeLayer = async (options) => {
     const errorFromSource = vectorSource.get ? vectorSource.get("error_details") : null;
     vectorSource.set("error_details", errorFromEvent || errorFromSource || buildError());
     vectorSource.setState("error");
-  }
+  };
   const successLoadData = (e) => {
     try {
       // cette couche est elle une couche de calcul ?
