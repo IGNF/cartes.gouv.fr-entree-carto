@@ -28,199 +28,132 @@ import { DEFAULT_STYLE } from './style';
 import t from './translation';
 
 /**
- * INFO
- * Toutes les couches ajoutées sur la carte ont un ID interne
- * sous la forme : bookmark:[type]-[format]:UUID
- * Ceci permet de savoir que la couche est issue de l'espace personnel
- * avec un UUID, et donc qu'elle est enregistrée.
- */
+* INFO
+* Toutes les couches ajoutées sur la carte ont un ID interne
+* sous la forme : bookmark:[type]-[format]:UUID
+* Ceci permet de savoir que la couche est issue de l'espace personnel
+* avec un UUID, et donc qu'elle est enregistrée.
+*/
 
 /**
- * Creation d'une couche de type vecteur pour les formats suivants :
- * - GeoJSON
- * - GPX
- * - KML
- * 
- * On transmet soit :
- * - une url pour le type external
- * - le fichier pour le type internal
- * 
- * Les options
- * @param {*} options 
- * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.name
- * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.extended - mode étendu des formats
- * @property {*} options.data | @property {*} options.url
- * @fixme hack sur le format GPX à reporter sur les extensions !
- */
+* Creation d'une couche de type vecteur pour les formats suivants :
+* - GeoJSON
+* - GPX
+* - KML
+* 
+* On transmet soit :
+* - une url pour le type external
+* - le fichier pour le type internal
+* 
+* Gestion des erreurs de téléchargement du fichier :
+*  Par url, on met un loader pour gérer les erreurs de téléchargement du fichier.
+*  La source transmet un évènement "featuresloaderror" ou "featuresloadend" selon le cas.
+*  Si une exception survient, on met la source en état "error" et on stocke les détails 
+*  de l'erreur dans la source (propriété "error_details").
+*  Un builder d'erreur est mis en place pour construire un objet Error à partir 
+*  des détails de l'erreur.
+*
+* Les options
+* @param {*} options 
+* @property {*} options.id - uuid de l'API Entrepôt
+* @property {*} options.name
+* @property {*} options.description
+* @property {*} options.format - format du fichier (geojson, gpx, kml)
+* @property {*} options.type - type de couche (drawing, import, bookmark)
+* @property {*} options.visible - boolean
+* @property {*} options.opacity - float
+* @property {*} options.extended - mode étendu des formats
+* @property {*} options.loader - mode loader pour les url (par défaut)
+* @property {*} options.data | @property {*} options.url 
+* @fixme hack sur le format GPX à reporter sur les extensions !
+* @returns {Promise<VectorLayer>} - couche vectorielle
+*/
 const createVectorLayer = async (options) => {
   var vectorFormat = null;
   var vectorSource = null;
   var vectorLayer = null;
   
-    var extended = (options.extended === undefined) ? true : options.extended;
-    switch (options.format.toLowerCase()) {
-      case "geojson":
-        vectorFormat = new GeoJSON(); 
-        // Extended
-        if (extended) {
-          vectorFormat = new GeoJSONExtended({
-            defaultStyle : DEFAULT_STYLE
-          }); 
-        }
-        break;
-      case "kml":
-        vectorFormat = new KML();
-        // Extended
-        if (extended) {
-          vectorFormat = new KMLExtended({
-            defaultStyle : DEFAULT_STYLE
-          }); 
-        }
-        break;
-      case "gpx":
-        vectorFormat = new GPX();
-        // Extended
-        if (extended) {
-          // HACK
-          // modifier la classe GPXExtended dans les extensions !
-          // > gestion de la callback interne readExtensions()
-          vectorFormat = new GPXExtended({
-            defaultStyle : DEFAULT_STYLE,
-            readExtensions : function (feature, node) {
-              this.readExtensions(feature, node);
-            }
-          }); 
-        }
-        break;
-      default:
-        break;
-    }
-  
-    if (!vectorFormat) {
-      throw new Error(t.ol.failed_format(options.format));
-    }
-  
-    if (options.data) {
-      const proj = vectorFormat.readProjection(options.data);
-      vectorSource = new VectorSource({
-        features: vectorFormat.readFeatures(options.data, {
-          dataProjection : proj,
-          featureProjection : "EPSG:3857"
-        }),
-      });
-    }
-  
-    if (options.url) {
-      vectorSource = new VectorSource({
-        format: vectorFormat,
-        url: options.url
-      });
-    }
-  
-    if (!vectorSource) {
-      throw new Error(t.ol.failed_source("vecteur"));
-    }
-  
-    vectorSource._title = options.name;
-    vectorSource._description = options.description;
-  
-    vectorLayer = new VectorLayer({
-      source : vectorSource,
-      visible : getVisible(options.visible),
-      opacity : getOpacity(options.opacity)
-    });
-  
-    if (!vectorLayer) {
-      throw new Error(t.ol.failed_layer("vecteur"));
-    }
-  
-    if (options.id) {
-      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
-    } else {
-      // la structure d'un ID issu d'un dessin ou d'un import (widget) est fixée
-      // cf. onClickEditLayer dans LayerSwitcher.vue
-      switch (options.type) {
-        case "drawing":
-          vectorLayer.gpResultLayerId = options.type;
-          break;
-        case "import":
-          vectorLayer.gpResultLayerId = "layer" + options.type + ":" + options.format.toLowerCase();
-          break;
-        case "bookmark":
-        case "compute":
-          throw new Error("Type not yet implemented : " + options.type);
-        default:
-          vectorLayer.gpResultLayerId = options.type;
-          break;
-      }
-    }
-    // permalink
-    vectorLayer.set("permalink", options.permalink || false);
-
-  return vectorLayer;
-};
-
-/**
- * Creation d'une couche de type vecteur pour les calculs suivants :
- * - Route
- * - Isocurve
- * - Profil (?)
- * 
- * On transmet le fichier GeoJSON avec le type internal
- * 
- * Les options
- * @param {*} options 
- * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.name
- * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.compute
- * @property {*} options.data | @property {*} options.url
- */
-const createComputeLayer = async (options) => {
-  var vectorFormat = null;
-  var vectorSource = null;
-  var vectorLayer = null;
-  
+  var loader = (options.loader === undefined) ? true : options.loader;
+  var extended = (options.extended === undefined) ? true : options.extended;
+  switch (options.format.toLowerCase()) {
+    case "geojson":
     vectorFormat = new GeoJSON(); 
     // Extended
-    var extended = (options.extended === undefined) ? true : options.extended;
     if (extended) {
       vectorFormat = new GeoJSONExtended({
         defaultStyle : DEFAULT_STYLE
       }); 
     }
-  
-    if (!vectorFormat) {
-      throw new Error(t.ol.failed_format(options.format));
+    break;
+    case "kml":
+    vectorFormat = new KML();
+    // Extended
+    if (extended) {
+      vectorFormat = new KMLExtended({
+        defaultStyle : DEFAULT_STYLE
+      }); 
     }
-  
-    if (options.data) {
-      const proj = vectorFormat.readProjection(options.data);
-      vectorSource = new VectorSource({
-        features: vectorFormat.readFeatures(options.data, {
-          dataProjection : proj,
-          featureProjection : "EPSG:3857"
-        }),
-      });
+    break;
+    case "gpx":
+    vectorFormat = new GPX();
+    // Extended
+    if (extended) {
+      // HACK
+      // modifier la classe GPXExtended dans les extensions !
+      // > gestion de la callback interne readExtensions()
+      vectorFormat = new GPXExtended({
+        defaultStyle : DEFAULT_STYLE,
+        readExtensions : function (feature, node) {
+          this.readExtensions(feature, node);
+        }
+      }); 
     }
+    break;
+    default:
+    break;
+  }
   
-    if (options.url) {
+  if (!vectorFormat) {
+    throw new Error(t.ol.failed_format(options.format));
+  }
+  
+  if (options.data) {
+    const proj = vectorFormat.readProjection(options.data);
+    vectorSource = new VectorSource({
+      features: vectorFormat.readFeatures(options.data, {
+        dataProjection : proj,
+        featureProjection : "EPSG:3857"
+      }),
+    });
+  }
+  
+  if (options.url) {
+    if (!loader) {
       vectorSource = new VectorSource({
         format: vectorFormat,
-        // url: options.url
+        url: options.url
+      });
+    } else {
+      // mise en place d'un loader pour gérer les erreurs de téléchargement
+      vectorSource = new VectorSource({
+        format: vectorFormat,
         loader : function (extent, resolution, projection, success, failure) {
           const mapProj = projection.getCode();
           const xhr = new XMLHttpRequest();
           xhr.open('GET', options.url);
-          const onError = function() {
-            vectorSource.removeLoadedExtent(extent);
-            failure();
+          const onError = function(details) {
+            const error = buildError(details);
+            vectorSource.set("error_details", error);
+            failure(error);
           }
-          xhr.onerror = onError;
+          xhr.onerror = function() {
+            onError({
+              type: "error",
+              status: 0,
+              statusText: "",
+              url: options.url
+            });
+          };
           xhr.onload = function() {
             if (xhr.status === 200) {
               var fileProj = vectorFormat.readProjection(xhr.responseText);
@@ -228,44 +161,204 @@ const createComputeLayer = async (options) => {
                 dataProjection : fileProj,
                 featureProjection : mapProj
               });
+              vectorSource.unset("error_details", true);
               vectorSource.addFeatures(features);
               success(features);
             } else {
-              onError();
+              onError({
+                type: "http",
+                status: xhr.status,
+                statusText: xhr.statusText,
+                url: options.url
+              });
             }
           }
           xhr.send();
         }
       });
     }
+  }
   
-    if (!vectorSource) {
-      throw new Error(t.ol.failed_source("compute"));
+  if (!vectorSource) {
+    throw new Error(t.ol.failed_source("vecteur"));
+  }
+  
+  vectorSource._title = options.name;
+  vectorSource._description = options.description;
+  
+  vectorLayer = new VectorLayer({
+    source : vectorSource,
+    visible : getVisible(options.visible),
+    opacity : getOpacity(options.opacity)
+  });
+  
+  if (options.id) {
+    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
+  } else {
+    // la structure d'un ID issu d'un dessin ou d'un import (widget) est fixée
+    // cf. onClickEditLayer dans LayerSwitcher.vue
+    switch (options.type) {
+      case "drawing":
+      vectorLayer.gpResultLayerId = options.type;
+      break;
+      case "import":
+      vectorLayer.gpResultLayerId = "layer" + options.type + ":" + options.format.toLowerCase();
+      break;
+      case "bookmark":
+      case "compute":
+      throw new Error("Type not yet implemented : " + options.type);
+      default:
+      vectorLayer.gpResultLayerId = options.type;
+      break;
     }
+  }
+  // permalink
+  vectorLayer.set("permalink", options.permalink || false);
   
-    vectorSource._title = options.name;
-    vectorSource._description = options.description;
+  const failedLoadData = (e) => {
+    const errorFromEvent = e && e.error ? e.error : null;
+    const errorFromSource = vectorSource.get ? vectorSource.get("error_details") : null;
+    vectorSource.set("error_details", errorFromEvent || errorFromSource || buildError());
+    vectorSource.setState("error");
+  };
+  const successLoadData = () => {
+    // pas grand chose à faire ici...
+  };
   
-    vectorLayer = new VectorLayer({
-      source : vectorSource,
-      visible : getVisible(options.visible),
-      opacity : getOpacity(options.opacity)
+  vectorLayer.getSource().once("featuresloadend", successLoadData);
+  vectorLayer.getSource().once("featuresloaderror", failedLoadData);
+
+  return vectorLayer;
+};
+
+/**
+* Creation d'une couche de type vecteur pour les calculs suivants :
+* - Route
+* - Isocurve
+* - Profil (?)
+* 
+* On transmet le fichier GeoJSON avec le type internal
+*
+* Gestion des erreurs de téléchargement du fichier :
+*  Par url, on met un loader pour gérer les erreurs de téléchargement du fichier.
+*  La source transmet un évènement "featuresloaderror" ou "featuresloadend" selon le cas.
+*  Si une exception survient, on met la source en état "error" et on stocke les détails 
+*  de l'erreur dans la source (propriété "error_details").
+*  Un builder d'erreur est mis en place pour construire un objet Error à partir 
+*  des détails de l'erreur.
+* 
+* Les options
+* @param {*} options 
+* @property {*} options.id - uuid de l'API Entrepôt
+* @property {*} options.name
+* @property {*} options.description
+* @property {*} options.format - format du fichier (geojson)
+* @property {*} options.extended - mode étendu des formats
+* @property {*} options.compute - type de calcul (route, isocurve, profil)
+* @property {*} options.type - type de couche (compute)
+* @property {*} options.visible - boolean
+* @property {*} options.opacity - float
+* @property {*} options.data | @property {*} options.url
+* @returns {Promise<VectorLayer>} - couche vectorielle
+*/
+const createComputeLayer = async (options) => {
+  var vectorFormat = null;
+  var vectorSource = null;
+  var vectorLayer = null;
+  
+  vectorFormat = new GeoJSON(); 
+  // Extended
+  var extended = (options.extended === undefined) ? true : options.extended;
+  if (extended) {
+    vectorFormat = new GeoJSONExtended({
+      defaultStyle : DEFAULT_STYLE
+    }); 
+  }
+  
+  if (options.data) {
+    const proj = vectorFormat.readProjection(options.data);
+    vectorSource = new VectorSource({
+      features: vectorFormat.readFeatures(options.data, {
+        dataProjection : proj,
+        featureProjection : "EPSG:3857"
+      }),
     });
+  }
   
-    if (!vectorLayer) {
-      throw new Error(t.ol.failed_layer("compute"));
-    }
+  if (options.url) {
+    // mise en place d'un loader pour gérer les erreurs de téléchargement
+    vectorSource = new VectorSource({
+      format: vectorFormat,
+      // url: options.url
+      loader : function (extent, resolution, projection, success, failure) {
+        const mapProj = projection.getCode();
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', options.url);
+        const onError = function(details) {
+          // vectorSource.removeLoadedExtent(extent); // FIXME relance le download !?
+          const error = buildError(details);
+          vectorSource.set("error_details", error);
+          failure(error);
+        }
+        xhr.onerror = function() {
+          onError({
+            type: "error",
+            status: 0,
+            statusText: "",
+            url: options.url
+          });
+        };
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var fileProj = vectorFormat.readProjection(xhr.responseText);
+            const features = vectorFormat.readFeatures(xhr.responseText, {
+              dataProjection : fileProj,
+              featureProjection : mapProj
+            });
+            vectorSource.unset("error_details", true);
+            vectorSource.addFeatures(features);
+            success(features);
+          } else {
+            onError({
+              type: "http",
+              status: xhr.status,
+              statusText: xhr.statusText,
+              url: options.url
+            });
+          }
+        }
+        xhr.send();
+      }
+    });
+  }
   
-    if (options.compute) {
-      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
-    } else {
-      vectorLayer.gpResultLayerId = "bookmark:" +  options.type + ":" + options.id;
-    }
-    
-    const failedLoadData = () => {
-      throw new Error(t.ol.failed_layer("compute"));
-    }
-    const successLoadData = (e) => {
+  if (!vectorSource) {
+    throw new Error(t.ol.failed_source("compute"));
+  }
+  
+  vectorSource._title = options.name;
+  vectorSource._description = options.description;
+  
+  vectorLayer = new VectorLayer({
+    source : vectorSource,
+    visible : getVisible(options.visible),
+    opacity : getOpacity(options.opacity)
+  });
+  
+  if (options.compute) {
+    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
+  } else {
+    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + ":" + options.id;
+  }
+  
+  const failedLoadData = (e) => {
+    const errorFromEvent = e && e.error ? e.error : null;
+    const errorFromSource = vectorSource.get ? vectorSource.get("error_details") : null;
+    vectorSource.set("error_details", errorFromEvent || errorFromSource || buildError());
+    vectorSource.setState("error");
+  };
+  const successLoadData = (e) => {
+    try {
       // cette couche est elle une couche de calcul ?
       var config = vectorFormat.readRootExtensions("geoportail:compute");
       if (!config || Object.keys(config).length === 0) {
@@ -280,45 +373,52 @@ const createComputeLayer = async (options) => {
         defaultStyle : DEFAULT_STYLE
       });
       var geojson = format.writeFeatures(e.features, {
-          dataProjection : "EPSG:4326",
-          featureProjection : "EPSG:3857"
+        dataProjection : "EPSG:4326",
+        featureProjection : "EPSG:3857"
       });
       vectorLayer.set("geojson", geojson);
-    };
-
-    vectorLayer.getSource().once("featuresloadend", successLoadData);
-    vectorLayer.getSource().once("featuresloaderror", failedLoadData);
-
+    } catch {
+      vectorSource.set("error_details", buildError());
+      vectorSource.setState("error");
+    }
+  };
+  
+  vectorLayer.getSource().once("featuresloadend", successLoadData);
+  vectorLayer.getSource().once("featuresloaderror", failedLoadData);
+  
   return vectorLayer;
 }
 
 /**
- * Creation d'un couche de service :
- * - wmts
- * - wms
- * 
- * On transmet une liste de paramétres WMS ou WMTS.
- * 
- * Les options
- * @param {*} options  
- * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.name
- * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.kind
- * @property {*} options.type
- * @property {*} options.data | @property {*} options.url
- * @fixme extent à récuperer dans les getCapabilities ?
- */
+* Creation d'un couche de service :
+* - wmts
+* - wms
+* 
+* On transmet une liste de paramétres WMS ou WMTS.
+* 
+* Les options
+* @param {*} options  
+* @property {*} options.id - uuid de l'API Entrepôt
+* @property {*} options.name
+* @property {*} options.description
+* @property {*} options.format - format du fichier (wms, wmts)
+* @property {*} options.visible - boolean
+* @property {*} options.opacity - float
+* @property {*} options.kind - type de service (wms, wmts)
+* @property {*} options.type - type de service (wms, wmts) // compatibilité avec les anciennes versions
+* @property {*} options.data | @property {*} options.url
+* @fixme extent à récuperer dans les getCapabilities ?
+* @returns {Promise<TileLayer>} - couche de service
+*/
 const createServiceLayer = async (options) => {
-
+  
   var createLayer = (options) => {
     var tileLayer = null;
-
+    
     if (typeof options.data === 'string') {
       options.data = JSON.parse(options.data);
     }
-
+    
     if (options.kind === "wmts" || options.type === "wmts") {
       const tileGrid = new WMTSTileGrid({
         origin: [
@@ -328,7 +428,7 @@ const createServiceLayer = async (options) => {
         resolutions: options.data.resolutions,
         matrixIds: options.data.matrixIds,
       });
-    
+      
       var sourceWMTS = new WMTS({
         url: options.data.url,
         version: options.data.version,
@@ -340,11 +440,11 @@ const createServiceLayer = async (options) => {
         style: options.data.styleName,
         attributions: '',
       });
-    
+      
       if (!sourceWMTS) {
         throw new Error(t.ol.failed_source("service wmts"));
       }
-    
+      
       sourceWMTS._title = options.data.name || options.name;
       sourceWMTS._description = options.data.description || options.description;
       
@@ -354,48 +454,48 @@ const createServiceLayer = async (options) => {
         // extent
         source: sourceWMTS,
       });
-    
+      
       if (!tileLayer) {
         throw new Error(t.ol.failed_layer("service wmts"));
       }
       
     } else if (options.kind === "wms" || options.type === "wms") {
       var sourceTileWMS = new TileWMSSource({
-          url : options.data.url,
-          params: {
-            "LAYERS": options.data.layers,    // array ?
-            "SERVICE": options.data.format,
-            "VERSION": options.data.version,
-            "STYLES": options.data.stylesName // array ?
-          },
-          projection : options.data.projection || 'EPSG:3857',
-          attributions: ''
+        url : options.data.url,
+        params: {
+          "LAYERS": options.data.layers,    // array ?
+          "SERVICE": options.data.format,
+          "VERSION": options.data.version,
+          "STYLES": options.data.stylesName // array ?
+        },
+        projection : options.data.projection || 'EPSG:3857',
+        attributions: ''
       });
-    
+      
       if (!sourceTileWMS) {
         throw new Error(t.ol.failed_source("service wms"));
       }
-        
+      
       sourceTileWMS._title = options.data.name || options.name;
       sourceTileWMS._description = options.data.description || options.description;
-        
+      
       tileLayer = new TileLayer({
         // minResolution
         // maxResolution
         // extent
         source: sourceTileWMS
       });
-    
+      
       if (!tileLayer) {
         throw new Error(t.ol.failed_layer("service wms"));
       }
-    
+      
       // fonctionnalité pour la gpf ?
       tileLayer.gpGFIparams = {
         queryable : options.data.queryable,
         formats : options.data.gfiFormat
       };
-        
+      
     } else {
       throw new Error(t.ol.failed_source("service non reconnu"));
     }
@@ -405,24 +505,24 @@ const createServiceLayer = async (options) => {
       const projection = getProjection('EPSG:3857');
       tileLayer.setExtent(projection.getExtent());
     }
-      
+    
     // id
     if (tileLayer) {
       tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
     }
-      
+    
     tileLayer.setVisible(getVisible(options.visible));
     tileLayer.setOpacity(getOpacity(options.opacity));
-
+    
     return tileLayer;
   }
-
+  
   if (options.url) {
     const response = await fetch(options.url);
     if (!response.ok) {
       throw new Error(t.ol.failed_source("service non reconnu"));
     }
-
+    
     const data = await response.json();
     return createLayer({
       ...options,
@@ -431,39 +531,42 @@ const createServiceLayer = async (options) => {
       }
     });
   }
-
+  
   if (options.data) {
     return createLayer(options);
   }
 };
 
 /**
- * Creation d'un couche mapbox
- * 
- * INFO
- * On ne gère que les styles de type vector avec des sources de type vector 
- * et des tuiles (tiles).
- * Les autres cas ne sont pas gérés pour le moment (raster, geojson, etc.).
- * 
- * On transmet soit :
- * - une url pour le type external
- * - un fichier de style pour le type internal
- * 
- * Les options
- * @param {*} options
- * @property {*} options.id - uuid de l'API Entrepôt
- * @property {*} options.name
- * @property {*} options.description
- * @property {*} options.format
- * @property {*} options.data | @property {*} options.url
- * @fixme extent à récuperer
- * @todo messages
- */
+* Creation d'un couche mapbox
+* 
+* INFO
+* On ne gère que les styles de type vector avec des sources de type vector 
+* et des tuiles (tiles).
+* Les autres cas ne sont pas gérés pour le moment (raster, geojson, etc.).
+* 
+* On transmet soit :
+* - une url pour le type external
+* - un fichier de style pour le type internal
+* 
+* Les options
+* @param {*} options
+* @property {*} options.id - uuid de l'API Entrepôt
+* @property {*} options.name
+* @property {*} options.description
+* @property {*} options.format - format du fichier (mapbox)
+* @property {*} options.visible - boolean
+* @property {*} options.opacity - float
+* @property {*} options.data | @property {*} options.url
+* @fixme extent à récuperer
+* @todo messages
+* @returns {Promise<VectorTileLayer>} - couche vectorielle
+*/
 const createMapBoxLayer = async (options) => {
-
+  
   const createLayer = (options) => {
     var vectorLayer = null;
-
+    
     var _glStyle = options.data;
     var _glSources = _glStyle.sources;
     var _glSourceId = Object.keys(_glSources)[0]; // first source only !
@@ -474,30 +577,30 @@ const createMapBoxLayer = async (options) => {
       if (!_glTiles) {
         throw new Error("Source 'tiles' uniquement sur le format mapbox !");
       }
-
+      
       var vectorFormat = new MVT({
         featureClass : Feature
       });
-
+      
       var vectorSource = new VectorTileSource({
         state : "loading", // statut
         attributions : "",
         format : vectorFormat,
         urls : _glTiles
       });
-
+      
       vectorSource._title = options.name;
       vectorSource._description = options.description;
-
+      
       vectorLayer = new VectorTileLayer({
         source : vectorSource,
         visible : false,
         declutter : true
       });
-
+      
       vectorLayer.gpResultLayerId = "bookmark:" +  options.format.toLowerCase() + ":" + options.id;
       vectorLayer.styleUrl = options.url; // HACK pour le N&B !
-
+      
       var setStyle = async () => {
         await applyStyle(vectorLayer, _glStyle, { source : _glSourceId });
         vectorLayer.getSource().setState("ready");
@@ -505,7 +608,7 @@ const createMapBoxLayer = async (options) => {
         vectorLayer.setVisible(getVisible(options.visible));
         vectorLayer.setOpacity(getOpacity(options.opacity));
       };
-
+      
       if (vectorLayer.getSource()) {
         setStyle();
       } else {
@@ -516,13 +619,13 @@ const createMapBoxLayer = async (options) => {
     }
     return vectorLayer;
   };
-
+  
   const getStyle = async (url) => {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(t.ol.failed_mapbox("style mapbox"));
     }
-
+    
     const data = await response.json();
     // La réponse est soit
     // - un style (json)
@@ -530,7 +633,7 @@ const createMapBoxLayer = async (options) => {
     if (data && data.sources) {
       return data;
     }
-
+    
     if (data && data.url) {
       const styleResponse = await fetch(data.url);
       if (!styleResponse.ok) {
@@ -538,10 +641,10 @@ const createMapBoxLayer = async (options) => {
       }
       return await styleResponse.json();
     }
-
+    
     throw new Error(t.ol.failed_mapbox("style mapbox"));
   };
-
+  
   if (options.url) {
     const style = await getStyle(options.url);
     return createLayer({
@@ -551,17 +654,47 @@ const createMapBoxLayer = async (options) => {
       }
     });
   }
-
+  
   if (options.data) {
     return createLayer(options);
   }
 };
 
 /**
- * Fonction pour récupérer la visibilité de la couche
- * @param {*} v 
- * @returns boolean
+ * Fonction pour construire un objet Error à partir des détails d'une erreur de chargement de couche
+ * @param {*} details 
+ * @returns objet Error
  */
+const buildError = (details) => {
+  const status = details && typeof details.status === "number" ? details.status : 0;
+  const statusText = details && details.statusText ? details.statusText : "";
+  const type = details && details.type ? details.type : "load";
+  const url = details && details.url ? details.url.split("/").pop().split("?")[0]: "";
+
+  let message = "";
+  if (status && url) {
+    if (status === 404) {
+      message += `Document ${url} introuvable (erreur ${status})`;
+    } else {
+      message += `Impossible de récupérer le document ${url} (erreur ${status})`;
+    }
+  } else if (type === "error") {
+    message += "Impossible de récupérer le document";
+  }
+
+  const error = new Error(message);
+  error.status = status;
+  error.statusText = statusText;
+  error.url = url;
+  error.type = type;
+  return error;
+};
+
+/**
+* Fonction pour récupérer la visibilité de la couche
+* @param {*} v 
+* @returns boolean
+*/
 const getVisible = (v) => {
   var visible = (v === undefined) ? true : v;
   if (typeof visible === "string") {
@@ -577,10 +710,10 @@ const getVisible = (v) => {
 };
 
 /**
- * Fonction pour récupérer l'opacité de la couche
- * @param {*} o 
- * @returns float
- */
+* Fonction pour récupérer l'opacité de la couche
+* @param {*} o 
+* @returns float
+*/
 const getOpacity = (o) => {
   var opacity = (o === undefined) ? 1 : o;
   if (typeof opacity === "string") {
@@ -598,9 +731,77 @@ const getOpacity = (o) => {
   return opacity;
 };
 
+/**
+* Fonction pour transformer le format d'une couche vectorielle
+* @param {*} layer - couche vectorielle (VectorLayer)
+* @param {*} format - format de sortie (kml, gpx, geojson)
+* @param {*} settings - options supplémentaires (defaultStyle, description)
+* @returns {*} - {content: null, ext: null, mimeType: null}
+*/
+const transformVectorLayerFormat = (layer, format, settings) => {
+  var results = {
+    content : null,
+    ext : null,
+    mimeType : null
+  };
+  var options = {
+    defaultStyle : settings && settings.defaultStyle ? settings.defaultStyle : null,
+    extensions : {}
+  };
+  if (settings && settings.description) {
+    // TODO on peut ajouter la description dans les extensions
+  }
+  
+  var ClassName = null;
+  switch (format.toUpperCase()) {
+    case "KML":
+    options.writeStyles = true;
+    options.showPointNames = true;
+    ClassName = new KMLExtended(options);
+    results.mimeType = "application/vnd.google-earth.kml+xml";
+    break;
+    case "GPX":
+    ClassName = new GPXExtended(options);
+    results.mimeType = "application/gpx+xml";
+    break;
+    case "GEOJSON":
+    ClassName = new GeoJSONExtended(options);
+    results.mimeType = "application/geo+json";
+    break;
+    default:
+    break;
+  }
+  
+  if (!ClassName) {
+    throw new Error(`Unable to export: unknown format "${format}".`);
+  }
+  
+  var source = layer && typeof layer.getSource === "function" ? layer.getSource() : null;
+  var features = source && typeof source.getFeatures === "function" ? source.getFeatures() : null;
+  if (!features || features.length === 0) {
+    throw new Error("Unable to export: layer has no features.");
+  }
+  
+  // INFO
+  // par defaut, webmercator ou "EPSG:3857"
+  var content = ClassName.writeFeatures(features, {
+    dataProjection : "EPSG:4326",
+    featureProjection : "EPSG:3857"
+  });
+  
+  if (!content) {
+    throw new Error("Impossible to export : no content !?");
+  }
+  
+  results.content = content;
+  results.ext = format.toLowerCase();
+  return results;
+}
+
 export {
   createVectorLayer,
   createComputeLayer,
   createServiceLayer,
-  createMapBoxLayer
+  createMapBoxLayer,
+  transformVectorLayerFormat
 }

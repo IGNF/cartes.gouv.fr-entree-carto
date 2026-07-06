@@ -40,6 +40,7 @@ var EVENTS = {
     "document:updated",
     "document:deleted",
     "document:exported",
+    "document:synchronized",
     "document:shared",
     "document:restore",
     // others

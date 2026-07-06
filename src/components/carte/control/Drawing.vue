@@ -314,17 +314,18 @@ const onToggleShowVector = (e) => {
         format : drawing.value.getExportFormat(),
         layer : drawing.value.getLayer(),
       });
-      // dissociation de la couche du widget 
-      // pour permettre une autre saisie dans 
-      // une autre couche
-      drawing.value.setLayer();
-      btnExport.value.inputName.value = "";
-      btnExport.value.setFormat(formatByDefault);
-      btnSave.value.setFormat(formatByDefault);
     }
+    // dissociation de la couche du widget 
+    // pour permettre une autre saisie dans 
+    // une autre couche
+    drawing.value.setLayer();
+    btnExport.value.inputName.value = "";
+    btnExport.value.setFormat(formatByDefault);
+    btnSave.value.setFormat(formatByDefault);
   }
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /** 
  * Gestionnaire d'evenement
  * 
@@ -398,6 +399,9 @@ const onSaveVector = (e) => {
     promise = useUpdateDocument(data, emitter, service);
   }
   
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -443,6 +447,11 @@ const onSaveVector = (e) => {
       title: t.drawing.title,
       message: t.drawing.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 

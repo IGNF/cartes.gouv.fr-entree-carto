@@ -53,7 +53,11 @@ let appStore = useAppStore();
 import { useEulerian } from '@/plugins/Eulerian.js';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useModals } from '@/composables/useModals';
+import { ROUTE_NAMES } from '@/router/routeNames';
+import { useRoute } from 'vue-router';
 let modals = useModals();
+const route = useRoute();
+const isEmbedRoute = () => route.name === ROUTE_NAMES.EMBED;
 const eulerian = useEulerian();
 
 const setUrl = (url) => {
@@ -76,7 +80,7 @@ onMounted(() => {
   if (localStorage.getItem(appStore.ns('modals'))) {
     dismissibleModals = JSON.parse(localStorage.getItem(appStore.ns('modals')));
   }
-  if (!dismissibleModals.includes('welcome')) {
+  if (!dismissibleModals.includes('welcome') && !isEmbedRoute()) {
     modals.open('welcome');
   }
 });
