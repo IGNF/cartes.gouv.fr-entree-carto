@@ -3,11 +3,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
-import { shallowRef, markRaw } from 'vue';
-
-import {
-  toLonLat as toLonLatProj,
-} from "ol/proj";
+import { shallowRef } from 'vue';
 
 import {
     SearchEngineAdvanced,
@@ -48,7 +44,6 @@ const advancedSearchEngineOptions = computed(() => {
     return Object.assign({}, props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
 });
 
-// const searchEngineAdvanced = ref(markRaw(new SearchEngineAdvanced(advancedSearchEngineOptions.value)));
 let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
@@ -76,6 +71,15 @@ onUpdated(() => {
   }
 })
 
+// abonnement
+emitter.addEventListener("searchengineadvanced:geolocation:displayed", (e) => {
+  if (searchEngineAdvanced.value) {
+    var coordinates = e.position;
+    var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
+    searchEngineAdvanced.value._createMarker(e.position, info);
+  }
+});
+
 /**
  * Gestionnaire d'evenement sur les abonnements
  */
@@ -101,6 +105,7 @@ const onClickSearchGeolocationOpen = (e) => {
   mapStore.geolocation = e.coordinates.toString();
   // emitter.emit("searchengineadvanced:geolocation:clicked", e.coordinates);
 }
+
 const onClickSearchGeolocationRemove = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationRemove", e);
   // geolocalisation demandée :
