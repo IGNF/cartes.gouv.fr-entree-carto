@@ -67,7 +67,7 @@ function tabIsActive(componentName) {
 
 // abonnement sur la fermeture du catalogue sur un evenement emis
 const emitter = inject('emitter');
-emitter.addEventListener("leftmenu:close", (e) => {
+emitter.addEventListener("leftmenu:close", () => {
   wrapper.value.closeMenu();
 });
 

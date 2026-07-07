@@ -38,7 +38,6 @@ import CatalogManager from './control/CatalogManager.vue';
 import Panoramax from './control/Panoramax.vue';
 
 import { useDomStore } from '@/stores/domStore';
-import { useMapStore } from "@/stores/mapStore";
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin';
@@ -88,7 +87,6 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
-const mapStore = useMapStore();
 const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);

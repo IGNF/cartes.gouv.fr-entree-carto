@@ -10,7 +10,6 @@ import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
-import { useLogger } from 'vue-logger-plugin';
 import { useAppStore } from "@/stores/appStore"
 
 import { fromShare } from "@/features/share";

@@ -13,12 +13,10 @@
 
 <script setup lang="js">
 import { useControlsMenuOptions } from '@/composables/controls';
-import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
 import { useDomStore } from "@/stores/domStore";
 import ControlListElement from './ControlListElement.vue';
 
-const log = useLogger();
 const mapStore = useMapStore();
 const domStore = useDomStore();
 
@@ -74,9 +72,6 @@ const allOptions = computed(() => {
 });
 
 const searchString = ref("");
-function updateSearch(e) {
-  searchString.value = e;
-}
 
 watch(selectedControlsModel, (values) => {
   mapStore.cleanControls();

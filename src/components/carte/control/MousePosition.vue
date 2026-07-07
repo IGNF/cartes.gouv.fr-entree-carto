@@ -1,6 +1,5 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { useLogger } from 'vue-logger-plugin'
 import {
   MousePosition
 } from 'geopf-extensions-openlayers'
@@ -11,9 +10,6 @@ const props = defineProps({
   analytic: Boolean,
   mousePositionOptions: Object
 })
-
-const log = useLogger()
-
 
 const map = inject(props.mapId)
 const mousePosition = ref(new MousePosition(props.mousePositionOptions))

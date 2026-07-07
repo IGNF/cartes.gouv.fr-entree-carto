@@ -3,10 +3,16 @@ import { ContextMenu } from 'geopf-extensions-openlayers';
 import { useMatchMedia } from '@/composables/matchMedia';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  contextMenuOptions: Object
+  contextMenuOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const isSmallScreen = useMatchMedia('SM')
@@ -19,8 +25,8 @@ onMounted(() => {
     map.addControl(contextMenu.value);
     contextMenu.value.contextmenu.on("open", onContextMenuOpen)
     map.on('singleclick', function (evt) {
-    const pixel = evt.pixel;
-      pixel.value =[90, pixel[1]]
+    const p = evt.pixel;
+      pixel.value =[90, p[1]]
     });
   }
 })
@@ -36,7 +42,7 @@ onBeforeUpdate(() => {
 
 const onContextMenuOpen = () => {
   if (isSmallScreen.value) {
-    contextMenu.value.contextmenu.updatePosition([90, pixel[1]])
+    contextMenu.value.contextmenu.updatePosition([90, pixel.value[1]])
   }
 }
 </script>
