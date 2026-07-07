@@ -110,7 +110,9 @@ const onClickSearchGeolocationRemove = (e) => {
   // geolocalisation demandée :
   // on enlève l'information dans le permalien...
   // on passe par le mapStore
-  mapStore.geolocation = "";
+  if (e.feature.get("origin") === "geolocate") {
+    mapStore.geolocation = "";
+  }
   // emitter.emit("searchengine:geolocation:removed");
 }
 
