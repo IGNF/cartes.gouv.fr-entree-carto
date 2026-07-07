@@ -53,7 +53,7 @@ var EVENTS = {
     "layerimport:open:clicked",
     "searchengineadvanced:geolocation:displayed",
     "searchengineadvanced:geolocation:clicked",
-    "searchengine:geolocation:removed",
+    "searchengineadvanced:feature:removed",
     "reporting:open:clicked",
     // edition
     "vector:edit:clicked",

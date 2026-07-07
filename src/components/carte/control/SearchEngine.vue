@@ -55,7 +55,7 @@ onMounted(() => {
     searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
     searchEngineAdvanced.value.on("searchengineadvanced:geolocation:click", onClickSearchGeolocationOpen);
-    searchEngineAdvanced.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
+    searchEngineAdvanced.value.on("searchengineadvanced:feature:remove", onClickSearchGeolocationRemove);
   }
 })
 
@@ -102,8 +102,7 @@ const onClickSearchGeolocationOpen = (e) => {
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
   // on passe en geographique
-  mapStore.geolocation = e.coordinates.toString();
-  // emitter.emit("searchengineadvanced:geolocation:clicked", e.coordinates);
+  mapStore.geolocation = e.coordinates.toString() || e.target.geolocation.getPosition().toString();
 }
 
 const onClickSearchGeolocationRemove = (e) => {
