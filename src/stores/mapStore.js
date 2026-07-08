@@ -200,6 +200,7 @@ export const useMapStore = defineStore('map', () => {
 
   // HACK
   // gestion de la geolocalisation à la lecture du permalien
+  // délai à 500ms pour laisser le temps à la carte de se charger
   setTimeout(() => {
     if (localStorage.getItem(ns('geolocation')) !== "") {
       var coordinates = localStorage.getItem(ns('geolocation')).split(",");
@@ -209,7 +210,7 @@ export const useMapStore = defineStore('map', () => {
       });
     }
   }
-  , 100);
+  , 500);
 
   //////////////////
   // objets simples

@@ -50,12 +50,16 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value);
     /** abonnement au widget */
+
+    /* événements de recherche non implémentés dans le SearchEngineAdvanced
     searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
     searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
     searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
+    */
     searchEngineAdvanced.value.on("searchengineadvanced:geolocation:click", onClickSearchGeolocationOpen);
     searchEngineAdvanced.value.on("searchengineadvanced:feature:remove", onClickSearchGeolocationRemove);
+    searchEngineAdvanced.value.on("searchengineadvanced:popup:close", onPopupClose);
   }
 })
 
@@ -76,7 +80,8 @@ emitter.addEventListener("searchengineadvanced:geolocation:displayed", (e) => {
   if (searchEngineAdvanced.value) {
     var coordinates = e.position;
     var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
-    searchEngineAdvanced.value._createMarker(e.position, info);
+    // on ne se centre pas sur le marker de geolocalisation car le permalien a déjà un paramètre center
+    searchEngineAdvanced.value.createMarker(e.position, info, "geolocate", false);
   }
 });
 
@@ -84,6 +89,7 @@ emitter.addEventListener("searchengineadvanced:geolocation:displayed", (e) => {
  * Gestionnaire d'evenement sur les abonnements
  */
 
+/* événements de recherche non implémentés dans le SearchEngineAdvanced
 const onClickSearch = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearch", e);
 }
@@ -96,13 +102,13 @@ const onClickGeocodeResult = (e) => {
 const onClickSeachByCoordinates = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchByCoordinates", e);
 }
+*/
 const onClickSearchGeolocationOpen = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
   // geolocalisation demandée :
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
-  // on passe en geographique
-  mapStore.geolocation = e.coordinates.toString() || e.target.geolocation.getPosition().toString();
+  mapStore.geolocation = e.coordinates.toString();
 }
 
 const onClickSearchGeolocationRemove = (e) => {
@@ -114,6 +120,15 @@ const onClickSearchGeolocationRemove = (e) => {
     mapStore.geolocation = "";
   }
   // emitter.emit("searchengine:geolocation:removed");
+}
+
+const onPopupClose = (e) => {
+  log.debug("SearchEngineAdvanced - onPopupClose", e);
+  // si la fermeture de la popup ne concerne pas la geolocalisation, on vide le positionnement du localstorage pour ne plus lavoir dans le permalien
+  // utile dans le cas où on fait une recherche de lieu alors que le marker de geolocalisation est toujours présent
+  if (e.evt && e.evt.result.get("origin") !== "geolocate") {
+      mapStore.geolocation = "";
+  }
 }
 
 </script>
