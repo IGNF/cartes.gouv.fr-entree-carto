@@ -91,9 +91,10 @@ class MyServiceAction {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer undefined",
+                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
             },
             mode: "cors",
+            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
             credentials: "same-origin",
             body: JSON.stringify(drawingRequestBody),
         });
@@ -106,9 +107,10 @@ class MyServiceAction {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer undefined",
+                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
             },
             mode: "cors",
+            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
             credentials: "same-origin",
             body: JSON.stringify(requestBody),
         });
