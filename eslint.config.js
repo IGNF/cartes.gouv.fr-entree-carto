@@ -1,5 +1,6 @@
 import pluginVue from 'eslint-plugin-vue'
-import pluginSecurity from 'eslint-plugin-security'
+import securePlugin from 'eslint-plugin-secure-coding'
+import secureBrowserPlugin from 'eslint-plugin-browser-security'
 import globals from 'globals'
 import vueParser from 'vue-eslint-parser'
 import js from '@eslint/js'
@@ -13,7 +14,8 @@ export default [
   js.configs.recommended,
   ...ts.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
-  pluginSecurity.configs.recommended,
+  securePlugin.configs.recommended,
+  secureBrowserPlugin.configs.recommended,
   {
     rules: {
       // override/add rules settings here, such as:
