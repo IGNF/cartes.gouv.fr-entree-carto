@@ -127,8 +127,9 @@ onMounted(() => {
         sourceParams : {crossOrigin : 'anonymous'},
         permalink : props.layerOptions.permalink || false
       };
-      // ajout des options de preload par defaut
-      var preload = {
+      
+      const olParams = {
+        ...options,
         preload : Infinity,
         cacheSize : 1024
       };
@@ -140,7 +141,7 @@ onMounted(() => {
             layer : name,
             configuration : value,
             apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
-            olParams : Object.assign(options, preload)
+            olParams
           });
           break;
         case "WMTS":
@@ -148,7 +149,7 @@ onMounted(() => {
             layer : name,
             configuration : value,
             apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
-            olParams : Object.assign(options, preload)
+            olParams
           });
           break;
         case "TMS":
