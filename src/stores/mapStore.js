@@ -129,12 +129,15 @@ export const useMapStore = defineStore('map', () => {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage
         // elles sont gérées par en mode computed()
+        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "permalink") {
           continue;
         }
+        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "redirect") {
           continue;
         }
+        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "controls") {
           var myControls = params[key].split(",");
           defaultControls.forEach(function(defaultControl) {
@@ -144,6 +147,7 @@ export const useMapStore = defineStore('map', () => {
           })
         }
         var value = params[key];
+        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "layers") {
           // 2 cas :
           // - permalink = yes : remplace la conf
@@ -382,7 +386,7 @@ export const useMapStore = defineStore('map', () => {
       const regex = /\(.*\)/gm;
       const name = l.replace(regex, "");
       return name;
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function cleanLayers() {
     layers.value = "";
@@ -417,21 +421,26 @@ export const useMapStore = defineStore('map', () => {
       for (const key in props) {
         if (Object.prototype.hasOwnProperty.call(props, key)) {
           const value = props[key];
+          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "position") {
             values[0] = value;
           }
+          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "opacity") {
             values[1] = value;
           }
+          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "visible") {
             values[2] = +value; // cast true -> 1 | false -> 0
           }
+          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "grayscale") {
             values[3] = +value; // cast true -> 1 | false -> 0
           }
           // INFO
           // property facultative
           // uniquement pour le TMS
+          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "style") {
             values[4] = value;
           }
@@ -479,12 +488,12 @@ export const useMapStore = defineStore('map', () => {
 
   // Gestion des données utilisateurs : url de partage des favoris
   function getBookmarks () {
-    return bookmarks.value.split(",").filter(name => name != '');
+    return bookmarks.value.split(",").filter(name => name !== '');
   }
   function getBookmarksByKey () {
     return bookmarks.value.split(",").map((b) => {
       return decodeURIComponent(b).split("?")[0];
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function getBookmarksByID () {
     return bookmarks.value.split(",").map((b) => {
@@ -497,7 +506,7 @@ export const useMapStore = defineStore('map', () => {
         id = decodeURIComponent(b).split("?")[0].split(".")[0]; // lien de partage si pas de uuid
       }
       return id;
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function addBookmark (url) {
     if (!url) {
