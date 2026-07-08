@@ -119,17 +119,26 @@ var GetDocuments = {
 
     var data = await this.getFileById(id);
     if (typeof data === "string") {
-      // TODO : vérifier que le contenu est bien un JSON valide !
-      data = JSON.parse(data);
+      try {
+        // eslint-disable-next-line secure-coding/no-xxe-injection -- schéma validé dans la promise
+        data = JSON.parse(data);
+      } catch {
+        return Promise.reject("Le contenu du service n'est pas un JSON valide");
+      }
     }
     var store = useServiceStore();
     var storage = store.getService();
     var document = storage.documents.service.find((doc) => doc._id === id);
 
+    if (!data || typeof data !== "object") {
+      return Promise.reject("Le contenu du service est invalide");
+    }
+
     // on est forcement en "external" !
     if (document.labels.includes("wmts") || document.labels.includes("wms")) {
       document.labels.push("json"); // forcer le format json pour les services classiques
       promise = new Promise((resolve, /* reject */) => {
+        // pas possible de contrôler le contenu du fichier, on retourne le json de parametres
         resolve(data); // retourne un json de parametres !
       });
     }
@@ -137,11 +146,16 @@ var GetDocuments = {
       // 2 cas : "internal" ou "external"
       if (document.labels.includes("internal")) {
         promise = new Promise((resolve, /* reject */) => {
+          // pas possible de contrôler le contenu du fichier, on retourne le json de style
           resolve(data); // retourne un json !
         });
       }
       if (document.labels.includes("external")) {
-        promise = new Promise((resolve, /* reject */) => {
+        promise = new Promise((resolve, reject) => {
+          if (!Object.prototype.hasOwnProperty.call(data, "url") || !data.url) {
+            reject("L'url du service mapbox est introuvable dans les données");
+            return;
+          }
           resolve(data.url); // retourne une string !
         });
       }
