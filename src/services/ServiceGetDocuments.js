@@ -119,6 +119,7 @@ var GetDocuments = {
 
     var data = await this.getFileById(id);
     if (typeof data === "string") {
+      // TODO : vérifier que le contenu est bien un JSON valide !
       data = JSON.parse(data);
     }
     var store = useServiceStore();
@@ -166,9 +167,22 @@ var GetDocuments = {
   getCartes : async function (id) {
     var data = await this.getFileById(id);
     if (typeof data === "string") {
-      data = JSON.parse(data);
+      try {
+        // eslint-disable-next-line secure-coding/no-xxe-injection -- schéma validé dans la promise
+        data = JSON.parse(data);
+      } catch {
+        return Promise.reject("Le contenu des cartes n'est pas un JSON valide");
+      }
     }
-    var promise = new Promise((resolve, /* reject */) => {
+    var promise = new Promise((resolve, reject) => {
+      if (!data || typeof data !== "object") {
+        reject("Le contenu des cartes est invalide");
+        return;
+      }
+      if (!Object.prototype.hasOwnProperty.call(data, "permalink") || !data.permalink) {
+        reject("Le permalink est introuvable dans les données");
+        return;
+      }
       resolve(data.permalink); // retourne une string !
     });
     return promise;
