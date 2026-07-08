@@ -35,5 +35,6 @@
 - Map: Empêche la rotation de la carte (#1148)
 - Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
 - Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
+- Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
  
 #### 🔒 [Sécurité]
