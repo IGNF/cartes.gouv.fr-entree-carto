@@ -139,7 +139,7 @@ onMounted(() => {
           layer = new GeoportalWMS({
             layer : name,
             configuration : value,
-            apiKey : "entree-carto",
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
             olParams : Object.assign(options, preload)
           });
           break;
@@ -147,7 +147,7 @@ onMounted(() => {
           layer = new GeoportalWMTS({
             layer : name,
             configuration : value,
-            apiKey : "entree-carto",
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
             olParams : Object.assign(options, preload)
           });
           break;
@@ -158,7 +158,7 @@ onMounted(() => {
             layer : name,
             style : props.layerOptions.style,
             configuration : value,
-            apiKey : "entree-carto",
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
           }, options);
           break;
         default:
