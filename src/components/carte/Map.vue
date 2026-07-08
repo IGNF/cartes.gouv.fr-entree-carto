@@ -144,7 +144,7 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
-  if (props.mapId == mainMap) {
+  if (props.mapId === mainMap) {
     mapStore.setMap(map)
   }
 })
