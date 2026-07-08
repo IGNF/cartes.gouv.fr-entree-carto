@@ -21,7 +21,7 @@ const eulerian = useEulerian();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const faq = `${useBaseUrl()}/faq`;
+const faq = `${useBaseUrl()}/aide/fr/`;
 const title = "Avant d'effectuer un signalement";
 const icon = 'fr-icon-feedback-line';
 const actions = [

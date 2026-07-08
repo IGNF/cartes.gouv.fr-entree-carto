@@ -104,12 +104,13 @@ var Documents = {
   },
 
   /**
-   * Recherche un document par son uuid dans les documents de type carte
+   * Recherche par son uuid s'il existe un document dans les documents de type carte
+   * Utile pour savoir si un document est utilisé dans un permalien.
    * 
    * @param {*} uuid 
-   * @returns {Boolean} - Vrai si le document est trouvé dans les documents de type carte
+   * @returns {Boolean} - Vrai si le document est trouvé dans un document de type carte
    */
-  findInCarte: function (uuid) {
+  hasDocumentInCarte: function (uuid) {
     var isPresentInBookmarksCarte = false;
     
     const type = "carte";
@@ -132,6 +133,32 @@ var Documents = {
       console.warn(`Le document ${uuid} est présent dans une carte !`);
     }
     return isPresentInBookmarksCarte;
+  },
+
+  /**
+   * Recherche tous les documents de type carte contenant le document avec l'uuid donné
+   * 
+   * @param {*} uuid 
+   * @returns {Array} - Liste des documents de type carte contenant le document
+   */
+  findInCartes: function (uuid) {
+    const type = "carte";
+    if (!this.documents[type] || this.documents[type].length === 0) {
+      console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
+    }
+    
+    var cartesContainingDocument = [];
+    for (let i = 0; i < this.documents[type].length; i++) {
+      const document = this.documents[type][i];
+      if (document.extra && document.extra.bookmarks) {
+        const bookmarks = document.extra.bookmarks;
+        if (bookmarks.includes(uuid)) {
+          cartesContainingDocument.push(document);
+        }
+      }
+    }
+      
+    return cartesContainingDocument;
   },
 
   //////////////////////////
