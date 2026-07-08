@@ -1,22 +1,31 @@
 import pluginVue from 'eslint-plugin-vue'
+import pluginSecurity from 'eslint-plugin-security'
 import globals from 'globals'
 import vueParser from 'vue-eslint-parser'
 import js from '@eslint/js'
 import ts from 'typescript-eslint'
 
 export default [
+  // Ignore global : doit être un objet isolé avec SEULEMENT `ignores`
+  {
+    ignores: ['src/shims-vue.d.ts'],
+  },
   js.configs.recommended,
   ...ts.configs.recommended,
   ...pluginVue.configs['flat/recommended'],
+  pluginSecurity.configs.recommended,
   {
     rules: {
       // override/add rules settings here, such as:
       // 'vue/no-unused-vars': 'error'
       "vue/multi-word-component-names": 'off',
       'no-undef': 'warn',
-      "vue/no-v-html": ["error", {
-        "ignorePattern": "^html"
-    }]
+      "vue/no-v-html": [
+        "error", {
+          "ignorePattern": "^html"
+        }
+      ],
+      "security/detect-object-injection": 'off'
     },
     files: ['**/*.{js,ts,vue}'],
     languageOptions: {

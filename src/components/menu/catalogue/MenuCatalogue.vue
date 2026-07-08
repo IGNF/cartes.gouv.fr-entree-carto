@@ -13,20 +13,26 @@
 </script>
 
 <script setup lang="js">
+import { ref, computed, watch } from 'vue';
+
 import LayerList from '@/components/menu/catalogue/LayerList.vue';
 import DataLayerCatalogue from '@/components/menu/catalogue/DataLayerCatalogue.vue';
 
 import { useSearchInArray } from '@/composables/searchInArray';
+import { useDebounceFn } from '@vueuse/core';
 import { useLogger } from 'vue-logger-plugin';
-import { useMapStore } from "@/stores/mapStore";
-import { useDebounceFn } from '@vueuse/core'
 
 const log = useLogger();
-const store = useMapStore();
 
 const props = defineProps({
-  layers: Object,
-  selectedLayers: Object
+  layers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 /**
@@ -38,8 +44,6 @@ const props = defineProps({
 // liste des configurations des couches du catalogue
 // cf. dataStore.getLayers()
 log.debug(props.layers);
-
-const collapsable = true;
 
 /** @type {Reactif} Etat actualisé de la chaine de caractère à chercher dans la barre de recherche */
 const searchStringModelValue = ref("");
@@ -63,7 +67,7 @@ const searchedLayers = computed(() => {
 /** Liste des couches de fonds */
 const baseLayers = computed(() => {
   return searchedLayers.value.filter((layer) => {
-    if (layer.hasOwnProperty("base") &&  layer.base) {
+    if (Object.prototype.hasOwnProperty.call(layer, "base") &&  layer.base) {
       return layer
     }
   }).sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))
@@ -72,7 +76,7 @@ const baseLayers = computed(() => {
 /** Liste des couches de données */
 const dataLayers = computed(() => {
   return searchedLayers.value.filter((layer) => {
-    if (!layer.hasOwnProperty("base") || !layer.base) {
+    if (!Object.prototype.hasOwnProperty.call(layer, "base") || !layer.base) {
       return layer;
     }
   }).sort((a, b) => a.title.localeCompare(b.title, 'fr', { sensitivity: 'base' }))

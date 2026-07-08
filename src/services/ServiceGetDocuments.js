@@ -56,26 +56,26 @@ var GetDocuments = {
     // 3 cas : "internal" ou "external" ou aucun
     if (document.labels.includes("internal")) {
       none = false;
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((resolve, /* reject */) => {
         resolve(data); // retourne un texte ou json !
       });
     }
     if (document.labels.includes("external")) {
       none = false;
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((resolve, /* reject */) => {
         resolve(data.url); // retourne une string !
       });
     }
     if (none) {
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((resolve, /* reject */) => {
         resolve(data); // retourne un texte ou json !
       });
     }
 
     // exception
     if (!promise) {
-      promise = new Promise((resolve, reject) => {
-        reject("Exception pour récuperer le fichier !!!");
+      promise = new Promise((/* resolve, reject */) => {
+        // reject("Exception pour récuperer le fichier !!!");
       });
     }
     return promise;
@@ -128,26 +128,26 @@ var GetDocuments = {
     // on est forcement en "external" !
     if (document.labels.includes("wmts") || document.labels.includes("wms")) {
       document.labels.push("json"); // forcer le format json pour les services classiques
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((resolve, /* reject */) => {
         resolve(data); // retourne un json de parametres !
       });
     }
     if (document.labels.includes("mapbox")) {
       // 2 cas : "internal" ou "external"
       if (document.labels.includes("internal")) {
-        promise = new Promise((resolve, reject) => {
+        promise = new Promise((resolve, /* reject */) => {
           resolve(data); // retourne un json !
         });
       }
       if (document.labels.includes("external")) {
-        promise = new Promise((resolve, reject) => {
+        promise = new Promise((resolve, /* reject */) => {
           resolve(data.url); // retourne une string !
         });
       }
     }
     // exception
     if (!promise) {
-      promise = new Promise((resolve, reject) => {
+      promise = new Promise((/* resolve, */ reject) => {
         reject("Exception pour récuperer le fichier !!!");
       });
     }
@@ -168,7 +168,7 @@ var GetDocuments = {
     if (typeof data === "string") {
       data = JSON.parse(data);
     }
-    var promise = new Promise((resolve, reject) => {
+    var promise = new Promise((resolve, /* reject */) => {
       resolve(data.permalink); // retourne une string !
     });
     return promise;

@@ -3,7 +3,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
-import { shallowRef, markRaw } from 'vue';
+import { shallowRef } from 'vue';
 
 import {
   toLonLat as toLonLatProj,

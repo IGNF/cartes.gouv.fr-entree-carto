@@ -8,7 +8,7 @@
 export function useSearchInArray(array, search, properties) {
   return array.filter((obj) => {
     if (properties.map(prop => {
-        if (obj.hasOwnProperty(prop) && 
+        if (Object.prototype.hasOwnProperty.call(obj, prop) && 
             obj[prop] &&
             obj[prop].toLowerCase().includes(search?.toLowerCase()))
           return true;

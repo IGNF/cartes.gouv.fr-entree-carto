@@ -2,12 +2,12 @@
  * Gestion des noms de couches internes issus des 
  * - widgets
  * - favoris
- * pour les données de type vecteurs ou computes
+ * pour les données de type vecteurs / computes / mapbox et services
  * 
  * @todo à mettre en place
  */
 var InternalName = {
-  /** Tous les noms d'ID interne possibles */
+  /** Liste de tous les noms d'ID interne possibles */
   names : [
     // computes-isocurve
     "bookmark:compute-isocurve",
@@ -30,8 +30,8 @@ var InternalName = {
     // compute-profil
     "measure:profil",
     "bookmark:compute-profil"
-    // import services
-    // mapbox
+    // TODO import services
+    // TODO mapbox
   ],
   isBookmark : (id) => {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("bookmark"));
@@ -45,10 +45,10 @@ var InternalName = {
   isDrawing : (id) => {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("drawing"));
   },
-  isMapbox : (id) => {
+  isMapbox : (/* id */) => {
     return true;
   },
-  isService : (id) => {
+  isService : (/* id */) => {
     return true;
   },
   

@@ -17,12 +17,21 @@ import { useMatchMedia } from '@/composables/matchMedia';
 const isSmallScreen = useMatchMedia('SM')
 
 const props = defineProps({
-  copiedText: String,
-  label: String,
-  description : String
+  copiedText: {
+    type: String,
+    default: ''
+  },
+  label: {
+    type: String,
+    default: ''
+  },
+  description : {
+    type: String,
+    default: ''
+  }
 });
 const clipboardSource = ref('')
-const { text, copy, copied, isSupported } = useClipboard({ clipboardSource })
+const { copy } = useClipboard({ clipboardSource })
 
 
 const iconBeforeCopy = "ri:file-copy-line"

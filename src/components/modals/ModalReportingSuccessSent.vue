@@ -9,12 +9,10 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
 
 const emitter = inject('emitter');
 const eulerian = useEulerian();
-const router = useRouter();
 
 const title = "Merci de contribuer à améliorer cartes.gouv.fr !";
 const icon = 'fr-icon-feedback-line';

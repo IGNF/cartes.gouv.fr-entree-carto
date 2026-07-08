@@ -9,11 +9,9 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useRouter } from 'vue-router';
 import { useEulerian } from '@/plugins/Eulerian';
 
 const eulerian = useEulerian();
-const router = useRouter();
 
 var delegateCbk = null;
 

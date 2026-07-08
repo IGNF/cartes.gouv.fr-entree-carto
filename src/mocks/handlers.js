@@ -22,7 +22,7 @@ var success = [
   /**
    * obtenir le token
    */
-  http.post('https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token', async ({ request }) => {
+  http.post('https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token', async (/* { request } */) => {
     return HttpResponse.json({
       "access_token": 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiiSldUIiwia2lkIiA6ICJuQTM1bFJNeWVEMnU3WGJDTk9UbTRORjE0eTNoYlBMcGw4TXQtVzR3STJnIn0.eyJleHAiOjE3MzE2MTkwMDksImlhdCI6MTczMTU3NTgwOSwianRpIjoiZWFkOTNjMTAtNTRlMi00NmJkLTkwYjQtNzg5ZDFhYWFlZDJmIiwiaXNzIjoiaHR0cHM6Ly9zc28uZ2VvcGYuZnIvcmVhbG1zL2dlb3BsYXRlZm9ybWUiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMzE3MGViOGYtMWIzNS00ZWZhLWEwZjktY2E0Mjk0OTMzNGY0IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiY2FydGVzLWdvdXYtZGV2IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWdlb3BsYXRlZm9ybWUiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwiZGVsZXRlLWFjY291bnQiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJjbGllbnRJZCI6ImNhcnRlcy1nb3V2LWRldiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJjbGllbnRIb3N0IjoiODIuMTQyLjIzLjQzIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWNhcnRlcy1nb3V2LWRldiIsImdpdmVuX25hbWUiOiIiLCJjbGllbnRBZGRyZXNzIjoiODIuMTQyLjIzLjQzIiwiZmFtaWx5X25hbWUiOiIiLCJlbWFpbCI6InNlcnZpY2UtYWNjb3VudC1jYXJ0ZXMtZ291di1kZXZAbm8tcmVwbHkuZnIifQ.bVsPFTWz0dY2YmEVjUyJY3wcXXUNF4vR48Z03s4pps8zQg-93dR8c_xjfrSVvLKwW8M-ynZAoAzgrjJydlaoA26wgZlfkxJu8zVKwfnQk_TFeYg-liXiv8YoES8JPL5vRPo-Yaz4JSy-vojJfdFTGx9Sw9UI2ZEfPEgxwuUL3OBuCTqVPG4N_imElCbAFYG6y1fgoGmO8FxGpamfOk16ev9-G8hy1J1heVSzeLWzQtQRuL0bMYWFmLaa0cjrvm8Hemp7Rwe5EHQ9McyQ2_Buu6IsWEYRoaqhqHUrn5MyIKnuAJZ3cZmp8bb_Gu0wFPjzrzh0J8rSy3D60ySai7RS2g',
       "expires_in": 43200,
@@ -35,7 +35,7 @@ var success = [
   /**
    * obtenir les informations de l'utilisateur
    */
-  http.get(`${API_URL}/users/me`, async ({ request }) => {
+  http.get(`${API_URL}/users/me`, async (/* { request } */) => {
     return HttpResponse.json({
           "email": "antoine.dupont@ign.fr",
           "creation": "2024-01-10T11:21:28.618783Z",
@@ -519,7 +519,7 @@ export const handlers = {
      * @see keys
      * @todo les autres type, drawing only !
      */
-    http.post(`${API_URL}/users/me/documents`, async ({ request, params }) => {      
+    http.post(`${API_URL}/users/me/documents`, async ({ request, /* params */ }) => {      
       const data = await request.formData();
       console.debug(...data);
       const labels = data.getAll('labels');
@@ -564,16 +564,16 @@ export const handlers = {
       }
       return response;
     }),
-    http.put(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
+    http.put(`${API_URL}/users/me/documents/:id`, async (/* { request, params } */) => {
       // TODO
     }),
-    http.patch(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
-      const { id } = params;
+    http.patch(`${API_URL}/users/me/documents/:id`, async ({ request, /* params */ }) => {
+      // const { id } = params;
 
       const body = await request.json();
       return HttpResponse.json(body);
     }),
-    http.delete(`${API_URL}/users/me/documents/:id`, async ({ request, params }) => {
+    http.delete(`${API_URL}/users/me/documents/:id`, async ({ /* request, */ params }) => {
       const { id } = params;
       
       return new HttpResponse(null, {
@@ -591,19 +591,19 @@ export const handlers = {
     /**
      * echec sur l'obtention du token
      */
-    http.post('https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token', async ({ request }) => {
+    http.post('https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token', async (/* { request } */) => {
       return new HttpResponse(null, { status: 404 })
     }),
     /**
      * echec sur l'obtention des informations de l'utilisateur
      */
-    http.get(`${API_URL}/users/me`, async ({ request }) => {
+    http.get(`${API_URL}/users/me`, async (/* { request } */) => {
       return new HttpResponse(null, { status: 401 })
     }),
     /**
      * echec sur l'obtention des documents de l'utilisateur
      */
-    http.get(`${API_URL}/users/documents`, async ({ request }) => {
+    http.get(`${API_URL}/users/documents`, async (/* { request } */) => {
       return new HttpResponse(null, { status: 401 })
     })
   ]

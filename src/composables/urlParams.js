@@ -2,7 +2,8 @@ import { useUrlSearchParams } from '@vueuse/core';
 import {
   fromLonLat as fromLonLatProj
 } from "ol/proj";
-import { useDefaultControls } from '@/composables/controls';
+// import { useDefaultControls } from '@/composables/controls';
+
 /**
  * Lecture du permalink pour y extraire les informations.
  * La structure est identique au permalien de la carte
