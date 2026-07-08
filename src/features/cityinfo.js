@@ -265,7 +265,8 @@ const _toSlug = (str) => {
   var from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;'";
   var to = "aaaaaeeeeeiiiiooooouuuunc-------";
   for (var i = 0, l = from.length; i < l; i++) {
-    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    // eslint-disable-next-line secure-coding/detect-non-literal-regexp -- caractère unique issu d'une constante interne (from), pas d'entrée externe ; pas de risque ReDoS sur un pattern à 1 caractère
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i)); // eslint-disable-line secure-coding/no-unsafe-regex-construction
   }
 
   str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
