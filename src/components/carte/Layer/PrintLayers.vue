@@ -3,6 +3,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
 import VectorTile from 'ol/layer/VectorTile';
+import { inject, onMounted, nextTick } from 'vue';
 
 import { useMapStore } from '@/stores/mapStore';
 let mapStore = useMapStore();
