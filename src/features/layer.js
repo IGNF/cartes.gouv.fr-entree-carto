@@ -572,7 +572,11 @@ const createMapBoxLayer = async (options) => {
     var _glStyle = options.data;
     var _glSources = _glStyle.sources;
     var _glSourceId = Object.keys(_glSources)[0]; // first source only !
-    var _glSource = _glSources[_glSourceId]; 
+    // Validate against prototype pollution
+    var _glSource = Object.prototype.hasOwnProperty.call(_glSources, _glSourceId) ? _glSources[_glSourceId] : null;
+    if (!_glSource) {
+      throw new Error("Source non trouvée dans le style MapBox !");
+    }
     var _glType = _glSource.type; // type vector only !
     if (_glType === "vector") {
       var _glTiles = _glSource.tiles; // tiles only !

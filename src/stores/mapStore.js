@@ -565,15 +565,15 @@ export const useMapStore = defineStore('map', () => {
     }
   }
   function getBookmarkProperty (url) {
-    var params = {};
+    const params = new Map();
     const index = getBookmarksByKey().indexOf(url.split('?')[0]);
     if (index !== -1) {
       var p = new URLSearchParams(url.split('?')[1]);
       p.forEach((value, key) => {
-        params[key] = value;
+        params.set(key, value);
       });
     } 
-    return params;
+    return Object.fromEntries(params.entries());
   }
 
   function getControls () {

@@ -14,7 +14,7 @@ import { ref, computed, reactive, inject } from 'vue';
 import { useElementSize } from '@vueuse/core'
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
-import Map from '../Map.vue';
+import MapView from '../Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import { printMap } from '@/composables/keys';
 import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
@@ -98,30 +98,60 @@ const printTitle = ref("Ma carte")
 const pageOrientation = ref("portrait");
 const margin = ref(5)
 const paperFormat = ref("A4")
+// Whitelist of valid paper formats to prevent prototype pollution
+const VALID_PAPER_FORMATS = Object.freeze(['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']);
 const paperDimension = computed(() => {
-  var dimension = { 
-    'A0': { width : 841, height: 1189 },
-    'A1' : { width : 594, height: 841 },
-    'A2' : { width : 420, height: 594 },
-    'A3' : { width : 297, height: 420 },
-    'A4' : { width : 210, height: 297 },
-    'A5' : { width : 148, height: 210 },
-    'B4' : { width : 250, height: 353 },
-    'B5' : { width : 176, height: 250 }
+  // Validate format against whitelist to prevent prototype pollution
+  const format = paperFormat.value;
+  if (!VALID_PAPER_FORMATS.includes(format)) {
+    return { width : 210, height : 297 };
+  }
+  let selectedDimension = { width : 210, height : 297 };
+  switch (format) {
+    case 'A0':
+      selectedDimension = { width : 841, height : 1189 };
+      break;
+    case 'A1':
+      selectedDimension = { width : 594, height : 841 };
+      break;
+    case 'A2':
+      selectedDimension = { width : 420, height : 594 };
+      break;
+    case 'A3':
+      selectedDimension = { width : 297, height : 420 };
+      break;
+    case 'A4':
+      selectedDimension = { width : 210, height : 297 };
+      break;
+    case 'A5':
+      selectedDimension = { width : 148, height : 210 };
+      break;
+    case 'B4':
+      selectedDimension = { width : 250, height : 353 };
+      break;
+    case 'B5':
+      selectedDimension = { width : 176, height : 250 };
+      break;
+    default:
+      selectedDimension = { width : 210, height : 297 };
+      break;
   }
   if (pageOrientation.value === "portrait") {
       return {
-      width : dimension[paperFormat.value].width,
-      height : dimension[paperFormat.value].height
+      width : selectedDimension.width,
+      height : selectedDimension.height
     }
   }
   if (pageOrientation.value === "landscape") {
       return {
-      width : dimension[paperFormat.value].height,
-      height : dimension[paperFormat.value].width
+      width : selectedDimension.height,
+      height : selectedDimension.width
     }
   }
-
+  return {
+    width : selectedDimension.width,
+    height : selectedDimension.height
+  }
 })
 
 /**
@@ -490,7 +520,7 @@ const scaleLineOptions = {
           >
             {{ printTitle }}
           </div>
-          <Map
+          <MapView
             v-if="printModalOpened" 
             ref="refMap" 
             class="map"
@@ -506,7 +536,7 @@ const scaleLineOptions = {
               :scale-line-options="scaleLineOptions"
               :map-id="printMap"
             />
-          </Map>
+          </MapView>
         </div>
       </div>    
     </div>

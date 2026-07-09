@@ -47,12 +47,15 @@ const allOptions = computed(() => {
   // ]
   // puis filtrage des items par la recherche
   // puis filtrage si pas d'items
-  let items = Object.entries(
-    opts.reduce((acc, item) => {
-      (acc[item.group] ??= []).push(item);
-      return acc;
-    }, {})
-  ).map(([group, items]) => ({
+  const groupedItems = opts.reduce((acc, item) => {
+    if (!acc.has(item.group)) {
+      acc.set(item.group, []);
+    }
+    acc.get(item.group).push(item);
+    return acc;
+  }, new Map());
+
+  let items = Array.from(groupedItems.entries()).map(([group, items]) => ({
     group,
     items: items.filter(opt => {
       return (
