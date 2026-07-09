@@ -14,7 +14,8 @@
  *    data-fr-js-button-actionee="true">
  * </button>
  */
-export function useActionButtonEulerian(/* element */) {
-  //element.setAttribute("data-fr-analytics-click", element.getAttribute('aria-label') || Math.random());
-  //element.setAttribute("data-fr-js-button-actionee", true);
-};
+export function useActionButtonEulerian(element) {
+  void element; // @fixme désactivé temporairement
+  // element.setAttribute("data-fr-analytics-click", element.getAttribute('aria-label') || Math.random());
+  // element.setAttribute("data-fr-js-button-actionee", true);
+}
