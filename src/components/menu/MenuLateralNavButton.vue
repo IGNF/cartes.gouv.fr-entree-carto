@@ -48,10 +48,10 @@ const icon = props.icon
 const emit = defineEmits(['tabClicked'])
 
 const tabClicked = () => {
-  if(props.side == "left") {
+  if(props.side === "left") {
       closeLeftPanels()
   }
-  if(props.side == "right") {
+  if(props.side === "right") {
     closeRightPanels()
   }
   emit("tabClicked", props.id);
@@ -95,7 +95,7 @@ defineExpose({
 })
 
 onMounted(() => {
-  if (props.id == "MenuCatalogue") {
+  if (props.id === "MenuCatalogue") {
     domStore.setmenuCatalogueButton(button.value)
   }
 })

@@ -76,7 +76,7 @@ function isVectorTileLayer(layer) {
   if (!source) return false;
 
   return typeof source.getTileGrid === 'function' &&
-         layer.service == 'TMS';
+         layer.service === 'TMS';
 }
 
 function cloneLayer(layer) {

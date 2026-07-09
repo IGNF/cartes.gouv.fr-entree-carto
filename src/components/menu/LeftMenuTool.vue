@@ -124,7 +124,7 @@ const emit = defineEmits([
 watch(() => domStore.getleftControlMenu(), (newVal) => {
   leftControls.value = newVal
   leftControls.value?.addEventListener("click", function (e) {
-  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed == "true") {
+  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed === "true") {
     is_expanded.value = false;
   }
 })

@@ -108,13 +108,13 @@ const paperDimension = computed(() => {
     'B4' : { width : 250, height: 353 },
     'B5' : { width : 176, height: 250 }
   }
-  if (pageOrientation.value == "portrait") {
+  if (pageOrientation.value === "portrait") {
       return {
       width : dimension[paperFormat.value].width,
       height : dimension[paperFormat.value].height
     }
   }
-  if (pageOrientation.value == "landscape") {
+  if (pageOrientation.value === "landscape") {
       return {
       width : dimension[paperFormat.value].height,
       height : dimension[paperFormat.value].width

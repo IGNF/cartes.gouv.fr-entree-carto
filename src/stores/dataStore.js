@@ -248,7 +248,7 @@ export const useDataStore = defineStore('data', () => {
 
   function getLayerByTitle(title) {
     return Object.values(m_layers.value).filter((layer) => {
-      if (title && layer.title == title) {
+      if (title && layer.title === title) {
         return layer;
       }
     })
