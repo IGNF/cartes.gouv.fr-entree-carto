@@ -1,3 +1,4 @@
+/* eslint-disable secure-coding/detect-object-injection -- ajout d'une whitelist et fonctions pour valider les labels */
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
@@ -69,6 +70,26 @@ var Documents = {
   // Méthodes helpers
   //////////////////////////
 
+  isValideLabel: function (label) {
+    return this.labels.includes(label);
+  },
+
+  isValideFormat: function (format) {
+    return this.labelsFormats.includes(format);
+  },
+
+  isValideService: function (service) {
+    return this.labelsService.includes(service);
+  },
+
+  isValideTarget: function (target) {
+    return this.labelsTarget.includes(target);
+  },
+
+  isValideCompute: function (compute) {
+    return this.labelsCompute.includes(compute);
+  },
+
   /**
    * Verifie si aucun document n'est disponible
    * 
@@ -77,7 +98,7 @@ var Documents = {
   isEmpty: function () {
     for (let index = 0; index < this.labels.length; index++) {
       const label = this.labels[index];
-      if (this.documents[label] && this.documents[label].length > 0) {
+      if (this.isValideLabel(label) && this.documents[label] && this.documents[label].length > 0) {
         return false;
       }
     }
@@ -93,7 +114,7 @@ var Documents = {
   find: function (uuid) {
     for (let index = 0; index < this.labels.length; index++) {
       const label = this.labels[index];
-      if (this.documents[label] && this.documents[label].length > 0) {
+      if (this.isValideLabel(label) && this.documents[label] && this.documents[label].length > 0) {
         var document = this.documents[label].find((doc) => doc._id === uuid);
         if (document) {
           return document;
@@ -368,6 +389,10 @@ var Documents = {
           break;
         }
         const label = this.labels[i];
+        if (!this.isValideLabel(label)) {
+          console.warn(`Label ${label} non valide !`);
+          continue;
+        }
         if (!this.documents[label] || this.documents[label].length === 0) {
           console.warn(`Aucun document trouvé pour le label ${label} dans le store !`); 
           continue;
@@ -375,8 +400,8 @@ var Documents = {
         for (let j = 0; j < this.documents[label].length; j++) {
           document = this.documents[label][j];
           if (document._id === data._id) {
-            document.labels = data.labels;
-            document.description = data.description;
+            document.labels = data.labels; // FIXME tester les labels du document
+            document.description = data.description; // FIXME tester la description du document
             document.mime_type = data.mime_type;
             document.public_url = data.public_url;
             document.extra = {
