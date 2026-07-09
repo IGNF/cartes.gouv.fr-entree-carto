@@ -1,6 +1,6 @@
 <script setup lang="js">
 
-import { inject, onMounted, onUnmounted } from 'vue';
+import { inject, onMounted, onUnmounted, watch } from 'vue';
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
@@ -44,6 +44,40 @@ const emit = defineEmits(['mounted', 'unmounted']);
 const map = inject(props.mapId);
 var layer = null;
 
+/**
+ * Synchronise les propriétés de la couche avec les options passées en props.
+ */
+const syncLayerWithOptions = () => {
+  if (!layer || !props.layerOptions) {
+    return;
+  }
+
+  const position = Number(props.layerOptions.position);
+  if (!Number.isNaN(position) && position >= 0 && layer.getZIndex && layer.setZIndex) {
+    if (layer.getZIndex() !== position) {
+      layer.setZIndex(position);
+    }
+  }
+
+  if (typeof props.layerOptions.opacity !== "undefined" && layer.setOpacity) {
+    layer.setOpacity(Number(props.layerOptions.opacity));
+  }
+
+  if (typeof props.layerOptions.visible !== "undefined" && layer.setVisible) {
+    layer.setVisible(Boolean(props.layerOptions.visible));
+  }
+
+  if (typeof props.layerOptions.grayscale !== "undefined" && layer.set) {
+    layer.set("grayscale", Boolean(props.layerOptions.grayscale));
+  }
+};
+
+/**
+ * Gère les erreurs d'une couche et effectue le nettoyage si nécessaire.
+ * @param targetLayer La couche cible à surveiller.
+ * @param name Le nom de la couche.
+ * @param type Le type de la couche.
+ */
 const catchErrorAndCleanup = (targetLayer, name, type) => {
   if (!targetLayer) {
     return;
@@ -329,6 +363,23 @@ onMounted(() => {
       });
     });
 })
+
+// INFO : 
+// On surveille les changements de props pour réappliquer les propriétés de la couche
+// Il est possible que le store soit modifié par un permalien sans remonter le composant (mounted),
+// donc on réapplique les propriétés de la couche.
+watch(
+  () => [
+    props.layerOptions?.position,
+    props.layerOptions?.opacity,
+    props.layerOptions?.visible,
+    props.layerOptions?.grayscale
+  ],
+  () => {
+    // Réapplique les propriétés quand un permalien modifie le store sans remonter le composant.
+    syncLayerWithOptions();
+  }
+);
 
 /**
  * @fixme un update sur un import ou drawing supprime le layer !?
