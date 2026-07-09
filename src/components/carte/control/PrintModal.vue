@@ -22,7 +22,7 @@ import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
-const props = defineProps({
+defineProps({
   visibility: Boolean,
 });
 const emitter = inject('emitter');
@@ -210,16 +210,6 @@ const mapMMDimension = computed(() => {
 
 const titleHeightMM = computed(() => {
   return paperDimension.value.height - mapMMDimension.value.height - 2* margin.value
-})
-
-/**
- *  Dimensions de la carte en px 
- */
- const mapPXDimension = computed(() => {
-  return {
-    width : mapMMDimension.value.width / coeffPX2MM,
-    height : mapMMDimension.value.height / coeffPX2MM
-  }
 })
 
 /**

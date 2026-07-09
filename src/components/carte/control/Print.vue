@@ -10,6 +10,7 @@ export default {};
 </script>
 
 <script lang="js" setup>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import PrintModal from './PrintModal.vue';
 import { mainMap } from '@/composables/keys';
 const props = defineProps({
