@@ -2,12 +2,13 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 import { useControlsOptions } from '@/composables/controls';
 
 import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
 });

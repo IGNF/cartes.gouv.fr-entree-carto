@@ -1,12 +1,13 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 import { MeasureAzimuth } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  measureAzimuthOptions: Object
+  measureAzimuthOptions: { type: Object, default: () => ({}) }
 })
 
 

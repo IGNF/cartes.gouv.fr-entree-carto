@@ -1,14 +1,15 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 
 import { GetFeatureInfo } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  getFeatureInfoOptions: Object
+  getFeatureInfoOptions: { type: Object, default: () => ({}) }
 });
 
 const log = useLogger();

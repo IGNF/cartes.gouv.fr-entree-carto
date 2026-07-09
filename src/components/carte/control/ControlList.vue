@@ -5,16 +5,17 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import {
   ControlList
 } from 'geopf-extensions-openlayers';
+import { mainMap } from '@/composables/keys';
 
 import { selectedControls } from '@/composables/mapControls';
 
 const mapStore = useMapStore();
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  controlListOptions: Object
+  controlListOptions: { type: Object, default: () => ({}) }
 });
 
 const map = inject(props.mapId);
