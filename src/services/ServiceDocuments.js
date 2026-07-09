@@ -1,4 +1,5 @@
 /* eslint-disable secure-coding/detect-object-injection -- ajout d'une whitelist et fonctions pour valider les labels */
+
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
@@ -180,6 +181,45 @@ var Documents = {
     }
       
     return cartesContainingDocument;
+  },
+
+  /**
+   * Vérifie si les données de réponse du service sont valides
+   * @param {Object} data - Réponse du service à valider
+   * @returns {Boolean} - Vrai si les données sont valides, faux sinon
+   */
+  isValidDataResponse: function (data) {
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (!data._id || typeof data._id !== "string") {
+      return false;
+    }
+    if (!data.labels || !Array.isArray(data.labels)) {
+      return false;
+    }
+    if (!data.mime_type || typeof data.mime_type !== "string") {
+      return false;
+    }
+    // on peut avoir un document sans description
+    // if (!data.description || typeof data.description !== "string") {
+    //   return false;
+    // }
+    // on peut avoir un document sans extra
+    // if (!data.extra || typeof data.extra !== "object") {
+    //   return false;
+    // }
+    // on peut avoir un document sans public_url
+    // if (!data.public_url || typeof data.public_url !== "string") {
+    //   return false;
+    // }
+    if (!data.creation || typeof data.creation !== "string") {
+      return false;
+    }
+    if (!data.update || typeof data.update !== "string") {
+      return false;
+    }
+    return true;
   },
 
   //////////////////////////
@@ -464,6 +504,8 @@ var Documents = {
       if (type === "application/json") {
         data = await response.json();
       } else {
+        // Pour les autres types de contenu, on retourne le texte brut
+        // car on peut avoir du XML, du GeoJSON, du KML, etc.
         data = await response.text();
       }
       return data;
