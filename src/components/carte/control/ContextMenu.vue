@@ -36,7 +36,7 @@ onBeforeUpdate(() => {
 
 const onContextMenuOpen = () => {
   if (isSmallScreen.value) {
-    contextMenu.value.contextmenu.updatePosition([90, pixel[1]])
+    contextMenu.value.contextmenu.updatePosition([90, pixel.value[1]])
   }
 }
 </script>
