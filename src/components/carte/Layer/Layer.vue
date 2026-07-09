@@ -22,6 +22,9 @@ import {
 import { push } from 'notivue'
 import t from '@/features/translation';
 
+// Use WeakMap to safely store queues per map instance, avoiding prototype pollution
+const mapQueues = new WeakMap();
+
 const props = defineProps({
   layerOptions: {
     type: Object,
@@ -316,9 +319,8 @@ onMounted(() => {
     }
   };
 
-  const queueKey = "__layerAddQueue";
-  const currentQueue = map[queueKey] || Promise.resolve();
-  map[queueKey] = currentQueue
+  const currentQueue = mapQueues.get(map) || Promise.resolve();
+  mapQueues.set(map, currentQueue
     .then(() => enqueueOnMap()) 
     .catch((e) => {
       const name = props.layerOptions.name || props.layerOptions.id || "inconnue";
@@ -328,7 +330,8 @@ onMounted(() => {
         title: t.notification.title,
         message: t.notification.exception_add_layer(name, e.message)
       });
-    });
+    })
+  );
 })
 
 /**
