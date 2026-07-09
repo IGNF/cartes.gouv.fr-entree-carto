@@ -29,29 +29,22 @@ var InternalName = {
     "bookmark:import-geojson",
     // compute-profil
     "measure:profil",
-    "bookmark:compute-profil"
+    "bookmark:compute-profil",
     // TODO import services
     // TODO mapbox
   ],
-  isBookmark : (id) => {
+  isBookmark : function (id) {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("bookmark"));
   },
-  isCompute : (id) => {
+  isCompute : function (id) {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("compute"));
   },
-  isImport : (id) => {
+  isImport : function (id) {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("import"));
   },
-  isDrawing : (id) => {
+  isDrawing : function (id) {
     return (this.names.includes(id.toLowerCase()) && id.toLowerCase().includes("drawing"));
-  },
-  isMapbox : (/* id */) => {
-    return true;
-  },
-  isService : (/* id */) => {
-    return true;
-  },
-  
+  }
 }
 
 export default InternalName;
