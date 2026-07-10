@@ -59,8 +59,11 @@ const syncLayerWithOptions = () => {
     }
   }
 
-  if (typeof props.layerOptions.opacity !== "undefined" && layer.setOpacity) {
-    layer.setOpacity(Number(props.layerOptions.opacity));
+  if (typeof props.layerOptions.opacity !== "undefined" && typeof layer.setOpacity === "function") {
+    const opacity = Number.parseFloat(props.layerOptions.opacity);
+    if (!Number.isNaN(opacity)) {
+      layer.setOpacity(Math.min(1, Math.max(0, opacity)));
+    }
   }
 
   if (typeof props.layerOptions.visible !== "undefined" && typeof layer.setVisible === "function") {
