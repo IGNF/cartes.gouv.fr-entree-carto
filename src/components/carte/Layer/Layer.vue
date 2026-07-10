@@ -63,8 +63,10 @@ const syncLayerWithOptions = () => {
     layer.setOpacity(Number(props.layerOptions.opacity));
   }
 
-  if (typeof props.layerOptions.visible !== "undefined" && layer.setVisible) {
-    layer.setVisible(Boolean(props.layerOptions.visible));
+  if (typeof props.layerOptions.visible !== "undefined" && typeof layer.setVisible === "function") {
+    const v = props.layerOptions.visible;
+    const visible = typeof v === "string" ? (v === "1" || v === "true") : Boolean(v);
+    layer.setVisible(visible);
   }
 
   if (typeof props.layerOptions.grayscale !== "undefined" && typeof layer.set === "function") {
