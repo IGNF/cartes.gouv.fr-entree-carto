@@ -1,6 +1,6 @@
 # Tests
 
-> TODO
+> Mise en place des tests unitaires et de rendus
 
 [Vitest](https://vitest.dev/) et <https://vitest.fr/>
 [playwright](https://playwright.dev/)
@@ -22,50 +22,11 @@ Tests E2E (rendu)
 - <https://playwright.dev/>
 - <https://github.com/MelihAltintas/vue3-openlayers.git>
 
-## Composants à tester
+## Plan de tests
 
-- permalien
-- service
-- favoris
+cf. PLAN.md
 
-## Le permalien
+## CI
 
-- test d'un permalien en url
-- test de creation d'un permalien
-  - ajout / suppression d'une couche du catalogue
-  - ajout / suppression d'une donnée de l'espace personnel
-
-On teste quoi ?
-
-- le localStorage : layers / boormarks / permalink
-- le rendu sur la webapp : snapshots
-
-1. tests unitaires avec share.js
-
-- [x] conversion : document -> url
-- [x] conversion : url -> document
-- [ ] par type de données :
-  - mapbox
-  - vecteurs
-  - service
-  - compute (?)
-
-2. tests unitaires avec permalink.js
-
-- [x] passage url -> store
-- [ ] par type de données
-
-3. tests de rendu
-
-Note :
-> Pour les tests de rendu, il faut monter un serveur
-> Le serveur peut utilser les mocks pour les favoris
-
-- [ ] rendu de la carte
-  - position des couches
-  - visibilité
-  - N&B
-  - opacité
-- [ ] rendu dans le gestionnaire de couches
-  - ordre
-  - nom
+**TODO :**
+> Mise en place des tests sur la CI
