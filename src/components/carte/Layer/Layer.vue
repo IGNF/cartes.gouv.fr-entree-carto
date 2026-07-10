@@ -67,8 +67,10 @@ const syncLayerWithOptions = () => {
     layer.setVisible(Boolean(props.layerOptions.visible));
   }
 
-  if (typeof props.layerOptions.grayscale !== "undefined" && layer.set) {
-    layer.set("grayscale", Boolean(props.layerOptions.grayscale));
+  if (typeof props.layerOptions.grayscale !== "undefined" && typeof layer.set === "function") {
+    const g = props.layerOptions.grayscale;
+    const grayscale = typeof g === "string" ? (g === "1" || g === "true") : Boolean(g);
+    layer.set("grayscale", grayscale);
   }
 };
 
