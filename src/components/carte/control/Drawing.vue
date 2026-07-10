@@ -1,7 +1,20 @@
+<script lang="js">
+  /**
+   * @description
+   * ...
+   * @listens emitter#drawing:open:clicked
+   */
+  export default {
+    name: 'Drawing'
+  };
+</script>
+
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
+import { useServiceStore } from '@/stores/serviceStore';
 
 import { 
   useCreateDocument, 
@@ -15,6 +28,8 @@ import {
 
 import { toShare } from '@/features/share';
 
+import { createVectorLayer } from '@/features/layer';
+
 // lib notification
 import { push } from 'notivue';
 import t from '@/features/translation';
@@ -22,18 +37,31 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 var service = inject('services');
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
+const serviceStore = useServiceStore();
 const log = useLogger();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  drawingOptions: Object
+  drawingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
+
+// INFO
+// variable pour éviter la restauration multiple d'un document temporaire
+// cas d'un event "document:restore" émis plusieurs fois ou avant le montage du composant
+const restoredTemporaryDocument = ref(false);
 
 // bouton d'enregistrement / export du croquis avec un menu
 const formatByDefault = "kml";
@@ -74,18 +102,23 @@ const btnSave = ref(new ButtonExport({
 }));
 
 /** 
+ * @event vector:edit:clicked
+ * @description
  * Gestionnaire d'evenement : abonnement sur "vector:edit:clicked"
  * 
  * Reassocier la couche et l'outil de dessin
  * via le bouton d'edition du gestionnaire de couche
  * (un clic sur l'edition renvoie un event avec la couche associée)
+ * @property {Object} layer - couche à éditer
+ * @property {Object} options - options de la couche
  * @see LayerSwitcher
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
     drawing.value.setCollapsed(false);
     drawing.value.setLayer(e.layer);
-    btnExport.value.inputName.value = e.options.title || "";
+    btnExport.value.setName(e.options.title || "");
+    btnSave.value.setName(e.options.title || "");
   }
   // INFO
   // on sauvegarde / exporte au format natif
@@ -106,7 +139,111 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
   }
 });
 
+/**
+ * @event drawing:open:clicked
+ * @description Evenement pour ouvrir/fermer le controle de dessin
+ * @property {Boolean} open - ouvrir/fermer le controle
+ */
+emitter.addEventListener("drawing:open:clicked", (e) => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(!e.open);
+  }
+});
+
+/**
+ * @event drawing:close
+ * @description Evenement pour fermer le controle de dessin
+ */
+emitter.addEventListener("drawing:close", () => {
+  if (drawing.value) {
+    drawing.value.setCollapsed(true);
+  }
+});
+
+/**
+ * @event document:restore
+ * @description Evenement pour restaurer un document temporaire déclenché 
+ * par la demande de connexion réussie
+ * @property {Object} data - données du document
+ * @property {String} componentName - nom du component qui emet l'event
+ */
+emitter.addEventListener("document:restore", (e) => {
+  log.debug("Restore document !", e);
+  restoreTemporaryDocument(e.data);
+});
+
+const restoreTemporaryDocument = (payload) => {
+  if (!payload || !drawing.value) {
+    return;
+  }
+  if (restoredTemporaryDocument.value) {
+    return;
+  }
+
+  appStore.clearDocumentTemporary();
+
+  createVectorLayer({
+    name : payload.name || "Document restauré",
+    description : payload.description || "Document temporaire restauré depuis une précédente session",
+    type : payload.type || "drawing",
+    format : payload.format || "kml",
+    target : payload.target || "internal",
+    data : payload.content
+  }).then((layer) => {
+    // restaurer le croquis dans le widget puis l'afficher
+    drawing.value.setCollapsed(false);
+    drawing.value.setLayer(layer);
+    btnExport.value.setName(payload.name || "Document restauré");
+    btnExport.value.setFormat(payload.format);
+    btnSave.value.setName(payload.name || "Document restauré");
+    btnSave.value.setFormat(payload.format);
+  }).then(() => {
+    // Le document est restauré dans le widget: 
+    // la reconnexion n'est plus requise.
+    serviceStore.setAuthentificateSyncNeeded(false);
+    restoredTemporaryDocument.value = true;
+  }).then(() => {
+    // et, l'enregistrer définitivement sur l'espace personnel
+    btnSave.value.button.click();
+  }).catch((error) => {
+    console.error(error);
+    push.error({
+      title: t.drawing.title,
+      message: t.drawing.restore_failed
+    });
+  });
+};
+
+const saveTemporaryDocument = (payload) => {
+  if (!payload) {
+    return;
+  }
+  // INFO
+  // si le type n'est pas fourni, on le déduit de l'ID 
+  // de la couche (ex. drawing, import, bookmark...)
+  // mais, la couche doit exister !
+  if (!payload.type && payload.layer) {
+    var id = payload.layer.gpResultLayerId.toLowerCase();
+    var type = id.split(':')[0];
+    payload.type = type.replace("layer", ""); // ex. drawing, import, bookmark...
+  }
+  // stockage temporaire dans le localStorage
+  // car l'utilisateur demande une sauvegarde sans etre authentifié !
+  if (payload.layer) {
+    serviceStore.setAuthentificateSyncNeeded(true);
+    appStore.setDocumentTemporary(JSON.stringify({
+      content : payload.content,
+      name : payload.name,
+      description : payload.description,
+      format : payload.format,
+      target : payload.target,
+      type : payload.type
+    }));
+  }
+};
+
 onMounted(() => {
+  log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
@@ -122,6 +259,17 @@ onMounted(() => {
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
     drawing.value.on("change:collapsed", onToggleShowVector);
+  }
+
+  // Fallback: si l'event a ete emis avant le montage du composant,
+  // le document temporaire reste disponible dans le store.
+  const docTemp = appStore.getDocumentTemporary();
+  if (service.authenticated && docTemp) {
+    try {
+      restoreTemporaryDocument(JSON.parse(docTemp));
+    } catch (error) {
+      console.error(error);
+    }
   }
 })
 
@@ -149,7 +297,6 @@ onBeforeUpdate(() => {
   }
 })
 
-
 /**
  * Gestionnaire d'evenement 
  * 
@@ -159,6 +306,15 @@ onBeforeUpdate(() => {
 const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
+    if (!service.authenticated) {
+      saveTemporaryDocument({
+        content : drawing.value.exportFeatures(),
+        name : drawing.value.getExportName(),
+        description : "",
+        format : drawing.value.getExportFormat(),
+        layer : drawing.value.getLayer(),
+      });
+    }
     // dissociation de la couche du widget 
     // pour permettre une autre saisie dans 
     // une autre couche
@@ -169,6 +325,7 @@ const onToggleShowVector = (e) => {
   }
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /** 
  * Gestionnaire d'evenement
  * 
@@ -196,13 +353,6 @@ const onToggleShowVector = (e) => {
  */
 const onSaveVector = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
-    push.warning({
-      title: t.auth.title,
-      message: t.auth.not_authentificated
-    });
-    return; // pas plus loin...
-  }
 
   var gpID = e.layer.gpResultLayerId.toLowerCase();
   var type = gpID.split(':')[0];
@@ -217,6 +367,23 @@ const onSaveVector = (e) => {
     type : gpID.split(':')[0].replace("layer", "") // ex. drawing, import, bookmark...
   };
 
+  var bSaveDocumentTemporary = false;
+  // notification d'une authentification nécessaire
+  if (!service.authenticated) {
+    bSaveDocumentTemporary = true;
+    push.warning({
+      title: t.auth.title,
+      message: t.auth.not_authentificated
+    });
+  }
+  
+  // stockage temporaire dans le localStorage
+  // car l'utilisateur demande une sauvegarde sans etre authentifié !
+  if (bSaveDocumentTemporary) {
+    saveTemporaryDocument(data);
+    return; // pas plus loin...
+  }
+
   var promise;
   if (type !== "bookmark") {
     promise = useCreateDocument(data, emitter, service);
@@ -226,32 +393,46 @@ const onSaveVector = (e) => {
     // - un uuid 
     // - le type
     var uuid = gpID.split(':')[2];
-    var type = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
-    data.type = type;
+    var soustype = gpID.split(':')[1].split('-')[0]; // ex. drawing-kml, import-gpx, ...
+    data.type = soustype;
     data.uuid = uuid;
     promise = useUpdateDocument(data, emitter, service);
   }
   
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { 
-        opacity: data.layer.get('opacity'), 
-        visible: data.layer.get('visible'),
-        grayscale: data.layer.get('grayscale'),
-        stop: 1 // HACK !
-      });
+      var url = null;
       // nouvelle donnée à ajouter ou mise à jour au permalien
       if (o.action === "added") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale'),
+          stop: 1 // HACK croquis déjà présent sur la carte via le widget !
+        });
         mapStore.addBookmark(url);
       }
       else if (o.action === "updated") {
+        url = toShare(document, { 
+          opacity: data.layer.get('opacity'), 
+          visible: data.layer.get('visible'),
+          grayscale: data.layer.get('grayscale')
+        });
         mapStore.updateBookmark(url);
       } else {
         throw new Error("Action not yet implemented !");
       }
     }
+  })
+  .then(() => {
+    // mise à jour du titre de la couche 
+    // ceci déclenche un evenement pour le gestionnaire de couche
+    data.layer.set('title', data.name);
   })
   .then(() => {
     // notification
@@ -266,6 +447,11 @@ const onSaveVector = (e) => {
       title: t.drawing.title,
       message: t.drawing.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
@@ -276,31 +462,41 @@ const onSaveVector = (e) => {
  * 
  * @param {Object} e
  */
-const onExportVector = (e) => {}
+const onExportVector = (e) => {
+  log.debug(e);
+  // rien de particulier pour l'instant
+}
 
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+// gp-label-div/gp-styling-div sont les sous-panel de "annoter la carte"
+// positionne au même endroit qu'un panel de gauche
 .ol-overlay-container:has(.gp-label-div),
 .ol-overlay-container:has(.gp-styling-div) {
-  transform: translate(62px, 79px) !important;
-}
+  z-index: 4;
+  transform: none !important;
+  top: $gap;
+  left: $widget-panel-x;
 
-@media (max-width: 627px) and (min-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 144px) !important;
+  @include max(sm) {
+    top: 0;
+    left: 0;
+
+    .gp-label-div,
+    .gp-styling-div {
+      width: 100vw;
+    }
   }
 }
-
-@media (max-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 235px) !important;
-  }
+.gp-label-div,
+.gp-styling-div {
+  transform: none;
 }
 </style>

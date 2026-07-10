@@ -47,7 +47,7 @@ export const toShare = (document, params) => {
 
   var url = null;
   if (document.public_url) {
-    var url = document.public_url;
+    url = document.public_url;
     var p = new URLSearchParams();
     p.append("id", document._id);
     p.append("name", document.name);

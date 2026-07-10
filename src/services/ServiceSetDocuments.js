@@ -116,21 +116,21 @@ var SetDocuments = {
       formData.append("description", this.sliceText(obj.description, 255));
 
       const labels = [
-        this.tag, 
+        this.tag, // ex. cartes.gouv.fr
         obj.type, 
         this.labelsFormats.find((e) => obj.format.toLowerCase().includes(e)),
         this.labelsTarget.find((e) => obj.target.toLowerCase().includes(e))
       ];
       if (obj.kind) {
-        var value = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
-        if (value) {
-          labels.push(value);
+        var valueKind = this.labelsService.find((e) => obj.kind.toLowerCase().includes(e));
+        if (valueKind) {
+          labels.push(valueKind);
         }
       }
       if (obj.compute) {
-        var value = this.labelsCompute.find((e) => obj.compute.toLowerCase().includes(e));
-        if (value) {
-          labels.push(value);
+        var valueCompute = this.labelsCompute.find((e) => obj.compute.toLowerCase().includes(e));
+        if (valueCompute) {
+          labels.push(valueCompute);
         }
       }
       formData.append("labels", labels.join(","));
@@ -172,7 +172,7 @@ var SetDocuments = {
       
       if (response.status !== 200 && response.status !== 201) {
         // ERROR !
-        throw data;
+        throw new Error(`Le document n'a pas été enregistré !`, { cause: data });
       }
 
       // enregistrer la réponse
@@ -249,8 +249,19 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
@@ -285,6 +296,9 @@ var SetDocuments = {
    * @param {*} obj
    * @property {String} obj.uuid - ...
    * @property {String} obj.type - drawing, import, ...
+   * @property {Object} obj.extra - ...
+   * @property {String} obj.name - ...
+   * @property {String} obj.description - ...
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    * @param {*} obj 
    */
@@ -295,7 +309,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -303,19 +317,30 @@ var SetDocuments = {
         // ERROR !
         throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
       }
-      // construction du body
+      // construction du body en evitant d'envoyer des champs vides 
+      // et d'ecraser les champs existants dans extras
       var body = {};
-      body.extra = obj.extra; // FIXME à verifier !?
-      body.name = obj.name;
-      body.description = obj.description;
-  
-      // TODO labels pour target et format !
+      if (obj.extra) {
+        // si existe déjà dans le document, on fusionne les champs
+        if (this.documents[obj.type][idx].extra) {
+          body.extra = { ...this.documents[obj.type][idx].extra, ...obj.extra };
+        } else {
+          body.extra = obj.extra;
+        }
+      }
+      if (obj.name) {
+        body.name = obj.name;
+      }
+      if (obj.description) {
+        body.description = obj.description;
+      }
   
       var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
@@ -323,15 +348,26 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();
@@ -342,6 +378,91 @@ var SetDocuments = {
       };
     } catch (error) {
       console.error("Erreur dans la mise à jour des métadonnées du document :", error);
+      this.throwError(error);
+    }
+  },
+
+  /**
+   * Mettre à jour les labels d'un document
+   * 
+   * Appels de l'API Entrepôt :
+   * - PATCH /users/me/documents/{document}
+   * 
+   * Actions :
+   * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
+   * - retourner le UUID et le type d'action
+   * 
+   * @example
+   * ...
+   * 
+   * @param {*} obj 
+   * @property {String} obj.uuid - ...
+   * @property {String} obj.type - drawing, import, ...
+   * @property {Array} obj.labels - tableau de labels à ajouter
+   * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
+   */
+  updateLabelsDocument : async function (obj) {
+    if (this.isPending()) {
+      // éviter les appels concurrents  
+      return Promise.reject(new Error("Une requête est déjà en cours, veuillez réessayer plus tard."));
+    }
+
+    try {
+      let uuid = obj.uuid;
+  
+      // recherche du document
+      var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
+      if (idx === -1) {
+        // ERROR !
+        throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+      }
+      // Pour eviter que cette liste n'ecrase les labels existants,
+      // on doit d'abord les récuperer, puis les fusionner avec les nouveaux labels
+      // Attention, les labels doivent être disponibles dans le document, 
+      // sinon on ne peut pas les fusionner
+      const existingLabels = this.documents[obj.type][idx].labels;
+      if (!existingLabels || !Array.isArray(existingLabels)) {
+        // ERROR !
+        throw new Error(`Le document ${uuid} n'a pas de labels existants !`);
+      }
+      const updatedLabels = [...new Set([...existingLabels, ...obj.labels])]; // Fusionner et supprimer les doublons
+
+      // construction du body
+      var body = {};
+      body.labels = updatedLabels;
+  
+      var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+  
+      var data = await response.json();
+      
+      if (response.status !== 200) {
+        // ERROR !
+        throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, { cause: data });
+      }
+  
+      // enregistrer la réponse
+      this.documents[obj.type][idx] = data;
+  
+      // uuid
+      uuid = data._id;
+  
+      // mise à jour du store
+      this.saveStore();
+      
+      return {
+        uuid : uuid,
+        action : "updated"
+      };
+    } catch (error) {
+      console.error("Erreur dans la mise à jour des labels du document :", error);
       this.throwError(error);
     }
   },
@@ -372,7 +493,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -385,7 +506,8 @@ var SetDocuments = {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ public_url : true })
       });
@@ -393,15 +515,26 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été partagé !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();
@@ -450,7 +583,7 @@ var SetDocuments = {
     }
 
     try {
-      var uuid = obj.uuid;
+      let uuid = obj.uuid;
   
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
@@ -467,7 +600,8 @@ var SetDocuments = {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
-          "X-Requested-With" : "XMLHttpRequest"
+          "X-Requested-With" : "XMLHttpRequest",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
@@ -475,15 +609,26 @@ var SetDocuments = {
       var data = await response.json();
       
       if (response.status !== 200 && response.status !== 201) {
-        // ERROR !
-        throw data;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, data, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, data, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été renommé !`, {
+          cause: { status: response.status, data }
+        });
       }
   
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
       // uuid
-      var uuid = data._id;
+      uuid = data._id;
   
       // mise à jour du store
       this.saveStore();
@@ -507,6 +652,8 @@ var SetDocuments = {
    * Actions :
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
+   * - vérifier si le document supprimé est encore présent dans un document de type carte,
+   *  si oui, on précise un message d'avertissement
    * 
    * @example
    * curl -X 'DELETE' \
@@ -536,8 +683,19 @@ var SetDocuments = {
       });
   
       if (response.status !== 204) {
-        // ERROR !
-        throw response;
+        if (response.status === 404) {
+          throw new Error(`Le document ${uuid} n'existe plus sur le serveur.`, {
+            cause: { status: response.status, response, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        if (response.status === 409 || response.status === 412) {
+          throw new Error(`Le document ${uuid} est en conflit de synchronisation.`, {
+            cause: { status: response.status, response, code: "DOC_VERSION_CONFLICT" }
+          });
+        }
+        throw new Error(`Le document ${uuid} n'a pas été supprimé !`, {
+          cause: { status: response.status, response }
+        });
       }
   
       // supprimer la réponse
@@ -551,9 +709,16 @@ var SetDocuments = {
       // mise à jour du store
       this.saveStore();
   
+      // on verifie si le document supprimé est encore present dans un document de type carte,
+      // si oui, on precise un message d'avertissement
+      var isPresentInBookmarksCarte = this.hasDocumentInCarte(uuid);
+      
       return {
         uuid : uuid,
-        action : "deleted"
+        action : "deleted",
+        extra : {
+          isPresentInBookmarksCarte : isPresentInBookmarksCarte
+        }
       };
     } catch (error) {
       console.error("Erreur dans la suppression du document :", error);
@@ -595,7 +760,9 @@ var SetDocuments = {
     var content = await this.getFileById(uuid);
     if (!content) {
       // ERROR !
-      throw new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      var error = new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      console.error("Erreur dans l'export du document :", error);
+      this.throwError(error);
     }
     return {
       uuid : uuid,

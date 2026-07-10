@@ -63,10 +63,21 @@ var Users = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
-      var data = await response.json();
-      this.user = data;
-      
-      this.saveStore();
+
+      var data = null;
+      if (response.status === 200) {
+        data = await response.json();
+        this.user = data;
+        
+        this.saveStore();
+      } else if (response.status === 401 || response.status === 403) {
+        this.user = {};
+        this.authenticated = false;
+        this.saveStore();
+        return null;
+      } else {
+        throw new Error(`Unexpected response status for /users/me: ${response.status}`);
+      }
   
       return data;
     } catch (error) {

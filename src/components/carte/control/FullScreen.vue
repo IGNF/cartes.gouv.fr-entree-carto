@@ -32,7 +32,14 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style></style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.ol-custom-full-screen .gpf-btn-icon {
+  width: $widget-btn-size;
+  height: $widget-btn-size;
+}
+</style>

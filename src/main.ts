@@ -2,21 +2,26 @@ import '@gouvfr/dsfr/dist/core/core.main.min.css'
 import '@gouvfr/dsfr/dist/component/component.main.min.css'
 import '@gouvfr/dsfr/dist/utility/utility.main.min.css'
 import '@gouvminint/vue-dsfr/styles'
+import 'cartes.gouv.fr-vue-components/dist/index.css'
 
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 
 import 'notivue/notification.css'
 import 'notivue/animations.css'
 
+// chargement des CSS de la carte et des extensions
+import "ol/ol.css";
+import "geopf-extensions-openlayers/css/Dsfr.css";
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
 // plugin local
-import { createEulerian } from './plugins/Eulerian'
-import { createServices } from './plugins/Services'
-import { createBusEvent } from './plugins/BusEvent'
+import { createEulerian } from './plugins/Eulerian.js'
+import { createServices } from './plugins/Services.js'
+import { createBusEvent } from './plugins/BusEvent.js'
 
-// library notificaiton
+// library notification
 import { createNotivue } from 'notivue'
 
 import { storePlugin } from 'pinia-plugin-store'
@@ -24,7 +29,9 @@ import { storePlugin } from 'pinia-plugin-store'
 import App from './App.vue'
 import router from './router/index'
 
-import './main.css'
+import { registeredIconCollections } from './iconscustom'
+
+registeredIconCollections()
 
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
@@ -62,7 +69,6 @@ const services = createServices(storage ? JSON.parse(storage).connexion : {})
 const eulerian = createEulerian({
   verbose : !isProduction, // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
-  isActionEnabled: "reduce", // on limite le tracking uniquement sur les elements "data-fr-analytics-action"
   site: {
     environment: isProduction ? "production" : "development",
     entity: "IGN"
@@ -79,12 +85,12 @@ const pinia = createPinia()
 
 const notivue = createNotivue({
   position: 'bottom-center',
-  limit: 10,
+  limit: 3,
   enqueue: true,
   avoidDuplicates: false,
   notifications: {
     global: {
-      duration: 3000
+      duration: 2000
     }
   }
 })
@@ -104,10 +110,12 @@ app.use(pinia)
 app.use(router)
 app.use(logger)
 app.use(eulerian)
-app.use(services)
 app.use(notivue)
 app.use(bus)
+app.use(services)
 
-waitingPrepareApp().then(() => {
+waitingPrepareApp().then(async () => {
+  // Ensure initial route is fully resolved before first render.
+  await router.isReady()
   app.mount('#app')
 })

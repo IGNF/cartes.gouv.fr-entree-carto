@@ -11,26 +11,33 @@
   };
 </script>
 <script setup lang="js">
-
-// chargement des CSS de la carte et des extensions
-import "ol/ol.css";
-import "geopf-extensions-openlayers/css/Dsfr.css";
+import { nextTick } from "vue";
 
 import Map from '@/components/carte/Map.vue'
-import View from '@/components/carte/View.vue'
 import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
-import { useMapStore } from "@/stores/mapStore"
+import { useMapStore } from "@/stores/mapStore";
 import { mainMap } from "@/composables/keys"
+import { useLogger } from "vue-logger-plugin";
 
 const props = defineProps({
-  selectedControls : Array,
-  selectedLayers : Object,
-  selectedBookmarks : Object
+  selectedControls: {
+    type: Array,
+    default: () => []
+  },
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const mapStore = useMapStore()
+const log = useLogger()
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
@@ -50,6 +57,43 @@ const refMap = ref(null);
 const mapIsReady = computed(() => {
   return (refMap.value && refMap.value.mapRef);
 });
+
+
+const hasInitialRecenter = ref(false);
+
+// INFO
+// On écoute l'événement "ready" émis par le composant Layers lorsque 
+// la dernière couche est montée.
+const onLayersReady = () => {
+  if (hasInitialRecenter.value) {
+    return;
+  }
+
+  nextTick(() => {
+    initialize();
+    hasInitialRecenter.value = true;
+  });
+};
+
+const initialize = () => {
+  const map = mapStore.getMap();
+  if (!map) {
+    return;
+  }
+
+  const view = map.getView();
+  if (!view) {
+    return;
+  }
+
+  // actions à faire une fois que la carte est prête 
+  // et que les couches sont montées !
+}
+
+onMounted(() => {
+  log.debug("Carto component mounted") 
+})
+
 </script>
 
 <template>
@@ -57,24 +101,21 @@ const mapIsReady = computed(() => {
     ref="refMap"
     class="map"
     :map-id="mainMap"
+    :center="mapStore.center"
+    :zoom="mapStore.zoom"
   >
-    <!-- Initialisation de la vue -->
-    <View
-      :map-id="mainMap"
-      :center="mapStore.center"
-      :zoom="mapStore.zoom"
-    />
     <!-- Composant pour selectionner les widgets à afficher sur la carte -->
     <Controls
       v-if="mapIsReady"
-      :control-options="props.selectedControls"
       :map-id="mainMap"
+      :control-options="props.selectedControls"
     />
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers
       :map-id="mainMap"
       :selected-layers="props.selectedLayers"
       :selected-bookmarks="props.selectedBookmarks"
+      @ready="onLayersReady"
     />
   </Map>
 </template>

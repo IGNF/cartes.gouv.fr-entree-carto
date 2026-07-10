@@ -2,6 +2,11 @@ let loadCount = 0;
 const fallbackTimeouts = new Set();
 const fallbackDelay = 5000; // délai maximum pour un "loadend" naturel
 
+/**
+ * Le gestionnaire de chargement de la carte
+ * 
+ * @param {*} map 
+ */
 export const mapLoader = (map) => {
   function startLoading() {
     const target = map.getTargetElement();

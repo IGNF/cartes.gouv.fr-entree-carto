@@ -1,6 +1,9 @@
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
+// nombre de documents à récupérer par page lors de la pagination
+const LIMIT_PER_PAGE = 50;
+
 /**
  * @description 
  * Classe de service de gestion des documents utilisateurs
@@ -17,7 +20,6 @@ import SetDocuments from "./ServiceSetDocuments";
  * Documents.documents;
  * ...
  */
-
 var Documents = {
   /**
    * Label obligatoire pour les documents du Portail
@@ -101,6 +103,64 @@ var Documents = {
     return null;
   },
 
+  /**
+   * Recherche par son uuid s'il existe un document dans les documents de type carte
+   * Utile pour savoir si un document est utilisé dans un permalien.
+   * 
+   * @param {*} uuid 
+   * @returns {Boolean} - Vrai si le document est trouvé dans un document de type carte
+   */
+  hasDocumentInCarte: function (uuid) {
+    var isPresentInBookmarksCarte = false;
+    
+    const type = "carte";
+    if (!this.documents[type] || this.documents[type].length === 0) {
+      console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
+    }
+    
+    for (let i = 0; i < this.documents[type].length; i++) {
+      const document = this.documents[type][i];
+      if (document.extra && document.extra.bookmarks) {
+        const bookmarks = document.extra.bookmarks;
+        if (bookmarks.includes(uuid)) {
+          isPresentInBookmarksCarte = true;
+          break;
+        }
+      }
+    }
+  
+    if (isPresentInBookmarksCarte) {
+      console.warn(`Le document ${uuid} est présent dans une carte !`);
+    }
+    return isPresentInBookmarksCarte;
+  },
+
+  /**
+   * Recherche tous les documents de type carte contenant le document avec l'uuid donné
+   * 
+   * @param {*} uuid 
+   * @returns {Array} - Liste des documents de type carte contenant le document
+   */
+  findInCartes: function (uuid) {
+    const type = "carte";
+    if (!this.documents[type] || this.documents[type].length === 0) {
+      console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
+    }
+    
+    var cartesContainingDocument = [];
+    for (let i = 0; i < this.documents[type].length; i++) {
+      const document = this.documents[type][i];
+      if (document.extra && document.extra.bookmarks) {
+        const bookmarks = document.extra.bookmarks;
+        if (bookmarks.includes(uuid)) {
+          cartesContainingDocument.push(document);
+        }
+      }
+    }
+      
+    return cartesContainingDocument;
+  },
+
   //////////////////////////
   // Méthodes de service
   //////////////////////////
@@ -129,10 +189,9 @@ var Documents = {
   /**
    * Obtenir la liste des documents filtrée
    * 
-   * @todo pagination des resultats !
    * @example
    * curl -X 'GET' \
-   * 'https://data.geopf.fr/api/users/me/documents?owned=true&shared=false&labels=cartes.gouv.fr&page=1&limit=10' \
+   * 'https://data.geopf.fr/api/users/me/documents?fields=name&fields=size&fields=description&fields=extra&fields=labels&fields=public_url&fields=mime_type&owned=true&shared=false&labels=cartes.gouv.fr&labels=carte&page=1&limit=10' \
    * -H 'accept: application/json' \
    * -H 'Authorization: Bearer ....
    * 
@@ -144,14 +203,85 @@ var Documents = {
       return Promise.reject("Label filter not allowed !");
     }
 
+    const emitter = this.getEmitter ? this.getEmitter() : null;
+
+    try {
+      var page = 1;
+      var limit = LIMIT_PER_PAGE;
+      var data = [];
+      var total = null;
+
+      while (true) {
+        var response = await this._getDocumentsByLabelPerPage(label, page, limit);
+        data = data.concat(response.data);
+
+        // On récupère le total à partir du header Content-Range
+        if (Number.isFinite(response.total)) {
+          total = response.total;
+        }
+
+        // Si aucune donnée n'est retournée, on arrête la pagination
+        if (response.data.length === 0) {
+          break;
+        }
+
+        // Si le total est connu et que nous avons récupéré tous les documents, on arrête la pagination
+        if (Number.isFinite(total) && data.length >= total) {
+          break;
+        }
+
+        // Fallback si le header n'est pas exposé/correct.
+        if (!Number.isFinite(total) && response.data.length < limit) {
+          break;
+        }
+
+        // On passe à la page suivante
+        page += 1;
+      }
+
+      this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, "fr", { sensitivity: "base" }));
+
+      this.saveStore();
+  
+      if (emitter) {
+        emitter.dispatchEvent("service:documents:completed", {
+          label : label,
+          data : data,
+          total : total
+        });
+      }
+
+      return data;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
+      this.throwError(error);
+    } finally {
+      this.stopPending();
+    }
+  },
+
+  /**
+   * Obtenir la liste des documents pour un label donné, paginée
+   * @param {*} label 
+   * @param {*} page 
+   * @param {*} limit 
+   * @returns {Promise} - Liste des documents pour un label donné, paginée
+   * @private
+   */
+  _getDocumentsByLabelPerPage: async function (label, page = 1, limit = LIMIT_PER_PAGE) {
+    if (!this.labels.includes(label)) {
+      return Promise.reject("Label filter not allowed !");
+    }
+
     try {
       var params = [
         "owned=true",
         "shared=false",
-        "page=1",
-        "limit=100"
+        `page=${page}`,
+        `limit=${limit}`
       ];
       var kvp = `${params.join('&')}&labels=${this.tag}&labels=${label}`;
+      kvp += "&fields=name&fields=description&fields=extra&fields=labels&fields=public_url&fields=mime_type";
       var response = await this.getFetch()(`${this.api}/users/me/documents?${kvp}`, {
         method: 'GET',
         headers: {
@@ -159,17 +289,29 @@ var Documents = {
         }
       });
       var data = await response.json();
-      this.documents[label] = data;
-  
-      this.saveStore();
-  
-      return data;
+      var contentRange = response.headers.get("Content-Range") || response.headers.get("content-range");
+      var total = null;
+
+      if (contentRange) {
+        var match = contentRange.match(/^(\d+)-(\d+)\/(\d+|\*)$/);
+        if (match && match[3] !== "*") {
+          total = Number.parseInt(match[3], 10);
+        }
+      }
+
+      return {
+        data,
+        total,
+        contentRange
+      };
     } catch (error) {
       console.error(`Erreur lors de la récupération des documents pour le label ${label} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   },
-
+  
   /**
    * Obtenir des informations sur le document
    * 
@@ -192,6 +334,18 @@ var Documents = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
+
+      if (response.status !== 200) {
+        if (response.status === 404) {
+          throw new Error(`Le document (${id}) n'existe plus sur le serveur.`, {
+            cause: { status: response.status, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        throw new Error(`Erreur HTTP lors de la récupération du document (${id}).`, {
+          cause: { status: response.status }
+        });
+      }
+
       var data = await response.json();
   
       // on ajoute des informations utiles sous forme de key/value
@@ -214,6 +368,10 @@ var Documents = {
           break;
         }
         const label = this.labels[i];
+        if (!this.documents[label] || this.documents[label].length === 0) {
+          console.warn(`Aucun document trouvé pour le label ${label} dans le store !`); 
+          continue;
+        }
         for (let j = 0; j < this.documents[label].length; j++) {
           document = this.documents[label][j];
           if (document._id === data._id) {
@@ -241,6 +399,8 @@ var Documents = {
     } catch (error) {
       console.error(`Erreur lors de la récupération du document avec l'id ${id} :`, error);
       this.throwError(error);
+    } finally {
+      this.stopPending();
     }
   },
 
@@ -257,10 +417,23 @@ var Documents = {
     try {
       var response = await this.getFetch()(`${this.api}/users/me/documents/${id}/file`, {
         method: 'GET',
+        cache: "no-cache",
         headers: {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
+
+      if (response.status !== 200) {
+        if (response.status === 404) {
+          throw new Error(`Le fichier du document (${id}) n'existe plus sur le serveur.`, {
+            cause: { status: response.status, code: "DOC_DELETED_REMOTELY" }
+          });
+        }
+        throw new Error(`Erreur HTTP lors de la récupération du fichier (${id}).`, {
+          cause: { status: response.status }
+        });
+      }
+
       var type = response.headers.get("content-type");
       var data = null;
       if (type === "application/json") {

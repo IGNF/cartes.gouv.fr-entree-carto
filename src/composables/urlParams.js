@@ -2,7 +2,7 @@ import { useUrlSearchParams } from '@vueuse/core';
 import {
   fromLonLat as fromLonLatProj
 } from "ol/proj";
-
+import { useDefaultControls } from '@/composables/controls';
 /**
  * Lecture du permalink pour y extraire les informations.
  * La structure est identique au permalien de la carte
@@ -14,6 +14,9 @@ import {
  * - bookmarks : ...
  * - controls : ...
  * - zoom : ...
+ * - geolocation : ...
+ * - permalink : yes | no
+ * - redirect : url de redirection
  * 
  * @example
  * http://localhost:5173/cartes.gouv.fr-entree-carto/embed?
@@ -45,8 +48,8 @@ export function useUrlParams(url) {
         switch (key) {
           case "c":
             var lonlat = urlParams[key].split(",");
-            params.lon = lonlat[0];
-            params.lat = lonlat[1];
+            params.lon = parseFloat(lonlat[0]);
+            params.lat = parseFloat(lonlat[1]);
             var xy = fromLonLatProj(lonlat);
             params.x = xy[0];
             params.y = xy[1];
@@ -56,7 +59,8 @@ export function useUrlParams(url) {
             params.layers = urlParams[key];
             break;
           case "w":
-            params.controls = urlParams[key];
+            // on ne traite plus le param "w" = pas de changement des outils en chargeant un permalink
+            // params.controls = urlParams[key] + "," + useDefaultControls().toString();
             break;
           case "d":
             params.bookmarks = urlParams[key];
@@ -66,6 +70,13 @@ export function useUrlParams(url) {
             break;
           case "p":
             params.geolocation = urlParams[key];
+            break;
+          case "permalink":
+            params.permalink = urlParams[key]; // yes | no
+            break;
+          case "redirect":
+            params.redirect = urlParams[key]; // url de redirection
+            break;
           default:
             break;
         }

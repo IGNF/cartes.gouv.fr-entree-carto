@@ -1,6 +1,10 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useMatchMedia } from '@/composables/matchMedia';
+
 import { Legends } from 'geopf-extensions-openlayers';
+
+const isSmallScreen = useMatchMedia('SM')
 
 const props = defineProps({
   mapId: String,
@@ -37,7 +41,22 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style></style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+// pas de bouton legende en mobile
+// mais le panel reste activable via contextmenu
+// donc on annule aussi la marge
+.gpf-widget[id^="GPlegends-"] {
+  @include max(sm) {
+    margin-top: -$gap;
+
+    & > .gpf-btn-icon {
+      display: none;
+    }
+  }
+}
+</style>

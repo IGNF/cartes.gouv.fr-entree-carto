@@ -1,9 +1,10 @@
 <script lang="js">
   /**
    * @description
+   * Composant de gestion des contrôles de la carte
    *
    * @property { Array } controlOptions tableau contenant les controls disponibles
-   *
+   * @property { String } mapId identifiant de la carte
    */
   export default {
     name: 'Controls'
@@ -32,23 +33,42 @@ import ControlList from './control/ControlList.vue';
 import ContextMenu from './control/ContextMenu.vue';
 import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
+import Reporting from './control/Reporting.vue';
+import CatalogManager from './control/CatalogManager.vue';
+import Panoramax from './control/Panoramax.vue';
 
 import { useDomStore } from '@/stores/domStore';
 import { useMapStore } from "@/stores/mapStore";
-import { useDataStore } from '@/stores/dataStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useMatchMedia } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+let isMobile = useMatchMedia('SM');
+const emitter = inject('emitter');
+
 const isProduction = (import.meta.env.MODE === "production");
-isProduction ? LoggerUtils.disableAll() : LoggerUtils.enableAll();
+if (isProduction) {
+  LoggerUtils.disableAll();
+} else {
+  LoggerUtils.enableAll();
+  // Orienté maintenance et débogage !
+  // Expose LoggerUtils sur window pour le débogage en console
+  window.LoggerUtils = LoggerUtils;
+}
 
 const props = defineProps({
-  controlOptions: Array,
-  mapId: String
+  controlOptions: {
+    type: Array,
+    default: () => []
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 });
 
 // INFO
@@ -70,57 +90,88 @@ const props = defineProps({
 // ]
 const mapStore = useMapStore();
 const domStore = useDomStore();
-const dataStore = useDataStore();
 const log = useLogger();
 log.debug(props.controlOptions);
 
+var baseUrlService = import.meta.env.VITE_GPF_BASE_URL_SERVICE;
+if (!baseUrlService) {
+  // Utilisation de l'url des services de production
+  log.warn("VITE_GPF_BASE_URL_SERVICE is not defined, using production URL");
+  baseUrlService = "https://data.geopf.fr";
+}
+
+// FIXME : mauvais nom de resource alti en preprod
+var altiResource;
+if (baseUrlService === "https://data-pprd.priv.geopf.fr") {
+   altiResource = "rge_alti";
+}
 
 // liste des options pour les contrôles
-const searchEngineOptions = {
-  id: "1",
-  collapsed: false,
-  collapsible: false,
-  displayButtonAdvancedSearch: true,
-  displayButtonGeolocate: true,
-  displayButtonCoordinateSearch: true,
-  coordinateSearchInAdvancedSearch: true,
-  displayButtonClose: false,
-  resources: {
-    search: true
-  },
-  searchOptions: {
-    addToMap: false,
-    filterServices : dataStore.filterServices,
-    filterWMTSPriority : true,
-    filterProjections : dataStore.filterProjections,
-    filterLayersPriority : dataStore.getFeatured().toString(),
-    filterLayers : true,
-    filterTMS : true,
-    filterLayersList : dataStore.getLayersSignatures(),
-    serviceOptions : {
-      maximumResponses : 50
+const searchEngineOptions = computed(() => {
+  return {
+    id: "1",
+    collapsed: false,
+    collapsible: false,
+    returnTrueGeometry: true,
+    autocompleteOptions : {
+      serviceOptions : {
+          maximumResponses : 10,
+          serverUrl : `${baseUrlService}/geocodage/completion?`
+      },
+      prettifyResults : true,
+      maximumEntries : 5
     },
-    maximumEntries : 5
-  },
-  autocompleteOptions : {
-    serviceOptions : {
-        maximumResponses : 10
+    searchOptions : {
+      serviceOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`
+      }
     },
-    prettifyResults : true,
-    maximumEntries : 5
-  },
-  markerUrl : IconGeolocationSVG
-};
+    markerUrl : IconGeolocationSVG,
+    placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+    advancedSearchOptions : {
+      coordinateSearch : {
+        systems :
+          [{
+              label : "G\u00e9ographique",
+              crs : "EPSG:4326",
+              type : "Geographical"
+          }, 
+          {
+              label : "Web Mercator",
+              crs : "EPSG:3857",
+              type : "Metric"
+          }, 
+          {
+              label : "Lambert 93",
+              crs : "EPSG:2154",
+              type : "Metric"
+          },
+          {
+              label : "Lambert II \u00e9tendu",
+              crs : "EPSG:27572",
+              type : "Metric"
+          }]
+      },
+      searchOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`,
+        wfsServerUrl : `${baseUrlService}/wfs/ows?`,
+        geocodeGetCapabilitiesUrl : `${baseUrlService}/geocodage/getCapabilities`
+      }
+    }
+  };
+});
 
 const layerSwitcherOptions = {
   options: {
     id: "2",
     position : useControlsExtensionPosition().layerSwitcherOptions,
     collapsed: true,
+    gutter: true,
     panel: true,
     counter: true,
     allowEdit: true,
-    allowGrayScale: true
+    allowGrayScale: true,
+    allowTooltips: true
   }
 };
 
@@ -147,17 +198,18 @@ const territoriesOptions = {
   thumbnail : false, // imagette des territoires
   reduce : false, // tuiles reduites par defaut
   tiles : 3,
+  view : {
+    active : true,
+    title : "Modifier les territoires",
+    description : "Modifier la vue"
+  }
 };
 
 // actif par défaut
 const getFeatureInfoOptions = {
   id: "6",
-  position: useControlsExtensionPosition().getFeatureInfoOptions
-};
-
-const overviewMapOptions = {
-  id: "7",
-  position: useControlsExtensionPosition().overviewMapOptions
+  position: useControlsExtensionPosition().getFeatureInfoOptions,
+  noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
 const fullscreenOptions = {
@@ -176,7 +228,9 @@ const controlListOptions = {
   id: "10",
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
-}
+  header: false,
+  sortable: true,
+};
 
 const drawingOptions = {
   id: "11",
@@ -193,6 +247,9 @@ const reverseGeocodeOptions = {
   position: useControlsExtensionPosition().reverseGeocodeOptions,
   gutter: false,
   listable: true,
+  reverseGeocodeOptions : {
+    serverUrl : `${baseUrlService}/geocodage/reverse`
+  }
 };
 
 const isocurveOptions = {
@@ -200,6 +257,12 @@ const isocurveOptions = {
   id: "13",
   gutter: false,
   listable: true,
+  isocurveOptions : {
+    serverUrl : `${baseUrlService}/navigation/isochrone`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
+  }
 };
 
 const routeOptions = {
@@ -207,6 +270,13 @@ const routeOptions = {
   id: "14",
   gutter: false,
   listable: true,
+  prettifyCompute: true,
+  routeOptions : {
+    serverUrl : `${baseUrlService}/navigation/itineraire`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
+  }
 };
 
 const measureLengthOptions = {
@@ -235,6 +305,13 @@ const mousePositionOptions = {
   id: "18",
   gutter: false,
   listable: true,
+  editCoordinates : true,
+  altitude : {
+    serviceOptions : {
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+      resource : altiResource
+    }
+  },
   // On ajoute les systemes UTM pour les territoires
   systems : [
     {
@@ -380,47 +457,100 @@ const elevationPathOptions = {
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
   listable: true,
+  elevationPathOptions : {
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`,
+    resource : altiResource
+  }
 };
 
 const layerImportOptions = {
   id: "20",
   position: useControlsExtensionPosition().layerImportOptions,
-  gutter: false,
-  listable: true,
+  gutter: true,
 };
 
-const refModalPrint = inject("refModalPrint")
-const refModalShare = inject("refModalShare")
+const reportingOptions = {
+  id: "21",
+  position: useControlsExtensionPosition().reportingOptions,
+  gutter: true,
+  format : "kml"
+};
 
 const contextMenuOptions = computed(() => {
   return {
+    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
+    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
     contextMenuItemsOptions : [
       {
-        text : "Imprimer la carte",
-        callback : function() {
-          refModalPrint.value.onModalPrintOpen()
-        }
-      },
-      {
-        text : "Partager la carte",
-        callback : function() {
-          refModalShare.value.onModalShareOpen()
-        }
-      },
-      {
-        text : "Ajouter des données",
+        text : "Signaler une anomalie",
         callback : () => {
-          domStore.getmenuCatalogueButton().firstChild.click()
-        }
-      },
-      {
-        text : "Mes enregistrements",
-        callback : () => {
-          domStore.getBookmarksButton().firstChild.click()
+          setTimeout(() => {
+            // envoi d'un evenement pour l'ouverture du contrôle
+            emitter.dispatchEvent("modalreporting:open:clicked", {
+              open : true,
+              componentName: "ModalReportingStart"
+            });
+            // envoi d'un evenement pour la fermeture du menu de gauche
+            emitter.dispatchEvent("leftmenu:close", {
+              open : false,
+              componentName: "ContextMenu"
+            });
+          }, 0);
         }
       }
     ]
   }
+})
+
+const panoramaxOptions = {
+  id: "23",
+  position: useControlsExtensionPosition().panoramaxOptions,
+  panel: true,
+  gutter: true,
+  listable: true,
+  auto : false,
+  visualizationWindow : {
+    size : "fullscreen-map"
+  },
+  viewer : {
+    "widgets" : [
+      "btnClose",
+      "btnZoom",
+      "btnFullscreen",
+      "cmpPictureLegend",
+      "cmpMinimap"
+    ]
+  },
+  buttonsWindow: {
+    hover: {
+      display: false,
+    },
+    background: {
+      display: false,
+    },
+    layerswitcher: {
+      display: false,
+    },
+    filters : {
+      display : true,
+      label : "Effacer les filtres",
+      description : "Réinitialiser les filtres",
+      content : {
+          types : {
+             value : "360°"
+          },
+          dates : true,
+          periodes : true
+      }
+    }
+  }
+};
+
+onMounted(() => {
+  log.debug("Controls component mounted")
+  domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
+  domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
 })
 </script>
 <!-- INFO : Affichage du contrôle
@@ -428,6 +558,11 @@ const contextMenuOptions = computed(() => {
 >>> sinon, visibility:false
 -->
 <template>
+  <CatalogManager
+    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
+    :analytic="false"
+    :map-id="mapId"
+  />
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
@@ -502,7 +637,6 @@ const contextMenuOptions = computed(() => {
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
     :analytic="useControls.OverviewMap.analytic"
-    :overview-map-options="overviewMapOptions"
     :map-id="mapId"
   />
   <Territories
@@ -575,251 +709,239 @@ const contextMenuOptions = computed(() => {
     :context-menu-options="contextMenuOptions"
     :map-id="mapId"
   />
+  <Reporting
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Reporting.id)"
+    :analytic="useControls.Reporting.analytic"
+    :reporting-options="reportingOptions"
+    :map-id="mapId"
+  />
+  <Panoramax
+    v-if="controlOptions"
+    :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
+    :analytic="useControls.Panoramax.analytic"
+    :panoramax-options="panoramaxOptions"
+    :map-id="mapId"
+  />
 </template>
 
-<style>
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-.position-container-bottom-left,
-.position-container-bottom-right,
-.position-container-top-left,
+// positionnement des conteneurs de widgets
+.ol-overlaycontainer-stopevent {
+  // evite de creer un stacking context (ce qui complexifie la superposition des menuwrapper)
+  z-index: initial !important;
+}
+.position {
+  z-index: 1;
+  width: $widget-btn-size;
+  height: calc(100% - $gap * 2);
+  gap: $gap;
+}
+.position-container-top-left {
+  top: $gap;
+  left: $gap;
+}
 .position-container-top-right {
-  margin: 0;
-  padding: 0;
+  top: $gap;
+  right: $gap;
+  // cree un containing block
+  will-change: transform;
 }
-
-/* 10 controls optionnels */
-.position-container-top-right > .gpf-widget:nth-child(n+13) > button {
-  display: none;
+.position-container-bottom-left {
+  bottom: $gap;
+  left: $gap;
 }
-
-.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12) > button {
-  display: none;
+.position-container-bottom-right {
+  z-index: 0;
+  bottom: $gap;
+  right: $gap;
 }
-
-.position-container-top-right:not(:has(.gpf-widget:nth-child(14))) > .gpf-widget[id^="GPcontrolList-"] > button {
-  display: none;
-}
-
-.position-container-top-right:has(.gpf-widget:nth-child(14)) > .gpf-widget:nth-child(n+12)[id^="GPcontrolList-"] > button {
-  display: inline-flex;
-}
-
-.position-container-top-right > div:nth-child(n+13) {
-  padding: 0;
-  margin: 0;
-}
-
-.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12) {
-  margin: 0;
-  padding: 0;
-}
-
-.position-container-top-right:not(:has(div:nth-child(14))) > div[id^="GPcontrolList-"] {
-  margin: 0;
-  padding: 0;
-}
-
-.position-container-top-right:has(div:nth-child(14)) > div:nth-child(n+12)[id^="GPcontrolList-"] {
-  padding: 2px;
-}
-
-/* Cas particuliers pour éviter les coins non arrondis autour de l'import qui est caché (uniquement sur l'entree carto) */
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter:not([id^="GPimport-"])) > .gpf-btn-icon {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.gpf-button-no-gutter[id^="GPimport-"] + .gpf-button-no-gutter:not([id^="GPimport-"]) > .gpf-btn-icon {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPimport-"]) > .gpf-btn-icon,
-.gpf-button-no-gutter:has(+ .gpf-button-no-gutter[id^="GPcontrolList-"]) > .gpf-btn-icon {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-}
-/* TODO: max-height: 639px carto sera plus grande (header et footer réduits) */
-/* Que le menu +, pas de controls */
-@media (max-height: 739px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
-    display: none;
+@include max(sm) {
+  .position {
+    height: calc(100% - ($widget-btn-size + $gap * 3));
   }
-}
-
-/* TODO: max-height: 719px carto sera plus grande (header et footer réduits) */
-/* 4 controls optionnels */
-@media (max-height: 819px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+7) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(8))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(8)) > .gpf-widget:nth-child(n+6)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+7) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6) {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(8))) > div[id^="GPcontrolList-"] {
-    margin: 0;
-    padding: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(8)) > div:nth-child(n+6)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* TODO: max-height: 779px carto sera plus grande (header et footer réduits) */
-/* 6 controls optionnels */
-@media (max-height: 919px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+9) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(10))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(10)) > .gpf-widget:nth-child(n+8)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+9) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(10))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(10)) > div:nth-child(n+8)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-/* TODO: max-height: 859px carto sera plus grande (header et footer réduits) */
-/* 8 controls optionnels */
-@media (max-height: 999px) {
-  .position-container-top-right > .gpf-widget:nth-child(n+11) > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10) > button {
-    display: none;
-  }
-
-  .position-container-top-right:not(:has(.gpf-widget:nth-child(12))) > .gpf-widget[id^="GPcontrolList-"] > button {
-    display: none;
-  }
-
-  .position-container-top-right:has(.gpf-widget:nth-child(12)) > .gpf-widget:nth-child(n+10)[id^="GPcontrolList-"] > button {
-    display: inline-flex;
-  }
-
-  .position-container-top-right > div:nth-child(n+11) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10) {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:not(:has(div:nth-child(12))) > div[id^="GPcontrolList-"] {
-    padding: 0;
-    margin: 0;
-  }
-
-  .position-container-top-right:has(div:nth-child(12)) > div:nth-child(n+10)[id^="GPcontrolList-"] {
-    padding: 2px;
-  }
-}
-
-@media (min-width: 576px) {
-  .position-container-bottom-left,
-  .position-container-bottom-right,
   .position-container-top-left,
   .position-container-top-right {
-    height: calc(100% - 102px);
-  }
-
-  .position-container-top-right,
-  .position-container-top-left {
-    top: 99px;
+    top: $widget-btn-size + $gap * 2;
   }
 }
-@media (max-width: 576px) {
-  .position-container-top-right,
-  .position-container-top-left {
-    top: 299px;
-  }
-  .position-container-bottom-left,
-  .position-container-bottom-right,
-  .position-container-top-left,
-  .position-container-top-right {
-    height: calc(100% - 303px);
-  }
+.gpf-widget-button {
+  width: $widget-btn-size;
+  padding: 0;
+  box-shadow: var(--raised-shadow);
+  border-radius: $widget-btn-radius;
 
-  /* Mode mobile : on positionne les dialog par dessus la barre de recherche
-  en position fix, sous le header DSFR, et on annule le positionnement introduit
-  par la classe gpf-mobile-fullscree (right ou left) à l'aide de marges */
-  .gpf-mobile-fullscreen > button[aria-pressed="true"] ~ dialog {
-    margin-top: -250px;
-    max-height: calc(100% + 258px);
+  & > .gpf-btn-icon {
+    width: $widget-btn-size;
+    height: $widget-btn-size;
+    padding: $widget-btn-padding;
+    // supprime l'ombre
+    filter: none;
+    // cree l'effet du bouton
+    @include widget-btn-style;
+    // surclasse dsfr
+    max-width: initial !important;
+    max-height: initial !important;
   }
-
-  .position-container-top-right > .gpf-widget:nth-child(n+3) > button {
-    display: none;
+  &.gpf-button-no-gutter > .gpf-btn-icon {
+    @include widget-btn-no-gutter-style;
   }
-
-  .position-container-bottom-left {
-    display: none;
+  & > .gpf-btn-icon:not(:disabled):hover {
+    @include widget-btn-style-hover;
   }
+  & > .gpf-btn-icon[aria-pressed="true"],
+  & > .gpf-btn-icon[aria-pressed="true"]:not(:disabled):hover {
+    @include widget-btn-style-active;
+  }
+  // supprime les traits active
+  &:has(> .gpf-btn-icon[aria-pressed="true"])::after {
+    content: none;
+  }
+}
+// tooltips: position
+.position-container-top-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
+  transform: translate(-100%, $widget-btn-padding);
+}
+.position-container-top-left > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
+.position-container-bottom-left > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
+  transform: translate($widget-btn-size - $widget-btn-padding * 2, $widget-btn-padding);
+}
+// modales: au dessus quand active
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]) {
+  z-index: 2;
 
-  .ol-scale-line {
-    transform: translateX(-50px);
+  // au dessus de tout en mobile
+  @include max(sm) {
+    z-index: 4;
+  }
+}
+// tooltips: au-dessus quand hover
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-label]:hover) {
+  z-index: 3;
+}
+// supprime tooltip si deja ouverte
+.position > .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]:hover::before {
+  content: none;
+}
+// alignements en hauteur des bouton no-gutter
+.position-container-top-left .gpf-button-no-gutter,
+.position-container-top-right .gpf-button-no-gutter {
+  margin-bottom: -$gap;
+}
+// panels
+.gpf-panel {
+  position: absolute;
+  top: 0 !important; // aligne par rapport a .position
+  @include widget-panel-sizes;
+  box-shadow: var(--raised-shadow);
+}
+.position-container-top-left .gpf-panel,
+.position-container-bottom-left .gpf-panel {
+  left: $widget-btn-size + $gap !important;
+  top: $widget-btn-size + $gap !important;
+  max-height: calc(100cqb - $widget-btn-size - $gap * 3) !important;
+}
+.position-container-top-right .gpf-panel,
+.position-container-bottom-right .gpf-panel {
+  right: $widget-btn-size + $gap !important;
+}
+// fixe position d'un panel dans un panel
+.gpf-panel .gpf-panel {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: none;
+}
+.gpf-panel__body {
+  max-height: calc(70vh) !important;
+  max-height: calc(100cqb - $gap * 2) !important;
+}
+.gpf-panel__body_ls {
+  max-height: initial !important;
+}
+@include max(sm) {
+  .gpf-panel {
+    max-width: 100vw !important;
+    max-height: 100cqb !important;
+  }
+  .gpf-panel__body {
+    max-height: 100cqb !important;
+  }
+  // selecteur a rallonge obligatoire pour surclasser le style
+  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
+    min-width: 0;
+    right: -$gap !important;
+    top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
+    width: 100vw !important;
+  }
+  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
+    right: auto !important;
+    left: -$gap !important;
   }
 }
 
-@media (max-width: 627px) and (min-width: 576px){
-  .position-container-top-right,
-  .position-container-top-left {
-    top: 164px;
+/**
+ *  gestion du nombre de widget en fonction de la hauteur
+ */
+
+// le widget GPcontrolList est toujours affiché
+.gpf-widget[id^="GPcontrolList-"] {
+  position: absolute !important;
+  // tout en bas, sous la liste
+  bottom: 0 !important;
+  
+  .gpf-btn-icon {
+    // calcul du border-radius top de controllist
+    $border-radius: calc((1 - min(1, max(0, calc(var(--nb-widgets) - 1)))) * $widget-btn-radius);
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
   }
-  .position-container-bottom-left,
-  .position-container-bottom-right,
-  .position-container-top-left,
-  .position-container-top-right {
-    height: calc(100% - 168px);
-  }
+}
+
+// ajoute un fond sur le controllist si l'outil sélectionné est masqué
+.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:has(> button[aria-pressed="true"]) ~  .gpf-widget-button[id^="GPcontrolList-"] > button {
+  // on cree un dégradé conic de deux fois la largeur du bouton (cree un damier)
+  background-image: conic-gradient(var(--background-open-blue-france) 50%, transparent 0);
+  background-size: 200% 100%;
+  // n = si l'element cliqué est visible alors n=0, sinon n=N
+  --n: max(var(--pressed) - var(--nb-widgets) + 1, 0); // 0 ou N
+  // on positionne le fond en fonction de N
+  // si n=0, bgp = 0
+  // si n=1, bgp = 48px * 1
+  // si n=2, bgp = 48px * 3
+  // si n=3, bgp = 48px * 5
+  // soit, bpg = N + N-1 * 48px
+  background-position: calc((var(--n) + max(var(--n) - 1, 0)) * $widget-btn-size) 0;
+}
+
+// on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
+.position-container-top-right {
+  --nb-widgets: 1;
+  position: relative;
+  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 2) + ($gap * 2));
+}
+
+// on défini le nombre de widgets max en fonction de la hauteur de map
+@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 1 } }
+@container map (min-height: 550px) { .position-container-top-right { --nb-widgets: 2 } }
+@container map (min-height: 600px) { .position-container-top-right { --nb-widgets: 3 } }
+@container map (min-height: 650px) { .position-container-top-right { --nb-widgets: 4 } }
+@container map (min-height: 700px) { .position-container-top-right { --nb-widgets: 5 } }
+
+// creation des selecteurs pour 20 outils
+@for $i from 1 through 20 {
+  // defini la position du widget (i) (n=3 est le premier widget)
+  .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
+  // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2})) { --count: #{$i} }
+
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2}) > button[aria-pressed="true"]) { --pressed: #{$i} }
+  
+}
+// on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
+.position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
+  margin-left: calc(max(var(--i) - var(--nb-widgets) + 1, 0) * -99in);
 }
 </style>

@@ -2,6 +2,7 @@
   /**
    * @description
    * ...
+   * @listens emitter#leftmenu:close
    */
   export default {
     name: 'LeftMenuTool'
@@ -16,11 +17,14 @@ import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 import { useTemplateRef } from 'vue';
 import { inject } from 'vue';
 
-const props = defineProps({
-})
+import { useDomStore } from '@/stores/domStore';
+
+const domStore = useDomStore();
 
 const side = "left"
 const is_expanded = ref()
+
+const leftControls = ref(null)
 
 // Ce tableau donne l'ordre des icones du menu lateral
 const tabArray = computed(() => {
@@ -28,7 +32,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuTierce",
             icon : "ri-menu-add-fill",
-            title : "Menu carte",
+            title : "Accéder à d'autres outils",
             visibility: true,
             secondary: true
         },
@@ -37,7 +41,7 @@ const tabArray = computed(() => {
             icon : "ri-bookmark-line",
             title : "Mes Enregistrements",
             visibility : false, // bouton invisible
-            secondary : true 
+            secondary : true
           }
     ];
 
@@ -46,7 +50,6 @@ const tabArray = computed(() => {
 
 const activeTab = ref("MenuCatalogueContent")
 const wrapper = ref(null)
-const width = 300;
 
 // Gestion de l'ouverture / fermeture du panneau
 function tabClicked(newTab) {
@@ -54,12 +57,6 @@ function tabClicked(newTab) {
     wrapper.value.closeMenu();
   } else {
     activeTab.value = newTab + "Content";
-    // on change la largeur du menu pour les favoris
-    if (newTab === "MenuBookMarks") {
-      wrapper.value.widthMenu = 400;
-    } else {
-      wrapper.value.widthMenu = width;
-    }
     wrapper.value.openMenu();
   }
 }
@@ -67,6 +64,12 @@ function tabClicked(newTab) {
 function tabIsActive(componentName) {
   return activeTab.value.replace("Content" , '') === componentName ? true : false;
 }
+
+// abonnement sur la fermeture du catalogue sur un evenement emis
+const emitter = inject('emitter');
+emitter.addEventListener("leftmenu:close", (e) => {
+  wrapper.value.closeMenu();
+});
 
 var service = inject('services');
 var authenticated = computed(() => service.authenticated);
@@ -80,9 +83,9 @@ function onBookMarksOpen() {
     return;
   }
   // INFO
-  // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin 
+  // on declenche le clic sur le bouton de 'MenuLateralNavButton' afin
   // d'afficher le menu (cf. tabClicked()).
-  // cette classe expose 
+  // cette classe expose
   // - l'id
   // - une méthode clickButton()
   tabRefs.value.forEach((e) => {
@@ -91,7 +94,7 @@ function onBookMarksOpen() {
         // on ouvre le menu des favoris
         e.clickButton();
       } else {
-        // on ouvre la modale de connexion 
+        // on ouvre la modale de connexion
         // sans déclencher l'ouverture des favoris
         // on emet un evenement qui déclenche l'ouverture de la modale !
         // (cf. src/components/CartoAndTools.vue ~ onModalLoginOpen())
@@ -101,14 +104,31 @@ function onBookMarksOpen() {
   })
 }
 
+function onOpenControl() {
+  // on ferme le menu lateral
+  wrapper.value.closeMenu();
+}
+
 const tabRefs = useTemplateRef('tabs')
 
 const emit = defineEmits([
-  'onModalShareOpen', 
-  'onModalPrintOpen', 
-  'onModalThemeOpen',
+  'onModalShareOpen',
+  'onModalPrintOpen',
   'onModalLoginOpen'
 ])
+
+/**
+ * Réinitialise le menu à "fermé" quand on ouvre un control extension
+ * Excpetion pour l'overviewmap
+ */
+watch(() => domStore.getleftControlMenu(), (newVal) => {
+  leftControls.value = newVal
+  leftControls.value?.addEventListener("click", function (e) {
+  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed == "true") {
+    is_expanded.value = false;
+  }
+})
+}, { immediate: true })
 </script>
 
 <template>
@@ -118,8 +138,6 @@ const emit = defineEmits([
     v-model="is_expanded"
     :side="side"
     :visibility="true"
-    :width="width"
-    :padding="16"
   >
     <template #content>
       <div
@@ -129,8 +147,8 @@ const emit = defineEmits([
         <MenuTierce
           @on-modal-share-open="$emit('onModalShareOpen')"
           @on-modal-print-open="$emit('onModalPrintOpen')"
-          @on-modal-theme-open="$emit('onModalThemeOpen')"
           @on-book-marks-open="onBookMarksOpen"
+          @open-control="onOpenControl"
         />
       </div>
       <div
@@ -144,6 +162,7 @@ const emit = defineEmits([
       <MenuLateralNavButton
         v-for="tab in tabArray"
         :id="tab.componentName"
+        :key="tab.componentName"
         ref="tabs"
         :side="side"
         :icon="tab.icon"

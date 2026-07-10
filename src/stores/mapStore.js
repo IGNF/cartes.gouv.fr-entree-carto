@@ -8,10 +8,6 @@ import { useStorage } from '@vueuse/core';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
-// FIXME
-// comment reduire la taille de la chaine de caractères dans l'url ?
-// import { decode, encode } from "universal-base64url";
-
 /**
  * Valeurs par defaut
  * pour la liste des contrôles par defaut, on utilise toujours 
@@ -26,13 +22,11 @@ const DEFAULT = {
   Y: 5859851.607344459,
   LON: 2.602777, // informatif
   LAT: 46.493888, // informatif
-  ZOOM: 6,
-  FIRSTVISIT: false,
-  NOINFORMATION: null
+  ZOOM: 6
 }
 
 /**
- * Espace de noms des clefs du localStorage
+ * Espace de noms des clefs du localStorage (persistantes)
  */
 const NAMESPACE = "cartes.gouv.fr";
 
@@ -50,7 +44,6 @@ const ns = ((value) => {
  * - cartes.gouv.fr.center --> webmercator
  * - cartes.gouv.fr.permalink
  * - cartes.gouv.fr.permalinkShare
- * - cartes.gouv.fr.firstVisit
  * - cartes.gouv.fr.layers
  * - cartes.gouv.fr.bookmarks
  * - cartes.gouv.fr.zoom -> absolue !
@@ -59,8 +52,7 @@ const ns = ((value) => {
  * - cartes.gouv.fr.lon --> geographic
  * - cartes.gouv.fr.lat --> geographic
  * - cartes.gouv.fr.controls
- * - cartes.gouv.fr.noInformation
- * - cartes.gouv.fr.location
+ * - cartes.gouv.fr.geolocation
  *
  * Construction du permalien :
  * 
@@ -69,6 +61,9 @@ const ns = ((value) => {
  *   ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(4;1;1;0)
  *    avec caractére de séparation des options de la liste : ';'
  *    et ',' pour chaque couches
+ * 
+ *   Pour une couche de type TMS, on peut ajouter une propriété facultative "style"
+ *   ex. OPENSTREETMAP$OSM:TMS(1;1;1;0;standard)
  * 
  * - La structure des contrôles
  *   CONTROLID(active<boolean>;disable<boolean>;position<string>)<Array>
@@ -88,6 +83,24 @@ const ns = ((value) => {
  *    visible=1&
  *    grayscale=0
  * 
+ * Informations complémentaires :
+ * 
+ * - cartes.gouv.fr.noLoginInformation --> boolean
+ *   Permet de savoir si l'utilisateur a déjà eu une notification
+ *   concernant l'authentification.
+ * 
+ * - cartes.gouv.fr.permalink --> string
+ *   Stocke le permalien complet de la carte
+ *   Mais, la clef 'permalink=yes|no' dans l'URL permet de savoir
+ *   si on doit remplacer la configuration courante
+ *   par celle du permalien (yes) ou la compléter (no).
+ * 
+ * - isRedirect() --> boolean
+ *   Detecte une information de redirection après le chargement de la carte
+ *   ceci permet d'informer l'utilisateur qu'il a été redirigé
+ *   depuis une autre application (ex. Geoportail, GéoIDE, etc.)
+ * 
+ * @see useUrlParams
  */
 export const useMapStore = defineStore('map', () => {
   const emitter = inject('emitter');
@@ -95,14 +108,33 @@ export const useMapStore = defineStore('map', () => {
   /////////////
   // objet map
   /////////////
-  const map = ref({});
+  let map = {};
 
   // gestion des KVP dans l'URL (permalink)
   try {
     var params = useUrlParams();
     var defaultControls = DEFAULT.CONTROLS.split(",");
+    const type = params.permalink;
+    if (type === "yes") {
+      // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
+      Object.keys(localStorage).forEach(function(key) {
+        if (key.startsWith(NAMESPACE)) {
+          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // la suppression du localStorage est répercutée sur tous les onglets !
+          // localStorage.removeItem(key);
+        }
+      });
+    }
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
+        // on ne traite pas ces clefs dans le localStorage
+        // elles sont gérées par en mode computed()
+        if (key === "permalink") {
+          continue;
+        }
+        if (key === "redirect") {
+          continue;
+        }
         if (key === "controls") {
           var myControls = params[key].split(",");
           defaultControls.forEach(function(defaultControl) {
@@ -111,7 +143,50 @@ export const useMapStore = defineStore('map', () => {
             }
           })
         }
-        const value = params[key];
+        var value = params[key];
+        if (key === "layers") {
+          // 2 cas :
+          // - permalink = yes : remplace la conf
+          // - permalink = no  : complete la conf
+          if (type === "no") {
+            // on modifie la position des nouvelles couches
+            // à ajouter pour qu'elle soit toujours au dessus
+            var lyrs = localStorage.getItem(ns(key));
+            var curLyr = lyrs.split(",").filter(l => l !== "");
+            var newsLyr = value.split(",").filter(l => l !== "");
+            
+            // Extraire les IDs des nouvelles couches
+            var newIds = newsLyr.map(lyr => lyr.substring(0, lyr.indexOf("(")));
+            
+            // Supprimer les doublons des couches existantes
+            curLyr = curLyr.filter(lyr => {
+              var id = lyr.substring(0, lyr.indexOf("("));
+              return !newIds.includes(id);
+            });
+            
+            // Recalculer les positions des couches existantes
+            var updatedCurLyr = curLyr.map((lyr, index) => {
+              var id = lyr.substring(0, lyr.indexOf("("));
+              var opts = lyr.substring(lyr.indexOf("(") + 1, lyr.indexOf(")"));
+              var props = opts.split(";");
+              props[0] = index + 1;
+              return id + "(" + props.join(";") + ")";
+            });
+            
+            // Ajouter les nouvelles couches avec leurs positions
+            var posLyr = updatedCurLyr.length + 1;
+            var updatedNewsLyr = newsLyr.map((lyr, i) => {
+              var id = lyr.substring(0, lyr.indexOf("("));
+              var opts = lyr.substring(lyr.indexOf("(") + 1, lyr.indexOf(")"));
+              var props = opts.split(";");
+              props[0] = posLyr + i;
+              return id + "(" + props.join(";") + ")";
+            });
+            
+            // Combiner les couches
+            value = updatedCurLyr.concat(updatedNewsLyr).join(",");
+          }
+        }
         localStorage.setItem(ns(key), value);
       }
     }
@@ -145,22 +220,24 @@ export const useMapStore = defineStore('map', () => {
   var y = useStorage(ns('y'), DEFAULT.Y);
   var lon = useStorage(ns('lon'), DEFAULT.LON);
   var lat = useStorage(ns('lat'), DEFAULT.LAT);
-  var firstVisit = useStorage(ns('firstVisit'), DEFAULT.FIRSTVISIT);
-  var noInformation = useStorage(ns('noInformation'), DEFAULT.NOINFORMATION);
   var geolocation = useStorage(ns('geolocation'), "");
+  var territories = useStorage(ns('territories'), ""); // stringified json !
   
   // INFO
   // cette valeur devrait toujours être reinitilisée à false
-  localStorage.setItem(ns('noLoginInformation'), false);
   var noLoginInformation = useStorage(ns('noLoginInformation'), false);
 
   //////////////////
   // objets calculés
   //////////////////
 
-  var isPermalink = computed(() => {
-    return (location.search.includes("permalink=yes"));
+  var isRedirect = computed(() => {
+    return (location.search.includes("fromgpp=1") || location.search.includes("redirect=geoide"));
   });
+
+  var isPermalink = () => {
+    return location.search.includes("permalink=yes");
+  };
   
   var permalink = computed(() => {
     // INFO
@@ -168,14 +245,17 @@ export const useMapStore = defineStore('map', () => {
     var permalinkUrl = "";
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
-    var url = location.origin + path.replace("/embed", "");
-    permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
+    var realpath = path.replace(/\/logout|\/login/, "");
+    var url = location.origin + realpath.replace("/embed", "");
+    permalinkUrl = `${url}/?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
+      // coordonnées avec 6 chiffres après la virgule
+      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
       permalinkUrl += `&p=${geolocation.value}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
-    `&l=${layers.value}&w=${controls.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
-    `&l=${layers.value}&w=${controls.value}`;
+    `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}`;
     return permalinkUrl + "&permalink=yes";
   });
 
@@ -185,9 +265,12 @@ export const useMapStore = defineStore('map', () => {
     var permalinkShareUrl = "";
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
-    var url = location.origin + (path.includes("/embed") ? path : path + "/embed");
+    var realpath = path.replace(/\/logout|\/login/, "");
+    var url = location.origin + (realpath.includes("/embed") ? realpath : realpath + "/embed");
     permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
+      // coordonnées avec 6 chiffres après la virgule
+      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
       permalinkShareUrl += `&p=${geolocation.value}`;
     }
     permalinkShareUrl += (bookmarks.value.length > 0) ? 
@@ -210,17 +293,17 @@ export const useMapStore = defineStore('map', () => {
    * La liste des couches
    * ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0)
    */
-  var layers = useStorage(ns('layers'), DEFAULT.LAYERS);
+  var layers = useStorage(ns('layers'), DEFAULT.LAYERS, localStorage, { listenToStorageChanges: false });
   if (!layers.value) {
     var l = DEFAULT.LAYERS.split(",").filter(function (l) {
       return !!l;
     });
     for (let i = 0; i < l.length; i++) {
       const regex = /\(.*\)/gm;
-      var id = l[i].replace(regex, "");
-      var props = l[i].match(regex) || null;
-      if (id) {
-        addLayer(id, props);
+      var idLayer = l[i].replace(regex, "");
+      var properties = l[i].match(regex) || null;
+      if (idLayer) {
+        addLayer(idLayer, properties);
       }
     }
   }
@@ -230,7 +313,7 @@ export const useMapStore = defineStore('map', () => {
    * La liste des contrôles
    * ex. Isocurve(1)
    */
-  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS);
+  var controls = useStorage(ns('controls'), DEFAULT.CONTROLS, localStorage, { listenToStorageChanges: false });
   if (!controls.value) {
     var c = DEFAULT.CONTROLS.split(",").filter(function (c) {
       return !!c;
@@ -252,7 +335,7 @@ export const useMapStore = defineStore('map', () => {
    *    visible=1&
    *    grayscale=0
    */
-  var bookmarks = useStorage(ns('bookmarks'), "");
+  var bookmarks = useStorage(ns('bookmarks'), "", localStorage, { listenToStorageChanges: false });
   if (!bookmarks.value) {
     bookmarks.value = "";
   } else {
@@ -271,24 +354,6 @@ export const useMapStore = defineStore('map', () => {
   localStorage.setItem(ns('permalink'), permalink.value);
   localStorage.setItem(ns('permalinkShare'), permalinkShare.value);
 
-  watch(zoom, () => {
-    localStorage.setItem(ns('zoom'), Math.round(zoom.value));
-  })
-  watch(x, () => {
-    localStorage.setItem(ns('x'), x.value);
-  })
-  watch(y, () => {
-    localStorage.setItem(ns('y'), y.value);
-  })
-  watch(lon, () => {
-    localStorage.setItem(ns('lon'), lon.value);
-  })
-  watch(lat, () => {
-    localStorage.setItem(ns('lat'), lat.value);
-  })
-  watch(layers, () => {
-    localStorage.setItem(ns('layers'), layers.value.toString()); // string
-  })
   watch(permalink, () => {
     localStorage.setItem(ns('permalink'), permalink.value.toString()); // string
   })
@@ -298,34 +363,16 @@ export const useMapStore = defineStore('map', () => {
   watch(center, () => {
     localStorage.setItem(ns('center'), center.value.toString()); // string
   })
-  watch(firstVisit, () => {
-    localStorage.setItem(ns('firstVisit'), firstVisit.value); // booleen
-  })
-  watch(noInformation, () => {
-    localStorage.setItem(ns('noInformation'), noInformation.value); // number
-  })
-  watch(controls, () => {
-    localStorage.setItem(ns('controls'), controls.value.toString()); // string
-  })
-  watch(bookmarks, () => {
-    localStorage.setItem(ns('bookmarks'), bookmarks.value.toString()); // string
-  })
-  watch(geolocation, () => {
-    localStorage.setItem(ns('geolocation'), geolocation.value.toString()); // string
-  })
-  watch(noLoginInformation, () => {
-    localStorage.setItem(ns('noLoginInformation'), noLoginInformation.value);
-  })
 
   //////////////////
   // getter/setter
   //////////////////
 
   function getMap () {
-    return map.value;
+    return map;
   }
   function setMap (m) {
-    map.value = m;
+    map = m;
   }
 
   function getLayers () {
@@ -403,6 +450,10 @@ export const useMapStore = defineStore('map', () => {
       const index = getLayers().indexOf(id);
       if (index !== -1) {
         var strLayer = layers.value.split(",")[index];
+        var strValues = strLayer.substring(strLayer.indexOf("(") + 1, strLayer.indexOf(")"));
+        var values = strValues.split(";");
+        values[0] = i + 1; // mise à jour de la position
+        strLayer = id + "(" + values.join(";") + ")";
         l.push(strLayer);
       }
     }
@@ -543,6 +594,46 @@ export const useMapStore = defineStore('map', () => {
     }
   }
 
+  function parseTerritories() {
+    if (!territories.value) {
+      return [];
+    }
+    try {
+      return JSON.parse(territories.value);
+    } catch {
+      territories.value = "";
+      localStorage.removeItem(ns('territories'));
+      return [];
+    }
+  }
+  function getTerritories() {
+    return parseTerritories();
+  }
+  function addTerritory(json_territory) {
+    if (!json_territory) {
+      return;
+    }
+    var json = parseTerritories();
+    if (!json.find(t => t.id === json_territory.id)) {
+      json.push(json_territory);
+      territories.value = JSON.stringify(json);
+    }
+  }
+  function removeTerritory(json_territory) {
+    if (!json_territory) {
+      return;
+    }
+    var json = parseTerritories();
+    var newJson = json.filter(t => t.id !== json_territory.id);
+    territories.value = JSON.stringify(newJson);
+  }
+  function addTerritories(json_territories) {
+    if (!json_territories || json_territories.length === 0) {
+      return;
+    }
+    territories.value = JSON.stringify(json_territories);
+  }
+
   return {
     map,
     layers,
@@ -554,13 +645,16 @@ export const useMapStore = defineStore('map', () => {
     y,
     lon,
     lat,
-    firstVisit,
-    noInformation,
     permalink,
     permalinkShare,
     geolocation,
+    isRedirect,
     isPermalink,
     noLoginInformation,
+    getTerritories,
+    addTerritory,
+    removeTerritory,
+    addTerritories,
     getMap,
     setMap,
     getLayers,
@@ -571,6 +665,7 @@ export const useMapStore = defineStore('map', () => {
     updateLayerPosition,
     getLayerProperty,
     getBookmarks,
+    getBookmarksByID,
     addBookmark,
     removeBookmark,
     removeBookmarkByID,

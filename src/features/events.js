@@ -18,32 +18,52 @@ var EVENTS = {
 
   /**
    * Liste des evenements
-   * @fixme convention d'écriture ? ex. componentname:eventtype
+   * @description 
+   * Adopter une convention d'écriture
+   * ex. 
+   * { 
+   *   type : "document",
+   *   action : "saved",
+   *   value : "...",
+   *   componentName : "Drawing"
+   * }
    */
   eventsName: [
     "test:clicked",
     // service
     "service:changed",
     "service:documents:loaded",
+    "service:documents:completed",
     "service:user:loaded",
     // document
     "document:saved",
     "document:updated",
     "document:deleted",
     "document:exported",
+    "document:synchronized",
     "document:shared",
+    "document:restore",
+    // others
+    "leftmenu:close",
+    "modalreporting:open:clicked",
     // widgets
     "catalog:open:clicked",
     "drawing:open:clicked",
+    "drawing:close",
     "layerimport:open:clicked",
     "searchengine:open:displayed",
+    "searchengine:geolocation:clicked",
+    "searchengine:geolocation:removed",
+    "reporting:open:clicked",
     // edition
     "vector:edit:clicked",
     "mapbox:edit:clicked",
     "service:edit:clicked",
     "compute-route:edit:clicked",
     "compute-isocurve:edit:clicked",
-    "compute-profil:edit:clicked"
+    "compute-profil:edit:clicked",
+    // print
+    "printmodal:open",
   ]
 };
 

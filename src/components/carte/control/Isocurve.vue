@@ -1,7 +1,6 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin'
-import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
@@ -22,18 +21,23 @@ const emitter = inject('emitter');
 var service = inject('services');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  isocurveOptions: Object
+  isocurveOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
-const log = useLogger()
-const store = useDataStore();
+const log = useLogger();
 const mapStore = useMapStore();
 
-const map = inject(props.mapId)
-const isocurve = ref(new Isocurve(props.isocurveOptions))
+const map = inject(props.mapId);
+const isocurve = ref(new Isocurve(props.isocurveOptions));
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
   kind : "secondary",
@@ -54,7 +58,7 @@ const btnExport = ref(new ButtonExport({
     menu : "",
     button : "export"
   }
-}))
+}));
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
@@ -101,7 +105,7 @@ onMounted(() => {
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
@@ -135,7 +139,7 @@ onUpdated(() => {
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
@@ -176,6 +180,8 @@ const onCompute = (e) => {
   layer.set("data", widget.getData());
   layer.set("geojson", widget.getGeoJSON());
 }
+
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -244,6 +250,9 @@ const onSaveIsocurve = (e) => {
     return; // pas plus loin...
   }
 
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -275,6 +284,11 @@ const onSaveIsocurve = (e) => {
       title: t.iso.title,
       message: t.iso.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
@@ -300,7 +314,5 @@ const onSaveIsocurve = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
-
-<style></style>

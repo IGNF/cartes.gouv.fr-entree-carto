@@ -16,10 +16,16 @@ import { push } from 'notivue';
 import t from '@/features/translation';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerSwitcherOptions: Object
+  layerSwitcherOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
@@ -140,12 +146,18 @@ const onAddLayer = (e) => {
   }
 
   log.debug("onAddLayer", id);
+  // var permalink = lyr.layer.get("permalink") || false;
   if (id) {
+    if (mapStore.isPermalink()) {
+      // on ne notifie pas l'ajout d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,
       message: t.layerswitcher.add_success
     });
+
   } else {
     push.warning({
       title: t.layerswitcher.title,
@@ -182,37 +194,40 @@ const onRemoveLayer = (e) => {
   // on a la liste des couches natives restantes
   // on ne traite que les couches du catalogue (name & service properties) 
   // et les données personnelles (determiner bookmark id)
-  var layers = e.target._layersOrder;
+  // IMPORTANT: reverse() mute le tableau d'origine, on clone pour éviter les inversions d'ordre ultérieures.
+  var layers = [...(e.target._layersOrder || [])].reverse(); // top -> bottom
   if (layers) {
-    for (const index in layers) {
-      if (Object.prototype.hasOwnProperty.call(layers, index)) {
-        const l = layers[index];
-        if (l.layer.name && l.layer.service) {
+    for (let index = 0; index < layers.length; index++) {
+      const l = layers[index];
+      if (l.layer.name && l.layer.service) {
           id = dataStore.getLayerIdByName(l.layer.name, l.layer.service);
           if (id) {
             mapStore.updateLayerProperty(id, {
-              position : l.layer.getZIndex()
+              position : index + 1 // position
             });
           }
         } else {
-          var gpId = l.layer.gpResultLayerId;
-          if (gpId) {
+          const layerGpId = l.layer.gpResultLayerId;
+          if (layerGpId) {
             // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
-            if (gpId.startsWith('bookmark')) {
-              id = gpId.split(':').pop();
+            if (layerGpId.startsWith('bookmark')) {
+              id = layerGpId.split(':').pop();
               if (id) {
                 mapStore.updateBookmarkPropertyByID(id, {
-                  p : l.layer.getZIndex() // position
+                  p : index + 1 // position
                 });
               }
             }
           }
         }
-      }
     }
   }
   log.debug("onRemoveLayer", id);
   if (id) {
+    if (mapStore.isPermalink()) {
+      // on ne notifie pas la suppression d'une couche du permalien
+      return;
+    }
     // notification
     push.success({
       title: t.layerswitcher.title,
@@ -244,7 +259,8 @@ const onZoomToExtentLayer = (e) => {
         globalConstraints.extent.top
       ];
 
-      var crsSource = globalConstraints.crs;
+      var crsSource = globalConstraints.projection;
+      // par défaut, les projections devraient être en Geographique
       if (!crsSource) {
         crsSource = "EPSG:4326";
       }
@@ -312,12 +328,36 @@ const onChangePositionLayer = (e) => {
   log.debug("onChangePositionLayer", e);
   // INFO
   // on met à jour les couches du catalogues ou enregistrées dans l'espace personnel
-  mapStore.updateLayerPosition(e.layers.reverse().map((layer) => {
-    // TODO les couches utilisateur enregistrées !
-    if (layer.name && layer.service) {
-      return dataStore.getLayerIdByName(layer.name, layer.service);
-    } 
-  }));
+  // on inverse la liste des couches pour que la position soit cohérente avec l'ordre d'affichage (top / bottom)
+  // IMPORTANT: reverse() mute le tableau d'origine, on clone pour éviter les inversions d'ordre ultérieures.
+  var layers = [...(e.layers || [])].reverse(); // top -> bottom
+  for (let index = 0; index < layers.length; index++) {
+    const l = layers[index];
+      if (l.name && l.service) {
+        const layerId = dataStore.getLayerIdByName(l.name, l.service);
+        if (layerId) {
+          log.debug(l.name, "| position", index + 1);
+          mapStore.updateLayerProperty(layerId, {
+            position : index + 1 // position
+          });
+        }
+      } else {
+        const layerGpId = l.layer.gpResultLayerId;
+        if (layerGpId) {
+          // ex. "bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa3"
+          if (layerGpId.startsWith('bookmark')) {
+            const bookmarkId = layerGpId.split(':').pop();
+            if (bookmarkId) {
+              log.debug(bookmarkId, "| position", index + 1);
+              mapStore.updateBookmarkPropertyByID(bookmarkId, {
+                p : index + 1 // position
+              });
+            }
+          }
+        }
+      }
+    
+  }
 }
 const onChangeGrayScaleLayer = (e) => {
   log.debug("onChangeGrayScaleLayer", e);
@@ -417,6 +457,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-route") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "route") ||
           gpId.toLowerCase().includes("compute:pieton$ogc:openls;itineraire") ||
           gpId.toLowerCase().includes("compute:voiture$ogc:openls;itineraire") ||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "route")
@@ -436,6 +477,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-isocurve") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "isocurve") ||
           gpId.toLowerCase().includes("compute:pieton$geoportail:gpp:isocurve") ||
           gpId.toLowerCase().includes("compute:voiture$geoportail:gpp:isocurve")||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "isocurve")) {
@@ -454,6 +496,7 @@ const onClickEditLayer = (e) => {
       }
       // on liste tous les cas de figures possibles pour un compute à éditer
       if (gpId.toLowerCase().includes("bookmark:compute-profil") || 
+          (gpId.toLowerCase().includes("bookmark:compute") && e.layer.get("control") === "elevationpath") ||
           gpId.toLowerCase().includes("measure:profil") ||
           (gpId.toLowerCase().includes("layerimport:compute") && e.layer.get("control") === "elevationpath")) {
 
@@ -480,9 +523,48 @@ const onClickEditLayer = (e) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
+<style lang="scss">
+@use "@/assets/variables" as *;
 
+// surclasse hauteur du widget/bouton
+.gpf-widget[id^="GPlayerSwitcher-"] {
+  height: $widget-btn-size;
+
+  .gpf-btn-icon {
+    width: $widget-btn-size;
+    height: $widget-btn-size;
+    @include widget-btn-style;
+  }
+}
+// counter
+.GPlayerCounter {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  left: auto;
+}
+// largeur du panel
+.gpf-panel[id^="GPlayersList"] {
+  width: $widget-panel-width-lg !important;
+}
+// panels multiple
+.gpf-panel[id^="GPlayersList"] ~ .gpf-panel {
+  right: calc(($widget-panel-width-lg - $widget-panel-multiple-width-lg) / 2) + $widget-btn-size + $gap !important;
+  top: 4rem !important;
+  width: $widget-panel-multiple-width-lg;
+  max-width: min($widget-panel-multiple-width-lg, calc(100cqi - $widget-btn-size * 2 - $gap * 4 - ($widget-panel-width-lg - $widget-panel-multiple-width-lg))) !important;
+}
+// utilise un fond clair dans le panel
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"][aria-current="true"],
+.gpf-panel__content[id^="GPlayerSwitcher_ID_"]:hover {
+  background: var(--background-default-grey);
+}
+// panels spécifiques
+div[id^="GPlayerInfoContent"] {
+  width: initial;
+  padding: 10px;
+}
 </style>

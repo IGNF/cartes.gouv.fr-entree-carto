@@ -12,14 +12,30 @@ export default {
 <script setup lang="js">
 import { CRS } from 'geopf-extensions-openlayers'
 
-import Map from 'ol/Map'
+import { Map, View } from 'ol'
+import {
+    MouseWheelZoom,
+    defaults as defaultInteractions
+} from "ol/interaction";
+import {
+    shiftKeyOnly as eventShiftKeyOnly
+} from "ol/events/condition";
+import { fromLonLat, toLonLat } from "ol/proj";
+
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
+import { useLogger } from 'vue-logger-plugin';
 
 const mapStore = useMapStore()
+const log = useLogger()
 
 const props = defineProps({
-  mapId: String
+  mapId: {
+    type: String,
+    default: 'mainMap'
+  },
+  zoom : Number,
+  center : Array,
 })
 
 /**
@@ -33,7 +49,21 @@ const mapRef = ref(null)
 */
 const map = new Map({
   target: props.mapId,
-  controls: [] // on supprime les contrôles par defaut !
+  controls: [], // on supprime les contrôles par defaut !
+  interactions : defaultInteractions().extend([
+    new MouseWheelZoom({
+      constrainResolution : true,
+      condition : eventShiftKeyOnly
+    })
+  ]),
+  view: new View({
+    zoom: props.zoom,
+    center: fromLonLat(props.center),
+    minZoom : 0,
+    maxZoom : 21,
+    enableRotation: false,
+    projection : "EPSG:3857"
+  }),
 })
 
 /**
@@ -77,10 +107,27 @@ map.on('loadend', () => {
   
   endLoading();
 });
+/**
+ * abonnement à l'evenement 'moveend' de la map
+ * pour mise à jour du centre de la carte
+ */
+map.on("moveend", (e) => {
+  let view = map.getView();
+  let center = view.getCenter();
+  mapStore.x = center[0];
+  mapStore.y = center[1];
+
+  var coordinate = toLonLat(center);
+  mapStore.lon = coordinate[0];
+  mapStore.lat = coordinate[1];
+
+  mapStore.zoom = view.getZoom();
+})
 
 provide(props.mapId, map)
 
 onMounted(() => {
+  log.debug("Map component mounted")
   // On déclenche l'ecriture dans le dom
   
   CRS.loadByDefault();
@@ -91,8 +138,9 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
-  if (props.mapId == mainMap)
-  mapStore.setMap(map)
+  if (props.mapId == mainMap) {
+    mapStore.setMap(map)
+  }
 })
 
 /**
@@ -100,8 +148,11 @@ onMounted(() => {
  *  Trigerred on mouse over
  */
 const onFocusOnMap = () => {
-  // Si le focus est actuellement sur une balise <input> ou <select>, on ne change pas de focus
-  if (document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "SELECT") {
+  // Si le focus est actuellement sur une balise <input> ou <select> ou sur la barre de recherche dépliée, on ne change pas de focus
+  var btn = document.querySelector("button[id^=GPSearchEngine-advanced-btn-]");
+  if (document.activeElement.tagName !== "INPUT" && 
+      document.activeElement.tagName !== "SELECT" && 
+      (!btn || btn.getAttribute("aria-expanded") !== "true")) {
     mapRef.value.focus();
   }
 }

@@ -1,16 +1,20 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
+
+import { shallowRef, markRaw } from 'vue';
 
 import {
   toLonLat as toLonLatProj,
-  fromLonLat as fromLonLatProj
 } from "ol/proj";
 
 import {
-  SearchEngine
+    SearchEngineAdvanced,
+    InseeAdvancedSearch,
+    LocationAdvancedSearch,
+    CoordinateAdvancedSearch,
+    ParcelAdvancedSearch
 } from 'geopf-extensions-openlayers';
 
 const emitter = inject('emitter');
@@ -19,123 +23,139 @@ const emitter = inject('emitter');
 // choisir où placer le tracker Eulerian sur ce widget !
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  searchEngineOptions: Object
+  searchEngineOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const log = useLogger();
-
 const mapStore = useMapStore();
-const dataStore = useDataStore();
-
 
 const map = inject(props.mapId);
-const searchEngine = ref(new SearchEngine(props.searchEngineOptions));
+const insee = shallowRef(new InseeAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Code INSEE' }));
+const location = shallowRef(new LocationAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Lieux et toponymes' }));
+const coordinates = shallowRef(new CoordinateAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Coordonnées' }));
+const parcels = shallowRef(new ParcelAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Parcelles cadastrales' }));
+
+const advancedSearchEngineOptions = computed(() => {
+    return Object.assign({}, props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
+});
+
+// const searchEngineAdvanced = ref(markRaw(new SearchEngineAdvanced(advancedSearchEngineOptions.value)));
+let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
   if (props.visibility) {
-    map.addControl(searchEngine.value)
+    map.addControl(searchEngineAdvanced.value);
     /** abonnement au widget */
-    searchEngine.value.on("searchengine:search:click", onClickSearch);
-    searchEngine.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
-    searchEngine.value.on("searchengine:geocode:click", onClickGeocodeResult);
-    searchEngine.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
-    searchEngine.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
-    searchEngine.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
+    searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
+    searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
+    searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
+    searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
+    searchEngineAdvanced.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
+    searchEngineAdvanced.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
   }
 })
 
 onBeforeUpdate(() => {
-  if (!props.visibility) {
-    map.removeControl(searchEngine.value)
-  }
+  map.removeControl(searchEngineAdvanced.value);
 })
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(searchEngine.value)
+    // cree un nouveau searchengine quand les props changent (label)
+    searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
+    map.addControl(searchEngineAdvanced.value);
   }
 })
 
-onUnmounted(() => {})
-
-// abonnement
-emitter.addEventListener("searchengine:open:displayed", (e) => {
-  if (searchEngine.value) {
-    var coordinates = e.position;
-    var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
-    searchEngine.value._setMarker(fromLonLatProj(e.position), info);
-  }
-});
-
 /**
- * Gestionnaire d'evenement sur l'abonnement
- * à la recherche de couche
+ * Gestionnaire d'evenement sur les abonnements
  */
+
 const onClickSearch = (e) => {
-  var id = dataStore.getLayerIdByName(e.suggest.name, e.suggest.service);
-  mapStore.addLayer(id);
-  log.debug("onClickSearch", id);
+  log.debug("SearchEngineAdvanced - onClickSearch", e);
 }
-const onClickAutocompletResult = (e) => {}
-const onClickGeocodeResult = (e) => {}
-const onClickSeachByCoordinates = (e) => {}
+const onClickAutocompletResult = (e) => {
+  log.debug("SearchEngineAdvanced - onClickAutocompletResult", e);
+}
+const onClickGeocodeResult = (e) => {
+  log.debug("SearchEngineAdvanced - onClickGeocodeResult", e);
+}
+const onClickSeachByCoordinates = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearchByCoordinates", e);
+}
 const onClickSearchGeolocationOpen = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
   // geolocalisation demandée :
   // on ajoute l'information dans le permalien...
   // on passe par le mapStore
   // on passe en geographique
   mapStore.geolocation = toLonLatProj(e.coordinates).toString();
+  emitter.emit("searchengine:geolocation:clicked", e.coordinates);
 }
 const onClickSearchGeolocationRemove = (e) => {
+  log.debug("SearchEngineAdvanced - onClickSearchGeolocationRemove", e);
   // geolocalisation demandée :
   // on enlève l'information dans le permalien...
   // on passe par le mapStore
   mapStore.geolocation = "";
+  emitter.emit("searchengine:geolocation:removed");
 }
-
 
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-/* Centrage de la barre de recherche avec marge horizontales auto et largeur fixe */
-  div[id^="GPsearchEngine-"] {
-    position: relative;
-    /* FIXME repasser à 480px quand fusion des boutons rech avancée et rech par coords */
-    width: 550px;
-    margin: 0 auto;
-    left: unset;
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.gpf-widget[id^="GPsearchEngine-Advanced"] {
+  left: $widget-panel-x - 5; // marge 5 interne
+  box-shadow: none;
+
+  .GPSearchBar .GPInputGroup,
+  .GPSearchBar .GPInputGroup > input,
+  button[id^="GPshowSearchEnginePicto-"].fr-btn {
+    height: $widget-btn-size;
   }
 
-  /* pas de scrollbar sur les panneaux de recherche avancée */
-  form[id^="GPadvancedSearchForm"],
-  form[id^="GPcoordinateSearchForm"] {
-    max-height: unset;
+  .GPSearchBar .GPInputGroup {
+    border-top-right-radius: 0;
   }
 
-  /* FIXME l'affichage ne se fait pas comme sur les extensions... Pourquoi ??*/
-  dialog[id^=GPadvancedSearchPanel] {
-    max-height: 50vh;
-    overflow: auto;
+  @include min(sm) {
+    width: 420px;
   }
 
-  /* MODE MOBILE : les boutons sont en dessous de la barre de recherche qui prend toute la largeur */
-  @media (max-width: 576px){
-    div[id^=GPsearchEngine-]{
-      top: unset;
-      left: unset;
-      width: 100%;
-    }
+  @include max(sm) {
+    top: $gap;
+    left: $gap - 5; // 5 interne
+    max-width: calc(100% - 6px); // 6px un peu magique
 
-    [id^="GPautocompleteResults-"] {
-      height: 76.8vh;
+    &:has(.GPSearchEngine-advanced-btn[aria-expanded="true"]),
+    .GPautoCompleteContainer {
+      z-index: 4;
     }
   }
+}
 
+// empeche le retrecissement dans un contexte flex
+// et fixe la largeur min
+.GPsearchInputSubmit {
+  flex: 0 0 $widget-btn-size;
+}
+// centre l'icone
+.GPsearchInputSubmit::before {
+  margin: 0 auto !important;
+}
 </style>

@@ -2,8 +2,6 @@ import ServiceBase from "@/services/ServiceBase";
 
 import { useServiceStore } from '@/stores/serviceStore';
 
-import { inject } from 'vue';
-
 const IAM_REDIRECT_REMOTE = import.meta.env.IAM_REDIRECT_REMOTE;
 
 const IAM_ENTREPOT_API_URL_REMOTE = import.meta.env.IAM_ENTREPOT_API_URL_REMOTE;
@@ -19,8 +17,8 @@ class ServiceRemote extends ServiceBase {
     return this;
   }
 
-  async isAccessValided () {
-    const emitter = inject('emitter');
+  async resolveAccessStatus () {
+    const emitter = this.getEmitter ? this.getEmitter() : null;
     var store = useServiceStore();
 
     const bLogin = location.href.includes("login");
@@ -43,18 +41,24 @@ class ServiceRemote extends ServiceBase {
         status = "login";
         try {
           const user = await this.getUserMe();
+          if (!user) {
+            throw new Error('User profile unavailable from API');
+          }
           console.debug(user);
-          emitter.dispatchEvent("service:user:loaded", {
-            bubbles: true,
-            detail: user
-          });
+          if (emitter) {
+            emitter.dispatchEvent("service:user:loaded", {
+              bubbles: true,
+              detail: user
+            });
+          }
 
           const documents = await this.getDocuments();
-          console.debug(documents);
-          emitter.dispatchEvent("service:documents:loaded", {
-            bubbles: true,
-            detail: documents
-          });
+          if (emitter) {
+            emitter.dispatchEvent("service:documents:loaded", {
+              bubbles: true,
+              detail: documents
+            });
+          }
 
           promise = Promise.resolve(status);
         } catch (e) {

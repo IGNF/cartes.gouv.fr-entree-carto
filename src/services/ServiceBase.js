@@ -1,14 +1,23 @@
 import Users from '@/services/ServiceUsers';
 import Documents from '@/services/ServiceDocuments';
+import ServiceError from '@/services/ServiceError';
 
 import { useServiceStore } from '@/stores/serviceStore';
+// client keycloak pour vérifier la session (iframe)
+import Keycloak from "keycloak-js";
 
 const IAM_AUTH_MODE = import.meta.env.IAM_AUTH_MODE;
+const IAM_URL = import.meta.env.IAM_URL;
+const IAM_REALM = import.meta.env.IAM_REALM;
+
+const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
+const KEYCLOAK_SILENT_SSO_BLOCKED_KEY = 'auth:keycloak-silent-sso-blocked';
 
 class ServiceBase {
 
   #fetch
   #pending
+  #emitter
 
   /**
    * Constructor for ServiceBase
@@ -36,8 +45,12 @@ class ServiceBase {
     /** erreurs IAM */
     this.error = options.error || {};
 
-    /** mode local ou remote */
-    this.mode = options.mode || IAM_AUTH_MODE;
+    /** 
+     * mode local ou remote 
+     * on force toujours le mode d'authentification 
+     * pour éviter les erreurs de configuration
+     */
+    this.mode = IAM_AUTH_MODE;
 
     this.url = encodeURI(location.origin + import.meta.env.BASE_URL);
     this.api = null;
@@ -46,6 +59,7 @@ class ServiceBase {
     this.#fetch = null;
 
     this.#pending = false;
+    this.#emitter = options.emitter || null;
 
     return this;
   }
@@ -91,7 +105,7 @@ class ServiceBase {
    */
   throwError (error) {
     this.#pending = false;
-    throw error;
+    throw ServiceError.from(error);
   }
 
   /**
@@ -115,10 +129,82 @@ class ServiceBase {
   }
 
   /**
+   * Get emitter instance used to dispatch global events.
+   * @returns {Object|null}
+   */
+  getEmitter () {
+    return this.#emitter;
+  }
+
+  /**
+   * Set emitter instance used to dispatch global events.
+   * @param {Object|null} emitter
+   */
+  setEmitter (emitter) {
+    this.#emitter = emitter || null;
+  }
+
+  /**
+   * Verifie la session Keycloak en utilisant (iframe)
+   * - soit avec la librairie Keycloak (par défaut)
+   * - soit via la méthode oauth2  
+   * @param {String} adapter - oauth2 or keycloak
+   * @returns {Promise<Boolean>} - true if session is active, false otherwise
+   */
+  async checkKeycloakSession (adapter) {
+    if (adapter === "keycloak") {
+      const keycloakSilentSsoBlocked = sessionStorage.getItem(KEYCLOAK_SILENT_SSO_BLOCKED_KEY) === '1';
+      if (keycloakSilentSsoBlocked) {
+        return false;
+      }
+
+      console.log("use checkKeycloakSessionAdapter keycloak");
+      const keycloak = new Keycloak({
+        url: IAM_URL,
+        realm: IAM_REALM,
+        clientId: IAM_CHECK_SSO_CLIENT_ID
+      });
+
+      try {
+        // INFO
+        // https://www.keycloak.org/securing-apps/javascript-adapter#_browsers_with_blocked_third_party_cookies
+        // Silent check-sso is not supported and falls back to regular (non-silent) check-sso by default. 
+        // This behavior can be changed by setting silentCheckSsoFallback: false in the options passed 
+        // to the init method. In this case, check-sso will be completely disabled if restrictive browser 
+        // behavior is detected.
+        return await keycloak.init({ 
+            onLoad: 'check-sso', 
+            flow: "standard",
+            pkceMethod: "S256",
+            checkLoginIframe: false,
+            silentCheckSsoFallback: false,
+            silentCheckSsoRedirectUri: this.url + '/silent-check-sso-keycloak.html'
+        });
+      } catch (error) {
+        const message = String(error?.message || error || '');
+        const isThirdPartyIframeTimeout = message.includes('3rd party check iframe message');
+
+        if (isThirdPartyIframeTimeout) {
+          sessionStorage.setItem(KEYCLOAK_SILENT_SSO_BLOCKED_KEY, '1');
+          console.warn('Silent SSO check skipped: browser blocks third-party storage/cookies (requestStorageAccess or iframe timeout).');
+          return false;
+        }
+
+        throw error;
+      }
+    } else {
+      console.log("use checkKeycloakSessionAdapter oauth2");
+      return new Promise((reject) => {
+        reject("checkKeycloakSessionAdapter oauth2 is not implemented yet !");
+      });
+    }
+  }
+
+  /**
    * Check if the access is valid
    * @returns {Promise} - Promise that resolves if access is valid, rejects otherwise
    */
-  async isAccessValided () {
+  async resolveAccessStatus () {
     // Enregistrement du statut par defaut dans le storage 
     this.saveStore();
     Promise.resolve();
@@ -143,6 +229,28 @@ class ServiceBase {
    */
   async getAccessToken () {
     Promise.reject('this must be overridden !');
+  }
+  /**
+   * Check if the authentificate is already done locally
+   * @returns {Boolean} - True if authentificate
+   */
+  isAuthenticatedLocally () {
+    if (this.authenticated) {
+      return true;
+    }
+    return false;
+  }
+  /**
+   * Check if the authentificate is really done
+   * @returns {Boolean} - True if authentificate
+   */
+  async validateAuthentication () {
+    try {
+      var data = await this.getUserMe();
+      return (data !== null);
+    } catch {
+      return false;
+    }
   }
 }
 

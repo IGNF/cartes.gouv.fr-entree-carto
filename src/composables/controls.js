@@ -9,147 +9,231 @@
  *    active: true,      // rendre actif le widget sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
  *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
+ *    default: true      // actif par défaut sur la carte
+ *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
+import { useMatchMedia } from '@/composables/matchMedia';
+import { useDataStore } from "@/stores/dataStore";
+import { LayerWMTS as GeoportalWMTS } from 'geopf-extensions-openlayers';
 
+let isMobile = useMatchMedia('SM');
+
+
+// la gestion des controles, l'ordre est important:
+// 1. Catalog 2. Layerswitcher
+// 3 à ControlList - 1 Outils à droite
+// ControlList
+// les autres (ordre non important)
 export const useControls = {
-  OverviewMap: {
-    id: 'OverviewMap',
+  Catalog: {
+    id: 'Catalog',
     active: true,
     disable: true,
-    analytic: true
-  },
-  SearchEngine: {
-    id: 'SearchEngine',
-    active: true,
-    disable: true,
-    analytic: false
-  },
-  ScaleLine: {
-    id: 'ScaleLine',
-    active: true,
-    disable: true,
-    analytic: false
+    analytic: true,
+    default: true,
+    icon: "fr-icon-feedback-line"
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
     active: true,
     disable: true,
-    analytic: true
-  },
-  GetFeatureInfo: {
-    id: 'GetFeatureInfo',
-    active: true,
-    disable: true,
-    analytic: true
-  },
-  Legends: {
-    id: 'Legends',
-    active: true,
-    disable: true,
-    analytic: true
-  },
-  Drawing: {
-    id: 'Drawing',
-    active: true,
-    disable: false,
-    analytic: true
-  },
-  Isocurve: {
-    id: 'Isocurve',
-    active: true,
-    disable: false,
-    analytic: true
-  },
-  ReverseGeocode: {
-    id: 'ReverseGeocode',
-    active: true,
-    disable: false,
-    analytic: true
-  },
-  Zoom: {
-    id: 'Zoom',
-    active: true,
-    disable: true,
-    analytic: false
-  },
-  Route: {
-    id: 'Route',
-    active: true,
-    disable: false,
-    analytic: true
-  },
-  FullScreen: {
-    id: 'FullScreen',
-    active: true,
-    disable: true,
-    analytic: false
+    analytic: true,
+    default: true,
+    icon: "fr-icon-stack-line"
   },
   MeasureLength: {
     id: 'MeasureLength',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: true,
+    icon: "ri:ruler-line"
   },
   MeasureArea: {
     id: 'MeasureArea',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: true,
+    icon: "ri:custom-size"
   },
-  MeasureAzimuth: {
-    id: 'MeasureAzimuth',
+  Drawing: {
+    id: 'Drawing',
     active: true,
     disable: false,
-    analytic: true
+    analytic: true,
+    default: true,
+    icon: "ri:pencil-line"
   },
-  Share: {
-    id: 'Share',
+  Route: {
+    id: 'Route',
     active: true,
-    disable: true,
-    analytic: true
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:route-line"
   },
-  Print: {
-    id: 'Print',
+  Isocurve: {
+    id: 'Isocurve',
     active: true,
-    disable: true,
-    analytic: true
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:map-pin-time-line"
+  },
+  ReverseGeocode: {
+    id: 'ReverseGeocode',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:signpost-line"
   },
   MousePosition: {
     id: 'MousePosition',
     active: true,
     disable: false,
-    analytic: false
-  },
-  Territories: {
-    id: 'Territories',
-    active: true,
-    disable: true,
-    analytic: true
+    analytic: false,
+    default: true,
+    icon: "gpf:coordonnee"
   },
   ElevationPath: {
     id: 'ElevationPath',
     active: true,
     disable: false,
-    analytic: false
+    analytic: false,
+    default: true,
+    icon: "ri:line-chart-line"
   },
-  LayerImport: {
-    id: 'LayerImport',
+  MeasureAzimuth: {
+    id: 'MeasureAzimuth',
     active: true,
-    disable: true,
-    analytic: true
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "ri:compasses-2-line"
   },
   ControlList: {
     id: 'ControlList',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true,
+    icon: "ri:list-check"
+  },
+  OverviewMap: {
+    id: 'OverviewMap',
+    active: false,
+    disable: false,
+    analytic: true,
+    default: false,
+    icon: "ri:navigation-line"
+  },
+  SearchEngine: {
+    id: 'SearchEngine',
+    active: true,
+    disable: true,
+    analytic: false,
+    default: true,
+    icon: "ri:search-line"
+  },
+  ScaleLine: {
+    id: 'ScaleLine',
+    active: true,
+    disable: true,
+    analytic: false,
+    default: true,
+    // The ScaleLine control is a non-interactive widget and does not require an icon.
+    icon: ""
+  },
+  GetFeatureInfo: {
+    id: 'GetFeatureInfo',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "gpf:getfeature-line"
+  },
+  Legends: {
+    id: 'Legends',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "ri:list-indefinite"
+  },
+  Zoom: {
+    id: 'Zoom',
+    active: true,
+    disable: false,
+    analytic: false,
+    default: !isMobile.value,
+    icon: "ri:zoom-in-line"
+  },
+  FullScreen: {
+    id: 'FullScreen',
+    active: true,
+    disable: false,
+    analytic: false,
+    default: true,
+    icon: "ri:fullscreen-line"
+  },
+  Share: {
+    id: 'Share',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "ri:map-2-line"
+  },
+  Print: {
+    id: 'Print',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-printer-line"
+  },
+  Territories: {
+    id: 'Territories',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-france-line"
+  },
+  LayerImport: {
+    id: 'LayerImport',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "ri:file-upload-line"
   },
   ContextMenu: {
     id: 'ContextMenu',
     active: true,
     disable: true,
-    analytic: true
+    analytic: true,
+    default: true,
+    icon: "ri:menu-2-line"
+  },
+  Reporting: {
+    id: 'Reporting',
+    active: true,
+    disable: true,
+    analytic: true,
+    default: true,
+    icon: "fr-icon-feedback-line" // ri:feedback-line
+  },
+  Panoramax: {
+    id: 'Panoramax',
+    active: true,
+    disable: false,
+    analytic: true,
+    default: true,
+    icon: "gpf:panoramax"
   }
 }
 
@@ -161,7 +245,7 @@ export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
-    if (useControls[control].active === true && useControls[control].disable === true) {
+    if (useControls[control].default == true || (useControls[control].active === true && useControls[control].disable === true)) {
       defaultControls.push(useControls[control].id);
     }
   }
@@ -175,178 +259,221 @@ export function useDefaultControls() {
 export function useControlsMenuOptions() {
   return [
     {
-      label: 'Barre de Recherche',
-      id: 'searchEngine',
-      name: useControls.SearchEngine.id,
-      hint: 'Barre de recherche sur la carte',
-      disabled: useControls.SearchEngine.disable
-    },
-    {
-      label: 'Mini carte',
-      id: 'overview',
-      name: useControls.OverviewMap.id,
-      hint: 'Petite carte pour se repérer',
-      disabled: useControls.OverviewMap.disable
-    },
-    {
-      label: 'Scale Line',
-      id: 'scaleLine',
-      name: useControls.ScaleLine.id,
-      hint: 'Echelle',
-      disabled: useControls.ScaleLine.disable
-    },
-    {
-      label: 'Gestionnaire de couches',
-      id: 'layerSwitcher',
-      name: useControls.LayerSwitcher.id,
-      hint: 'Gestionnaire de couches',
-      disabled: useControls.LayerSwitcher.disable
-    },
-    {
-      label: 'GetFeatureInfo',
-      id: 'getFeatureInfo',
-      name: useControls.GetFeatureInfo.id,
-      hint: 'Informations sur les couches',
-      disabled: useControls.GetFeatureInfo.disable
-    },
-    {
-      label: 'Légendes',
-      id: 'legends',
-      name: useControls.Legends.id,
-      hint: 'Légendes',
-      disabled: useControls.Legends.disable
-    },
-    {
-      label: 'Croquis',
-      id: 'drawing',
-      name: useControls.Drawing.id,
-      hint: 'Annoter la carte',
-      disabled: useControls.Drawing.disable
-    },
-    {
-      label: 'Geocodage inverse',
-      id: 'reverseGeocode',
-      name: useControls.ReverseGeocode.id,
-      hint: 'Geocodage inverse',
-      disabled: useControls.ReverseGeocode.disable
-    },
-    {
-      label: 'Calcul d\'isochrone',
-      id: 'isocurve',
-      name: useControls.Isocurve.id,
-      hint: 'Calcul d\'isochrone',
-      disabled: useControls.Isocurve.disable
-    },
-    {
-      label: 'Calcul d\'itinéraire',
-      id: 'route',
-      name: useControls.Route.id,
-      hint: 'Calcul d\'itinéraire',
-      disabled: useControls.Route.disable
-    },
-    {
-      label: 'Zoom',
-      id: 'zoom',
-      name: useControls.Zoom.id,
-      hint: 'Zoom',
-      disabled: useControls.Zoom.disable
-    },
-    {
-      label: 'Plein écran',
-      id: 'fullscreen',
-      name: useControls.FullScreen.id,
-      hint: 'Plein écran',
-      disabled: useControls.FullScreen.disable
-    },
-    {
-      label: 'Mesure de distance',
+      label: 'Mesurer une distance',
       id: 'measureLength',
       name: useControls.MeasureLength.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureLength.disable
+      disabled: useControls.MeasureLength.disable,
+      icon: "ri:ruler-line",
+      group: 'Mesure',
     },
     {
-      label: 'Mesure d\'aire',
+      label: 'Mesurer une surface',
       id: 'measureArea',
       name: useControls.MeasureArea.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureArea.disable
+      disabled: useControls.MeasureArea.disable,
+      icon: "ri:custom-size",
+      group: 'Mesure',
     },
     {
-      label: 'Mesure d\'azimut',
+      label: 'Mesurer un angle',
       id: 'measureAzimuth',
       name: useControls.MeasureAzimuth.id,
-      hint: 'Mesures',
-      disabled: useControls.MeasureAzimuth.disable
+      disabled: useControls.MeasureAzimuth.disable,
+      icon: "ri:compasses-2-line",
+      group: 'Mesure',
     },
     {
-      label: 'Partager une carte',
-      id: 'share',
-      name: useControls.Share.id,
-      hint: 'Partages',
-      disabled: useControls.Share.disable
-    },
-    {
-      label: 'Afficher les coordonnées',
+      label: 'Coordonnées du curseur',
       id: 'mousePosition',
       name: useControls.MousePosition.id,
-      hint: 'Position de la souris',
-      disabled: useControls.MousePosition.disable
-    },
-    {
-      label: 'Selectionner un territoire',
-      id: 'territories',
-      name: useControls.Territories.id,
-      hint: 'Territoires',
-      disabled: useControls.Territories.disable
+      disabled: useControls.MousePosition.disable,
+      icon: "gpf:coordonnee",
+      group: 'Mesure',
     },
     {
       label: 'Profil altimétrique',
       id: 'elevationPath',
       name: useControls.ElevationPath.id,
-      hint: 'Profil altimétrique',
-      disabled: useControls.ElevationPath.disable
+      hint: 'Afficher l’altitude le long d’un trajet',
+      disabled: useControls.ElevationPath.disable,
+      icon: "ri:line-chart-line",
+      group: 'Mesure',
+    },
+    {
+      label: 'Annoter la carte',
+      id: 'drawing',
+      name: useControls.Drawing.id,
+      hint: 'Ajouter des points, lignes, formes ou textes directement sur la carte',
+      disabled: useControls.Drawing.disable,
+      icon: "ri:pencil-line",
+      group: 'Dessin',
+    },
+    {
+      label: 'Itinéraire',
+      id: 'route',
+      name: useControls.Route.id,
+      disabled: useControls.Route.disable,
+      icon: "ri:route-line",
+      group: 'Déplacements',
+    },
+    {
+      label: 'Trouver une adresse',
+      id: 'reverseGeocode',
+      name: useControls.ReverseGeocode.id,
+      hint: 'Obtenir l’adresse ou le nom d’un lieu à partir d’un point ou d’une zone sur la carte',
+      disabled: useControls.ReverseGeocode.disable,
+      icon: "ri:signpost-line",
+      group: 'Déplacements',
+    },
+    {
+      label: 'Zone selon temps de trajet',
+      id: 'isocurve',
+      name: useControls.Isocurve.id,
+      hint: 'Afficher la zone que l’on peut atteindre en un temps donné depuis un point de départ',
+      disabled: useControls.Isocurve.disable,
+      icon: "ri:map-pin-time-line",
+      group: 'Déplacements',
+    },
+    {
+      label: 'Mini carte',
+      id: 'overview',
+      name: useControls.OverviewMap.id,
+      hint: 'Aperçu de la zone pour se répérer facilement',
+      disabled: useControls.OverviewMap.disable,
+      icon: "ri:navigation-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Sélecteur de territoires',
+      id: 'territories',
+      name: useControls.Territories.id,
+      disabled: useControls.Territories.disable,
+      icon: "fr-icon-france-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Zoom',
+      id: 'zoom',
+      name: useControls.Zoom.id,
+      disabled: useControls.Zoom.disable,
+      icon: "ri:zoom-in-line",
+      group: 'Affichage',
+    },
+    {
+      label: 'Plein écran',
+      id: 'fullscreen',
+      name: useControls.FullScreen.id,
+      disabled: useControls.FullScreen.disable,
+      icon: "ri:fullscreen-line",
+    },
+    {
+      label: 'Barre de Recherche',
+      id: 'searchEngine',
+      name: useControls.SearchEngine.id,
+      hint: 'Barre de recherche sur la carte',
+      disabled: useControls.SearchEngine.disable,
+    },
+    {
+      label: 'Scale Line',
+      id: 'scaleLine',
+      name: useControls.ScaleLine.id,
+      disabled: useControls.ScaleLine.disable,
+    },
+    {
+      label: 'Gestionnaire de couches',
+      id: 'layerSwitcher',
+      name: useControls.LayerSwitcher.id,
+      disabled: useControls.LayerSwitcher.disable,
+      icon: "fr-icon-stack-line"
+    },
+    {
+      label: 'GetFeatureInfo',
+      id: 'getFeatureInfo',
+      name: useControls.GetFeatureInfo.id,
+      disabled: useControls.GetFeatureInfo.disable,
+      icon: "gpf:getfeature-line"
+    },
+    {
+      label: 'Légendes',
+      id: 'legends',
+      name: useControls.Legends.id,
+      disabled: useControls.Legends.disable,
+      icon: "ri:list-indefinite"
+    },
+    {
+      label: 'Partager une carte',
+      id: 'share',
+      name: useControls.Share.id,
+      disabled: useControls.Share.disable,
+      icon: "ri:map-2-line"
     },
     {
       label: 'Importer des données',
       id: 'layerImport',
       name: useControls.LayerImport.id,
-      hint: 'Import de données',
-      disabled: useControls.LayerImport.disable
+      disabled: useControls.LayerImport.disable,
+      icon: "ri:file-upload-line"
     },
     {
       label: 'Imprimer une carte',
       id: 'print',
       name: useControls.Print.id,
-      hint: 'Impression',
-      disabled: useControls.Print.disable
+      disabled: useControls.Print.disable,
+      icon: "fr-icon-printer-line"
     },
     {
       label: 'Liste des controles',
       id: 'controlList',
       name: useControls.ControlList.id,
-      hint: 'Liste des controles supplémentaires non affichés',
-      disabled: useControls.ControlList.disable
+      disabled: useControls.ControlList.disable,
+      icon: "ri:list-check"
     },
     {
       label: 'Menu contextuel',
       id: 'contextMenu',
       name: useControls.ContextMenu.id,
-      hint: 'Menu contextuel au clic droit sur la carte',
-      disabled: useControls.ContextMenu.disable
+      disabled: useControls.ContextMenu.disable,
+      icon: "ri:menu-2-line"
+    },
+    {
+      label: 'Signaler une anomalie',
+      id: 'reporting',
+      name: useControls.Reporting.id,
+      disabled: useControls.Reporting.disable,
+      icon: "fr-icon-feedback-line"
+    },
+    {
+      label: 'Catalogue',
+      id: 'catalog',
+      name: useControls.Catalog.id,
+      disabled: useControls.Catalog.disable,
+      icon: "ri:map-2-line"
+    },
+    {
+      label: 'Visionneuse Panoramax',
+      id: 'panoramax',
+      name: useControls.Panoramax.id,
+      disabled: useControls.Panoramax.disable,
+      hint: "Explorez les lieux photographiés et visionnez les photos",
+      icon: "gpf:panoramax",
+      group: 'Affichage'
     }
   ].filter(opt => Object.keys(useControls).includes(opt.name))
   .filter(opt => !opt.disabled)
 }
 
+/**
+ * Obtenir les positions des contrôles (extensions)
+ * @returns 
+ */
 export function useControlsExtensionPosition() {
   return {
     shareOptions : 'top-left',
     printOptions : 'top-right',
     territoriesOptions : 'bottom-left',
     layerSwitcherOptions : "top-right",
-    legendsOptions : "top-right",
-    getFeatureInfoOptions : 'bottom-left',
+    legendsOptions : "bottom-left",
+    getFeatureInfoOptions : 'top-left',
     overviewMapOptions : 'bottom-left',
     zoomOptions : 'bottom-right',
     controlListOptions : 'top-right',
@@ -358,12 +485,19 @@ export function useControlsExtensionPosition() {
     measureAreaOptions : 'top-right',
     measureAzimuthOptions : 'top-right',
     elevationPathOptions : 'top-right',
-    layerImportOptions : 'top-right',
+    layerImportOptions : 'top-left',
     mousePositionOptions : 'top-right',
-    drawingOptions : 'top-right'
+    drawingOptions : 'top-right',
+    reportingOptions : 'top-left',
+    catalogOptions : 'top-right',
+    panoramaxOptions : 'bottom-left'
   }
 }
 
+/**
+ * Obtenir la position des contrôles (gauche/droite)  
+ * @returns 
+ */
 export function useControlsPosition() {
   let leftC = []
   let rightC = []
@@ -386,22 +520,22 @@ export function useControlsPosition() {
   if (useControlsExtensionPosition().legendsOptions.includes("left"))
     leftC.push(useControls.Legends.id)
   if (useControlsExtensionPosition().legendsOptions.includes("right"))
-    rightC.push(useControls.Legends.id)  
+    rightC.push(useControls.Legends.id)
   // Route
   if (useControlsExtensionPosition().routeOptions.includes("left"))
     leftC.push(useControls.Route.id)
   if (useControlsExtensionPosition().routeOptions.includes("right"))
-    rightC.push(useControls.Route.id)    
+    rightC.push(useControls.Route.id)
   // Isocurve
   if (useControlsExtensionPosition().isocurveOptions.includes("left"))
     leftC.push(useControls.Isocurve.id)
   if (useControlsExtensionPosition().isocurveOptions.includes("right"))
-    rightC.push(useControls.Isocurve.id) 
+    rightC.push(useControls.Isocurve.id)
   // ReverseGeocode
   if (useControlsExtensionPosition().reverseGeocodeOptions.includes("left"))
     leftC.push(useControls.ReverseGeocode.id)
   if (useControlsExtensionPosition().reverseGeocodeOptions.includes("right"))
-    rightC.push(useControls.ReverseGeocode.id) 
+    rightC.push(useControls.ReverseGeocode.id)
   // ReverseGeocode
   if (useControlsExtensionPosition().drawingOptions.includes("left"))
     leftC.push(useControls.Drawing.id)
@@ -411,50 +545,151 @@ export function useControlsPosition() {
   if (useControlsExtensionPosition().getFeatureInfoOptions.includes("left"))
     leftC.push(useControls.GetFeatureInfo.id)
   if (useControlsExtensionPosition().getFeatureInfoOptions.includes("right"))
-    rightC.push(useControls.GetFeatureInfo.id)  
+    rightC.push(useControls.GetFeatureInfo.id)
   // Territories
   if (useControlsExtensionPosition().territoriesOptions.includes("left"))
     leftC.push(useControls.Territories.id)
   if (useControlsExtensionPosition().territoriesOptions.includes("right"))
-    rightC.push(useControls.Territories.id) 
+    rightC.push(useControls.Territories.id)
   // MeasureLength
   if (useControlsExtensionPosition().measureLengthOptions.includes("left"))
     leftC.push(useControls.MeasureLength.id)
   if (useControlsExtensionPosition().measureLengthOptions.includes("right"))
-    rightC.push(useControls.MeasureLength.id) 
+    rightC.push(useControls.MeasureLength.id)
   // MeasureArea
   if (useControlsExtensionPosition().measureAreaOptions.includes("left"))
     leftC.push(useControls.MeasureArea.id)
   if (useControlsExtensionPosition().measureAreaOptions.includes("right"))
-    rightC.push(useControls.MeasureArea.id) 
+    rightC.push(useControls.MeasureArea.id)
   // MeasureAzimuth
   if (useControlsExtensionPosition().measureAzimuthOptions.includes("left"))
     leftC.push(useControls.MeasureAzimuth.id)
   if (useControlsExtensionPosition().measureAzimuthOptions.includes("right"))
-    rightC.push(useControls.MeasureAzimuth.id) 
+    rightC.push(useControls.MeasureAzimuth.id)
   // MousePosition
   if (useControlsExtensionPosition().mousePositionOptions.includes("left"))
     leftC.push(useControls.MousePosition.id)
   if (useControlsExtensionPosition().mousePositionOptions.includes("right"))
-    rightC.push(useControls.MousePosition.id) 
+    rightC.push(useControls.MousePosition.id)
   // ElevationPath
   if (useControlsExtensionPosition().elevationPathOptions.includes("left"))
     leftC.push(useControls.ElevationPath.id)
   if (useControlsExtensionPosition().elevationPathOptions.includes("right"))
-    rightC.push(useControls.ElevationPath.id) 
+    rightC.push(useControls.ElevationPath.id)
   // LayerImport
   if (useControlsExtensionPosition().layerImportOptions.includes("left"))
     leftC.push(useControls.LayerImport.id)
   if (useControlsExtensionPosition().layerImportOptions.includes("right"))
-    rightC.push(useControls.LayerImport.id) 
+    rightC.push(useControls.LayerImport.id)
   // ControlList
   if (useControlsExtensionPosition().controlListOptions.includes("left"))
     leftC.push(useControls.ControlList.id)
   if (useControlsExtensionPosition().controlListOptions.includes("right"))
-    rightC.push(useControls.ControlList.id) 
-
+    rightC.push(useControls.ControlList.id)
+  // Signalement
+  if (useControlsExtensionPosition().reportingOptions.includes("left"))
+    leftC.push(useControls.Reporting.id)
+  if (useControlsExtensionPosition().reportingOptions.includes("right"))
+    rightC.push(useControls.Reporting.id)
+  if (useControlsExtensionPosition().catalogOptions.includes("right"))
+    rightC.push(useControls.Catalog.id)
+  if (useControlsExtensionPosition().catalogOptions.includes("left"))
+    leftC.push(useControls.Catalog.id)
+  if (useControlsExtensionPosition().panoramaxOptions.includes("right"))
+    rightC.push(useControls.Panoramax.id)
+  if (useControlsExtensionPosition().panoramaxOptions.includes("left"))
+    leftC.push(useControls.Panoramax.id)
   return {
     left : leftC,
     right : rightC
   }
 }
+
+/**
+ * Obtenir les options de chaque contrôle
+ * @returns 
+ */
+export function useControlsOptions () {
+  const dataStore = useDataStore();
+  return {
+    catalog: {
+      id: "22",
+      position: useControlsExtensionPosition().catalogOptions,
+      gutter: true,
+      listable: false,
+      titlePrimary : "Catalogue de cartes",
+      layerLabel : "title",
+      layerThumbnail : true,
+      size : "xl",
+      tabHeightAuto : false,
+      addToMap : false,
+      optimisation : "on-demand",
+      search : {
+        display : false,
+        criteria : ["name","title","description","producer","thematic"]
+      },
+      categories : [
+        {
+          title : "Cartes de référence",
+          id : "base",
+          order : false,
+          featured : true,
+          filter : {
+            field : "base",
+            value : "true"
+          }
+        },
+        {
+          title : "Toutes les cartes",
+          id : "data",
+          search : true,
+          items : [
+            {
+              title : "Thème",
+              default : true,
+              order : true,
+              section : true,
+              icon : true,
+              filter : {
+                field : "thematic",
+                value : "*"
+              }
+            },
+            {
+              title : "Producteur",
+              order : true,
+              section : true,
+              icon : false,
+              filter : {
+                field : "producer",
+                value : "*"
+              }
+            }
+          ]
+        },
+      ],
+      configuration : {
+        type : "json",
+        data : {
+          layers : dataStore.getLayers(),
+          topics : dataStore.getTopics(),
+          featured : dataStore.getFeatured()
+        }
+      }
+    },
+    overviewMap: {
+      id: "7",
+      collapsed: false,
+      position: useControlsExtensionPosition().overviewMapOptions,
+      layers : [
+        new GeoportalWMTS({
+          layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+          configuration : {
+            ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
+            params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+          }
+        })
+      ]
+    },
+  };
+};

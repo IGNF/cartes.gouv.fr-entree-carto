@@ -1,18 +1,33 @@
 import ServiceBase from "@/services/ServiceBase";
+import { encryptValue, decryptValue } from "@/services/ServiceEncrypt";
 
 import { useServiceStore } from '@/stores/serviceStore';
 
 import { OAuth2Client, OAuth2Fetch } from '@badgateway/oauth2-client';
 import { generateCodeVerifier } from '@badgateway/oauth2-client';
 
-import { inject } from 'vue';
-
 const IAM_URL = import.meta.env.IAM_URL;
 const IAM_REALM = import.meta.env.IAM_REALM;
 const IAM_CLIENT_ID = import.meta.env.IAM_CLIENT_ID;
 const IAM_CLIENT_SECRET = import.meta.env.IAM_CLIENT_SECRET;
-
+const IAM_CHECK_SSO_TIMEOUT = import.meta.env.IAM_CHECK_SSO_TIMEOUT || 5000;
+const IAM_CHECK_SSO_CLIENT_ID = import.meta.env.IAM_CHECK_SSO_CLIENT_ID || "cartes-gouv-public";
 const IAM_ENTREPOT_API_URL = import.meta.env.IAM_ENTREPOT_API_URL;
+
+const SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS = 12 * 60 * 60 * 1000;
+
+const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
+const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
+const OAUTH_CALLBACK_URL_STORAGE_KEY = "oauth2:callback-url";
+
+function buildOAuthState () {
+  if (window.crypto && window.crypto.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
 
 class ServiceLocal extends ServiceBase {
 
@@ -90,6 +105,7 @@ class ServiceLocal extends ServiceBase {
       },
       onError: (e) => {
         console.error(e);
+        this.error = e;
       }
     });
 
@@ -118,26 +134,99 @@ class ServiceLocal extends ServiceBase {
     return null;
   }
 
-  async isAccessValided () {
-    const emitter = inject('emitter');
-    var store = useServiceStore();
+  /**
+   * Verifie la session Keycloak en utilisant (iframe)
+   * - soit via la méthode native/oauth2 (spécifique au local)
+   * - soit via l'implémentation de ServiceBase (keycloak par défaut)
+   * @param {String} adapter - natif | oauth2 | keycloak (par defaut)
+   * @returns {Promise<Boolean>} - true if session is active, false otherwise
+   */
+  async checkKeycloakSession (adapter) {
+    if (adapter !== "keycloak") {
+      return this.#checkKeycloakSessionAdapterOAuth();
+    }
+
+    // Delegate keycloak (et fallback) au comportement par defaut
+    // de ServiceBase.
+    return super.checkKeycloakSession('keycloak');
+  }
+
+  /**
+   * Experimental !
+   * Adapter utilisant une approche plus "native" pour vérifier la session SSO via OAuth2
+   * - Avantages : plus léger, pas besoin de charger la librairie Keycloak
+   * - Inconvénients : moins robuste, peut ne pas gérer correctement tous les cas de figure (session expirée, rafraîchissement de token, etc.)
+   * @returns 
+   */
+  async #checkKeycloakSessionAdapterOAuth () {
+    console.log("use checkKeycloakSessionAdapter oauth");
+    return new Promise((resolve) => {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        
+        const checkUrl = new URL(this.#client.settings.server + this.#client.settings.authorizationEndpoint);
+        checkUrl.searchParams.set('client_id', IAM_CHECK_SSO_CLIENT_ID);
+        checkUrl.searchParams.set('redirect_uri', this.url + '/silent-check-sso-oauth.html');
+        checkUrl.searchParams.set('response_type', 'code');
+        checkUrl.searchParams.set('scope', 'openid');
+        // INFO
+        // 'prompt=none' is required for silent authentication; 
+        // it prevents the OAuth2 server from showing any user interaction prompts in the iframe and
+        // instead immediately returns an error if the user is not already authenticated.
+        checkUrl.searchParams.set('prompt', 'none');
+        
+        iframe.src = checkUrl.toString();
+        document.body.appendChild(iframe);
+        
+        const timeout = setTimeout(() => {
+          cleanup();
+          resolve(false); // Timeout = pas de session
+        }, IAM_CHECK_SSO_TIMEOUT);
+        
+        function cleanup() {
+          clearTimeout(timeout);
+          window.removeEventListener('message', handleMessage);
+          iframe.remove();
+        }
+        
+        function handleMessage(event) {
+          if (event.origin !== window.location.origin) return;
+          
+          cleanup();
+          
+          if (event.data.code) {
+            // Session Keycloak active !
+            resolve(true);
+          } else {
+            // Pas de session
+            resolve(false);
+          }
+        }
+        
+        window.addEventListener('message', handleMessage);
+    });
+  }
+
+  async resolveAccessStatus () {
+    const emitter = this.getEmitter ? this.getEmitter() : null;
+    const store = useServiceStore();
 
     // si IAM, on récupère les informations dans l'url
-    const queryString = location.search;
-    const urlParams = new URLSearchParams(queryString);
+    const urlParams = new URLSearchParams(location.search);
     // parametres
-    var code = urlParams.get('code');
-    var session = urlParams.get('session_state');
-    var error = urlParams.get('error');
+    const code = urlParams.get('code');
+    const session = urlParams.get('session_state');
+    const error = urlParams.get('error');
+    let status = "no-auth";
 
-    // INFO
-    // on retourne une promise avec le statut 
-    // - login
-    // - logout
-    // - unknow
-    var promise = null;
-
-    var status = "no-auth";
+    // On traite l'erreur IAM en priorité.
+    if (error) {
+      this.error = {
+        name: error,
+        message: urlParams.get('error_description')
+      };
+      throw this.error;
+    }
 
     // IAM login local
     if (code && session) {
@@ -145,51 +234,68 @@ class ServiceLocal extends ServiceBase {
       this.code = code;
       this.authenticated = true;
       status = "login";
-      // on demande un token...
-      // et, ensuite, on met en place une serie de promise chainées :
-      // - getUserMe
-      // - getDocuments
-      promise = this.getAccessToken()
-        .then((token) => {
-          if (token) {
-            // on execute une autre promise chainée
-            // ex. les informations de l'utilisateur !
-            return this.getUserMe()
-            .then((user) => {
-              console.debug(user);
-              emitter.dispatchEvent("service:user:loaded", {
-                bubbles : true,
-                detail : user
-              });
-              // on execute une autre promise chainée
-              // ex. les favoris !
-              return this.getDocuments()
-              .then((documents) => {
-                console.debug(documents);
-                emitter.dispatchEvent("service:documents:loaded", {
-                  bubbles : true,
-                  detail : documents
-                });
-              })
-              .catch((e) => {
-                throw new Error('Error to get documents (' + e.message + ')');
-              }) 
-            })
-            .catch((e) => {
-              throw new Error('Error to get user info (' + e.message + ')');
-            })
+
+      // Snapshot OAuth callback params to avoid races with router redirects
+      // that can remove code/state from window.location before token exchange.
+      const callbackUrlSnapshot = new URL(location.href);
+      const callbackState = urlParams.get('state');
+      if (callbackState && !callbackUrlSnapshot.searchParams.get('state')) {
+        callbackUrlSnapshot.searchParams.set('state', callbackState);
+      }
+
+      try {
+        const token = await this.getAccessToken({
+          callbackUrl: callbackUrlSnapshot,
+          state: callbackState,
+          code,
+          session
+        });
+        if (!token) {
+          throw new Error('Token unavailable');
+        }
+
+        let user;
+        try {
+          user = await this.getUserMe();
+        } catch (e) {
+          throw new Error('Error to get user info (' + e.message + ')');
+        }
+
+        if (!user) {
+          throw new Error('User profile unavailable from API');
+        }
+
+        console.debug(user);
+        if (emitter) {
+          emitter.dispatchEvent("service:user:loaded", {
+            bubbles : true,
+            detail : user
+          });
+        }
+
+        try {
+          const documents = await this.getDocuments();
+          if (emitter) {
+            emitter.dispatchEvent("service:documents:loaded", {
+              bubbles : true,
+              detail : documents
+            });
           }
-        })
-        .then(() => {
-          // on retourne le statut
-          return status;
-        })
-        .catch((e) => {
-          throw new Error('Error to get token (' + e.message + ')');
-        })
+        } catch (e) {
+          throw new Error('Error to get documents (' + e.message + ')');
+        }
+
+        // on enregistre le statut une fois toutes les données chargées
+        store.setService(this);
+        return status;
+      } catch (e) {
+        this.authenticated = false;
+        throw new Error('Error to get token (' + e.message + ')');
+      }
     }
+
     // IAM logout local
-    if (!code && session && session === this.session) {
+    if (!code && (session !== null || session === this.session)) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
@@ -198,26 +304,15 @@ class ServiceLocal extends ServiceBase {
       this.documents = {};
       this.error = {};
       status = "logout";
-      promise = new Promise((resolve, reject) => {
-        resolve(status);
-      });
-    }
-
-    // FIXME Error ?
-    if (error) {
-      this.error = {
-        name: error,
-        message: urlParams.get('error_description')
-      };
-      promise = new Promise((resolve, reject) => {
-        reject(this.error);
-      });
     }
 
     // enregistrement dans le storage du statut de la connexion
-    store.setService(this);
+    // (uniquement pour les cas logout et no-auth, le login est géré dans la chaîne de promises)
+    if (status !== "login") {
+      store.setService(this);
+    }
 
-    return promise || Promise.resolve(status);
+    return status;
   }
 
   /** 
@@ -250,12 +345,18 @@ class ServiceLocal extends ServiceBase {
     const url = this.url.includes("login") ? this.url : this.url + "/login";
       
     const codeVerifier = await generateCodeVerifier();
-    this.codeVerifier = codeVerifier; // au cas où...
+    const state = buildOAuthState();
+
+    this.codeVerifier = codeVerifier;
+    const encryptedState = await encryptValue(state);
+    sessionStorage.setItem(`${OAUTH_PKCE_STORAGE_KEY}:${encryptedState}`, codeVerifier);
+    sessionStorage.setItem(OAUTH_STATE_STORAGE_KEY, encryptedState);
+    // Compatibilite avec les anciennes sessions/login en cours.
     localStorage.setItem("codeVerifier", codeVerifier);
     
     var responseIAM = await this.#client.authorizationCode.getAuthorizeUri({
       redirectUri: url,
-      state: 'some-string',
+      state,
       codeVerifier,
       scope: ['openid','profile','email'],
       extraParams: {
@@ -301,11 +402,37 @@ class ServiceLocal extends ServiceBase {
     return Promise.resolve(responseIAM);
   }
 
+  /**
+   * IAM pour se deconnecter silencieusement
+   * 
+   * @type {Promise}
+   * @see Logout
+   * @example
+   * GET /realms/{realm}/protocol/openid-connect/logout?
+   *   id_token_hint=<id_token>
+   *   &post_logout_redirect_uri=https://myapp.com/loggedout
+   *   &client_id=my-client
+   */
+  async getAccessLogoutSilent () {
+    const url = this.url.includes("logout") ? this.url : this.url + "/logout";
+
+    if (!this.token || !this.token.idToken) {
+      return Promise.reject(new Error('No ID token available for silent logout'));
+    }
+    
+    var responseIAM = `${this.#client.settings.server}/realms/${this.#client.settings.index}/protocol/openid-connect/logout?
+      id_token_hint=${this.token.idToken}&
+      post_logout_redirect_uri=${url}?session_state=${this.session}&
+      client_id=${this.#client.settings.clientId}`.replace(/ /g, '');
+
+    return Promise.resolve(responseIAM);
+  } 
+  
   /** 
    * IAM pour obtenir le token
    * 
    * @type {Promise}
-   * @see isAccessValided
+   * @see resolveAccessStatus
    * @example
    * POST https://sso.geopf.fr/realms/geoplateforme/protocol/openid-connect/token
    * content-type: application/x-www-form-urlencoded
@@ -325,20 +452,68 @@ class ServiceLocal extends ServiceBase {
    *    ...
    * }
   */
-  async getAccessToken () {
+  async getAccessToken (options = {}) {
+    const { callbackUrl, state, code, session } = options;
     const url = this.url.includes("login") ? this.url : this.url + "/login";
+    let resolvedCallbackUrl = callbackUrl
+      ? new URL(callbackUrl.toString())
+      : new URL(location.href);
+
+    const storedCallbackUrlRaw = sessionStorage.getItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+    if ((!code || !resolvedCallbackUrl.searchParams.get('code')) && storedCallbackUrlRaw) {
+      try {
+        resolvedCallbackUrl = new URL(storedCallbackUrlRaw);
+      } catch {
+        sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+      }
+    }
+
+    const resolvedCode = code || this.code || resolvedCallbackUrl.searchParams.get('code');
+    const resolvedSession = session || this.session || resolvedCallbackUrl.searchParams.get('session_state');
+    const resolvedStateOption = state || resolvedCallbackUrl.searchParams.get('state');
+
+    if (resolvedCode && !resolvedCallbackUrl.searchParams.get('code')) {
+      resolvedCallbackUrl.searchParams.set('code', resolvedCode);
+    }
+    if (resolvedSession && !resolvedCallbackUrl.searchParams.get('session_state')) {
+      resolvedCallbackUrl.searchParams.set('session_state', resolvedSession);
+    }
+    if (resolvedStateOption && !resolvedCallbackUrl.searchParams.get('state')) {
+      resolvedCallbackUrl.searchParams.set('state', resolvedStateOption);
+    }
+
+    const urlParams = new URLSearchParams(resolvedCallbackUrl.search);
+    const stateFromRedirect = urlParams.get('state');
+    const storedState = sessionStorage.getItem(OAUTH_STATE_STORAGE_KEY);
+    const storedStateDecrypted = storedState ? await decryptValue(storedState) : null;
+    
+    if (stateFromRedirect && storedStateDecrypted && stateFromRedirect !== storedStateDecrypted) {
+      throw new Error('OAuth state mismatch');
+    }
+
+    const expectedState = stateFromRedirect || storedStateDecrypted;
+    const codeVerifierFromState = expectedState
+      ? sessionStorage.getItem(`${OAUTH_PKCE_STORAGE_KEY}:${expectedState}`)
+      : null;
       
-    var codeVerifier = this.codeVerifier || localStorage.getItem("codeVerifier");
+    var codeVerifier = this.codeVerifier || codeVerifierFromState || localStorage.getItem("codeVerifier");
+
+    if (!codeVerifier) {
+      throw new Error('Missing PKCE code verifier');
+    }
+
+    if (!resolvedCallbackUrl.searchParams.get('code')) {
+      throw new Error('Missing authorization code in callback URL');
+    }
     
     var token = await this.#client.authorizationCode.getTokenFromCodeRedirect(
-      location,
+      resolvedCallbackUrl,
       {
         redirectUri: url,
-        state: 'some-string',
+        state: expectedState || undefined,
         codeVerifier,
       }
     );
-
     this.token = token;
   
     const today = new Date(token.expiresAt);
@@ -346,10 +521,40 @@ class ServiceLocal extends ServiceBase {
 
     this.#fetchWrapper.token = token; // HACK !?
 
+    if (storedState) {
+      sessionStorage.removeItem(`${OAUTH_PKCE_STORAGE_KEY}:${storedState}`);
+    }
+    sessionStorage.removeItem(OAUTH_STATE_STORAGE_KEY);
+    sessionStorage.removeItem(OAUTH_CALLBACK_URL_STORAGE_KEY);
+    localStorage.removeItem("codeVerifier");
+
     var store = useServiceStore();
     store.setService(this);
 
     return this.token;
+  }
+
+  /**
+   * Not used !
+   * Indique si le token est expiré depuis plus de 12h.
+   * @description
+   * Cette vérification devait être utilisée pour déclencher une déconnexion 
+   * silencieuse lorsque le token est expiré depuis plus de 12 heures.
+   * Mais, le nouveau workflow de deconnexion ne se base plus sur cette logique...
+   * @returns {Boolean}
+   */
+  isTokenExpiredForMoreThan12h () {
+    if (!this.token || !this.token.expiresAt) {
+      return true;
+    }
+
+    const expiresAt = Number(this.token.expiresAt);
+
+    if (!Number.isFinite(expiresAt)) {
+      return false;
+    }
+
+    return (Date.now() - expiresAt) >= SESSION_EXPIRED_SILENT_LOGOUT_DELAY_MS;
   }
 }
 

@@ -17,17 +17,32 @@
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
 import { useDomStore } from "@/stores/domStore"
+import { selectedControls } from '@/composables/mapControls';
+
+const emitter = inject('emitter');
 
 const domStore = useDomStore();
 const mapStore = useMapStore();
 
 const emit = defineEmits([
-  'openControl', 
-  'onModalShareOpen', 
-  'onModalPrintOpen', 
-  'onModalThemeOpen', 
+  'openControl',
+  'onModalShareOpen',
+  'onModalPrintOpen',
   'onBookMarksOpen'
 ]);
+
+function onOpenControlReporting() {
+  // on active le controle
+  mapStore.addControl("Reporting");
+  // envoi d'un evenement pour l'ouverture du contrôle
+  setTimeout(() => {
+    emitter.dispatchEvent("reporting:open:clicked", {
+      open : true,
+      componentName: "Reporting"
+    });
+    emit("openControl");
+  }, 0);
+}
 
 function openControl(controlName) {
   mapStore.getMap().getControls().getArray().forEach(control => {
@@ -42,24 +57,10 @@ function openControl(controlName) {
   })
 }
 
-const icon = "mingcute:file-import-line"
-const defaultScale = 0.8325;
-const iconProps = computed(() => typeof icon === 'string'
-  ? { scale: defaultScale.value, name: icon }
-  : { scale: defaultScale.value, ...icon },
-);
-
 // INFO
-// on active / desactive le bouton "Mes enregistrements" selon 
+// on active / desactive le bouton "Mes enregistrements" selon
 // si on est authentifié ou pas
 var service = inject('services');
-var authenticatedValue = computed(() => service.authenticated);
-// INFO
-// on est sur un faux "disabled" du bouton
-// car on souhaite que les evenements soient toujours actifs
-const authenticatedClass = ref({
-  authenticatedProperty: !authenticatedValue.value
-});
 
 const BookmarksButton = ref(null)
 onMounted(() => {
@@ -71,20 +72,20 @@ onMounted(() => {
   <div class="container">
     <div ref="BookmarksButton">
       <DsfrButton
-      tertiary
-      no-outline
-      :class="authenticatedClass"
-      icon="ri-bookmark-line"
-      @click="$emit('onBookMarksOpen')"
-    >
-      Mes enregistrements
-    </DsfrButton>
+        tertiary
+        no-outline
+        :class="{'fr-btn--disabled': !service.authenticated }"
+        icon="ri-bookmark-line"
+        @click="$emit('onBookMarksOpen')"
+      >
+        Mes enregistrements
+      </DsfrButton>
     </div>
     <hr>
     <DsfrButton
       tertiary
       no-outline
-      icon="mingcute:file-import-line"
+      icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
       Importer des données
@@ -92,7 +93,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
-      icon="ant-design:link-outlined"
+      icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
       Partager, intégrer la carte
@@ -100,47 +101,50 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
-      icon="material-symbols:print-outline"
+      icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"
     >
       Imprimer
     </DsfrButton>
-    <hr>
+
     <DsfrButton
       tertiary
       no-outline
-      @click="$emit('onModalThemeOpen')"
+      icon="fr-icon-feedback-line"
+      @click="onOpenControlReporting()"
     >
-      <span class="fr-icon-theme-fill fr-link--icon-left" />  Paramètres d'affichage
+      Signaler une anomalie
     </DsfrButton>
+
+    <hr>
+
+    <MenuControl
+      :selected-controls="selectedControls"
+      theme="Affichage"
+      theme-title="Préférences d’affichage"
+    />
   </div>
 </template>
 
 <style scoped>
-.authenticatedProperty {
-  --hover: inherit;
-  --active: inherit;
-  background-color: transparent;
-  color: var(--text-disabled-grey);
-}
-
-a {
-  text-decoration: none;
-}
-.container {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 32px);
-  max-height: calc(76.8vh - 70px);
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-
-:deep(button) {
+:deep(.fr-btn),
+:deep(.fr-toggle__label) {
   font-size: 0.875rem;
   color: var(--text-action-high-grey);
+}
+
+.fr-btn--disabled {
+  color: var(--text-disabled-grey);
+
+  --idle: transparent;
+  --hover: inherit;
+  --active: inherit;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 576px) {

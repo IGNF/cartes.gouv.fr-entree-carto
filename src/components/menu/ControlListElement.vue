@@ -1,9 +1,10 @@
 <script lang="js">
   /**
-   * @description
+   * @description 
+   * Composant représentant un élément de la liste des contrôles dans le menu de gestion des outils.
    * 
-   * @property {Object} controlListElementOptions 
-   * 
+   * @property {Object} controlListElementOptions Options de l'élément de la liste des contrôles
+   * @property {Array} selectedControls Tableau des contrôles sélectionnés ajoutés à la carte
    */
   export default {
     name: 'ControlListElement'
@@ -11,54 +12,103 @@
 </script>
 
 <script setup lang="js">
+import { VIcon } from '@gouvminint/vue-dsfr';
 
 const props = defineProps({
-  controlListElementOptions : Object,
-  selectedControls : () => []
+  controlListElementOptions: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedControls: {
+    type: Array,
+    default: () => []
+  }
 });
-const selectedControls = defineModel()
+
+const selectedControlsModel = defineModel({ type: Array, default: () => [] })
 const isActive = ref()
 
+const dsfrIcon = computed(() => typeof props.controlListElementOptions.icon === 'string' && props.controlListElementOptions.icon.startsWith('fr-icon-'))
+
 watch(isActive, (value) => {
-  if(value === true && !selectedControls.value.includes(props.controlListElementOptions.name)) {
-    selectedControls.value = [...selectedControls.value, props.controlListElementOptions.name]
+  if(value === true && !selectedControlsModel.value.includes(props.controlListElementOptions.name)) {
+    selectedControlsModel.value = [...selectedControlsModel.value, props.controlListElementOptions.name]
   }
   if(value === false) {
-    selectedControls.value = selectedControls.value.filter(e => e !== props.controlListElementOptions.name);
+    selectedControlsModel.value = selectedControlsModel.value.filter(e => e !== props.controlListElementOptions.name);
   }
 })
 
-onMounted(() => {
-
-})
-onUpdated(() => {
-})
+onMounted(() => {})
+onUpdated(() => {})
 
 </script>
 
 <template>
-  <tr class="control-list-element">
-    <td class="control-list-element-img" />
-    <td>
+  <div class="control-list-element">
+    <div class="control-list-element-img">
+      <div>
+        <VIcon
+          v-if="!dsfrIcon"
+          scale="0.833"
+          :name="controlListElementOptions.icon"
+        />
+        <span 
+          v-else
+          class="fr-icon--sm"
+          :class="controlListElementOptions.icon" 
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+    <div class="control-list-element-toggle">
       <DsfrToggleSwitch
         v-model="isActive"
         :disabled="controlListElementOptions.disabled"
-        :hint="controlListElementOptions.hint"
         :input-id="controlListElementOptions.id"
         :label="controlListElementOptions.label"
-        label-left
-        :model-value="selectedControls === true || (Array.isArray(selectedControls) && selectedControls.includes(controlListElementOptions.name))"
+        class="fr-toggle--label-left"
+        no-text
+        :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
         v-bind="$attrs"
       />
-    </td>
-  </tr>
+    </div>
+  </div> 
 </template>
 
-<style scoped>
+<style>
 .control-list-element {
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin: 0 1rem;
+  padding: 0.75rem 0;
+  font-weight: 500;
+}
+.control-list-element + .control-list-element {
+  border-top: 1px solid var(--border-default-grey);
 }
 .control-list-element-img {
-  border: solid --background-default-grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+}
+.control-list-element-toggle {
+  flex: 1;
+}
+</style>
+
+<style lang="scss">
+// augmente la zone cliquable du label
+.control-list-element {
+  .fr-toggle__label:has(+ .fr-hint-text) {
+    padding-bottom: 1.75rem;
+  }
+  .fr-hint-text {
+    margin-top: -1.5rem;
+    pointer-events: none;
+  }
 }
 </style>

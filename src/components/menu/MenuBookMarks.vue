@@ -11,10 +11,12 @@ export default {
 
 <script setup lang="js">
 
+import { computed } from 'vue';
 import MenuBookMarkLoggued from '@/components/menu/bookmarks/MenuBookMarkLoggued.vue';
+import { useServiceStore } from '@/stores/serviceStore';
 
-var service = inject('services');
-var authenticated = computed(() => service.authenticated);
+const serviceStore = useServiceStore();
+var authenticated = computed(() => serviceStore.isAuthentificated);
 
 </script>
 
@@ -29,6 +31,12 @@ var authenticated = computed(() => service.authenticated);
   </div>
 </template>
 
-<style scoped>
-  .container {}
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
+.container {
+  @include min(sm) {
+    width: $widget-panel-width-md;
+  }
+}
 </style>

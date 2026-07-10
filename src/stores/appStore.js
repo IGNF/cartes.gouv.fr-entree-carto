@@ -18,7 +18,7 @@ const ns = ((value) => {
 /**
  * Versionning du localStorage
  */
-const VERSION = "9";
+const VERSION = "12";
 
 /**
  * Clef du localStorage de cartes.gouv.fr
@@ -31,6 +31,11 @@ const SCHEME_KEY_LS_MAIN = "scheme";
  * sur le choix du thème
  */
 const SCHEME_KEY_LS_CARTES = "vue-dsfr-scheme";
+
+/**
+ * Clef du localStorage des documents temporaires
+ */
+const DOCUMENT_TEMP_KEY_LS = "document-temporary";
 
 export const useAppStore = defineStore('app', () => {
 
@@ -72,5 +77,51 @@ export const useAppStore = defineStore('app', () => {
   watch(scheme, () => {
     localStorage.setItem(SCHEME_KEY_LS_MAIN, scheme.value);
   })
+
+  // INFO détection première ouverture
+  // variable de contrôle de la première ouverture
+  // choix d'utiliser sessionStorage pour ne pas persister au delà de la session
+  
+  const siteOpened = ref(false);
+
+  function detectFirstOpen() {
+    if (!sessionStorage.getItem(ns("siteOpened"))) {
+      // 👉 Première ouverture dans un nouvel onglet
+      siteOpened.value = true;
+
+      // On marque que l’onglet est déjà passé ici
+      sessionStorage.setItem(ns("siteOpened"), "true");
+    } else {
+      // 👉 Reload / Retour redirection → false
+      siteOpened.value = false;
+    }
+  }
+
+  // INFO documents temporaires
+  // stockage des documents temporaires dans le localStorage
+  var documentTemporary = useStorage(DOCUMENT_TEMP_KEY_LS, "");
+
+  watch(documentTemporary, () => {
+    localStorage.setItem(DOCUMENT_TEMP_KEY_LS, documentTemporary.value);
+  })
+
+  const setDocumentTemporary = (data) => {
+    documentTemporary.value = data;
+  }
+  const getDocumentTemporary = () => {
+    return documentTemporary.value;
+  }
+  const clearDocumentTemporary = () => {
+   documentTemporary.value = "";
+  }
+
+  return {
+    ns,
+    siteOpened,
+    detectFirstOpen,
+    setDocumentTemporary,
+    getDocumentTemporary,
+    clearDocumentTemporary
+  }
 
 });

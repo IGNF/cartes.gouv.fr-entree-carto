@@ -4,6 +4,513 @@ Toutes les modifications notables apportées à ce projet sont documentées dans
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) et ce projet respecte [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## 🔖 version 1.0.17 - 19/05/2026
+
+### 🎉 Résumé
+
+Evolutions et corrections sur le partage, la barre de recherche et l'impression. Amélioration du paramétrage du déploiement de l'applicatif.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+  
+  - Footer : ajout d'un bandeau d'abonnement à la newsletter cartes.gouv dans le footer (#1004)
+
+#### 🔨 [Evolution]
+
+  - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
+  - Recherche : ajout d'une barre de séparation entre la recherche simple et la recherche avancée (#1010)
+  - Partage : le widget gestionnaire de couches et affiché dans les iframes à la place du widget catalogue (#1017)
+  - Deploiement : paramétrage de l'environnement géoplateforme utilisé par les services (#1034)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - Impression : correction de la mise en page de l'impression en cas de titre long (#1021)
+  - Barre de recherche : la recherche par code postal renvoie un résultat (#996)
+  - Barre de recherche : correction d'une coquille textuelle dans le formulaire de recherche avancée par parcelles cadastrales (#1060)
+  - Performances : réduction du nombre de requêtes réalisées au chargement du site vers le service d'annexe (#1006)
+  - Partage : le permalien se charge correctement même si plusieurs onglets cartes.gouv sont ouverts sur une même session navigateur (#1038)
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.16-7 - 27/04/2026
+
+### 🎉 Résumé
+
+Corrections UI variées, amélioration de certaines performances de rendu.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+  
+#### 🔨 [Evolution]
+
+  - Cartalogue : Réoganisation de la liste des couches de référence (6ab2ddc44df96afb70efae182f460cccb653bc0c)
+  - SearcheEngine: ajout du placeholder "Rechercher un lieu" (#1010)
+  - Amélioration des performances de rendu de la carte et de l’interface (#1007)
+  - Carte : Le fond cartographique est gris en cas d'absence de données à afficher (#1008)
+  - Ajout d’une case à cocher «Ne plus afficher» sur la modale d’embarquement (#988)
+  - SearchEngine : les communes de moins de 3 caractères sont renvoyées en cliquand sur la loupe de la barre de recherche(#1024)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - Territories: fixe la hauteur de la modale (#886)
+  - Echelle : l'outil d'echelle est repositionné à droite si pas d'autres outils présents (#1008)
+  - LayerSwitcher : la largeur des panel est forcée (#1008)
+  - Cartalogue : correction du scoll en mode mobile (#1008)
+  - Panels: les panels des widgets de gauche sont positionnés sous la recherche (#1015)
+  - Espace Personnel : Les dessin sont conservés dans le localStorage quand on ferme le widget de dessin et non perdus en mode déconnecté (#1019)
+  - Itinéraire/Isochrone(HOTFIX) : répare l'interface des widgets itinéraire et isochrone
+  - Panels(HOTFIX): fixe un scroll sur la légende (#1041)
+  - Panels(HOTFIX): fixe la largeur du sous panel Infos de LayerSwitcher (#1041)
+  - Isochrone(HOTFIX) : répare l'appel au service d'isochrone depuis le widget du même nom (#1045)
+
+  
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.16 - 15/03/2026
+
+### 🎉 Résumé
+
+Corrections UI variées, amélioration de certaines performances de rendu.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+#### 🔨 [Evolution]
+
+  - Cartalogue : Réoganisation de la liste des couches de référence (6ab2ddc44df96afb70efae182f460cccb653bc0c)
+  - SearcheEngine: ajout du placeholder "Rechercher un lieu" (#1010)
+  - Amélioration des performances de rendu de la carte et de l’interface (#1007)
+  - Carte : Le fond cartographique est gris en cas d'absence de données à afficher (#1008)
+  - Ajout d’une case à cocher «Ne plus afficher» sur la modale d’embarquement (#988)
+  - SearchEngine : les communes de moins de 3 caractères sont renvoyées en cliquand sur la loupe de la barre de recherche(#1024)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - Territories: fixe la hauteur de la modale (#886)
+  - Echelle : l'outil d'echelle est repositionné à droite si pas d'autres outils présents (#1008)
+  - LayerSwitcher : la largeur des panel est forcée (#1008)
+  - Cartalogue : correction du scoll en mode mobile (#1008)
+  - Panels: les panels des widgets de gauche sont positionnés sous la recherche (#1015)
+  - Espace Personnel : Les dessin sont conservés dans le localStorage quand on ferme le widget de dessin et non perdus en mode déconnecté (#1019)
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.15 - 23/03/2026
+
+### 🎉 Résumé
+
+Refactorisation et reprise globale de l'UI : taille des panels, aspects des boutons, adaptation de l'interface, du header et du footer en fonction de la taille de la fenêtre.
+Espace personnel rendu plus robuste dans le chargement et l'enregistrement des documents personnels, session en mode authentifiée mieux gérée entre les différentes instances de cartes.gouv.
+
+### 💥 Breaking changes
+
+Reset du localStorage pour les modifications de l'espace personnel.
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - Territories: persistance via localStorage des territoires utilisateurs (#969)
+  
+#### 🔨 [Evolution]
+
+  - Header/Footer : adaptation du design aux maquettes (#816)
+  - Authentification : mise en place d'une auth direct avec un client public (#894)
+  - Menu des contrôles : respect de la maquette (#964)
+  - Zoom: améliorations UI (#964) (fix #700)
+  - Mini Carte: respect maquette (#964) (fix #794)
+  - Alertes/UI : La modale informations (les alertes) est transformée en alerte, bandeau en haut de page (#906)
+  - Mise à jour des packages dsfr et vue-dsfr (#972)
+  - Territoires : les territoires personnalisés sont sauvegardés dans les données de session et donc conservés en rechargeant la page (#969)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+  - Eulerian : Suppression des actions Eulerian en utilisant la version standalone sans dépendance dsfr (#970)
+  - Eulerian : Suppression de l'affichage de la modale de consentement quand consultation du site dans une iframe (#966)
+
+#### 🐛 [Correction]
+
+  - Header : correction d'un lien d'aide dans le header et du bouton "Decouvrir cartes.gouv" (#947)
+  - Alertes : mise en place d'un contournement au cas où les alertes ne se chargent pas à l'initialisation (885fe6667659170adf413ac8dc650547f3078404, f349d20f08cd42d40d8e843b954f0e4e260e5e3a)
+  - Footer : En mode mobile, le footer est intégré au header (#816)
+  - Espace Perso : optimisation de l'interface et des requêtes pour le chargement des enregistrements (#894)
+  - LayerSwitcher : L'ordre d'empilement des couches est correctement conservé sur la carte et dans le layerswitcher après rechargement de la page (#948)
+  - Recherche : La recherche avancée de parcelles cadastrales est fonctionnelle sur les DROM-COM (#959)
+  - Revue UI des widgets/boutons/panels (#964) (fix #672, #743, #844, #886, #888)
+  - Amélioration accessibilité toggle du header compact (#972)
+  - UI : amélioration du comportement de l'interface aux valeurs seuils de taille d'écran (#971)
+
+#### 🔒 [Sécurité]
+
+  - Dépendance : mise à jour oauth2-client@3.3.1
+  - Dépendance : conversion des images en base64 directement réalisée dans le build des extensions geopf pour openlayers (#962)
+
+---
+
+## 🔖 version 1.0.14 - 23/02/2026
+
+### 🎉 Résumé
+
+Evolutions majeures sur la fonctionnalité d'impression qui permet désormais d'imprimer tous les types de couches et de choisir son format d'impression.
+Un croquis créé hors connexion n'est désormais plus perdu si on se connecte à son espace personnel lors de la même session.
+
+Multiples corrections fonctionnelles et d'interface.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+  
+  - Impression : possibilité de choisir son format image d'impression (#905)
+
+#### 🔨 [Evolution]
+
+  - Partage : les permaliens de type "ajout de données" filtrent les couches en doublon (#893)
+  - Carte : possibilité d'activer du zoom-client pour certaines des couches de référence et activation du zoom max 21 (#892)
+  - Espace personnel : possibilité de conserver temporairement son travail en cours en mode non connecté (#909)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+  - Itinéraire : suppression de mode de calcul "Plus rapide" et de la section "Passages autorisés" lorsque le calcul est lancé en mode piéton (#921, #722)
+
+#### 🐛 [Correction]
+
+  - Notifications : limitation du nombre de notifications affichées simultanément à l'écran (#885) 
+  - Entête : correction des liens vers l'aide et la documentation pour qu'ils ouvrent un nouvel onglet (#891)
+  - Impression : toutes les couches (calcul, imports, tms, vecteur) se retrouvent bien dans la carte à imprimer (#902)
+  - Légende : affichage de la légende possible en mode mobile (#887)
+  - Barre de recherche : les interactions de clic des pop-ups affichées sur la carte après une recherche sont fonctionnelles (#907)
+  - Permalien : amélioration de la lecture des permaliens issus de la redirection du Géoportail (#908)
+  - Espace personnel : la modification et le réenregistrement d'un document dans son espace personnel est fonctionnel (#918)
+  - Barre de recheche : la recherche avancée affiche les coordonnées dans l'ordre "Latitude-Longitude" (#821, #857)
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.13 - 22/01/2026
+
+### 🎉 Résumé
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+#### 🔨 [Evolution]
+
+  - Territoires : ajout d'une fonctionnalité d'enregistrement de territoires "custom" définis par l'utilisateur (#799)
+  - Mobile : réactivation du menu contextuel en mode mobile (#846)
+  - Gestionnaire de couches : les titres peuvent s'afficher sur deux lignes (#869)
+  - Notifications : réduction du nombre de notifications affichées à l'écran lors du chargement de couches via permalien ou le cartalogue (#851)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - Footer : modification de la description (#853)
+  - LayerSwitcher : mise à jour du compteur de couches (#810)
+  - Référencement  : amélioration du contenu meta pour le référencement naturel du site (80a34b37e)
+  - Signalement et Annoter la carte : correction de la superposition de modales d'annotation (#854)
+  - Cartalogue : les vignettes renseignées par les producteurs de données s'affichent correctement (#859)
+  - Connexion : mise à jour du header et de la connexion pour meilleure gestion de l'expiration de la sessions utilisateur (#863)
+  - Modale de bienvenue : affichage correct de la modale de bienvenue quand le suivi Eulerian est activé (#872)
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.12 - 10/12/2025
+
+### 🎉 Résumé
+
+Mise en place d'un mécanisme d'icônes personnalisés :
+
+```html
+<DsfrButton icon='cartes.gouv.fr:icon-catalog' />
+<DsfrButton icon={ name: 'cartes.gouv.fr:icon-menu-tools', color: '#000091' } />
+```
+
+Nouvelle barre de recherche, évolutions sur le cartalogue, et mise en place d'un header réduit.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - Accueil : affichage d'une modale à la première ouverture sur un onglet (#824)
+  - Cartalogue : ajout des cartes de référence dans le cartalogue (#825)
+
+#### 🔨 [Evolution]
+
+  - Icones : mécanisme pour les icones personnalisés (#777)
+  - Icones : mise à jour des icones du site (#786, #788, #806)
+  - Header : réduction de la taille du header et bouton pour le passer en mode compact (#715) 
+  - Barre de Recherche : refonte de la barre de recherche (#800)
+  - Partage : gestion de permalien spéciaux en cas de redirection (#693)
+  - DSFR : mise à jour des dépendances à DSFR et Vue-DSFR (#789)
+  - Footer : réorganisation de la disposition des logos partenaires (#805)
+  - Cartalogue : mise en avant de couches spécifiques en début de la liste des cartes de référence (#473)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+  - Cartalogue : suppression du filtre de couches par services (#802)
+
+#### 🐛 [Correction]
+
+  - Vue : blocage du zoom maximum possible (#774)  
+  - Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750)
+  - Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760)
+  - Recherche d'adresse : correction de l'affichage des résultats en mode mobile (https://github.com/IGNF/geopf-extensions-openlayers/pull/456)
+  - Footer : correction de l'affichage des logos qui étaient mal dimensionnés (#784)
+  - Cartalogue : corrections de design,  d'affichage, de performances (#785)
+  - Footer : correction de l'interaction de dépliage (#803)
+  - Header : correction et evolutions- sur l'UI de l'entête (#811)
+  - Cartalogue : mise à jour des fichiers de configuration pour tri automatique des couches et génération automatique des vignettes (752be0d088f91f173aa2ebb4dc26226a774917ff)
+  - Cartalogue : theme sombre géré pour tous les composants du cartalogue (#473)
+ 
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.11 - 14/11/2025 
+
+### 🎉 Résumé 
+
+Refontes majeures du Gestionnaire de couche et du Cartalogue. Autres reprises UI sur le panel de consultation des informations des couches et sur les points de rupture de l'interface. 
+
+### 💥 Breaking changes 
+
+### 📖 Changelog 
+
+#### ✨ [Ajout] 
+
+#### 🔨 [Evolution] 
+
+- Gestionnaire de couches : refonte complète du rendu et de l'UX de l'outil (#745) 
+- Footer : mise à jour des logos (#726) 
+- Informations attributaires : mise à jour du panel de résultat de consultation des informations attributaires des couches (#744) 
+- UI : nouveaux points de rupture pour l'affichage de nombres de boutons différentes en fonction de la hauteur de l'écran (#746) 
+- Espace Perso : mise à jour du panel en mode connecté sans enregistrements (#757) 
+- Catalogue : refonte du rendu et de l'UX de l'outil (#712) 
+
+#### 🔥 [Obsolète] 
+
+#### 🔥 [Suppression] 
+
+#### 🐛 [Correction] 
+
+- Footer : images des logos récupérées depuis les annexes de la Géoplateforme (#750) 
+- Mini Carte : correction de l'affichage de la minicarte aux très petites ou très grandes echelles (#760) 
+- Recherche d'adresse : correction de l'affichage des résultats en mode mobile (https://github.com/IGNF/geopf-extensions-openlayers/pull/456) 
+
+#### 🔒 [Sécurité] 
+
+---
+
+## 🔖 version 1.0.10 - 20/10/2025
+
+### 🎉 Résumé
+
+Multiples réorganisations de l'interface et reprises sur le menu contextuel et le panel de gestion des widgets. Diverses corrections sur plusieurs fonctionnalités.
+
+### 💥 Breaking changes
+
+Mise à jour de la version du localStorage, perte des données enregistrées dedans (paramètres de la carte).
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - Geocodage inverse : possibilité de copier le résultat (#705 et https://github.com/IGNF/geopf-extensions-openlayers/pull/415)
+
+#### 🔨 [Evolution]
+
+  - Coordonnées de la souris : options avancées disponibles via un accordéon à déplier (https://github.com/IGNF/geopf-extensions-openlayers/pull/425)
+  - Recherche : la vue se centre automatiquement sur l'adresse ou le lieu selectionné en résultat (https://github.com/IGNF/geopf-extensions-openlayers/pull/432)
+  - Menu des Widgets : mise à jour de la présentation de la liste des widgets et de leur description (#687)
+  - Menu des Widgets : Changement de la position de certains boutons et panels, et de certains icones (#713, #705 et https://github.com/IGNF/geopf-extensions-openlayers/pull/442)
+  - Menu des Widgets : Widgets Zoom et Mini Carte rendus facultatifs (#705)
+  - Informations au clic : les informations attributaires des couches sous le clic sont accessibles uniquement via le menu contextuel par le clic droit (#705)
+  - Menu Contextuel : retrait des entrées "Imprimer carte", "Partager", "Ajouter données", "Mes Enregistrements" (#720)
+  - Menu Contextuel : changement du titre de l'entrée "isochrone" en "Zone selon temps de trajet" (https://github.com/IGNF/geopf-extensions-openlayers/commit/3d228a692c8d51155bbdf8c8c32bb51629b6a03f)
+  - Footer : changement de l'url du lien vers service-public.gouv.fr (https://github.com/IGNF/cartes.gouv.fr-entree-carto/commit/f7c70c658b2709fc86cbedb73c4671dfd1bc0e88)
+  - Mini Carte : réduction de la taille de la mini carte et mise en place de bords arrondis (#748)
+
+#### 🐛 [Correction]
+
+  - Coordonnées : homogénéisation de l'ordre d'affichage des coordonnées sur le site : latitude, longitude (https://github.com/IGNF/geopf-extensions-openlayers/pull/421)
+  - Espace Perso : correction du #698 pour le chargement des cartes enregistrées (#701)
+  - Partage : Correction du chargement des iframes avec bookmarks (a02e8e826efc448a45f7bdecf5dff95282ecfc1e)
+  - Import de données : Le panel d'import de données s'ouvre correctement à gauche en remplacant le menu carte si celui-ci est ouvert (#699)
+  - LayerSwitcher : Le drag & drop de couches est réparé sous les navigateurs fonctionnant avec le moteur Chrome (https://github.com/IGNF/geopf-extensions-openlayers/pull/444)
+  - Menu Contextuel : Le clic pour obtenir les informations sur la couche n'active pas définitivement la fonctionnalité au clic gauche sur la carte (#717)
+  - Informations des couches (GetFeatureInfo) : le texte affiché en résultat dans le panel d'informations des couches est sélectionnable (#718 et https://github.com/IGNF/geopf-extensions-openlayers/pull/446)
+
+---
+
+## 🔖 version 1.0.9 - 25/08/2025 
+
+### 🎉 Résumé 
+
+Corrections diverses sur l’UI et ajout du mode édition sur l’outil d’affichage des coordonnées de la souris. 
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+- Coordonnées de la souris : ajout du mode édition pour choisir les coordonnées de centrage (#671)
+
+#### 🔨 [Evolution]
+
+- Zoom : Mise à jour des icones pour les fonctions de zoom (via geopf-ext-ol-#412) 
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+- UI : le bouton permettant d’afficher les widgets additionnels (“+”) reste toujours positionné en dernier élément de la pile supérieure droite de boutons (#664)
+- Partage : dans le lien de partage, seuls 6 chiffres significatifs sont enregistrés pour les coordonnées d’un partage de géolocalisation (#665)
+- UI : en mode mobile, les panels se positionnent correctement en hauteur (#667)
+- LayerSwitcher : en mode mobile, le menu des fonctionnalités ne laisse plus d'espace vide (via geopf-ext-ol-#417) 
+- Itinéraire/Isochrone : Mise en conformité des requêtes itinéraire / isochrone en réduisant la précision des coordonnées à 5 chiffres significatifs (via geopf-ext-ol-#411) 
+
+#### 🔒 [Sécurité]
+
+---
+
+## 🔖 version 1.0.8 - 02/07/2025
+
+### 🎉 Résumé
+
+Ajout de la fonctionnalité de signalement accessible depuis le menu contextuel (clic droit) ou le menu carte en haut à gauche. 
+Reprise du design des boutons, du footer, et de la fenêtre de consentement.
+Branchement de la configuration du cartalogue au service de recherche de la Géoplateforme, et utilisation d'une clé d'accès dédiée pour les offres sur la route private.
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+- Signalement : Outil de signalement d'anomalie accessible depuis le menu carte ou le menu contextuel (#622)
+- Partage : nouveau type de permalien pour compléter la configuration existante enregistrée dans le localStorage (#641)
+
+#### 🔨 [Evolution]
+
+- Espace Personnel : en mode connecté, enregistrement automatique des imports de données vectorielles (#603)
+- Partage : réduction du nombre de chiffres après la virgule des coordonnées (#617)
+- Partage : retrait des widgets permanents du permalien (#625)
+- UI : redesign des boutons (#618, #619)
+- Configuration : Gestion homogène des messages d'alertes en cas d'incidents ou d'informations à afficher (#624)
+- Consentement : Mise à jour de la fenêtre de consentement au format standard de cartes.gouv (#626)
+- Connexion : synchronisation de la connexion avec les autres pages de cartes.gouv (#640)
+- Espace Personnel : ajout d'un bouton dans l'espace personnel pour directement copier ses cartes (#649)
+
+#### 🔥 [Suppression]
+
+- Partage : retrait des widgets permanents du permalien (#625)
+
+#### 🐛 [Correction]
+
+- Partage : prise en compte du style pour les couches TMS dans le lien de partage (#610)
+- Notifications : correction de l'affichage de notifications intempestives en cas de donnée inexistante au chargement (e8e2131e32ba264b6fe15e91c7966f5d3e3007e1)
+- Plein Écran : correctif pour garder tous les boutons de la carte en pleine écran (79637fe8730235d7fd2e5f60c48597e0cafea808)
+- Footer : mise en conformité du footer réduit en mode dépliable (#620)
+- UI : décalage dans l'alignement des boutons (#623)
+- Configuration : Utilisation d’une clé d’accès dédiée (81aed043c6e6f75553e09b01684eb929a9868687)
+- LayerSwitcher : correction de la fonctionnalité de centrage sur emprise en cas de contraintes non exprimées en 4326 (#642)
+- Geocodage Inverse : correction de la recherche par cercle (#643)
+
+---
+
+## 🔖 version 1.0.7 - 20/05/2025
+
+### 🎉 Résumé
+
+Publication de l'espace personnel et des fonctionnalités qui y sont liées.
+Diverses corrections sur l'espace personnel (favoris), amélioration du gestionnaire de couches, et de l'affichage du footer.
+
+### 💥 Breaking changes
+
+Mise à jour de la version du localStorage : perte des données de session.
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+- Espace Personnel : ajout des fonctionnalités de l'espace personnel : enregistrement, import, modification de données (#439,#564,#585) 
+- Menu Contextuel : ajout des enregistrements au menu contextuel (#579)
+- Theme sombre : affichage des notifications dans le thème sombre (#576)
+- Gestionnaire de couches : gestion de l'affichage des boutons edition / N&B en fonction du type de données
+- Gestionnaire de couches : ajout d'un menu pour choisir le thème des couches TMS
+
+#### 🔨 [Evolution]
+
+- Geolocalisation : le clic sur le marker de géolocalisation centre la vue dessus
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+- Carte : suppression de la patience affichée sur la carte (#590)
+- Partage : suppression du petit de bouton de partage situé après ceux des réseaux sociaux (#591)
+
+#### 🐛 [Correction]
+
+- Lien de partage : Gestion correcte de l'ordre des couches dans le permalien (#559)
+- Noir et Blanc : N&B correctement géré pour des couches de type mapbox issues des favoris
+- Espace Personnel : correction de l'activation du bouton 'Enregistrer une carte' dans le menu des favoris (#561)
+- Header : en mode connecté, le clic sur son nom de profil redirige vers le tableau de bord (#566)
+- Espace Personnel : correction de l'enregistrement des services de type WMS, WMTS ou MapBox dans les favoris (#563)
+- Partage : Gestion de l'erreur au chargement d'un lien de partage avec une couche inconnue (#534)
+- Footer : Correction du footer en cas de zoom ou dézoom sur la fenêtre du navigateur (#580)
+
+#### 🔒 [Sécurité]
+
 ---
 
 ## 🔖 version 1.0.6 - 28/04/2025

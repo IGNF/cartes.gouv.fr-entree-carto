@@ -7,15 +7,17 @@ import { useMediaQuery } from '@vueuse/core';
  */
 export function useMatchMedia(size) {
     // breakpoints définis par le DSFR
+    // mais en min-width uniquement, donc on retranche 1px
+    // car ici on utilise max-width
     var sizes = {
-        SM : "576px",
-        MD : "768px",
-        LG : "992px",
-        XL : "1440px"
+        SM : 576 - 1,
+        MD : 768 - 1,
+        LG : 992 - 1,
+        XL : 1440 - 1
     };
 
     if (sizes[size] !== undefined) {
-        const query = "(max-width: " + sizes[size] + ")";
+        const query = "(max-width: " + sizes[size] + "px)";
         return useMediaQuery(query)
     }
 };

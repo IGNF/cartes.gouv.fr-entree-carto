@@ -2,6 +2,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useControlsOptions } from '@/composables/controls';
 
 import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
@@ -9,14 +10,13 @@ const props = defineProps({
   mapId: String,
   visibility: Boolean,
   analytic: Boolean,
-  overviewMapOptions: Object
 });
 
 const log = useLogger();
 
 
 const map = inject(props.mapId);
-const overviewMap = ref(new GeoportalOverviewMap(props.overviewMapOptions));
+const overviewMap = ref(new GeoportalOverviewMap(useControlsOptions().overviewMap));
 
 const isSmallScreen = useMatchMedia('SM')
 
@@ -63,7 +63,30 @@ function onToggleOverviewMap (e) {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style></style>
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+// overviewmap uniquement en enfant direct de .position
+.position > .gpf-widget[id^="GPoverviewMap-"] {
+  // toujours en premier dans la liste
+  order: -1;
+  // position relative pour que l'ouverture de la minimap soit par rapport au bouton
+  position: relative !important;
+  left: auto;
+  bottom: auto;
+
+  .ol-overviewmap-map {
+    position: absolute;
+    top: 0;
+    left: $widget-btn-size + $gap;
+    border-radius: $widget-btn-radius;
+    width: $widget-btn-size * 2 + $gap;
+    height: $widget-btn-size * 2 + $gap;
+    border: solid $widget-btn-padding var(--background-default-grey);
+    background-color: var(--background-default-grey);
+  }
+}
+</style>

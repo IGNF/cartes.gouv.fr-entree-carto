@@ -1,201 +1,40 @@
 <script setup lang="ts">
-import type { DsfrNavigationProps } from '@gouvminint/vue-dsfr'
+import { markRaw } from 'vue'
 
-import { inject } from 'vue'
 // icones
-import NotificationInfo from '@/icons/NotificationInfo.vue';
-import NotificationSuccess from '@/icons/NotificationSuccess.vue';
-import NotificationError from '@/icons/NotificationError.vue';
-import NotificationWarning from '@/icons/NotificationWarning.vue';
-import NotificationClose from '@/icons/NotificationClose.vue';
-// composables
-import { useRoute, useRouter } from 'vue-router'
-import { useLogger } from 'vue-logger-plugin'
-import { useMatchMedia } from '@/composables/matchMedia'
-import { useHeaderParams } from '@/composables/headerParams'
-import { useFooterParams } from '@/composables/footerParams'
-import { useBaseUrl } from '@/composables/baseUrl'
-// library
-import { Notivue, Notification, push, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
+import NotificationInfo from '@/icons/NotificationInfo.vue'
+import NotificationSuccess from '@/icons/NotificationSuccess.vue'
+import NotificationError from '@/icons/NotificationError.vue'
+import NotificationWarning from '@/icons/NotificationWarning.vue'
+import NotificationClose from '@/icons/NotificationClose.vue'
+
 // components
-import ModalConsent from '@/components/modals/ModalConsent.vue'
-import ModalTheme from '@/components/modals/ModalTheme.vue'
+import Alerts from '@/components/modals/Alerts.vue'
+import Modals from '@/components/modals/Modals.vue'
+import CustomHeader from '@/components/header/CustomHeader.vue'
+import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
+
+// composables
+import { useMatchMedia } from '@/composables/matchMedia'
+
+// library
+import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
+
 // stores
-import { useAppStore } from "@/stores/appStore"
-// others
-import t from '@/features/translation'
+import { useAppStore } from "@/stores/appStore";
+import { useDomStore } from "@/stores/domStore";
+import { useRoute } from 'vue-router';
+import { ROUTE_NAMES } from '@/router/routeNames';
 
-useAppStore()
-
+const appStore = useAppStore()
+const domStore = useDomStore()
 const route = useRoute()
-const router = useRouter()
-const log = useLogger()
+const { theme } = useScheme()
+
+const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
-const largeScreen = useMatchMedia('LG')
-
-// paramètres pour le Header
-const headerParams = useHeaderParams()
-
-// paramètres pour le Footer
-const footerParams = useFooterParams()
-
-// ref sur le component ModalTheme
-const refModalTheme = ref<InstanceType<typeof ModalTheme> | null>(null)
-
-// INFO
-// on met à jour les afterMandatoryLinks pour y ajouter des
-// options sur la 'gestion des themes'
-const afterMandatoryLinks = computed(() => {
-  return [
-    {
-      label: 'Paramètres d’affichage',
-      button: true,
-      class: 'fr-icon-theme-fill fr-link--icon-left fr-px-2v',
-      to: '/settings',
-      onclick: refModalTheme.value ? refModalTheme.value.openModalTheme : null
-    },
-  ]
-})
-
-// ref sur le component ModalConsent
-const refModalConsent = ref<InstanceType<typeof ModalConsent> | null>(null)
-
-// INFO
-// on met à jour les mandatoryLinks pour y ajouter des
-// options sur la 'gestion des cookies'
-const mandatoryLinks = computed(() => {
-  return footerParams.mandatoryLinks.map((element: any) => {
-    if (element.label === 'Gestion des cookies') {
-      delete element.href
-      element.onclick = refModalConsent.value ? refModalConsent.value.openModalConsent : null
-      element.to = '/'
-    }
-    return element
-  })
-})
-
-var service :any = inject('services');
-
-// INFO
-// on teste si une demande de connexion (ou de deconnexion) a été faite,
-// et si elle est valide, on demande le jeton de connexion, puis, 
-// on récupère les informations utilisateurs. 
-// Pour les favoris, on récupère aussi les documents.
-service.isAccessValided()
-.then((status:any) => {
-  if (status === "login") {
-    // on met à jour le header en renseignant les informations utilisateurs
-    var name = service.getUser();
-    headerParams.value.quickLinks.forEach((element:any) => {
-      if (element.label === "...") {
-        element.label = name;
-      }
-    });
-  }
-  if (status !== "no-auth") {
-    router.replace({ query: undefined });
-  }
-})
-.catch((e:any) => {
-  console.error(e);
-  push.error({
-    title: t.auth.title,
-    message: t.auth.failed(e.message || e)
-  });
-})
-.finally(() => {
-});
-
-// INFO
-// on met à jour les quickLinks pour la connexion
-const quickLinks = computed(() => {
-  return headerParams.value.quickLinks.filter((element: any) => {
-    // INFO
-    // en cas de refresh de la page...
-    if (service.authenticated && element.label === "...") {
-      if (Object.keys(service.user).length) {
-        var name = service.getUser();
-        element.label = name;
-      } else {
-        // si il y'a un souci pour récuperer des informations,
-        // on n'affiche pas l'utilisateur...
-        return false;
-      }
-    }
-    if (!Object.keys(element).includes("authenticated") || element.authenticated === service.authenticated) {
-      return true;
-    }
-  });
-})
-
-// paramètre pour la barre de navigations
-const navItems: DsfrNavigationProps['navItems'] = [
-  {
-    title: 'Commencer avec cartes.gouv',
-    get active () {
-      return [
-        'Documentation',
-        'Offre',
-        'Nous rejoindre'
-      ].includes(route.name as string)
-    },
-    links: [
-      {
-        to: `${useBaseUrl()}/documentation`,
-        text: 'Documentation',
-      },
-      {
-        to: `${useBaseUrl()}/offre`,
-        text: 'Offre',
-      },
-      {
-        to: `${useBaseUrl()}/nous-rejoindre`,
-        text: 'Nous rejoindre',
-      },
-    ],
-  },
-  {
-    to: `${useBaseUrl()}/catalogue`,
-    text: 'Catalogue',
-  },
-  {
-    to: `/`,
-    text: 'Cartes',
-  },
-  {
-    to: `${useBaseUrl()}/actualites`,
-    text: 'Actualités',
-  },
-  {
-    title: 'Assistance',
-    get active () {
-      return [
-        'Questions fréquentes',
-        'Nous écrire',
-        'Niveau de service'
-      ].includes(route.name as string)
-    },
-    links: [
-      {
-        to: `${useBaseUrl()}/faq`,
-        text: 'Questions fréquentes',
-      },
-      {
-        to: `${useBaseUrl()}/nous-ecrire`,
-        text: 'Nous écrire',
-      },
-      {
-        to: `${useBaseUrl()}/niveau-de-service`,
-        text: 'Niveau de service',
-      },
-    ],
-  },
-  {
-    to: `${useBaseUrl()}/a-propos`,
-    text: '\u00C0 propos',
-  }
-]
+const mobileScreen = useMatchMedia('LG')
 
 // customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
@@ -206,7 +45,7 @@ const myNotificationsIcons = {
   close : markRaw(NotificationClose)
 }
 
-// theme à customiser 
+// theme à customiser
 const myNotificationsTheme: NotivueTheme = {
   '--nv-radius': '0',
   '--nv-width': '350px',
@@ -224,8 +63,8 @@ const myNotificationsTheme: NotivueTheme = {
 
 // choix du theme en fonction du theme dark ou light
 const notificationsTheme = computed(() => {
-  if (refModalTheme.value) {
-    if (refModalTheme.value.modelValue === 'dark') {
+  if (theme.value) {
+    if (theme.value === 'dark') {
       return {
         ...darkTheme,
         ...myNotificationsTheme
@@ -237,107 +76,114 @@ const notificationsTheme = computed(() => {
     ...myNotificationsTheme
   };
 });
+
+onMounted(() => {
+  console.info('✓ 🚀 Application démarrée');
+  appStore.detectFirstOpen()
+})
+
 </script>
 
 <template>
-  <DsfrHeader
-    v-model="headerParams.serviceTitle"
-    :service-title="headerParams.serviceTitle"
-    :show-beta="true"
-    :service-description="headerParams.serviceDescription"
-    :logo-text="headerParams.logoText"
-    :quick-links="quickLinks"
-  >
-    <template #mainnav>
-      <DsfrNavigation
-        :nav-items="navItems"
-      />
-    </template>
-  </DsfrHeader>
+  <CustomHeader
+    v-if="!isEmbedRoute && !domStore.isFullscreenPanoramax"
+    class="CustomHeader"
+  />
 
-  <!-- Notifications 
+  <!-- Notifications
   -->
+  <!-- Gestion des Notifications -->
   <Notivue v-slot="item">
-    <Notification 
-    :item="item"
-    :icons="myNotificationsIcons"
-    :theme="notificationsTheme" 
+    <Notification
+      :item="item"
+      :icons="myNotificationsIcons"
+      :theme="notificationsTheme"
     />
   </Notivue>
 
-  <div class="futur-map-container">
+  <Alerts class="Alerts" />
+
+  <div class="futur-map-container Map">
     <router-view />
   </div>
 
-  <!-- INFO
-      Bouton non DSFR pour l'affichage du footer en mode mobile comme sur la maquette
-  -->
-  <label
-    class="fr-footer-toggle-label fr-btn fr-btn--tertiary-no-outline"
-    for="fr-footer-toggle"
-  />
-  <input
-    id="fr-footer-toggle"
-    type="checkbox"
+  <div
+    v-if="!domStore.isFullscreenPanoramax"
+    class="CustomFooter"
   >
-  <!-- INFO
-      On retire les valeurs par defaut pour ajouter
-      des valeurs customisées de mandatoryLinks.
-        :a11y-compliance="footerParams.a11yCompliance"
-        :legal-link="footerParams.legalLink"
-        :personal-data-link="footerParams.personalDataLink"
-        :cookies-link="footerParams.cookiesLink"
-        :a11y-compliance-link="footerParams.a11yComplianceLink"
-  -->
-  <DsfrFooter
-    :before-mandatory-links="footerParams.beforeMandatoryLinks"
-    :after-mandatory-links="afterMandatoryLinks"
-    :logo-text="footerParams.logoText"
-    :desc-text="footerParams.descText"
-    :home-link="footerParams.homeLink"
-    :partners="footerParams.partners"
-    :licence-text="footerParams.licenceText"
-    :licence-to="footerParams.licenceTo"
-    :licence-name="footerParams.licenceName"
-    :licence-link-props="footerParams.licenceLinkProps"
-    :ecosystem-links="footerParams.ecosystemLinks"
-    :mandatory-links="mandatoryLinks"
-  />
-
-  <div class="fr-container fr-container--fluid fr-container-md">
-    <!-- Modale : Paramètres d’affichage -->
-    <ModalTheme ref="refModalTheme" />
-
-    <!-- Modale : Gestion des cookies (+ Eulerian) -->
-    <ModalConsent ref="refModalConsent" />
+    <CgfrFooter
+      v-if="!mobileScreen && !isEmbedRoute"
+      compact
+    />
   </div>
+
+
+  <Modals />
 </template>
 
-<style>
-  .futur-map-container{
-    width: 100%;
-    height: calc(100vh - 222.5px);
-    margin-bottom: -10px;
-  }
+<style lang="scss">
+@import "@/iconscustom.css";
 
-  @media (max-width: 576px) {
-    .futur-map-container{
-    height: calc(100vh - 131px);
-    margin-bottom: 0px;
-  }
-  }
+body {
+  min-height: 100vh;
+}
+/* HACK Surcharge API Analytics */
+body.modal-open {
+  overflow: unset;
+}
+#app {
+  display: grid;
+  // on définit 4 lignes (attention, il faut bien 4 enfants dans #app)
+  // [nom] taille
+  grid-template-rows:
+    [header] auto
+    [alerts] auto
+    [map] 1fr
+    [footer] auto;
+  min-height: 100vh;
+}
+// on place les éléments
+.CustomHeader {
+  grid-row: header;
+}
+.Alerts {
+  grid-row: alerts;
+}
+.Map {
+  grid-row: map;
+  min-height: min(75vh, 500px); // hauteur minimum (utile quand footer ouvert)
+}
+.CustomFooter {
+  grid-row: footer;
+  z-index: 10;
+}
+
+hr {
+  margin: 1rem 0;
+  padding: 0;
+  height: 1px;
+}
+
   /* TODO :
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /* 
+  
+  .Notivue__content {
+    width: min(92vw, 34rem);
+    max-width: min(92vw, 34rem);
+  }
+
   .Notivue__content-message {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
-  } 
-  */
-  /*   
+    max-height: min(32vh, 12rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
+  /*
   .Notivue__icon {
     color: white;
     display: flex;
@@ -347,9 +193,9 @@ const notificationsTheme = computed(() => {
     min-width: var(--nv-icon-size);
     width: var(--nv-icon-size);
     margin: 0;
-  } 
+  }
   */
- /*   
+ /*
   [data-notivue='error'] .Notivue__icon {
     background-color: #ce0500;
   }
@@ -366,102 +212,4 @@ const notificationsTheme = computed(() => {
     color: #070707;
   }
   */
-
-  .fr-footer__body, .fr-footer__partners, .fr-footer__bottom-copy{
-    display: none;
-  }
-  #footer {
-    padding-top: 0;
-  }
-  .fr-footer__bottom {
-    margin-top: 0;
-  }
-
-  #fr-footer-toggle {
-    display: none;
-  }
-  .fr-footer-toggle-label {
-    display: block;
-    position: absolute;
-    right: 0;
-    width: 32px;
-    min-height: 32px;
-    padding: 8px;
-    background-image: url(../assets/arrow-down.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: translateY(12px);
-    transition: transform 0.2s;
-    caret-color: transparent;
-  }
-  .fr-footer-toggle-label:has(+ #fr-footer-toggle:checked) {
-    transform: translateY(12px) rotateX(180deg);
-  }
-  @media (min-width: 576px){
-    .fr-footer-toggle-label {
-      display: none;
-    }
-  }
-  @media (max-width: 576px){
-    /* mini header */
-    .fr-header__service-tagline {
-      display: none;
-    }
-    .fr-header__service {
-      position: absolute;
-      left: 100px;
-    }
-    .fr-header__service::before {
-      display: none;
-    }
-    /* mini footer */
-    .fr-footer {
-      padding: 0.5rem 0;
-    }
-    .fr-footer__body, .fr-footer__partners, .fr-footer__bottom > div {
-      display: none;
-    }
-    .fr-footer__partners + .fr-footer__bottom {
-      margin-top: 0;
-    }
-    .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
-      display: none;
-    }
-    .fr-footer-toggle, .fr-footer-toggle-label{
-      display: none;
-    }
-    .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
-      display: none;
-    }
-    .fr-footer__bottom {
-      box-shadow: unset;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer {
-      padding-top: 2rem;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__body {
-      display: flex;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__partners,
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > div {
-      display: unset;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item::before {
-      display: inline-block;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom > .fr-footer__bottom-list > .fr-footer__bottom-item:not(:has(.fr-icon-theme-fill)) {
-      display: inline-block;
-    }
-
-    #fr-footer-toggle:checked + .fr-footer .fr-footer__bottom {
-      box-shadow: inset 0 1px 0 0 var(--border-default-grey);
-    }
-  }
-
-
 </style>

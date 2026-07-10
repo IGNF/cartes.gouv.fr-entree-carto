@@ -1,37 +1,46 @@
 import { 
+  type RouteLocationNormalized,
   type RouteRecordRaw, 
   createRouter, 
   createWebHistory } 
 from 'vue-router'
 
-const MAIN_TITLE = 'Le service public des cartes et données du territoire | cartes.gouv.fr'
+import { ROUTE_NAMES } from './routeNames'
+
+const MAIN_TITLE = 'cartes.gouv.fr | Explorer les cartes'
 
 // liste des routes disponibles
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Carte',
+    name: ROUTE_NAMES.MAP,
     component: () => import('../views/Load.vue'), // Lazy loading
   },
   {
     path: '/embed',
-    name: 'Carte embarquée',
+    name: ROUTE_NAMES.EMBED,
     component: () => import('../views/Embed.vue'), // Lazy loading
   },
   {
     path: '/login',
-    name: 'Se connecter',
+    name: ROUTE_NAMES.LOGIN,
     component: () => import('../views/Login.vue'), // Lazy loading
   },
   {
     path: '/logout',
-    name: 'Se deconnecter',
+    name: ROUTE_NAMES.LOGOUT,
     component: () => import('../views/Logout.vue'), // Lazy loading
   },
   {
     path: '/bookmarks',
-    name: 'Favoris',
+    name: ROUTE_NAMES.BOOKMARKS,
     component: () => import('../views/Bookmarks.vue'), // Lazy loading
+  },
+  {
+    path: '/plan/:slug(.*)*',
+    name: ROUTE_NAMES.PLAN,
+    component: () => import('../views/Plan.vue'), // Lazy loading
+    props: true
   }
 ]
 
@@ -63,7 +72,8 @@ function updateTitle(to: RouteLocationNormalized) {
 
 function handleAccueilRedirect(to: RouteLocationNormalized) {
   if (!window.location.href.includes('/accueil')) {
-    window.open(to.href)
+    const resolved = router.resolve(to.fullPath)
+    window.open(resolved.href)
     return false
   }
   return true

@@ -13,8 +13,10 @@
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useAppStore } from '@/stores/appStore';
+import { useServiceStore } from '@/stores/serviceStore';
 
-import { 
+import {
   useCreateDocument
 } from '@/components/carte/control/actions/actionSaveButton';
 
@@ -31,17 +33,26 @@ import t from '@/features/translation';
 const emitter = inject('emitter');
 const service = inject('services');
 
-const refModalLogin = inject("refModalLogin");
-const refModalSave = inject("refModalSave");
+// Ces injections sont optionnelles (ex: route embed sans modales).
+const refModalLogin = inject("refModalLogin", null);
+const refModalSave = inject("refModalSave", null);
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  layerImportOptions: Object
+  layerImportOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const mapStore = useMapStore();
+const appStore = useAppStore();
+const serviceStore = useServiceStore();
 const log = useLogger();
 
 const map = inject(props.mapId);
@@ -96,17 +107,25 @@ onUpdated(() => {
  * @param e - donnée de sauvegarde de l'import
  */
 const onOpenModalLogin = (e) => {
-  // FIXME
-  // Si je decide de me connecter, je perds mon import
-  // car il n'est pas enregistré !
-  // On peut deleguer une action de sauvegarde ou emettre un evenement
-  // aprés la validation de la connexion
-  // Pour garder les informations de sauvegarde temporaire, 
-  // on les stocke dans le localStorage
   log.debug(e);
+  if (e.layer) {
+    // INFO
+    // Uniquement pour les imports de type vecteur, 
+    // les autres types ne sont pas encore concernés par la sauvegarde
+    // Pour garder les informations de sauvegarde temporaire,
+    // on les stocke dans le localStorage
+      appStore.setDocumentTemporary(JSON.stringify({
+        content : e.data,
+        name : e.name,
+        description : e.description,
+        format : e.format,
+        target : "internal",
+        type : "import",
+      }));
+    }
   if (refModalLogin) {
     // true pour proposer le message 'Ne plus afficher le message'
-    refModalLogin.value.openModalLogin(true); 
+    refModalLogin.value.openModalLogin(true);
   }
 }
 
@@ -121,12 +140,12 @@ const onOpenModalSave = () => {
 }
 
 /**
- * 
+ *
  * @param e - donnée de sauvegarde de l'import
  */
 const saveImportVector = (e) => {
   console.log("saveImportVector", e);
-  
+
   var data = {
     layer : e.layer,
     content : e.data,
@@ -138,16 +157,15 @@ const saveImportVector = (e) => {
   };
 
   var promise = useCreateDocument(data, emitter, service);
-  
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
-      var url = toShare(document, { 
-        opacity: data.layer.get('opacity'), 
+      var url = toShare(document, {
+        opacity: data.layer.get('opacity'),
         visible: data.layer.get('visible'),
-        grayscale: data.layer.get('grayscale'),
-        stop: 1 // HACK !
+        grayscale: data.layer.get('grayscale')
       });
       // nouvelle donnée à ajouter
       if (o.action === "added") {
@@ -159,6 +177,8 @@ const saveImportVector = (e) => {
   })
   .then(() => {
     layerImport.value.setCollapsed(true);
+    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
+    map.removeLayer(data.layer); 
   })
   .then(() => {
     // notification
@@ -176,17 +196,17 @@ const saveImportVector = (e) => {
   });
 }
 
-/** 
+/**
  * Gestionnaires d'evenement
- * 
+ *
  * @description
- * 
+ *
  * Ecouteur pour la sauvegarde automatique d'un import de type :
  * - vecteur
  * - service
  * - mapbox
  * - compute
- * 
+ *
  * @event layerimport:service:added
  * @property {Object} type - event
  * @property {String} name - layerName
@@ -202,8 +222,9 @@ const saveImportVector = (e) => {
 const onSaveImportVector = (e) => {
   log.debug(e);
 
+  var bNeedAuthentication = !service.authenticated || (service.authenticated && serviceStore.getAuthentificateSyncNeeded());
   // on n'est pas connecté, on propose le choix de se connecter ou pas
-  if (!service.authenticated) {
+  if (bNeedAuthentication) {
     // si la case 'Ne plus afficher ce message' est cochée,
     // on n'affiche plus la boite de dialogue de connexion
     if (!mapStore.noLoginInformation) {
@@ -214,11 +235,9 @@ const onSaveImportVector = (e) => {
     refModalSave.value.onDelegateCbk(() => {
       saveImportVector(e);
     });
-  
-    // si on est authentifié, on propose la possibilité de sauvegarder ou pas
-    if (service.authenticated) {
-      onOpenModalSave();
-    }
+
+    // si on est authentifié, on propose le choix de sauvegarder ou pas
+    onOpenModalSave();
   }
 };
 const onSaveImportService = (e) => {
@@ -265,7 +284,7 @@ const onSaveImportService = (e) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
-        opacity: 1, 
+        opacity: 1,
         visible: true,
         grayscale: false,
         stop : 1
@@ -312,7 +331,7 @@ const onSaveImportMapbox = (e) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
-        opacity: 1, 
+        opacity: 1,
         visible: true,
         grayscale: false,
         stop : 1
@@ -395,15 +414,15 @@ const getDataServiceWMTS = (data) => {
       y: data["Origin"][1]
     },
     resolutions : data["Resolutions"],
-    matrixIds : data["MatrixIds"],  
+    matrixIds : data["MatrixIds"],
     title : data["Title"],
     description : data["Abstract"]
   };
 }
 /**
  * Créer un document pour un service
- * 
- * @param data 
+ *
+ * @param data
  * @property {String} data.content - export data
  * @property {String} data.name - name
  * @property {String} data.description - description
@@ -418,7 +437,7 @@ const getDataServiceWMTS = (data) => {
     const o = await service.setDocument(data)
     var uuid = o.uuid;
     var action = o.action;
-    
+
     // rendre public le document
     const s = await service.sharingDocument({
       uuid : uuid,
@@ -450,14 +469,13 @@ const getDataServiceWMTS = (data) => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-button[id^=GPshowImportPicto-] {
+<style lang="scss">
+// le widget est intégré dans le container gauche
+// mais le bouton est caché (car intégré dans menus gauche et droite)
+.position-container-top-left .gpf-btn-icon[id^=GPshowImportPicto-] {
   display: none;
-}
-dialog[id^=GPcontrolListPanel-] button[id^=GPshowImportPicto-]{
-  display: block;
 }
 </style>

@@ -1,12 +1,27 @@
 <script setup lang="js">
+import { computed, toRaw } from 'vue'
 import { useLogger } from 'vue-logger-plugin'
 import Layer from '@/components/carte/Layer/Layer.vue'
+import { removePermalink } from '@/features/permalink.js';
 
 const props = defineProps({
-  selectedLayers: Object,
-  selectedBookmarks: Object,
-  mapId: String
+  selectedLayers: {
+    type: Object,
+    default: () => ({})
+  },
+  selectedBookmarks: {
+    type: Object,
+    default: () => ({})
+  },
+  mapId: {
+    type: String,
+    default: ''
+  }
 })
+
+// INFO
+// Evenement "ready" émis lorsque la dernière couche est montée !
+const emit = defineEmits(["ready"])
 
 // INFO
 // liste des couches à ajouter sur la carte
@@ -22,12 +37,14 @@ var layers = computed(() => {
       name : layer.name,
       service : layer.service || layer.serviceParams.id.split(":")[1], // HACK !
       key : layer.key,
-      position : layer.hasOwnProperty("position") ? layer.position : -1,
-      opacity : layer.hasOwnProperty("opacity") ? layer.opacity : 1,
-      visible : layer.hasOwnProperty("visible") ? layer.visible : true,
-      grayscale : layer.hasOwnProperty("grayscale") ? layer.grayscale : false
+      position : Object.prototype.hasOwnProperty.call(layer, "position") ? layer.position : -1,
+      opacity : Object.prototype.hasOwnProperty.call(layer, "opacity") ? layer.opacity : 1,
+      visible : Object.prototype.hasOwnProperty.call(layer, "visible") ? layer.visible : true,
+      grayscale : Object.prototype.hasOwnProperty.call(layer, "grayscale") ? layer.grayscale : false
     };
-    (layer.hasOwnProperty("style")) ? properties.style = layer.style : null;
+    if (Object.prototype.hasOwnProperty.call(layer, "style")) {
+      properties.style = layer.style;
+    }
     return properties;
   })
 });
@@ -38,22 +55,43 @@ var bookmarks = computed(() => {
   return toRaw(props.selectedBookmarks).map(bookmark => {
     log.debug(bookmark.name, bookmark.position);
     return {
-      position : bookmark.hasOwnProperty("position") ? bookmark.position : -1,
-      opacity : bookmark.hasOwnProperty("opacity") ? bookmark.opacity : 1,
-      visible : bookmark.hasOwnProperty("visible") ? bookmark.visible : true,
-      grayscale : bookmark.hasOwnProperty("grayscale") ? bookmark.grayscale : false,
+      position : Object.prototype.hasOwnProperty.call(bookmark, "position") ? bookmark.position : -1,
+      opacity : Object.prototype.hasOwnProperty.call(bookmark, "opacity") ? bookmark.opacity : 1,
+      visible : Object.prototype.hasOwnProperty.call(bookmark, "visible") ? bookmark.visible : true,
+      grayscale : Object.prototype.hasOwnProperty.call(bookmark, "grayscale") ? bookmark.grayscale : false,
       ...bookmark
     };
   })
 });
 
+function onLayerMounted(layer, index) {
+  var allLayers = [...layers.value, ...bookmarks.value].sort((a, b) => (a.position ?? -1) - (b.position ?? -1));
+  log.debug(`Layer mounted : ${layer.name} (${index} / ${allLayers.length - 1})`);
+  if (allLayers.length - 1 === index) {
+    emit("ready"); // dernière couche montée : "ready" !
+    setTimeout(() => {
+      log.debug(`Layer last : ${layer.name} (${index})`);
+      removePermalink();
+    });
+  }
+}
+
+function onLayerUnMounted(layer, index) {
+  log.debug(`Layer unmounted : ${layer.name} (${index})`);
+}
+
 </script>
 
+<!-- FIXME : doit on trier les couches par position (ordre d'affichage)
+car les bookmarks sont ajoutés à la fin de la liste des couches !?
+[...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1)) -->
 <template>
   <Layer
-    v-for="layer in [...layers, ...bookmarks]"
+    v-for="(layer, index) in [...layers, ...bookmarks].sort((a, b) => (a.position ?? -1) - (b.position ?? -1))"
     :key="layer.key"
     :layer-options="layer"
     :map-id="mapId"
+    @mounted="onLayerMounted(layer, index)"
+    @unmounted="onLayerUnMounted(layer, index)"
   />
 </template>

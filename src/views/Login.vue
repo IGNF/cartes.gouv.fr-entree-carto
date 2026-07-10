@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const service = inject('services');
+const OAUTH_CALLBACK_URL_STORAGE_KEY = 'oauth2:callback-url';
 
 onMounted(() => {
   const queryString = location.search;
@@ -21,8 +22,23 @@ onMounted(() => {
   var code = urlParams.get('code');
   var session = urlParams.get('session_state');
   var state = urlParams.get('state');
+  var from = urlParams.get('from'); // login redirection
   var success = urlParams.get('success'); // remote
   var auth = urlParams.get('authentication_failed'); // remote
+
+  // INFO
+  // En cas de session invalide détectée à l'authentification
+  if (from === 'auto-sso') {
+    service.getAccessLogin()
+    .then((url) => {
+      location.href = url;
+    })
+    .catch((error) => {
+      console.error('Login after auto-sso failed:', error);
+      router.push({ path: '/', query: { from : 'login', success : 0 } });
+    });
+    return;
+  }
 
   // Si aucun parametre de session dans l'URL de la route '/login',
   // on redirige vers IAM authentification
@@ -41,6 +57,8 @@ onMounted(() => {
   // Puis, on revient dans l'application !
   var value = 0;
   if (service.mode === "local" && code && session && state) {
+    // Preserve OAuth callback params in case routing rewrites the URL before token exchange.
+    sessionStorage.setItem(OAUTH_CALLBACK_URL_STORAGE_KEY, location.href);
     value = 1;
   } else if (service.mode === "remote" && auth !== null) {
     value = parseInt(auth, 10);

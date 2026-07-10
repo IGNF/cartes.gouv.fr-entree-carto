@@ -38,7 +38,5 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
-
-<style></style>

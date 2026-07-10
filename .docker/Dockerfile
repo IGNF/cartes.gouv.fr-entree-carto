@@ -21,12 +21,13 @@ FROM node:23-alpine AS builder
 # - BASE_URL : URL de base de l'application
 # - MODE_ENV : mode de construction (production, development, demo, qualif)
 # - SOURCE_MAP : génère les fichiers de source map (true/false)
-ARG BASE_URL="/cartes"
+ARG BASE_URL="/explorer-les-cartes"
 ARG MODE_ENV="production"
 ARG SOURCE_MAP="false"
 
 RUN sed -i 's/https/http/' /etc/apk/repositories
 RUN apk add bash
+RUN apk add --no-cache git
 
 WORKDIR /app
 COPY . .
@@ -51,25 +52,27 @@ RUN /app/generate-env-template.sh
 #----------------------------------------------------------------------
 FROM nginxinc/nginx-unprivileged:alpine
 
-COPY --from=builder /app/dist /usr/share/nginx/html/cartes/
+# Utilisateur par défaut pour nginx
+ARG USER_ENV=nginx
+
+COPY --from=builder /app/dist /usr/share/nginx/html/explorer-les-cartes/
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 
-# USER root
+USER ${USER_ENV}
 
 # On copie le script d'entrée qui va realiser le envsubst au demarrage du container nginx
 COPY --from=builder /app/.docker/entrypoint.sh /docker-entrypoint.d/50-resolvers-envsubst.sh
-# RUN chmod +x /docker-entrypoint.d/50-resolvers-envsubst.sh
 
 # On prevoit de monter un volume sous k8s 
 # pour écriture du fichier d'environnement de la webapp
-VOLUME ["/usr/share/nginx/html/cartes/env"]
+VOLUME ["/usr/share/nginx/html/explorer-les-cartes/env"]
 
 # On copie le fichier de configuration de l'environnement
 COPY --from=builder /app/dist/env /app/dist/env
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-USER nginx
+# USER nginx
 EXPOSE 8082
 
 CMD ["nginx", "-g", "daemon off;"]

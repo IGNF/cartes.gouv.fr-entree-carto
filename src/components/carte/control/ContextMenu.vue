@@ -2,8 +2,6 @@
 import { ContextMenu } from 'geopf-extensions-openlayers';
 import { useMatchMedia } from '@/composables/matchMedia';
 
-const isSmallScreen = useMatchMedia('SM')
-
 const props = defineProps({
   mapId: String,
   visibility: Boolean,
@@ -11,47 +9,57 @@ const props = defineProps({
   contextMenuOptions: Object
 });
 
+const isSmallScreen = useMatchMedia('SM')
+
 const map = inject(props.mapId)
 const contextMenu = ref(new ContextMenu(props.contextMenuOptions));
-
+const pixel = ref([0,0])
 onMounted(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(contextMenu.value);
+    contextMenu.value.contextmenu.on("open", onContextMenuOpen)
+    map.on('singleclick', function (evt) {
+    const pixel = evt.pixel;
+      pixel.value =[90, pixel[1]]
+    });
   }
 })
 
 onBeforeUpdate(() => {
-  if (props.visibility && !isSmallScreen.value) {
+  if (props.visibility) {
     map.addControl(contextMenu.value);
   }
   else {
     map.removeControl(contextMenu.value);
   }
 })
+
+const onContextMenuOpen = () => {
+  if (isSmallScreen.value) {
+    contextMenu.value.contextmenu.updatePosition([90, pixel.value[1]])
+  }
+}
 </script>
 
 <template>
-  <!-- TODO ajouter l'emprise du widget pour la gestion des collisions -->
+  <div />
 </template>
 
-<style>
-.ol-overlay-container:has(.gp-label-div),
-.ol-overlay-container:has(.gp-styling-div) {
-  transform: translate(62px, 79px) !important;
-}
+<style lang="scss">
+@use "@/assets/variables" as *;
 
-@media (max-width: 627px) and (min-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 144px) !important;
+.gpf-widget[id^="GPpointInfo-"] {
+  top: $widget-btn-size + $gap * 2;
+  left: $widget-panel-x;
+
+  @include max(sm) {
+    top: 0;
+    left: 0;
+    width: 100vw;
+
+    .gpf-panel {
+      width: inherit;
+    }
   }
 }
-
-@media (max-width: 576px) {
-  .ol-overlay-container:has(.gp-label-div),
-  .ol-overlay-container:has(.gp-styling-div) {
-    transform: translate(62px, 235px) !important;
-  }
-}
-
 </style>

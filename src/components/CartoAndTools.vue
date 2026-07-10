@@ -1,47 +1,45 @@
 <script setup lang="ts">
-import Carto from '@/components/carte/Carto.vue'
-import LeftMenuTool from '@/components/menu/LeftMenuTool.vue'
-import RightMenuTool from '@/components/menu/RightMenuTool.vue'
+import Carto from "@/components/carte/Carto.vue";
+import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
 
-import ThemeModal from '@/components/modals/ModalTheme.vue'
 import LoginModal from "@/components/modals/ModalLogin.vue";
-import ShareModal from '@/components/carte/control/ShareModal.vue'
+import ShareModal from "@/components/carte/control/ShareModal.vue";
 import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
+import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
 import { useDataStore } from "@/stores/dataStore"
 import { useMapStore } from "@/stores/mapStore"
+import { useLogger } from 'vue-logger-plugin';
+import { useAppStore } from "@/stores/appStore"
 
-import { fromShare } from '@/features/share';
+import { fromShare } from "@/features/share";
 
 // lib notification
-import { push } from 'notivue';
-import t from '@/features/translation';
+import { push } from "notivue";
 
 const mapStore = useMapStore();
 const dataStore = useDataStore();
+const appStore = useAppStore();
 
-const refModalTheme: ThemeModal = ref({})
-const refModalLogin: LoginModal = ref({})
-const refModalShare: ShareModal = ref({})
-const refModalPrint: PrintModal = ref({})
-const refModalSave: SaveModal = ref({})
+const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
+const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
+const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
+const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
+const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
 
-provide("refModalPrint", refModalPrint)
-provide("refModalShare", refModalShare)
-provide("refModalTheme", refModalTheme)
-provide("refModalLogin", refModalLogin)
-provide("refModalSave", refModalSave)
+provide("refModalShare", refModalShare);
+provide("refModalLogin", refModalLogin);
+provide("refModalSave", refModalSave);
+provide("refModalWelcome", refModalWelcome);
 
 // Les gestionnaires d'évenements des modales
 const onModalShareOpen = () => {
   refModalShare.value.onModalShareOpen()
 }
-const onModalThemeOpen = () => {
-  refModalTheme.value.openModalTheme()
-}
+
 const onModalPrintOpen = () => {
-  refModalPrint.value.onModalPrintOpen()
+  refModalPrint.value.onModalPrintOpen();
 }
 const onModalLoginOpen = () => {
   refModalLogin.value.openModalLogin(false)
@@ -155,24 +153,19 @@ const selectedControls = computed(() => {
   return controls;
 });
 
-const cartoRef = ref(null)
+const cartoRef = ref(null); // FIXME Référence au composant Carto utilisée ?
+
+onMounted(() => {
+  if (appStore.siteOpened && refModalWelcome.value) {
+    refModalWelcome.value.openModalWelcome();
+  }
+});
 
 provide("selectedLayers", selectedLayers);
 </script>
 
 <template>
   <div id="map-and-tools-container">
-    <!-- Le menu de gauche : le menu tierce (et les favoris)
-     il y figure la liste des abonnements aux evenements sur le clic
-     d'un élement du menu tierce
-    -->
-    <LeftMenuTool
-      @on-modal-share-open="onModalShareOpen"
-      @on-modal-print-open="onModalPrintOpen"
-      @on-modal-theme-open="onModalThemeOpen"
-      @on-modal-login-open="onModalLoginOpen"
-    />
-
     <!-- Module cartographique :
      - liste des couches selectionnées
      - liste des controles selectionnés
@@ -184,58 +177,35 @@ provide("selectedLayers", selectedLayers);
       :selected-bookmarks="selectedBookmarks"
     />
 
-    <!-- Le menu des contrôles et le catalogue -->
-    <RightMenuTool
-      :selected-layers="selectedLayers"
-      :selected-controls="selectedControls"
+    <!-- Le menu de gauche : le menu tierce (et les favoris)
+     il y figure la liste des abonnements aux evenements sur le clic
+     d'un élement du menu tierce
+    -->
+    <LeftMenuTool
+      @on-modal-share-open="onModalShareOpen"
+      @on-modal-print-open="onModalPrintOpen"
+      @on-modal-login-open="onModalLoginOpen"
     />
-    <!-- Liste des modales -->
-    <div class="modal-container">
-      <ThemeModal ref="refModalTheme" />
-      <PrintModal
-        ref="refModalPrint"
-        :selected-bookmarks="selectedBookmarks"
-      />
-      <ShareModal ref="refModalShare" />
-      <LoginModal ref="refModalLogin" />
-      <SaveModal ref="refModalSave" />
-    </div>
+  </div>
+  <!-- Liste des modales -->
+  <div class="modal-container">
+    <ShareModal ref="refModalShare" />
+    <LoginModal ref="refModalLogin" />
+    <SaveModal ref="refModalSave" />
+    <PrintModal ref="refModalPrint" />
   </div>
 </template>
 
 <style scoped>
   #map-and-tools-container{
-    margin-left: 0;
-    width: inherit;
-    height: inherit;
-    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--background-disabled-grey);
+    /* cree un container */
+    container-name: map;
+    container-type: size;
+    /* et un containing block */
+    will-change: transform;
   }
-</style>
-
-<style>
-/* FIXME Style non scopé pour cacher les boutons partage et de menu
-à voir si c'est factorisable avec ce qui est fait l153 de MenuLateralWrapper.vue */
-@media (max-width: 576px) {
-  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) .navButton,
-  #map-and-tools-container:has(.gpf-mobile-fullscreen > button[aria-pressed="true"]) #share-button-position {
-    display: none;
-  }
-}
-
-/* FIXME
-Cache le menu latéral si widget ouvert...
-*/
-#map-and-tools-container:has(#position-container-top-right > div > button[aria-pressed="true"]) .menu-toggle-wrap.right .menu-content-list  {
-  display: none;
-}
-#map-and-tools-container:has(#position-container-bottom-left > div > button[aria-pressed="true"]) .menu-toggle-wrap.left .menu-content-list  {
-  display: none;
-}
-
-#map-and-tools-container:has(.gp-label-div) .menu-toggle-wrap.left .menu-content-list  {
-    display: none;
-}
-#map-and-tools-container:has(.gp-styling-div) .menu-toggle-wrap.left .menu-content-list  {
-    display: none;
-}
 </style>

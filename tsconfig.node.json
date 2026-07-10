@@ -6,7 +6,7 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "vite.config.*",
-    "vitest.config.*",
+    "vitest.config.*", "src/iconscustom.ts",
   ],
   "compilerOptions": {
     "composite": true,

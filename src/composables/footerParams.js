@@ -1,8 +1,3 @@
-import LogoIGN from "../assets/logo-ign.png"
-import LogoTRANSFO from "../assets/logo-transformation-fonction-publiques.png"
-import LogoECOLO from "../assets/logo-transition-ecologique.png"
-import LogoCNIG from "../assets/logo-cnig.png"
-
 import { useBaseUrl } from '@/composables/baseUrl';
 
 /**
@@ -11,6 +6,8 @@ import { useBaseUrl } from '@/composables/baseUrl';
  */
 export function useFooterParams() {
 
+    const isStaticService = import.meta.env.VITE_GPF_SERVICE_STATIC === "true";
+    
     // Paramètres pour le Footer
     const footerParams = {
         beforeMandatoryLinks: [
@@ -24,7 +21,7 @@ export function useFooterParams() {
         personalDataLink: '/donnees-personnelles',
         cookiesLink: '/cookies',
         a11yComplianceLink: '/accessibilite',
-        descText: 'Cartes.gouv.fr est développé par l’Institut national de l’information géographique et forestière (IGN) et ses partenaires. Le site s’appuie sur la Géoplateforme, la nouvelle infrastructure publique, ouverte et collaborative des données géographiques.',
+        descText: 'Cartes.gouv.fr est le service public des cartes et données du territoire français. Porté par l’IGN et ses partenaires, il offre à tous un accès à la référence de la cartographie publique et permet à chacun de créer, d’héberger et de publier ses propres données et représentations.',
         homeLink: '/',
         licenceText: undefined,
         licenceTo: undefined,
@@ -36,8 +33,8 @@ export function useFooterParams() {
                 href: 'https://info.gouv.fr',
             },
             {
-                label: 'service-public.fr',
-                href: 'https://service-public.fr',
+                label: 'service-public.gouv.fr',
+                href: 'https://service-public.gouv.fr',
             },
             {
                 label: 'legifrance.gouv.fr',
@@ -50,26 +47,25 @@ export function useFooterParams() {
         ],
         partners: {
             title: "Nos partenaires",
-            mainPartner: {},
+            mainPartner: {
+              href: "https://www.ign.fr/",
+              logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/ign.png' : useBaseUrl() + '/annexes/ressources/footer/ign.png',
+              name: "IGN"
+          },
             subPartners: [
                 {
-                    href: "https://www.ign.fr/",
-                    logo: LogoIGN,
-                    name: "IGN"
-                },
-                {
                     href: "https://www.transformation.gouv.fr/",
-                    logo: LogoTRANSFO,
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/min_fp.jpg' : useBaseUrl() + '/annexes/ressources/footer/min_fp.jpg',
                     name: "Ministère de la transformation et de la fonction publiques"
                 },
                 {
                     href: "https://www.ecologie.gouv.fr/",
-                    logo: LogoECOLO,
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/min_ecologie.jpg' : useBaseUrl() + '/annexes/ressources/footer/min_ecologie.jpg',
                     name: "Ministère de la Transition Écologique et de la Cohésion des Territoires"
                 },
                 {
                     href: "https://cnig.gouv.fr/",
-                    logo: LogoCNIG,
+                    logo: isStaticService ? useBaseUrl() + '/img/footer/partenaires/logo-rf-cnig.jpg' : useBaseUrl() + '/annexes/ressources/footer/rf_cnig.jpg',
                     name: "Conseil national de l’information géolocalisée"
                 },
             ]
@@ -82,6 +78,10 @@ export function useFooterParams() {
           {
             label: 'Mentions légales',
             href: useBaseUrl() + '/mentions-legales'
+          },
+          {
+            label: 'Conditions générales d’utilisation',
+            href: useBaseUrl() + '/cgu'
           },
           {
             label: 'Données personnelles',

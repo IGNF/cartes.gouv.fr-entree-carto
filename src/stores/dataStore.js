@@ -1,22 +1,29 @@
 import {
   defineStore
 } from 'pinia';
+import { shallowRef } from 'vue';
 
 /**
- * Store des couches
- * - branchement sur l'aggregation des GetCapabilities
- * - utilisation des informations éditoriales : fonds de carte, thématique...
- * - ressources additionnelles : metadonnées, vignettes, ...
+ * @description
+ * Store des données
+ * - les couches : layers filtrées ex. par type de service et projection
+ * - les options générales
+ * - tileMatrixSets
+ * - contacts
+ * - territoires : zones géographiques
+ * - featured : c'est la mise en avant de certaines couches
+ * - alertes
+ * - topics : thématiques / producteurs
  */
 export const useDataStore = defineStore('data', () => {
-  const m_informations = ref({});
-
-  const m_layers = ref({});
+  const m_layers = shallowRef({});
   const m_generalOptions = ref({});
-  const m_tileMatrixSets = ref({});
+  const m_tileMatrixSets = shallowRef({});
   const m_contacts = ref({});
   const m_territories = ref([]);
-  const m_featured = ref([]);
+  const m_featured = shallowRef([]);
+  const m_alerts = ref([]);
+  const m_topics = shallowRef([]);
   const isLoaded = ref(false);
   const error = ref("");
   const filterServices = "WMTS,WMS,TMS";
@@ -58,32 +65,114 @@ export const useDataStore = defineStore('data', () => {
     })
   });
 
+  async function fetchJson(url, force=false) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP (${response.status})`);
+    }
+
+    if (!force) {
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Format de réponse inattendu');
+      }
+    }
+
+    return response.json();
+  }
+
+  async function loadTerritories() {
+    const territoriesConfURL = import.meta.env.VITE_GPF_CONF_TERRITORIES;
+
+    try {
+      const response = await fetchJson(territoriesConfURL);
+      if (!response || !Array.isArray(response.territories)) {
+        throw new Error('Format des territoires invalide');
+      }
+      if (response.territories.length === 0) {
+        throw new Error('Aucun territoire trouvé');
+      }
+      return response.territories;
+    } catch {
+      return null;
+    }
+  }
+
+  async function loadAlertsWithFallback() {
+    const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
+
+    try {
+      const alerts = await fetchJson(alertsConfURL);
+      if (!Array.isArray(alerts)) {
+        throw new Error('Format des alertes invalide');
+      }
+      return alerts;
+    } catch {
+      // HACK : en attendant une source d'alertes dynamique, 
+      // on retourne une liste vide pour éviter de planter l'app !
+      // const fallbackAlerts = await fetchJson('data/alerts.json');
+      // if (!Array.isArray(fallbackAlerts)) {
+      //   throw new Error('Format des alertes invalide (fallback)');
+      // }
+      // return fallbackAlerts;
+      return [];
+    }
+  }
+
+  async function loadEntreeCartoWithFallback() {
+    const isValidEntreeCartoConfig = (conf) => {
+      return !!conf
+        && typeof conf === 'object'
+        && !Array.isArray(conf)
+        && !!conf.layers
+        && typeof conf.layers === 'object'
+        && !!conf.generalOptions
+        && typeof conf.generalOptions === 'object'
+        && !!conf.tileMatrixSets
+        && typeof conf.tileMatrixSets === 'object';
+    }
+    const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
+
+    try {
+      const entreeCarto = await fetchJson(entreeCartoConfURL, true);
+      if (!isValidEntreeCartoConfig(entreeCarto)) {
+        throw new Error('Format des données d\'entrée carto invalide');
+      }
+      return entreeCarto;
+    } catch {
+      const fallbackEntreeCarto = await fetchJson('data/entreeCarto.json', true);
+      if (!isValidEntreeCartoConfig(fallbackEntreeCarto)) {
+        throw new Error('Format des données d\'entrée carto invalide (fallback)');
+      }
+      return fallbackEntreeCarto;
+    }
+  }
+
   /**
    * @todo utiliser l'implementation officielle @link{https://vueuse.org/core/useFetch/}
    */
   async function fetchData() {
     try {
+      const alerts = await loadAlertsWithFallback();
+      m_alerts.value = alerts;
 
-      const entreeCartoConfURL = import.meta.env.VITE_GPF_CONF_ENTREE_CARTO;
-      const entreeCartoRes = await fetch(entreeCartoConfURL)
-      const conf = await entreeCartoRes.json();
-
-      m_territories.value = conf.territories;
+      const conf = await loadEntreeCartoWithFallback();
+      m_territories.value = await loadTerritories() || conf.territories; // fallback to conf territories if fetch fails
       m_contacts.value = conf.contacts;
-      m_informations.value = conf.informations;
       m_featured.value = conf.featured || [];
       m_layers.value = conf.layers;
       m_generalOptions.value.apiKeys = {
         ...conf.generalOptions.apiKeys
       }
       m_tileMatrixSets.value = conf.tileMatrixSets;
+      m_topics.value = conf.topics || [];
 
-      this.isLoaded = true;
+      isLoaded.value = true;
       return conf.layers;
 
     } catch (err) {
-      console.log(err);
-      this.isLoaded = false;
+      console.error(err);
+      isLoaded.value = false;
       error.value = err.message;
     }
   }
@@ -96,8 +185,8 @@ export const useDataStore = defineStore('data', () => {
     return m_contacts.value;
   }
 
-  function getInformations() {
-    return m_informations.value;
+  function getAlerts() {
+    return m_alerts.value.filter((alert) => alert.visibility.map);
   }
 
   function getThematics() {
@@ -130,7 +219,7 @@ export const useDataStore = defineStore('data', () => {
   function getLayersSignatures() {
     return Object.fromEntries(
       Object.entries(m_layers.value)
-        .map(([key, val]) => [val.name, val.serviceParams.id.split(":")[1]])
+        .map(([, val]) => [val.name, val.serviceParams.id.split(":")[1]])
     );
   }
 
@@ -260,7 +349,9 @@ export const useDataStore = defineStore('data', () => {
       // get layer configuration object
       var l = this.getLayerByID(id);
       params = {};
-      params.projection = l.defaultProjection;
+      // par défaut, les projections devraient être en Geographique
+      // sauf si renseignée
+      params.projection = l.globalConstraint.crs; 
       params.minScale = l.globalConstraint.minScaleDenominator;
       params.maxScale = l.globalConstraint.maxScaleDenominator;
       params.extent = l.globalConstraint.bbox;
@@ -282,6 +373,10 @@ export const useDataStore = defineStore('data', () => {
     return m_tileMatrixSets.value[id];
   }
 
+  function getTopics() {
+    return m_topics.value;
+  }
+
   return {
     error,
     isLoaded,
@@ -292,7 +387,7 @@ export const useDataStore = defineStore('data', () => {
     fetchData,
     getTerritories,
     getContacts,
-    getInformations,
+    getAlerts,
     getLayersByThematic,
     getThematics,
     getLayersByProducer,
@@ -310,6 +405,7 @@ export const useDataStore = defineStore('data', () => {
     getLayerParamsByName,
     getLayerParamsByID,
     getGlobalConstraintsByID,
-    getGlobalConstraintsByName
+    getGlobalConstraintsByName,
+    getTopics
   }
 })

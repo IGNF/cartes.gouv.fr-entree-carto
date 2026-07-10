@@ -1,6 +1,7 @@
 <script lang="js">
   /**
    * @description
+   * Composant représentant le menu de gestion des outils.
    * 
    * @property {Object} selectedControls Tableau des contrôles sélectionnés ajoutés à la carte
    * 
@@ -14,69 +15,70 @@
 import { useControlsMenuOptions } from '@/composables/controls';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import { useDomStore } from "@/stores/domStore";
 import ControlListElement from './ControlListElement.vue';
 
 const log = useLogger();
-const mapStore = useMapStore();;
+const mapStore = useMapStore();
+const domStore = useDomStore();
 
 const props = defineProps({
-  selectedControls : Array
+  selectedControls: {
+    type: Array,
+    default: () => []
+  },
+  theme: {
+    type: String,
+    default: null,
+  },
+  themeTitle: {
+    type: String,
+    default: null,
+  },
 });
 
-const selectedControls = defineModel();
+const selectedControlsModel = defineModel({ type: Array, default: () => [] });
 
-const disabled = false;
-const inline = false;
-const required = false;
-const small = false;
 const opts = useControlsMenuOptions();
 
 const allOptions = computed(() => {
-  return opts.filter((opt) => {
-    if (opt.label.toLowerCase().includes(searchString.value.toLowerCase()) || 
-        opt.hint.toLowerCase().includes(searchString.value.toLowerCase())  ||
-        opt.name.toLowerCase().includes(searchString.value.toLowerCase()))
-      return opt;
-  })
+  // regroupement des controles par group
+  // [
+  //   { group: 'id',  items: [{ label: 'Barre de Recherche', ... }] },
+  //   { group: 'id2', items: [{ label: 'Mini carte', ... }] }
+  // ]
+  // puis filtrage des items par la recherche
+  // puis filtrage si pas d'items
+  let items = Object.entries(
+    opts.reduce((acc, item) => {
+      (acc[item.group] ??= []).push(item);
+      return acc;
+    }, {})
+  ).map(([group, items]) => ({
+    group,
+    items: items.filter(opt => {
+      return (
+        opt.label.toLowerCase().includes(searchString.value.toLowerCase()) ||
+        opt.hint?.toLowerCase().includes(searchString.value.toLowerCase()) ||
+        opt.name.toLowerCase().includes(searchString.value.toLowerCase())
+      );
+    })
+  })).filter(({ items }) => items.length > 0);
+
+  // filtre pour theme spécifique
+  if (props.theme) {
+    items = items.filter(({ group }) => group === props.theme);
+  }
+
+  return items;
 });
 
-const favOptions = computed(() => {
-  if (props.selectedControls) {
-    return allOptions.value.filter((opt) => {
-      if (props.selectedControls.includes(opt.name))
-        return opt;
-      })
-  } else {
-    return [];
-  }
-})
-
-const tabListName = "Gestion d'outils";
-const tabTitles = [
-  {
-    title : "Ajouter des outils",
-    tabId : "tab-0",
-    panelId : "tab-content-0"
-  },
-  {
-    title : "Mes Outils",
-    tabId : "tab-1",
-    panelId : "tab-content-1"
-  }
-];
-const selectedTabIndex = ref(0);
-const asc = ref(true);
-const initialSelectedIndex = 0;
-function selectTab (idx) {
-  asc.value = selectedTabIndex.value < idx;
-  selectedTabIndex.value = idx;
-}
 const searchString = ref("");
 function updateSearch(e) {
   searchString.value = e;
 }
 
-watch(selectedControls, (values) => {
+watch(selectedControlsModel, (values) => {
   mapStore.cleanControls();
   for (let index = 0; index < values.length; index++) {
     const key = values[index];
@@ -90,87 +92,59 @@ onUpdated(() => {})
 
 <template>
   <div class="control-container">
-    <h4>Gestion d'outils</h4>
-    <div class="control-search-bar">
-      <DsfrSearchBar
-        :model-value="searchString"
-        @update:model-value="updateSearch"
-      />
-    </div>
-
-
-
     <div class="control-content">
-      <table>
-        <ControlListElement
-          v-for="(opt, idx) in allOptions"
-          :key="idx"
-          v-model="selectedControls"
-          :model-value="props.selectedControls"
-          :control-list-element-options="opt"
-        />
-      </table>
-      <!-- <DsfrTabs
-        :tab-list-name="tabListName"
-        :tab-titles="tabTitles"
-        :initial-selected-index="initialSelectedIndex"
-        @select-tab="selectTab">
-
-        <DsfrTabContent
-          panel-id="tab-content-0"
-          tab-id="tab-0"
-          :selected="selectedTabIndex === 0"
-          :asc="asc">
-            <DsfrCheckboxSet
-              v-model="selectedControls"
-              :disabled="disabled"
-              :inline="inline"
-              :small="small"
-              :required="required"
-              :options="allOptions"
-              :model-value="props.selectedControls"/>
-        </DsfrTabContent>
-        <DsfrTabContent
-          panel-id="tab-content-1"
-          tab-id="tab-1"
-          :selected="selectedTabIndex === 1"
-          :asc="asc">
-            <DsfrCheckboxSet
-              v-model="selectedControls"
-              :disabled="disabled"
-              :inline="inline"
-              :small="small"
-              :required="required"
-              :options="favOptions"
-              :model-value="props.selectedControls"/>
-        </DsfrTabContent>
-      </DsfrTabs> -->
+      <div>
+        <div
+          v-for="group in allOptions"
+          :key="group.group"
+        >
+          <p class="fr-text--sm fr-mb-2v">
+            {{ themeTitle ?? group.group }}
+          </p>
+          <div class="fr-mb-3w">
+            <div class="control-list-element">
+              <div class="control-list-element-img">
+                <div>
+                  <span 
+                    class="fr-icon--sm fr-icon-layout-top-line"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+              <div class="control-list-element-toggle">
+                <DsfrToggleSwitch
+                  v-model="domStore.isHeaderCompact"
+                  label="Affichage compact"
+                  no-text
+                  class="fr-toggle--label-left"
+                />
+              </div>
+            </div>
+            <ControlListElement
+              v-for="(opt, idx) in group.items"
+              :key="idx"
+              v-model="selectedControlsModel"
+              :model-value="props.selectedControls"
+              :control-list-element-options="opt"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-table {
-  border-spacing: 5px 1rem;
-  border-collapse: separate;
-}
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
 .control-search-bar {
   margin-bottom: 30px;
-  margin-right: 40px;
   top: 0px;
 }
 
-.control-content {
-  overflow-y: scroll;
-  scrollbar-width: thin;
-  overflow-x: hidden;
-}
-
 .control-container {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: calc(100% - 60px);
-  max-height: calc(76.8vh - 96px);
+  @include min(sm) {
+    width: $widget-panel-width-sm;
+  }
 }
 </style>
