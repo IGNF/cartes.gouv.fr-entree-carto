@@ -107,8 +107,14 @@ onMounted(() => {
     <router-view />
   </div>
 
-  <div class="CustomFooter" v-if="!domStore.isFullscreenPanoramax">
-    <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
+  <div
+    v-if="!domStore.isFullscreenPanoramax"
+    class="CustomFooter"
+  >
+    <CgfrFooter
+      v-if="!mobileScreen && !isEmbedRoute"
+      compact
+    />
   </div>
 
 

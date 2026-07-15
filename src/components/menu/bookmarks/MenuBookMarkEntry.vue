@@ -587,7 +587,8 @@ const onModalExportClose = () => {
     <span v-if="data.format && data.date"> - </span>
     <span 
       v-if="data.date" 
-      :title="convertTime(data.date)">{{ convertDate(data.date) }}</span>
+      :title="convertTime(data.date)"
+    >{{ convertDate(data.date) }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
   <div
@@ -653,7 +654,10 @@ const onModalExportClose = () => {
     {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
     <div v-if="lstDocumentsCarte.length > 0">
       <ul class="fr-mt-2w">
-        <li v-for="doc in lstDocumentsCarte" :key="doc.id">
+        <li
+          v-for="doc in lstDocumentsCarte"
+          :key="doc.id"
+        >
           {{ doc.name }}
         </li>
       </ul>
