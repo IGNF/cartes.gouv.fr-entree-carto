@@ -13,10 +13,13 @@ const props = defineProps({
   legendsOptions: Object
 });
 
+const emit = defineEmits(['ready']);
+
 const map = inject(props.mapId);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(legends.value);
     if (props.analytic) {
@@ -38,6 +41,16 @@ onBeforeUpdate(() => {
     map.removeControl(legends.value);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

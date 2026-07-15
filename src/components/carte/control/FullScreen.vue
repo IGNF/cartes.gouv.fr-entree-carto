@@ -11,11 +11,14 @@ const props = defineProps({
   fullscreenOptions: Object
 })
 
+const emit = defineEmits(['ready']);
+
 
 const map = inject(props.mapId)
 const fullscreen = ref(new GeoportalFullScreen(props.fullscreenOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(fullscreen.value)
   }
@@ -29,6 +32,16 @@ onBeforeUpdate(() => {
     map.removeControl(fullscreen.value)
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

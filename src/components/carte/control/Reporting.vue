@@ -21,6 +21,8 @@ const props = defineProps({
   reportingOptions: Object
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 
 const map = inject(props.mapId)
@@ -46,6 +48,7 @@ function addThematics () {
 }
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
@@ -87,6 +90,16 @@ const onSendingReporting = (e) => {
   log.debug(e);
   refModalReportingSent.value.openModalReportingSent();
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

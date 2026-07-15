@@ -12,6 +12,8 @@ const props = defineProps({
   mousePositionOptions: Object
 })
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger()
 
 
@@ -19,6 +21,7 @@ const map = inject(props.mapId)
 const mousePosition = ref(new MousePosition(props.mousePositionOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(mousePosition.value);
     if (props.analytic) {
@@ -43,6 +46,16 @@ onUpdated(() => {
     }
   }
 })
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

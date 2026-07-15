@@ -50,6 +50,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const mapStore = useMapStore();
 const appStore = useAppStore();
 const serviceStore = useServiceStore();
@@ -66,6 +68,7 @@ emitter.addEventListener("layerimport:open:clicked", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(layerImport.value);
     if (props.analytic) {
@@ -100,6 +103,15 @@ onUpdated(() => {
     layerImport.value.on("layerimport:compute:added", onSaveImportCompute);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 /**
  * ouverture de la modale de connexion pour proposer à l'utilisateur

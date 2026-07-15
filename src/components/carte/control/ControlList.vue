@@ -17,6 +17,8 @@ const props = defineProps({
   controlListOptions: Object
 });
 
+const emit = defineEmits(['ready']);
+
 const map = inject(props.mapId);
 const controlList = new ControlList(props.controlListOptions);
 
@@ -93,6 +95,7 @@ function applyControlsOrder() {
 }
 
 onMounted(() => {
+  emit('ready');
   applyControlsOrder();
   if (props.visibility) {
     map.addControl(controlList);
@@ -118,6 +121,16 @@ onMounted(() => {
 //     }
 //   }
 // })
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

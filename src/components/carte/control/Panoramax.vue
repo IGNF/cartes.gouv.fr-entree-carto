@@ -28,6 +28,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
@@ -41,6 +43,7 @@ panoramax.on("pnx:fullscreen", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(panoramax)
     if (props.analytic) {
@@ -74,6 +77,16 @@ onUpdated(() => {
  * @description
  * ...
  */
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 
