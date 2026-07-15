@@ -3,8 +3,6 @@
 import { useLogger } from 'vue-logger-plugin'
 import { useDataStore } from "@/stores/dataStore"
 
-const props = defineProps({})
-
 const log = useLogger()
 const storeData = useDataStore()
 

@@ -8,3 +8,4 @@ declare module '@/composables/*';
 declare module '@/stores/*';
 declare module '@/features/*';
 declare module '@/plugins/*'
+declare module '@/router/*';

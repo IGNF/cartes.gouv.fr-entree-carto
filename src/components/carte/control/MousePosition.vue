@@ -1,24 +1,24 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { useLogger } from 'vue-logger-plugin'
+import { mainMap } from '@/composables/keys';
 import {
   MousePosition
 } from 'geopf-extensions-openlayers'
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  mousePositionOptions: Object
+  mousePositionOptions: { type: Object, default: () => ({}) }
 })
 
-const log = useLogger()
-
+const emit = defineEmits(['ready']);
 
 const map = inject(props.mapId)
 const mousePosition = ref(new MousePosition(props.mousePositionOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(mousePosition.value);
     if (props.analytic) {
@@ -43,6 +43,16 @@ onUpdated(() => {
     }
   }
 })
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

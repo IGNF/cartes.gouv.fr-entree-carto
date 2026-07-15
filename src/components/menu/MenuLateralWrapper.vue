@@ -13,9 +13,15 @@
 
 <script setup lang="js">
 const props = defineProps({
-  side: String,
+  side: {
+    type: String,
+    default: 'left'
+  },
   visibility: Boolean,
-  id: String,
+  id: {
+    type: String,
+    default: undefined
+  }
 })
 const icon = "fr-icon-close-line"
 

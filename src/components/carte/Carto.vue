@@ -59,22 +59,32 @@ const mapIsReady = computed(() => {
 });
 
 
-const hasInitialRecenter = ref(false);
+// INFO
+// verrou pour savoir si on a déjà initialisé la carte 
+// après que les Layers soient prêts
+const hasInitializedAfterLayersReady = ref(false);
 
 // INFO
-// On écoute l'événement "ready" émis par le composant Layers lorsque 
-// la dernière couche est montée.
+// On écoute l'événement "ready" (once) émis par le composant Layers lorsque 
+// la dernière couche est montée. On ajoute l'attribut "ol-layers-fully-loaded" 
+// sur le composant Map pour indiquer que toutes les couches sont prêtes.
+const layersReady = ref(false); // uniquement au moment du montage des Layers, pas à chaque changement de props.selectedLayers
 const onLayersReady = () => {
-  if (hasInitialRecenter.value) {
+  layersReady.value = true;
+
+  if (hasInitializedAfterLayersReady.value) {
     return;
   }
 
   nextTick(() => {
     initialize();
-    hasInitialRecenter.value = true;
+    hasInitializedAfterLayersReady.value = true;
   });
 };
 
+// INFO
+// On initialise la carte une fois que le DOM est prêt 
+// et que les Layers sont montés
 const initialize = () => {
   const map = mapStore.getMap();
   if (!map) {
@@ -90,6 +100,12 @@ const initialize = () => {
   // et que les couches sont montées !
 }
 
+const controlsready = ref(false); // uniquement au moment du montage des Controls, pas à chaque changement de props.selectedControls    
+const onControlsReady = () => {
+  log.debug("Controls are ready");
+  controlsready.value = true;
+}
+
 onMounted(() => {
   log.debug("Carto component mounted") 
 })
@@ -100,6 +116,10 @@ onMounted(() => {
   <Map
     ref="refMap"
     class="map"
+    :class="{
+      'ol-layers-fully-loaded': layersReady,
+      'ol-controls-fully-loaded': controlsready
+    }"
     :map-id="mainMap"
     :center="mapStore.center"
     :zoom="mapStore.zoom"
@@ -109,6 +129,7 @@ onMounted(() => {
       v-if="mapIsReady"
       :map-id="mainMap"
       :control-options="props.selectedControls"
+      @ready="onControlsReady"
     />
     <!-- Composant pour ajouter les couches sur la carte -->
     <Layers

@@ -1,19 +1,12 @@
 <script setup lang="js">
 
-import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
-import { useMapStore } from '@/stores/mapStore';
-import { useDomStore } from '@/stores/domStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useDomStore } from '@/stores/domStore';
 
 import "@panoramax/web-viewer/build/photoviewer.js";
 import "@panoramax/web-viewer/build/photoviewer.css";
 
 import { Panoramax } from 'geopf-extensions-openlayers';
-
-// lib notification
-import { push } from 'notivue';
-import t from '@/features/translation';
 
 const props = defineProps({
   mapId: {
@@ -28,9 +21,8 @@ const props = defineProps({
   }
 });
 
-const log = useLogger();
-const dataStore = useDataStore();
-const mapStore = useMapStore();
+const emit = defineEmits(['ready']);
+
 const domStore = useDomStore();
 
 const map = inject(props.mapId)
@@ -41,6 +33,7 @@ panoramax.on("pnx:fullscreen", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(panoramax)
     if (props.analytic) {
@@ -69,6 +62,15 @@ onUpdated(() => {
   }
 })
 
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+  
 /** 
  * gestionnaire d'evenement sur les abonnements
  * @description

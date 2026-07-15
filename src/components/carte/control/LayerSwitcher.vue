@@ -28,6 +28,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
@@ -38,6 +40,7 @@ const map = inject(props.mapId);
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(layerSwitcher.value);
     if (props.analytic) {
@@ -520,6 +523,16 @@ const onClickEditLayer = (e) => {
   });
   
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

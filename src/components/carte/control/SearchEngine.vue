@@ -31,6 +31,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const mapStore = useMapStore();
 
@@ -47,6 +49,7 @@ const advancedSearchEngineOptions = computed(() => {
 let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value);
     /** abonnement au widget */
@@ -129,6 +132,16 @@ const onSearchEnginePopupClose = (e) => {
       mapStore.geolocation = "";
   }
 }
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 
