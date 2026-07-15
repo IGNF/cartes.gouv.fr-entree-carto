@@ -79,7 +79,11 @@ const hasInitializedAllCategories = () => {
     return false;
   }
 
-  return service.labels.every((label) => Array.isArray(service.documents?.[label]));
+  return service.labels.every((label) => {
+    // Validate label to prevent prototype pollution
+    return Object.prototype.hasOwnProperty.call(service.documents, label) && 
+           Array.isArray(service.documents[label]);
+  });
 };
 
 var toggle = ref(false);

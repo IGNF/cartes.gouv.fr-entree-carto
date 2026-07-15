@@ -30,6 +30,13 @@ describe('getLayersFromPermalink', () => {
     expect(mapStore.center).toEqual(['2.602777','46.493888'])
   })
 
+  test('U-PL-02 - permalink store - accepte geolocation au format tableau', () => {
+    mapStore.geolocation = [2.602777, 46.493888];
+
+    expect(mapStore.permalink).toContain('&p=2.602777,46.493888');
+    expect(mapStore.permalinkShare).toContain('&p=2.602777,46.493888');
+  })
+
   it.todo('permalien avec une donnée de type : mapbox')
   it.todo('permalien avec une donnée de type : vecteur')
   it.todo('permalien avec une donnée de type : service')

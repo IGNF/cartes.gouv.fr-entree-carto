@@ -1,5 +1,6 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin'
+import { mainMap } from '@/composables/keys'
 import {
   GeoportalZoom
 } from 'geopf-extensions-openlayers'
@@ -8,10 +9,10 @@ import {
 // tracker Eulerian !?
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  zoomOptions: Object
+  zoomOptions: { type: Object, default: () => ({}) }
 })
 
 const emit = defineEmits(['ready']);

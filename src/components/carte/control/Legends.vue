@@ -1,16 +1,19 @@
 <script setup lang="js">
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { useMatchMedia } from '@/composables/matchMedia';
 
 import { Legends } from 'geopf-extensions-openlayers';
 
-const isSmallScreen = useMatchMedia('SM')
-
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  legendsOptions: Object
+  legendsOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const emit = defineEmits(['ready']);

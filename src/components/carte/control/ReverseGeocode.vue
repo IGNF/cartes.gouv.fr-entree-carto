@@ -1,23 +1,26 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { ReverseGeocode } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  reverseGeocodeOptions: Object
+  reverseGeocodeOptions: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const log = useLogger();
 
 const emit = defineEmits(['ready']);
-const store = useDataStore();
-
 
 const map = inject(props.mapId);
 const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));

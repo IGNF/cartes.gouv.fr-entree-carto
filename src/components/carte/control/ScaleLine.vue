@@ -7,10 +7,16 @@ import ScaleLine from 'ol/control/ScaleLine'
 // - tracker Eulerian ?
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
   analytic: Boolean,
-  scaleLineOptions: Object
+  scaleLineOptions: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const emit = defineEmits(['ready']);

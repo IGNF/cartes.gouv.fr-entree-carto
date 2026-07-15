@@ -1,7 +1,6 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useMatchMedia } from '@/composables/matchMedia';
 
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
@@ -15,10 +14,16 @@ import { Reporting } from 'geopf-extensions-openlayers';
 const emitter = inject('emitter');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  reportingOptions: Object
+  reportingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const emit = defineEmits(['ready']);
@@ -37,7 +42,7 @@ emitter.addEventListener("reporting:open:clicked", (e) => {
     reporting.value.setCollapsed(!e.open);
   }
 });
-emitter.addEventListener("modalreporting:open:clicked", (e) => {
+emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
   refModalReportingStart.value.openModalReportingStart(true);
 });
 

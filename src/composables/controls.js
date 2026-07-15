@@ -245,7 +245,7 @@ export function useDefaultControls() {
   var defaultControls = [];
   // récupération des controls par défaut
   for (var control in useControls) {
-    if (useControls[control].default == true || (useControls[control].active === true && useControls[control].disable === true)) {
+    if (useControls[control].default === true || (useControls[control].active === true && useControls[control].disable === true)) {
       defaultControls.push(useControls[control].id);
     }
   }

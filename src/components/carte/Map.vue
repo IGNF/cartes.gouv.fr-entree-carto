@@ -5,7 +5,7 @@
 *
 */
 export default {
-  name: 'Map'
+  name: 'MapContainer'
 };
 </script>
 
@@ -34,8 +34,14 @@ const props = defineProps({
     type: String,
     default: 'mainMap'
   },
-  zoom : Number,
-  center : Array,
+  zoom: {
+    type: Number,
+    default: 8
+  },
+  center: {
+    type: Array,
+    default: () => [0, 0]
+  }
 })
 
 /**
@@ -111,7 +117,7 @@ map.on('loadend', () => {
  * abonnement à l'evenement 'moveend' de la map
  * pour mise à jour du centre de la carte
  */
-map.on("moveend", (e) => {
+map.on("moveend", () => {
   let view = map.getView();
   let center = view.getCenter();
   mapStore.x = center[0];
@@ -138,7 +144,7 @@ onMounted(() => {
   if (canvas.length) {
     canvas[0].tabIndex = 0
   }
-  if (props.mapId == mainMap) {
+  if (props.mapId === mainMap) {
     mapStore.setMap(map)
   }
 })
