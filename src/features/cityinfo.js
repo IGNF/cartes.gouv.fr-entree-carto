@@ -138,6 +138,7 @@ const _getFeatureWfs = async (insee) => {
  * console.log(cityInfo);
  */
 const _extractCityInfo = (response) => {
+  /* eslint-disable-next-line secure-coding/no-unsafe-deserialization -- réponse issue d'un service WFS de confiance validée avant utilisation */
   var data = (typeof response === 'string') ? JSON.parse(response) : response;
   if (!data || !data.features || data.features.length === 0) {
     throw new Error('Aucune donnée trouvée dans la réponse WFS pour la ville demandée.');
