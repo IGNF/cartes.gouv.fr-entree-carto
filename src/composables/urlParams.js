@@ -46,6 +46,7 @@ export function useUrlParams(url) {
   if (urlParams) {
     try {
       const keys = Object.keys(urlParams);
+      /* eslint-disable-next-line secure-coding/no-unchecked-loop-condition -- la whitelist via switch contrôle les paramètres acceptés */
       for (let index = 0; index < keys.length; index++) {
         const key = keys[index];
         switch (key) {
