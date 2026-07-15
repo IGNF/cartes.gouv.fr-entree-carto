@@ -205,8 +205,9 @@ export const useMapStore = defineStore('map', () => {
   // HACK
   // gestion de la geolocalisation à la lecture du permalien
   setTimeout(() => {
-    if (localStorage.getItem(ns('geolocation')) !== "") {
-      var coordinates = localStorage.getItem(ns('geolocation')).split(",");
+    var storedGeolocation = localStorage.getItem(ns('geolocation'));
+    if (typeof storedGeolocation === "string" && storedGeolocation !== "") {
+      var coordinates = storedGeolocation.split(",");
       // envoi d'un evenement pour afficher la geolocalisation
       emitter.dispatchEvent("searchengine:open:displayed", {
         position : coordinates
@@ -254,8 +255,9 @@ export const useMapStore = defineStore('map', () => {
     permalinkUrl = `${url}/?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
-      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
-      permalinkUrl += `&p=${geolocation.value}`;
+      var coords = (Array.isArray(geolocation.value)) ? geolocation.value : geolocation.value.split(',');
+      coords = coords.map(n => Number(n).toFixed(6)).join(',');
+      permalinkUrl += `&p=${coords}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
     `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
@@ -274,8 +276,9 @@ export const useMapStore = defineStore('map', () => {
     permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
-      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
-      permalinkShareUrl += `&p=${geolocation.value}`;
+      var coords = (Array.isArray(geolocation.value)) ? geolocation.value : geolocation.value.split(',');
+      coords = coords.map(n => Number(n).toFixed(6)).join(',');
+      permalinkShareUrl += `&p=${coords}`;
     }
     permalinkShareUrl += (bookmarks.value.length > 0) ? 
     `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
