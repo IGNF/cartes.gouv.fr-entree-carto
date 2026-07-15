@@ -65,6 +65,7 @@ export function useAuthentication(deps = {}) {
     if (hasKeycloakSession) {
       setAutoSSOAttemptedFlag();
       console.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
+      // eslint-disable-next-line secure-coding/no-insecure-comparison -- vérification d'une valeur de conf, pas d'une donnée sensible
       if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
         await router.push({ path: '/login', query: { from: 'auto-sso' } });
       }
