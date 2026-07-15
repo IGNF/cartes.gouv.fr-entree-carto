@@ -59,7 +59,7 @@ onMounted(() => {
     */
     searchEngineAdvanced.value.on("searchengineadvanced:geolocation:click", onClickSearchGeolocationOpen);
     searchEngineAdvanced.value.on("searchengineadvanced:feature:remove", onClickSearchGeolocationRemove);
-    searchEngineAdvanced.value.on("searchengineadvanced:popup:close", onPopupClose);
+    searchEngineAdvanced.value.on("searchengineadvanced:popup:close", onSearchEnginePopupClose);
   }
 })
 
@@ -79,7 +79,7 @@ onUpdated(() => {
 emitter.addEventListener("searchengineadvanced:geolocation:displayed", (e) => {
   if (searchEngineAdvanced.value) {
     var coordinates = e.position;
-    var info = `<h6> Ma position </h6> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
+    var info = `<h6> Ma position </h6><br/> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
     // on ne se centre pas sur le marker de geolocalisation car le permalien a déjà un paramètre center
     searchEngineAdvanced.value.createMarker(e.position, info, "geolocate", false);
   }
@@ -106,8 +106,7 @@ const onClickSeachByCoordinates = (e) => {
 const onClickSearchGeolocationOpen = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
   // geolocalisation demandée :
-  // on ajoute l'information dans le permalien...
-  // on passe par le mapStore
+  // on ajoute les coordonnées (Geographiques 4326) dans le permalien en passant par le mapStore
   mapStore.geolocation = e.coordinates.toString();
 }
 
@@ -122,8 +121,8 @@ const onClickSearchGeolocationRemove = (e) => {
   // emitter.emit("searchengine:geolocation:removed");
 }
 
-const onPopupClose = (e) => {
-  log.debug("SearchEngineAdvanced - onPopupClose", e);
+const onSearchEnginePopupClose = (e) => {
+  log.debug("SearchEngineAdvanced - onSearchEnginePopupClose", e);
   // si la fermeture de la popup ne concerne pas la geolocalisation, on vide le positionnement du localstorage pour ne plus lavoir dans le permalien
   // utile dans le cas où on fait une recherche de lieu alors que le marker de geolocalisation est toujours présent
   if (e.evt && e.evt.result.get("origin") !== "geolocate") {
