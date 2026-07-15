@@ -10,11 +10,14 @@ const props = defineProps({
   measureAzimuthOptions: { type: Object, default: () => ({}) }
 })
 
+const emit = defineEmits(['ready']);
+
 
 const map = inject(props.mapId)
 const measureAzimuth = ref(new MeasureAzimuth(props.measureAzimuthOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(measureAzimuth.value);
     if (props.analytic) {
@@ -36,6 +39,16 @@ onBeforeUpdate(() => {
     map.removeControl(measureAzimuth.value);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

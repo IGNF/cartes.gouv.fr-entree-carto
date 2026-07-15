@@ -33,6 +33,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const mapStore = useMapStore();
 
@@ -89,6 +91,7 @@ emitter.addEventListener("compute-route:edit:clicked", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(route.value);
     map.addControl(btnExport.value);
@@ -311,6 +314,16 @@ const onExportRoute = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

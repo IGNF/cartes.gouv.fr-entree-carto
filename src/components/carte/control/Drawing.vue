@@ -55,6 +55,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
 
@@ -243,6 +245,7 @@ const saveTemporaryDocument = (payload) => {
 };
 
 onMounted(() => {
+  emit('ready');
   log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
@@ -296,6 +299,15 @@ onBeforeUpdate(() => {
     map.removeControl(btnExport.value);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 /**
  * Gestionnaire d'evenement 

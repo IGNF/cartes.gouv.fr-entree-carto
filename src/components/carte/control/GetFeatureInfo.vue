@@ -12,6 +12,8 @@ const props = defineProps({
   getFeatureInfoOptions: { type: Object, default: () => ({}) }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 
 
@@ -19,6 +21,7 @@ const map = inject(props.mapId);
 const getFeatureInfo = ref(new GetFeatureInfo(props.getFeatureInfoOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(getFeatureInfo.value);
     getFeatureInfo.value.on('GetFeatureInfo:toggle', onToggleGetFeatureInfo);
@@ -45,6 +48,16 @@ onBeforeUpdate(() => {
 function onToggleGetFeatureInfo (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

@@ -15,12 +15,15 @@ const props = defineProps({
   zoomOptions: { type: Object, default: () => ({}) }
 })
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger()
 
 const map = inject(props.mapId)
 const zoom = ref(new GeoportalZoom(props.zoomOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(zoom.value)
     zoom.value.on('zoom:in', onClickZoomIn)
@@ -47,6 +50,16 @@ function onClickZoomIn (e) {
 function onClickZoomOut (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

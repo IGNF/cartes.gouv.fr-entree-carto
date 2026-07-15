@@ -13,6 +13,8 @@ const props = defineProps({
   analytic: Boolean,
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 
 
@@ -35,6 +37,7 @@ watch(isSmallScreen, () => {
 })
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
     overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
@@ -61,6 +64,16 @@ onBeforeUpdate(() => {
 function onToggleOverviewMap (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

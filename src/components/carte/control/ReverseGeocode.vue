@@ -20,10 +20,13 @@ const props = defineProps({
 
 const log = useLogger();
 
+const emit = defineEmits(['ready']);
+
 const map = inject(props.mapId);
 const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(reverseGeocode.value)
     /* abonnement au widget
@@ -64,6 +67,16 @@ const onClickResult = (e) => {
 const onCompute = (e) => {
   log.debug(e);
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

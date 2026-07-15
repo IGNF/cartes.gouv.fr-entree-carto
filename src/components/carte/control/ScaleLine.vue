@@ -19,11 +19,14 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['ready']);
+
 
 const map = inject(props.mapId)
 const scaleLine = ref(new ScaleLine(props.scaleLineOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(scaleLine.value)
   }
@@ -40,6 +43,16 @@ onUpdated(() => {
     map.addControl(scaleLine.value)
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

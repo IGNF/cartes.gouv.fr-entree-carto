@@ -12,9 +12,12 @@ const props = defineProps({
 
 
 const map = inject(props.mapId);
+
+const emit = defineEmits(['ready']);
 const measureLength = ref(new MeasureLength(props.measureLengthOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(measureLength.value);
     if (props.analytic) {
@@ -36,6 +39,16 @@ onBeforeUpdate(() => {
     map.removeControl(measureLength.value);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

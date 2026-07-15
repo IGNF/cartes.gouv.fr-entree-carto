@@ -21,6 +21,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const domStore = useDomStore();
 
 const map = inject(props.mapId)
@@ -31,6 +33,7 @@ panoramax.on("pnx:fullscreen", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(panoramax)
     if (props.analytic) {
@@ -59,6 +62,15 @@ onUpdated(() => {
   }
 })
 
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+  
 /** 
  * gestionnaire d'evenement sur les abonnements
  * @description

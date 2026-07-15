@@ -12,10 +12,13 @@ const props = defineProps({
   mousePositionOptions: { type: Object, default: () => ({}) }
 })
 
+const emit = defineEmits(['ready']);
+
 const map = inject(props.mapId)
 const mousePosition = ref(new MousePosition(props.mousePositionOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(mousePosition.value);
     if (props.analytic) {
@@ -40,6 +43,16 @@ onUpdated(() => {
     }
   }
 })
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 
