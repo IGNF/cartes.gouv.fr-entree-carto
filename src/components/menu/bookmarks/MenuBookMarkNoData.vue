@@ -138,7 +138,7 @@ const buttons = [
 </script>
 
 <template>
-  <div class="fr-container">
+  <div class="fr-container fr-p-0">
     <div class="bookmark-content-container">
       <h4>
         Aucun enregistrement pour le moment

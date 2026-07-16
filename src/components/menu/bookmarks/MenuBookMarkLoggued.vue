@@ -198,9 +198,7 @@ onUnmounted(() => {
   </div>
   <div v-else>
     <!-- Mode connecté avec des documents disponible -->
-    <MenuBookMarkDataList
-      title="Mes enregistrements"
-    />
+    <MenuBookMarkDataList />
   </div>
 </template>
 

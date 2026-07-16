@@ -20,10 +20,18 @@ const props = defineProps({
   visibility: Boolean,
   id: {
     type: String,
-    default: undefined
-  }
-})
-const icon = "fr-icon-close-line"
+    default: ''
+  },
+  title: {
+    type: String,
+    default: ''
+  },
+  icon: {
+    type: String,
+    default: ''
+  },
+});
+
 
 const is_expanded = defineModel(false)
 
@@ -68,21 +76,23 @@ defineExpose({
       v-show="is_expanded"
       class="menu-content-list"
     >
-      <div class="menu-collapse-icon-wrapper">
+      <div class="gpf-panel__header fr-p-1w">
+        <VIcon
+          :name="icon"
+          scale="0.833"
+          class="gpf-panel__icon fr-icon--sm fr-mr-1w"
+        />
+        <span class="gpf-panel__title">{{ title }}</span>
         <DsfrButton
           :id="props.id"
           size="sm"
+          icon-only
+          icon="fr-icon-close-line"
           tertiary
           no-outline
-          class="menu-collapse-icon"
+          class="fr-ml-auto"
           @click="closeMenu"
-        >
-          Fermer
-          <span
-            :class="icon" 
-            aria-hidden="true"
-          />
-        </DsfrButton>
+        />
       </div>
 
       <div class="menu-content">
@@ -132,7 +142,8 @@ defineExpose({
 .menu-content-list {
   position: absolute;
   top: 0;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   scrollbar-width: thin;
   background-color: var(--background-default-grey);
   border-radius: $widget-btn-radius;
@@ -174,7 +185,9 @@ defineExpose({
     pointer-events: all;
   }
 }
+
 .menu-content {
-  padding: 1rem;
+  overflow: auto;
+  padding: 0.5rem;
 }
 </style>

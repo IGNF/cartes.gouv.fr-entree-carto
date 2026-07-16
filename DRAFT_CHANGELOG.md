@@ -31,6 +31,9 @@
 #### 🐛 [Correction]
 
 - UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
+- UI: Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
+- Fix : Plus de alt cassé dans les légendes (#1164)
+- Fix : Le panel de Panoramax peut défiler (#1164)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
 - Map : Empêche la rotation de la carte (#1148)
 - Partage : La geolocalisation est correctement partagée dans le permalien (#1155)

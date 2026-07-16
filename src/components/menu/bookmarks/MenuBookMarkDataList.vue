@@ -468,7 +468,7 @@ onMounted(() => {});
 </script>
 
 <template>
-  <div class="fr-container fr-p-1w">
+  <div class="fr-container fr-p-0">
     <h4 v-if="props.title">
       {{ props.title }}
     </h4>
@@ -630,7 +630,6 @@ onMounted(() => {});
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(76.8vh - 270px);
   padding: 1em;
 }
 .button-action {
