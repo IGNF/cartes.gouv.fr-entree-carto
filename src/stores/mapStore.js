@@ -204,17 +204,18 @@ export const useMapStore = defineStore('map', () => {
 
   // HACK
   // gestion de la geolocalisation à la lecture du permalien
+  // délai à 500ms pour laisser le temps à la carte de se charger
   setTimeout(() => {
     var storedGeolocation = localStorage.getItem(ns('geolocation'));
     if (typeof storedGeolocation === "string" && storedGeolocation !== "") {
       var coordinates = storedGeolocation.split(",");
       // envoi d'un evenement pour afficher la geolocalisation
-      emitter.dispatchEvent("searchengine:open:displayed", {
+      emitter.dispatchEvent("searchengineadvanced:geolocation:displayed", {
         position : coordinates
       });
     }
   }
-  , 100);
+  , 500);
 
   //////////////////
   // objets simples

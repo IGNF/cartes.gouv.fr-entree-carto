@@ -20,9 +20,9 @@
 - Espace personnel : suppression d'un favori présent dans un permalien (#1130)
 - Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
 - Espace personnel : gestion des documents supprimés dans un permalien (#1146)
-- Permalink: Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
-- ControlList : Ferme le panel au click dans la page (#1151)
 - Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
+- Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
+- ControlList : Ferme le panel au click dans la page (#1151)
 
 #### 🔥 [Obsolète]
 
@@ -32,7 +32,8 @@
 
 - UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
-- Map: Empêche la rotation de la carte (#1148)
+- Map : Empêche la rotation de la carte (#1148)
+- Partage : La geolocalisation est correctement partagée dans le permalien (#1155)
 - Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
 - Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
 - Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
