@@ -6,6 +6,11 @@
 
 ### 🎉 Résumé
 
+- Hotfix sur la sécurité
+- Evolution de l'espace personnel
+- Amélioration UI
+- Correctifs sur le partage
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
@@ -21,7 +26,7 @@
 - Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
 - Espace personnel : gestion des documents supprimés dans un permalien (#1146)
 - Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
-- Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur. (#1147)
+- Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur (#1147)
 - ControlList : Ferme le panel au click dans la page (#1151)
 
 #### 🔥 [Obsolète]
@@ -30,8 +35,8 @@
 
 #### 🐛 [Correction]
 
-- UI: Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
-- UI: Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
+- UI : Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
+- UI : Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
 - Fix : Plus de alt cassé dans les légendes (#1164)
 - Fix : Le panel de Panoramax peut défiler (#1164)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
@@ -40,5 +45,9 @@
 - Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
 - Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
 - Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
- 
+- Espace Personnel : synchroniser les positions des couches lors d'un appel de permalien via l'espace personnel (#1160)
+
 #### 🔒 [Sécurité]
+
+- Suppression des notifications ESLint (#1159)
+- Correction des failles  de sécurités (#1159)
