@@ -72,7 +72,7 @@ function tabIsActive(componentName) {
 
 // abonnement sur la fermeture du catalogue sur un evenement emis
 const emitter = inject('emitter');
-emitter.addEventListener("leftmenu:close", (e) => {
+emitter.addEventListener("leftmenu:close", () => {
   wrapper.value.closeMenu();
 });
 
@@ -129,7 +129,7 @@ const emit = defineEmits([
 watch(() => domStore.getleftControlMenu(), (newVal) => {
   leftControls.value = newVal
   leftControls.value?.addEventListener("click", function (e) {
-  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed == "true") {
+  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed === "true") {
     is_expanded.value = false;
   }
 })

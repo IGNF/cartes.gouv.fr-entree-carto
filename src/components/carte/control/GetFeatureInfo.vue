@@ -1,15 +1,18 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 
 import { GetFeatureInfo } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  getFeatureInfoOptions: Object
+  getFeatureInfoOptions: { type: Object, default: () => ({}) }
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 
@@ -18,6 +21,7 @@ const map = inject(props.mapId);
 const getFeatureInfo = ref(new GetFeatureInfo(props.getFeatureInfoOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(getFeatureInfo.value);
     getFeatureInfo.value.on('GetFeatureInfo:toggle', onToggleGetFeatureInfo);
@@ -44,6 +48,16 @@ onBeforeUpdate(() => {
 function onToggleGetFeatureInfo (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

@@ -21,6 +21,7 @@ import { useMatchMedia } from '@/composables/matchMedia'
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
+import { useScheme } from '@gouvminint/vue-dsfr';
 import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
@@ -107,13 +108,13 @@ onMounted(() => {
     <router-view />
   </div>
 
-  <div
+  <div 
     v-if="!domStore.isFullscreenPanoramax"
     class="CustomFooter"
   >
-    <CgfrFooter
+    <CgfrFooter 
       v-if="!mobileScreen && !isEmbedRoute"
-      compact
+      compact 
     />
   </div>
 

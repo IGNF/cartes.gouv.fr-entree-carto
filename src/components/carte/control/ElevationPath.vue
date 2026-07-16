@@ -33,6 +33,8 @@ const props = defineProps({
 })
 
 const log = useLogger();
+
+const emit = defineEmits(['ready']);
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
@@ -87,6 +89,7 @@ const btnSave = ref(new ButtonExport({
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(elevationPath.value);
     if (import.meta.env.IAM_DISABLE === '1') {
@@ -330,6 +333,16 @@ const onExportElevationPath = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

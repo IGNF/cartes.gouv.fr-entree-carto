@@ -13,12 +13,25 @@
 
 <script setup lang="js">
 const props = defineProps({
-  side: String,
+  side: {
+    type: String,
+    default: 'left'
+  },
   visibility: Boolean,
-  id: String,
-  title: String,
-  icon: String,
+  id: {
+    type: String,
+    default: ''
+  },
+  title: {
+    type: String,
+    default: ''
+  },
+  icon: {
+    type: String,
+    default: ''
+  },
 });
+
 
 const is_expanded = defineModel(false)
 

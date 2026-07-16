@@ -1,3 +1,4 @@
+/* eslint-disable secure-coding/detect-object-injection -- valide les labels et la reponse du service avant de l'enregistrer */
 
 /**
  * @description 
@@ -115,6 +116,11 @@ var SetDocuments = {
       formData.append("name", obj.name);
       formData.append("description", this.sliceText(obj.description, 255));
 
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       const labels = [
         this.tag, // ex. cartes.gouv.fr
         obj.type, 
@@ -153,11 +159,6 @@ var SetDocuments = {
       const file = new File([blob], `${obj.name}.${obj.format}`, { type: this.getMimeType(obj.format) });
       formData.append("file", file);
 
-      // Débogage du contenu de formData
-      for (let pair of formData.entries()) {
-        console.debug(pair[0]+ ': ' + pair[1]);
-      }
-
       var response = await this.getFetch()(`${this.api}/users/me/documents`, {
         method: 'POST',
         headers: {
@@ -173,6 +174,10 @@ var SetDocuments = {
       if (response.status !== 200 && response.status !== 201) {
         // ERROR !
         throw new Error(`Le document n'a pas été enregistré !`, { cause: data });
+      }
+
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
       }
 
       // enregistrer la réponse
@@ -225,6 +230,11 @@ var SetDocuments = {
       // uuid
       var uuid = obj.uuid;
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -264,6 +274,10 @@ var SetDocuments = {
         });
       }
   
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
+      }
+
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
@@ -311,6 +325,11 @@ var SetDocuments = {
     try {
       let uuid = obj.uuid;
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -363,6 +382,10 @@ var SetDocuments = {
         });
       }
   
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
+      }
+
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
@@ -410,6 +433,11 @@ var SetDocuments = {
     try {
       let uuid = obj.uuid;
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -448,6 +476,10 @@ var SetDocuments = {
         throw new Error(`Le document ${uuid} n'a pas été mis à jour !`, { cause: data });
       }
   
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
+      }
+
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
@@ -495,6 +527,11 @@ var SetDocuments = {
     try {
       let uuid = obj.uuid;
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -530,6 +567,10 @@ var SetDocuments = {
         });
       }
   
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
+      }
+
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
@@ -585,6 +626,11 @@ var SetDocuments = {
     try {
       let uuid = obj.uuid;
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // recherche du document
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -624,6 +670,10 @@ var SetDocuments = {
         });
       }
   
+      if (!this.isValidDataResponse(data)) {
+        throw new Error(`La réponse du service n'est pas valide !`, { cause: data });
+      }
+      
       // enregistrer la réponse
       this.documents[obj.type][idx] = data;
   
@@ -698,6 +748,11 @@ var SetDocuments = {
         });
       }
   
+      if (!this.isValideLabel(obj.type)) {
+        // ERROR !
+        throw new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      }
+
       // supprimer la réponse
       var idx = this.documents[obj.type].findIndex((e) => e._id === uuid);
       if (idx === -1) {
@@ -745,11 +800,22 @@ var SetDocuments = {
    * @returns {Promise} - { UUID, action : [added, updated, deleted], extra }
    */
   exportDocument : async function (obj) {
+    var error = null;
     var uuid = obj.uuid;
+
+    if (!this.isValideLabel(obj.type)) {
+      // ERROR !
+      error = new Error(`Le type de document "${obj.type}" n'est pas valide.`);
+      console.error("Erreur dans l'export du document :", error);
+      this.throwError(error);
+    }
+
     var infos = this.documents[obj.type].find((e) => e._id === uuid);
     if (!infos) {
       // ERROR !
-      throw new Error(`Le document ${uuid} n'a pas été trouvé !`);
+      error = new Error(`Le document ${uuid} n'a pas été trouvé !`);
+      console.error("Erreur dans l'export du document :", error);
+      this.throwError(error);
     }
     // on demande plus d'information !
     if (!infos.extra) {
@@ -760,7 +826,7 @@ var SetDocuments = {
     var content = await this.getFileById(uuid);
     if (!content) {
       // ERROR !
-      var error = new Error(`Le document ${uuid} n'a pas été téléchargé !`);
+      error = new Error(`Le document ${uuid} n'a pas été téléchargé !`);
       console.error("Erreur dans l'export du document :", error);
       this.throwError(error);
     }

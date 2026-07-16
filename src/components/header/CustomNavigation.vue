@@ -66,6 +66,7 @@ const onDocumentClick = (e) => {
   handleElementClick(e.target)
 }
 const onKeyDown = (e) => {
+  // eslint-disable-next-line secure-coding/no-insecure-comparison -- La comparaison "timing-safe" n'est pertinente que pour comparer des données sensibles (mots de passe ou des jetons d'authentification)
   if (e.key === 'Escape') {
     toggle(expandedMenuId.value)
   }

@@ -16,7 +16,7 @@ export default {
 
 <script setup lang="js">
 import { useMapStore } from '@/stores/mapStore';
-import { inject } from 'vue';
+import { inject, nextTick } from 'vue';
 
 // lib notification
 import { push } from 'notivue'

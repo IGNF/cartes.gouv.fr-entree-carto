@@ -3,11 +3,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 
-import { shallowRef, markRaw } from 'vue';
-
-import {
-  toLonLat as toLonLatProj,
-} from "ol/proj";
+import { shallowRef } from 'vue';
 
 import {
     SearchEngineAdvanced,
@@ -35,6 +31,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const mapStore = useMapStore();
 
@@ -48,19 +46,23 @@ const advancedSearchEngineOptions = computed(() => {
     return Object.assign({}, props.searchEngineOptions, {advancedSearch : [insee.value, location.value, coordinates.value, parcels.value]})
 });
 
-// const searchEngineAdvanced = ref(markRaw(new SearchEngineAdvanced(advancedSearchEngineOptions.value)));
 let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value);
     /** abonnement au widget */
+
+    /* événements de recherche non implémentés dans le SearchEngineAdvanced
     searchEngineAdvanced.value.on("searchengine:search:click", onClickSearch);
     searchEngineAdvanced.value.on("searchengine:autocomplete:click", onClickAutocompletResult);
     searchEngineAdvanced.value.on("searchengine:geocode:click", onClickGeocodeResult);
     searchEngineAdvanced.value.on("searchengine:coordinates:click", onClickSeachByCoordinates);
-    searchEngineAdvanced.value.on("searchengine:geolocation:click", onClickSearchGeolocationOpen);
-    searchEngineAdvanced.value.on("searchengine:geolocation:remove", onClickSearchGeolocationRemove);
+    */
+    searchEngineAdvanced.value.on("searchengineadvanced:geolocation:click", onClickSearchGeolocationOpen);
+    searchEngineAdvanced.value.on("searchengineadvanced:feature:remove", onClickSearchGeolocationRemove);
+    searchEngineAdvanced.value.on("searchengineadvanced:popup:close", onSearchEnginePopupClose);
   }
 })
 
@@ -76,10 +78,21 @@ onUpdated(() => {
   }
 })
 
+// abonnement
+emitter.addEventListener("searchengineadvanced:geolocation:displayed", (e) => {
+  if (searchEngineAdvanced.value) {
+    var coordinates = e.position;
+    var info = `<h6> Ma position </h6><br/> longitude : ${coordinates[0]}<br/> latitude : ${coordinates[1]}`;
+    // on ne se centre pas sur le marker de geolocalisation car le permalien a déjà un paramètre center
+    searchEngineAdvanced.value.createMarker(e.position, info, "geolocate", false);
+  }
+});
+
 /**
  * Gestionnaire d'evenement sur les abonnements
  */
 
+/* événements de recherche non implémentés dans le SearchEngineAdvanced
 const onClickSearch = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearch", e);
 }
@@ -92,23 +105,43 @@ const onClickGeocodeResult = (e) => {
 const onClickSeachByCoordinates = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchByCoordinates", e);
 }
+*/
 const onClickSearchGeolocationOpen = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationOpen", e);
   // geolocalisation demandée :
-  // on ajoute l'information dans le permalien...
-  // on passe par le mapStore
-  // on passe en geographique
-  mapStore.geolocation = toLonLatProj(e.coordinates).toString();
-  emitter.emit("searchengine:geolocation:clicked", e.coordinates);
+  // on ajoute les coordonnées (Geographiques 4326) dans le permalien en passant par le mapStore
+  mapStore.geolocation = e.coordinates.toString();
 }
+
 const onClickSearchGeolocationRemove = (e) => {
   log.debug("SearchEngineAdvanced - onClickSearchGeolocationRemove", e);
   // geolocalisation demandée :
   // on enlève l'information dans le permalien...
   // on passe par le mapStore
-  mapStore.geolocation = "";
-  emitter.emit("searchengine:geolocation:removed");
+  if (e.feature.get("origin") === "geolocate") {
+    mapStore.geolocation = "";
+  }
+  // emitter.emit("searchengine:geolocation:removed");
 }
+
+const onSearchEnginePopupClose = (e) => {
+  log.debug("SearchEngineAdvanced - onSearchEnginePopupClose", e);
+  // si la fermeture de la popup ne concerne pas la geolocalisation, on vide le positionnement du localstorage pour ne plus lavoir dans le permalien
+  // utile dans le cas où on fait une recherche de lieu alors que le marker de geolocalisation est toujours présent
+  if (e.evt && e.evt.result.get("origin") !== "geolocate") {
+      mapStore.geolocation = "";
+  }
+}
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

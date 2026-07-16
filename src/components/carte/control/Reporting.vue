@@ -1,7 +1,6 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useMatchMedia } from '@/composables/matchMedia';
 
 import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
@@ -15,11 +14,19 @@ import { Reporting } from 'geopf-extensions-openlayers';
 const emitter = inject('emitter');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  reportingOptions: Object
+  reportingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 
@@ -35,7 +42,7 @@ emitter.addEventListener("reporting:open:clicked", (e) => {
     reporting.value.setCollapsed(!e.open);
   }
 });
-emitter.addEventListener("modalreporting:open:clicked", (e) => {
+emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
   refModalReportingStart.value.openModalReportingStart(true);
 });
 
@@ -46,6 +53,7 @@ function addThematics () {
 }
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
@@ -87,6 +95,16 @@ const onSendingReporting = (e) => {
   log.debug(e);
   refModalReportingSent.value.openModalReportingSent();
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>
