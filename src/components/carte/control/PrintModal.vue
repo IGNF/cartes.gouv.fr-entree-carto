@@ -1,158 +1,280 @@
-<script lang="js">
-/**
- * @description
- * Panneau de partage de carte
- *
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrButton}
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
- */
-export default {};
-</script>
-
 <script lang="js" setup>
+
 import { ref, computed, reactive, inject } from 'vue';
-import { useElementSize } from '@vueuse/core'
+
+import { useElementSize } from '@vueuse/core';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
-import MapView from '../Map.vue';
+
+import MapView from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
+import Patience from '@/components/utils/Patience.vue';
+
 import { printMap } from '@/composables/keys';
-import { computeScaleCoeff, getFakeMapCanvas, drawScale, drawTitle, getMapImgParams } from '@/composables/printUtils';
+import { 
+  computeScaleCoeff, 
+  drawScale, 
+  drawTitle } 
+from './printUtils/helper.js';
+import { injectDpiInPng } from './printUtils/png.js';
+import { renderMapCanvasForExport } from './printUtils/mapExport.js';
+
 import { jsPDF } from "jspdf";
 
 const eulerian = useEulerian();
 const mapStore = useMapStore();
-defineProps({
-  visibility: Boolean,
+
+// INFO
+// Les options sont definies dans CartoAndTools.vue 
+// et passées en props à la modale
+const props = defineProps({
+  printOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
+
 const emitter = inject('emitter');
 
 /**
  * Paramètres du composant de la modale
  */
 const title = "Imprimer une carte";
-const size = "xl";
+const size = "xl"; // taille de la modale : sm, md, lg, xl, full
 
 /**
- * Conf formulaire orientation du papier
- * Menu déroulant
+ * Liste des orientations du papier pour le menu déroulant
  */
- const pageOrientationOptions = [
+const pageOrientationOptions = [
   {
-    "label": "Portrait",
-    "value": "portrait",
-    "icon": "material-symbols:crop-portrait-outline-sharp"
+    label: 'Portrait',
+    value: 'portrait',
+    icon: 'material-symbols:crop-portrait-outline-sharp',
   },
   {
-    "label": "Paysage",
-    "value": "landscape",
-    "icon": "material-symbols:crop-landscape-outline-sharp"
-  }
+    label: 'Paysage',
+    value: 'landscape',
+    icon: 'material-symbols:crop-landscape-outline-sharp',
+  },
 ];
 
-/**
+/*************************************************************************
  * Gestion ouverture et fermeture de la Modal d'impression
- */
+ **************************************************************************/
+
 const printModalOpened = ref(false);
+const isExportInProgress = ref(false);
+
 const onModalPrintOpen = () => {
   emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
   eulerian.pause();
 };
 const onModalPrintClose = () => {
+  isExportInProgress.value = false;
   printModalOpened.value = false;
   eulerian.resume();
   mapStore.getMap().renderSync();
 };
 
+// INFO
+// Ces fonctions sont exposées pour être appelées depuis le composant parent
 defineExpose({
-    onModalPrintClose,
-    onModalPrintOpen
-})
-/**
+  onModalPrintClose,
+  onModalPrintOpen
+});
+
+/*************************************************************************
  * Ref sur les elements du DOM
- */
+ **************************************************************************/
+
 const refMap = ref(null);
 const mapTitle = ref(null);
-const printPage = ref(null)
-const printForm = ref(null)
-const printPreview = ref(null)
+const printPage = ref(null);
+const printForm = ref(null);
 
+/*************************************************************************
+ * Constantes et paramètres pour le calcul des dimensions de la carte à imprimer
+ *  - COEFF_PX2MM : coefficient de conversion pixel -> mm
+ *  - MM_PER_INCH : nombre de mm par pouce
+ *  - BASE_DPI : résolution d'écran standard (96 DPI)
+ *  - HIGH_DPI_VALUE : résolution d'impression haute (300 DPI)
+ *  - MAX_HIGH_DPI_PAPER_AREA : surface maximale du papier pour l'impression haute résolution (en mm²)
+ **************************************************************************/
 
-const formMarginRight = "10px"
-const coeffPX2MM = 0.264583333
+const COEFF_PX2MM = 0.264583333;
+const MM_PER_INCH = 25.4;
+const BASE_DPI = 96; // Résolution d'écran standard (96 DPI)
+const HIGH_DPI_VALUE = 300; // Résolution d'impression haute (300 DPI)
+// Surface maximale du papier pour l'impression haute résolution (en mm²)
+const MAX_HIGH_DPI_PAPER_AREA = 250 * 353; // B4 (250mm x 353mm)
 
-/**
- *  Paramètres de la carte à imprimer
+/*************************************************************************
+ *  Paramètres formulaire de la carte à imprimer
  *  {Boolean} hasScale - ajoute une échelle ou pas à la carte
  *  {Boolean} hasTitle - ajoute un titre ou pas à la carte
  *  {String} printTitle - Titre de la carte
  *  {String} pageOrientation - Orientation du papier
  *  {Number} margin - marge en mm 
  *  {String} paperFormat - Format standard de papier
- *  {Object} dimension - Dimension du papier selon format choisi
- */
-const hasScale = ref(true)
-const hasTitle = ref(true)
-const printTitle = ref("Ma carte")
-const pageOrientation = ref("portrait");
-const margin = ref(5)
-const paperFormat = ref("A4")
-// Whitelist of valid paper formats to prevent prototype pollution
-const VALID_PAPER_FORMATS = Object.freeze(['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']);
+ *  {Number} dpi - Résolution d'impression en DPI
+ *  {String} format - Format d'export de la carte (PDF, PNG, JPEG)
+ **************************************************************************/
+
+// Valeurs par défaut du formulaire d'impression
+const defaultPrintFormState = {
+  hasScale: true,
+  hasTitle: true,
+  printTitle: 'Ma carte',
+  pageOrientation: 'portrait',
+  margin: 5,
+  paperFormat: 'A4',
+  dpi: 96,
+  format: 'PNG',
+};
+
+// État réactif du formulaire d'impression
+const printFormState = reactive({ ...defaultPrintFormState });
+
+// Options autorisées pour le formulaire d'impression
+const allowedPrintOptionKeys = [
+  'hasScale',
+  'hasTitle',
+  'printTitle',
+  'pageOrientation',
+  'margin',
+  'paperFormat',
+  'dpi',
+  'format',
+];
+
+// Applique les options d'impression passées en props au formulaire d'impression
+const applyPrintOptions = (options) => {
+  if (!options || typeof options !== 'object') {
+    return;
+  }
+
+  allowedPrintOptionKeys.forEach((key) => {
+    if (options[key] !== undefined) {
+      printFormState[key] = options[key];
+    }
+  });
+};
+
+// Surveille les changements des options d'impression passées en props et applique les nouvelles options au formulaire d'impression
+watch(
+  () => props.printOptions,
+  (options) => {
+    applyPrintOptions(options);
+  },
+  { immediate: true, deep: true },
+);
+
+/*************************************************************************
+ * Gestion des formats de papier et de la résolution d'impression
+ *  - paperFormats : dimensions des formats de papier standard (en mm)
+ *  - isPaperFormatAllowedAtHighDpi : vérifie si le format de papier est autorisé pour l'impression haute résolution
+ *  - isCurrentPaperFormatAllowedAtHighDpi : vérifie si le format de papier actuel est autorisé pour l'impression haute résolution
+ *  - paperFormatOptions : options pour le menu déroulant des formats de papier
+ *  - dpiOptions : options pour le menu déroulant des résolutions d'impression
+ **************************************************************************/
+
+const paperFormats = {
+  A0: { width: 841, height: 1189 },
+  A1: { width: 594, height: 841 },
+  A2: { width: 420, height: 594 },
+  A3: { width: 297, height: 420 },
+  A4: { width: 210, height: 297 },
+  A5: { width: 148, height: 210 },
+  B4: { width: 250, height: 353 },
+  B5: { width: 176, height: 250 },
+};
+
+const isPaperFormatAllowedAtHighDpi = (paperFormat) => {
+  const selectedFormat = paperFormats[paperFormat];
+  if (!selectedFormat) {
+    return false;
+  }
+
+  return (selectedFormat.width * selectedFormat.height) <= MAX_HIGH_DPI_PAPER_AREA;
+};
+
+const isCurrentPaperFormatAllowedAtHighDpi = computed(() => {
+  return isPaperFormatAllowedAtHighDpi(printFormState.paperFormat);
+});
+
+const paperFormatOptions = computed(() => {
+  return Object.entries(paperFormats).map(([format, dimension]) => {
+    const isDisabledAtHighDpi = printFormState.dpi === HIGH_DPI_VALUE
+      && !isPaperFormatAllowedAtHighDpi(format);
+
+    return {
+      value: format,
+      text: `${format} (${dimension.width} x ${dimension.height} mm)`,
+      disabled: isDisabledAtHighDpi,
+    };
+  });
+});
+
+const dpiOptions = computed(() => {
+  return [
+    { value: 96, text: '96 DPI (écran)' },
+    {
+      value: HIGH_DPI_VALUE,
+      text: '300 DPI (impression)',
+      disabled: !isCurrentPaperFormatAllowedAtHighDpi.value,
+    },
+  ];
+});
+
+// Surveille les changements de format de papier et de résolution d'impression 
+// pour ajuster le format de papier
+// idem pour l'échelle : si le DPI est 300, on ne peut pas afficher l'échelle !
+watch(
+  () => [printFormState.dpi, printFormState.paperFormat],
+  ([dpiValue, paperFormat]) => {
+    if (dpiValue === HIGH_DPI_VALUE && !isPaperFormatAllowedAtHighDpi(paperFormat)) {
+      printFormState.paperFormat = 'A4';
+    }
+
+    if (dpiValue === HIGH_DPI_VALUE && printFormState.hasScale) {
+      printFormState.hasScale = false;
+    }
+  },
+  { immediate: true },
+);
+
 const paperDimension = computed(() => {
-  // Validate format against whitelist to prevent prototype pollution
-  const format = paperFormat.value;
-  if (!VALID_PAPER_FORMATS.includes(format)) {
-    return { width : 210, height : 297 };
+  if (printFormState.pageOrientation === 'portrait') {
+    return {
+      width: paperFormats[printFormState.paperFormat].width,
+      height: paperFormats[printFormState.paperFormat].height,
+    };
   }
-  let selectedDimension = { width : 210, height : 297 };
-  switch (format) {
-    case 'A0':
-      selectedDimension = { width : 841, height : 1189 };
-      break;
-    case 'A1':
-      selectedDimension = { width : 594, height : 841 };
-      break;
-    case 'A2':
-      selectedDimension = { width : 420, height : 594 };
-      break;
-    case 'A3':
-      selectedDimension = { width : 297, height : 420 };
-      break;
-    case 'A4':
-      selectedDimension = { width : 210, height : 297 };
-      break;
-    case 'A5':
-      selectedDimension = { width : 148, height : 210 };
-      break;
-    case 'B4':
-      selectedDimension = { width : 250, height : 353 };
-      break;
-    case 'B5':
-      selectedDimension = { width : 176, height : 250 };
-      break;
-    default:
-      selectedDimension = { width : 210, height : 297 };
-      break;
+  if (printFormState.pageOrientation === 'landscape') {
+    return {
+      width: paperFormats[printFormState.paperFormat].height,
+      height: paperFormats[printFormState.paperFormat].width,
+    };
   }
-  if (pageOrientation.value === "portrait") {
-      return {
-      width : selectedDimension.width,
-      height : selectedDimension.height
-    }
-  }
-  if (pageOrientation.value === "landscape") {
-      return {
-      width : selectedDimension.height,
-      height : selectedDimension.width
-    }
-  }
-  return {
-    width : selectedDimension.width,
-    height : selectedDimension.height
-  }
-})
+  return paperFormats.A4;
+});
+
+/*************************************************************************
+ * Gestion des dimensions du DOM pour le calcul de la taille de la carte à imprimer
+ *  - printPageSize : taille de la page print (DOM)
+ *  - printFormSize : taille du formualaire (DOM)
+ *  - titleSize : taille du titre de la carte sur la prévisualisation (DOM)
+ *  - paperDimensionPx : dimensions du papier en pixel (preview)
+ *  - paper2PreviewScaleCoeff : coefficient de conversion dimension papier vers preview (EN PIXEL)
+ *  - printableAreaMm : dimensions imprimables en mm (papier - marges)
+ *  - mapDimensionMm : dimensions de la carte en mm
+ *  - cssMapDimensionMm : dimensions de la carte en mm String pour CSS
+ *  - titleHeightMm : hauteur du titre en mm
+ *  - previewDimensionPx : dimensions du bloc de prévisualisation en px
+ *  - cssPreviewDimensionPx : dimensions du bloc de prévisualisation en px String pour CSS
+ *  - cssPreviewPaddingPx : marges de la preview en pixel
+ **************************************************************************/
 
 /**
  * Taille de la page print (DOM)
@@ -164,7 +286,7 @@ const printPageSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
+);
 /**
  * Taille du formualaire (DOM)
  */
@@ -174,8 +296,7 @@ const printFormSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
-
+);
 /**
  * Taille du titre de la carte 
  * sur la prévisualisation (DOM)
@@ -186,242 +307,355 @@ const titleSize = reactive(
     { width: 0, height: 0 },
     { box: 'border-box' },
   ),
-)
+);
 
 /**
  * Dimensions du papier en pixel
  */
-const pixelPaperDimension = computed(() => {
+const paperDimensionPx = computed(() => {
   return {
-    width : paperDimension.value.width / coeffPX2MM,
-    height : paperDimension.value.height / coeffPX2MM
-  }
-})
+    width: paperDimension.value.width / COEFF_PX2MM,
+    height: paperDimension.value.height / COEFF_PX2MM,
+  };
+});
 
 /**
  *  Coefficient de conversion dimension papier vers preview (EN PIXEL)
  *  coeff * dimContenu = newDimensionFitContenant
  */
 const paper2PreviewScaleCoeff = computed(() => {
-  let containerHeight = printPageSize.height
-  let containerWidth = printPageSize.width - printFormSize.width
-  return computeScaleCoeff(containerWidth, containerHeight, pixelPaperDimension.value.width, pixelPaperDimension.value.height)
-})
+  const containerHeight = printPageSize.height;
+  const containerWidth = printPageSize.width - printFormSize.width;
+  return computeScaleCoeff(containerWidth, containerHeight, paperDimensionPx.value.width, paperDimensionPx.value.height);
+});
 
+/**
+ * Zone imprimable en mm (papier - marges)
+ */
+const printableAreaMm = computed(() => {
+  return {
+    width: paperDimension.value.width - (2 * printFormState.margin),
+    height: paperDimension.value.height - (2 * printFormState.margin),
+  };
+});
+
+/**
+ * Ratio de la hauteur du titre dans la prévisualisation (entre 0 et 1)
+ */
+const titleHeightRatioInPreview = computed(() => {
+  if (!printFormState.hasTitle || previewDimensionPx.value.height <= 0) {
+    return 0;
+  }
+  const ratio = titleSize.height / previewDimensionPx.value.height;
+  return Math.max(0, Math.min(1, ratio));
+});
+
+/**
+ * Hauteur du titre de la carte en mm
+ */
+const titleHeightMm = computed(() => {
+  return printableAreaMm.value.height * titleHeightRatioInPreview.value;
+});
 
 /**
  *  Dimensions de la carte en mm
  */
-const mapMMDimension = computed(() => {
-  var w = paperDimension.value.width - 2 * margin.value
-  var h = paperDimension.value.height - 2 *  margin.value
-  if (hasTitle.value) {
-    /**
-     * on utilise la part que représente le titre dans la preview car
-     * la conversion avec pixel2mm est trop approximative
-     * */
-    h -= (titleSize.height / previewPXDimension.value.height) * h
-  }
+const mapDimensionMm = computed(() => {
   return {
-    width : w,
-    height : h
-  }
-})
+    width: printableAreaMm.value.width,
+    height: Math.max(0, printableAreaMm.value.height - titleHeightMm.value),
+  };
+});
+
 /**
- *  Dimensions de la carte en mm 
+ * Dimensions de la carte en mm 
  * String pour CSS
  */
- const CSSMapMMDimension = computed(() => {
+const cssMapDimensionMm = computed(() => {
   return {
-    width : mapMMDimension.value.width + "mm",
-    height : mapMMDimension.value.height + "mm"
-  }
-})
-
-const titleHeightMM = computed(() => {
-  return paperDimension.value.height - mapMMDimension.value.height - 2* margin.value
-})
+    width: `${mapDimensionMm.value.width}mm`,
+    height: `${mapDimensionMm.value.height}mm`,
+  };
+});
 
 /**
  * Dimensions du bloc de prévisualisation en px
  */
- const previewPXDimension = computed(() => {
+const previewDimensionPx = computed(() => {
   return {
-    width : pixelPaperDimension.value.width * paper2PreviewScaleCoeff.value,
-    height : pixelPaperDimension.value.height * paper2PreviewScaleCoeff.value
-  }
-})
+    width: paperDimensionPx.value.width * paper2PreviewScaleCoeff.value,
+    height: paperDimensionPx.value.height * paper2PreviewScaleCoeff.value,
+  };
+});
 
 /**
  * Dimensions du bloc de prévisualisation en px
  */
-const cssPreviewPXDimension = computed(() => {
+const cssPreviewDimensionPx = computed(() => {
   return {
-    width : previewPXDimension.value.width + "px",
-    height : previewPXDimension.value.height + "px"
-  }
-})
+    width: `${previewDimensionPx.value.width}px`,
+    height: `${previewDimensionPx.value.height}px`,
+  };
+});
 
 /**
- * Marge Gauche de la preview en pixel
+ * Marges de la preview en pixel
  */
- const CSSPreviewPadding = computed(() => {
+const cssPreviewPaddingPx = computed(() => {
+  const leftRightPx = (printFormState.margin / paperDimension.value.width) * previewDimensionPx.value.width;
+  const topBottomPx = (printFormState.margin / paperDimension.value.height) * previewDimensionPx.value.height;
+
   return {
-    left : (margin.value / paperDimension.value.width) * previewPXDimension.value.width + "px",
-    top : (margin.value / paperDimension.value.height) * previewPXDimension.value.height + "px",
+    left: `${leftRightPx}px`,
+    right: `${leftRightPx}px`,
+    top: `${topBottomPx}px`,
+    bottom: `${topBottomPx}px`,
+  };
+});
+
+/************************************************************************************
+ * Fonctions d'export de la carte
+ *  - getPrintMapInstance() : retourne l'instance de la carte à imprimer
+ *  - buildRasterExportCanvas() : construit le canvas final de la carte à exporter
+ *  - exportMap() : fonction principale qui appelle les fonctions d'export selon le format
+ *  - exportHighResMap() : export de la carte en PNG ou JPEG
+ *  - exportPDF() : export de la carte en PDF
+ *************************************************************************************/
+
+const getPrintMapInstance = () => {
+  return refMap.value?.map ?? mapStore.getMap();
+};
+
+/************************************************************************************
+ * → Fonctions utilitaires
+ *************************************************************************************/
+
+ /**
+ * Convertit une valeur en millimètres en pixels en fonction du DPI
+ * @param {number} valueMm - Valeur en millimètres
+ * @param {number} dpiValue - Résolution en DPI
+ * @returns {number} Valeur en pixels
+ */
+const convertMmToPx = (valueMm, dpiValue) => {
+  return Math.round((valueMm / MM_PER_INCH) * dpiValue);
+};
+
+/**
+ * Récupère le contexte 2D d'un canvas
+ * @param {HTMLCanvasElement} canvas - Canvas HTML
+ * @param {string} errorMessage - Message d'erreur en cas d'échec
+ * @returns {CanvasRenderingContext2D} Contexte 2D du canvas
+ */
+const getCanvas2DContext = (canvas, errorMessage) => {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error(errorMessage);
   }
-})
+  return ctx;
+};
 
-const format = ref('PNG');
+/**
+ * Crée un canvas final pour l'export
+ * @param {number} width - Largeur du canvas en pixels
+ * @param {number} height - Hauteur du canvas en pixels
+ * @returns {{canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D}} Canvas et contexte 2D
+ */
+const createFinalExportCanvas = (width, height) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
 
-function exportMap() {
-  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
-  if (format.value === 'PDF') {
-    exportPDF();
+  const ctx = getCanvas2DContext(canvas, 'Impossible de récupérer le contexte 2D du canvas final.');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  return { canvas, ctx };
+};
+
+/**
+ * Dessine le titre sur le canvas final
+ * @param {CanvasRenderingContext2D} finalCtx - Contexte 2D du canvas final
+ * @param {number} mapWidthPx - Largeur de la carte en pixels
+ * @param {number} titleHeightPx - Hauteur du titre en pixels
+ * @param {number} marginPx - Marge en pixels
+ * @param {number} dpiCoeff - Coefficient DPI
+ */
+const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoeff) => {
+  const titleCanvas = document.createElement('canvas');
+  titleCanvas.width = mapWidthPx;
+  titleCanvas.height = titleHeightPx;
+
+  const titleCtx = getCanvas2DContext(titleCanvas, 'Impossible de récupérer le contexte 2D du titre.');
+  drawTitle(titleCtx, titleHeightPx, mapWidthPx, printFormState.printTitle, mapTitle.value, dpiCoeff);
+  finalCtx.drawImage(titleCanvas, marginPx, marginPx);
+  titleCanvas.remove();
+};
+
+/**
+ * Dessine l'échelle sur le canvas final
+ * @param {CanvasRenderingContext2D} finalCtx - Contexte 2D du canvas final
+ * @param {number} mapWidthPx - Largeur de la carte en pixels
+ * @param {number} mapHeightPx - Hauteur de la carte en pixels
+ * @param {number} marginPx - Marge en pixels
+ * @param {number} titleHeightPx - Hauteur du titre en pixels
+ * @param {HTMLElement} mapElement - Élément HTML de la carte
+ */
+const SCALE_LINE_PRINT_BOOST = 2; // Facteur d'agrandissement pour l'échelle lors de l'export
+
+const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement) => {
+  const scaleCanvas = document.createElement('canvas');
+  scaleCanvas.width = mapWidthPx;
+  scaleCanvas.height = mapHeightPx;
+
+  const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, SCALE_LINE_PRINT_BOOST);
+  finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
+  scaleCanvas.remove();
+};
+
+/**
+ * Déclenche le téléchargement d'un fichier
+ * @param {string} fileName - Nom du fichier à télécharger
+ * @param {string} url - URL du fichier à télécharger
+ */
+const triggerDownload = (fileName, url) => {
+  const link = document.createElement('a');
+  link.download = fileName;
+  link.href = url;
+  link.click();
+};
+
+/************************************************************************************
+ * → Fonctions principales d'export de la carte
+ *************************************************************************************/
+
+/**
+ * Construit le canvas final de la carte à exporter
+ *  - Récupère l'instance de la carte à imprimer
+ *  - Redimensionne la carte pour correspondre aux dimensions d'export
+ *  - Récupère le canvas de la carte
+ *  - Dessine le titre et l'échelle si nécessaire
+ *  - Retourne le canvas final
+ *  - Restaure la taille initiale de la carte
+ *  - Restaure la vue initiale de la carte
+ *  - Restaure le style initial du viewport de la carte
+ *  - Restaure la taille initiale du viewport de la carte  
+ */
+const buildRasterExportCanvas = async () => {
+  const dpiValue = printFormState.dpi;
+  const dpiCoeff = dpiValue / BASE_DPI;
+
+  // Base physique export (papier réel en px au DPI demandé)
+  const paperWidthPx = convertMmToPx(paperDimension.value.width, dpiValue);
+  const paperHeightPx = convertMmToPx(paperDimension.value.height, dpiValue);
+  const marginPx = convertMmToPx(printFormState.margin, dpiValue);
+
+  // Conversion cohérente: ratio du titre en preview -> hauteur du titre en export
+  const titleHeightPx = printFormState.hasTitle
+    ? Math.round((titleHeightMm.value / paperDimension.value.height) * paperHeightPx)
+    : 0;
+
+  const mapWidthPx = Math.max(0, paperWidthPx - (marginPx * 2));
+  const mapHeightPx = Math.max(0, paperHeightPx - (marginPx * 2) - titleHeightPx);
+
+  // Récupère l'instance de la carte à imprimer
+  const map = getPrintMapInstance();
+  // Récupère le canvas de la carte à exporter
+  const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
+  const mapElement = refMap.value?.mapRef;
+
+  // Crée un canvas final pour l'export
+  const finalWidthPx = mapWidthPx + (marginPx * 2);
+  const finalHeightPx = mapHeightPx + titleHeightPx + (marginPx * 2);
+  const { canvas: finalCanvas, ctx: finalCtx } = createFinalExportCanvas(finalWidthPx, finalHeightPx);
+  finalCtx.drawImage(mapCanvas, marginPx, marginPx + titleHeightPx);
+
+  // Dessine le titre si nécessaire
+  if (printFormState.hasTitle) {
+    drawTitleOverlay(finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoeff);
+  }
+
+  // Dessine l'échelle si nécessaire
+  if (printFormState.hasScale && mapElement) {
+    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement);
+  }
+
+  // Supprime le canvas temporaire de la carte
+  mapCanvas.remove();
+
+  return {
+    dpiValue,
+    finalCanvas,
+  };
+};
+
+// Gestion du clic sur le bouton d'export de la carte
+const onClickExportMap = async () => {
+  if (isExportInProgress.value) {
     return;
   }
-  exportPNG({
-    canvasMap: canvas,
-    mapMMDimension: mapMMDimension.value,
-    titleHeightMM: titleHeightMM.value,
-    margin: margin.value,
-    hasTitle: hasTitle.value,
-    hasScale: hasScale.value,
-    drawTitle,
-    drawScale,
-    printTitle: printTitle.value,
-    refMap: refMap.value,
-    mapTitleElement: mapTitle.value
-  })
+
+  isExportInProgress.value = true;
+  try {
+    if (printFormState.format === 'PDF') {
+      await exportPDF();
+      return;
+    }
+    await exportHighResMap();
+  } finally {
+    isExportInProgress.value = false;
+  }
 }
 
-// /**
-//  * Fonction d'export de la carte
-//  */
-const exportPDF = () => {
-  const opts = {
-    orientation : pageOrientation.value,
-    unit : "mm",
-    format : [paperDimension.value.width, paperDimension.value.height],
-  } 
-  const doc = new jsPDF(opts)
+// Export haute résolution de la map
+const exportHighResMap = async () => {
+  const { dpiValue, finalCanvas } = await buildRasterExportCanvas();
+  const dataUrl = finalCanvas.toDataURL('image/png');
 
-  const canvas = refMap.value.mapRef.getElementsByTagName('canvas')[0]
-  let opt = getMapImgParams(canvas, margin.value, titleHeightMM.value, mapMMDimension.value)
-  doc.addImage(opt.img, opt.format, opt.imgPosX, opt.imgPosY, opt.imgWidth, opt.imgHeight)
-
-  if (hasScale.value) {
-    // Fake canvas
-    const fakeCanvas = getFakeMapCanvas(refMap.value.mapRef, canvas.width, canvas.height)
-    let ctx = fakeCanvas.getContext("2d");
-    ctx.reset()
-    // Dessine l'échelle
-    drawScale(ctx, refMap.value.mapRef, canvas.width, canvas.height)
-    let opt = getMapImgParams(fakeCanvas, margin.value, titleHeightMM.value, mapMMDimension.value)
-    doc.addImage(opt.img, opt.format, opt.imgPosX, opt.imgPosY, opt.imgWidth, opt.imgHeight)
-    fakeCanvas.remove()
-  } 
-  if (hasTitle.value) {
-    // Dessine le titre
-    const titleCanvas = document.createElement('canvas');
-    titleCanvas.width = canvas.width;
-    // canvas HTML a besoin d'unité en px
-    // conversion mm vers px doit passer par une proportion car coeffPX2MM pas assez précis
-    titleCanvas.height = (titleHeightMM.value / mapMMDimension.value.height) * canvas.height;
-    let ctxTitle = titleCanvas.getContext('2d');
-    drawTitle(ctxTitle, titleCanvas.height, titleCanvas.width, printTitle.value, mapTitle.value)
-    refMap.value.mapRef.getElementsByClassName("ol-overlaycontainer")[0].insertAdjacentElement('beforebegin', titleCanvas)
-    printPreview.value.append(titleCanvas)
-    let imgTitle = titleCanvas.toDataURL('image/png')
-    doc.addImage(imgTitle, 'PNG', margin.value, margin.value, mapMMDimension.value.width, titleHeightMM.value)
-    titleCanvas.remove()
+  // Injecter DPI et télécharger
+  if (printFormState.format === 'PNG') {
+    const finalUrl = await injectDpiInPng(dataUrl, dpiValue);
+    triggerDownload('carte.png', finalUrl);
+  } else if (printFormState.format === 'JPEG') {
+    const jpegUrl = finalCanvas.toDataURL('image/jpeg', 0.95);
+    triggerDownload('carte.jpeg', jpegUrl);
   }
-  doc.save('carte.pdf')
-}
-
-function exportPNG({
-  canvasMap,
-  mapMMDimension,
-  titleHeightMM,
-  margin,
-  hasTitle,
-  hasScale,
-  drawTitle,
-  drawScale,
-  printTitle,
-  refMap,
-  mapTitleElement
-}) {
-  const pxPerMM = canvasMap.width / mapMMDimension.width;
-
-  const marginPx = margin * pxPerMM;
-  const titlePxHeight = hasTitle ? titleHeightMM * pxPerMM : 0;
-
-  const finalWidth =
-    canvasMap.width + marginPx * 2;
-
-  const finalHeight =
-    canvasMap.height +
-    titlePxHeight +
-    marginPx * 2;
-
-  const finalCanvas = document.createElement('canvas');
-  finalCanvas.width = finalWidth;
-  finalCanvas.height = finalHeight;
-
-  const ctx = finalCanvas.getContext('2d');
-
-  // FOND BLANC
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, finalWidth, finalHeight);
-
-  if (hasTitle) {
-    ctx.save();
-    ctx.translate(marginPx, marginPx);
-    drawTitle(
-      ctx,
-      titlePxHeight,
-      canvasMap.width,
-      printTitle,
-      mapTitleElement
-    );
-    ctx.restore();
-  }
-
-  const mapOffsetY = marginPx + titlePxHeight;
-  ctx.drawImage(
-    canvasMap,
-    marginPx,
-    mapOffsetY
-  );
-
-  if (hasScale) {
-    drawScale(
-      ctx,
-      refMap.mapRef,
-      canvasMap.width,
-      canvasMap.height + mapOffsetY
-    );
-  }
-
-  const link = document.createElement('a');
-  if (format.value === 'PNG') {
-    link.download = 'carte.png';
-    link.href = finalCanvas.toDataURL('image/png');
-  }
-  if (format.value === 'JPEG') {
-    link.download = 'carte.jpeg';
-    link.href = finalCanvas.toDataURL('image/jpeg', 1);
-  }
-
-  link.click();
 
   finalCanvas.remove();
-}
+};
+// Export PDF de la map
+const exportPDF = async () => {
+  const { finalCanvas } = await buildRasterExportCanvas();
 
+  // Créer le PDF
+  const opts = {
+    orientation: printFormState.pageOrientation,
+    unit: "mm",
+    format: [paperDimension.value.width, paperDimension.value.height],
+  };
+  const doc = new jsPDF(opts);
 
+  // Convertir le canvas en image
+  const mapImgUrl = finalCanvas.toDataURL('image/png');
+  doc.addImage(
+    mapImgUrl,
+    'PNG',
+    0,
+    0,
+    paperDimension.value.width,
+    paperDimension.value.height,
+  );
+
+  doc.save('carte.pdf');
+
+  finalCanvas.remove();
+};
+
+/**
+ * Options de l'échelle pour le composant ScaleLine
+ */
 const scaleLineOptions = {
-  id: "4",
+  id: '4',
   units: 'metric',
   bar: false,
 };
@@ -445,7 +679,7 @@ const scaleLineOptions = {
         class="print-form"
       >
         <DsfrSegmentedSet
-          v-model="pageOrientation"
+          v-model="printFormState.pageOrientation"
           :inline="false"
           :options="pageOrientationOptions"
           :small="false"
@@ -457,12 +691,12 @@ const scaleLineOptions = {
           </template>
         </DsfrSegmentedSet>
         <DsfrSelect
-          v-model="paperFormat"
+          v-model="printFormState.paperFormat"
           label="Dimensions"
-          :options="[ 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'B4', 'B5']"
+          :options="paperFormatOptions"
         />
         <DsfrSelect
-          v-model.number="margin"
+          v-model.number="printFormState.margin"
           label="Marge"
           :options="[
             { value : 0, text : 'Pas de marge - 0mm' },
@@ -471,8 +705,8 @@ const scaleLineOptions = {
           ]"
         />
         <DsfrInput
-          v-model="printTitle"
-          :disabled="!hasTitle"
+          v-model="printFormState.printTitle"
+          :disabled="!printFormState.hasTitle"
           label="Titre de la carte"
           label-visible
           name="titre"
@@ -480,30 +714,37 @@ const scaleLineOptions = {
         />
         <div class="mt-10">
           <DsfrCheckbox
-            v-model="hasTitle"
+            v-model="printFormState.hasTitle"
             name="checkbox-simple"
-            :label="!hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
+            :label="!printFormState.hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
           />
         </div>
         <div class="mt-10">
           <DsfrCheckbox
-            v-model="hasScale"
+            v-model="printFormState.hasScale"
             name="checkbox-simple"
-            :label="!hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
+            :disabled="printFormState.dpi === HIGH_DPI_VALUE"
+            :label="!printFormState.hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
           />
         </div>
         <DsfrSelect
-          v-model="format"
+          v-model="printFormState.format"
           label="Format d'export"
           :options="[ 'PDF', 'PNG', 'JPEG']"
         />
+        <DsfrSelect
+          v-model.number="printFormState.dpi"
+          label="Résolution"
+          :options="dpiOptions"
+        />
         <DsfrButton
           id="print-page-export"
-          label="Imprimer la carte"
-          title="Imprimer la carte"
+          :label="isExportInProgress ? 'Traitement en cours...' : 'Imprimer la carte'"
+          :title="isExportInProgress ? 'Traitement en cours...' : 'Imprimer la carte'"
+          :disabled="isExportInProgress"
           icon=""
           no-outline
-          @click="exportMap"
+          @click="onClickExportMap"
         />
       </div>
       <!-- Dom de la prévisualisation de l'impression -->
@@ -513,12 +754,12 @@ const scaleLineOptions = {
           class="print-preview"
         >
           <div
-            v-if="hasTitle"
+            v-if="printFormState.hasTitle"
             id="map-title"
             ref="mapTitle"
             class="map-title"
           >
-            {{ printTitle }}
+            {{ printFormState.printTitle }}
           </div>
           <MapView
             v-if="printModalOpened" 
@@ -532,13 +773,19 @@ const scaleLineOptions = {
               :print-map-id="printMap"
             />
             <ScaleLine
-              :visibility="hasScale"
+              :visibility="printFormState.hasScale"
               :scale-line-options="scaleLineOptions"
               :map-id="printMap"
             />
           </MapView>
         </div>
-      </div>    
+      </div>
+      <div
+        v-if="isExportInProgress"
+        class="print-patience-overlay"
+      >
+        <Patience />
+      </div>
     </div>
   </DsfrModal>
 </template>
@@ -598,26 +845,34 @@ const scaleLineOptions = {
   }
 
   .mb-20 {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
   .mb-10 {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .mt-10 {
-    margin-top: 10px;
+    margin-top: 6px;
   }
   .print-page{
     display: flex;
     flex-direction: row;
-    height: 36rem;
+    height: 35rem;
+    position: relative;
+  }
+
+  .print-patience-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.75);
+    z-index: 2;
   }
   /*
   TODO gestion des titres trop longs : le rapport de taille de la prévisualisation 
   n'est plus respecté
   */
   .print-preview-container{
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -625,16 +880,25 @@ const scaleLineOptions = {
     box-shadow: 3px 3px 5px 6px #ccc;
   }
   .print-preview {
-    width: v-bind("cssPreviewPXDimension.width");
-    height: v-bind("cssPreviewPXDimension.height");
-    padding-left : v-bind("CSSPreviewPadding.left");
-    padding-top : v-bind("CSSPreviewPadding.top");
+    width: v-bind("cssPreviewDimensionPx.width");
+    height: v-bind("cssPreviewDimensionPx.height");
+    padding-left : v-bind("cssPreviewPaddingPx.left");
+    padding-right : v-bind("cssPreviewPaddingPx.right");
+    padding-top : v-bind("cssPreviewPaddingPx.top");
+    padding-bottom : v-bind("cssPreviewPaddingPx.bottom");
     flex: 0 0;
   }
   .print-form {
-    flex: 0 0 260px;
-    margin-right: v-bind(formMarginRight);
-    /* max-width: 260px; */
+    flex: 0 0 230px;
+    margin-right: 10px;
+    /* max-width: 230px; */
+  }
+
+  .print-form :deep(.fr-select-group),
+  .print-form :deep(.fr-input-group),
+  .print-form :deep(.fr-checkbox-group),
+  .print-form :deep(.fr-fieldset) {
+    margin-bottom: 8px;
   }
 
   .map-title {
@@ -642,8 +906,8 @@ const scaleLineOptions = {
   }
 
   .map {
-    width: v-bind("CSSMapMMDimension.width");
-    height: v-bind("CSSMapMMDimension.height");
+    width: v-bind("cssMapDimensionMm.width");
+    height: v-bind("cssMapDimensionMm.height");
     transform: scale(v-bind(paper2PreviewScaleCoeff));
     transform-origin: top left;
   }

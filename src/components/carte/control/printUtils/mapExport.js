@@ -1,0 +1,116 @@
+/**
+ * Fusionne tous les canvas des couches OpenLayers dans un canvas cible.
+ * Gère l'opacité, la couleur de fond et les transformations CSS matrix().
+ * @param {HTMLElement} mapViewport - Viewport de la map OL (map.getViewport())
+ * @param {CanvasRenderingContext2D} targetCtx - Contexte du canvas de destination
+ */
+function mergeMapCanvases(mapViewport, targetCtx) {
+  const canvases = mapViewport.querySelectorAll('.ol-layer canvas, canvas.ol-layer');
+
+  targetCtx.setTransform(1, 0, 0, 1, 0, 0);
+  targetCtx.clearRect(0, 0, targetCtx.canvas.width, targetCtx.canvas.height);
+
+  canvases.forEach((layerCanvas) => {
+    if (!layerCanvas.width || !layerCanvas.height) {
+      return;
+    }
+
+    const opacity = layerCanvas.parentElement?.style.opacity || layerCanvas.style.opacity;
+    targetCtx.globalAlpha = opacity === '' ? 1 : Number(opacity);
+
+    const backgroundColor = layerCanvas.parentElement?.style.backgroundColor;
+    if (backgroundColor) {
+      targetCtx.fillStyle = backgroundColor;
+      targetCtx.fillRect(0, 0, layerCanvas.width, layerCanvas.height);
+    }
+
+    const transform = layerCanvas.style.transform;
+    if (transform) {
+      const matrix = transform
+        .match(/^matrix\(([^)]*)\)$/)?.[1]
+        ?.split(',')
+        .map(Number);
+
+      if (matrix?.length === 6) {
+        targetCtx.setTransform(...matrix);
+      }
+    } else {
+      const style = getComputedStyle(layerCanvas);
+      const scaleX = parseFloat(style.width) / layerCanvas.width;
+      const scaleY = parseFloat(style.height) / layerCanvas.height;
+      targetCtx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+    }
+
+    targetCtx.drawImage(layerCanvas, 0, 0);
+  });
+
+  targetCtx.globalAlpha = 1;
+  targetCtx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+/**
+ * Rendu de la carte OpenLayers dans un canvas haute résolution pour l'export.
+ * @async
+ * @param {import('ol/Map').default} map - Instance OpenLayers
+ * @param {number} widthPx - Largeur cible en pixels
+ * @param {number} heightPx - Hauteur cible en pixels
+ * @returns {Promise<HTMLCanvasElement>} Canvas avec le rendu haute résolution
+ */
+export async function renderMapCanvasForExport(map, widthPx, heightPx) {
+  const view = map.getView();
+  const originalSize = map.getSize();
+  const originalCenter = view.getCenter();
+  const originalResolution = view.getResolution();
+  const viewportEl = map.getViewport();
+  const originalW = viewportEl.style.width;
+  const originalH = viewportEl.style.height;
+  const originalExtent = view.calculateExtent(originalSize);
+
+  // Crée un canvas pour le rendu final
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = widthPx;
+  exportCanvas.height = heightPx;
+
+  try {
+    map.setSize([widthPx, heightPx]);
+    viewportEl.style.width = `${widthPx}px`;
+    viewportEl.style.height = `${heightPx}px`;
+    // Ajuste la vue pour que l'emprise reste la même malgré le changement de taille
+    // On utilise fit() avec nearest: true pour éviter les ajustements de résolution
+    // On utilise duration: 0 pour que le rendu soit immédiat
+    view.fit(originalExtent, {
+      size: [widthPx, heightPx],
+      nearest: true,
+      duration: 0,
+    });
+
+    await new Promise((resolve) => {
+      // On attend que le rendu soit terminé avant de capturer le canvas
+      map.once('rendercomplete', resolve);
+      map.renderSync();
+    });
+
+    // Récupère le contexte 2D du canvas d'export, nécessaire pour dessiner
+    const export2dContext = exportCanvas.getContext('2d');
+    if (!export2dContext) {
+      throw new Error('Impossible de récupérer le contexte 2D pour le canvas d\'export.');
+    }
+
+    // Fusionne tous les canvas des couches dans le canvas d'export
+    mergeMapCanvases(map.getViewport(), export2dContext);
+
+    return exportCanvas;
+  } finally {
+    // Restaure l'état initial de la map
+    map.setSize(originalSize);
+    viewportEl.style.width = originalW;
+    viewportEl.style.height = originalH;
+    if (originalCenter) {
+      view.setCenter(originalCenter);
+    }
+    if (originalResolution) {
+      view.setResolution(originalResolution);
+    }
+    map.renderSync();
+  }
+}

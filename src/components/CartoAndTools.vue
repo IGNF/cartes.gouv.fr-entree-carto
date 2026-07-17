@@ -27,9 +27,17 @@ const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
 
+const printOptions = {
+  dpi: 96,
+  paperFormat: 'A4',
+  pageOrientation: 'portrait',
+  format: 'PDF',
+};
+
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
+provide("refModalPrint", refModalPrint);
 provide("refModalWelcome", refModalWelcome);
 
 // Les gestionnaires d'évenements des modales
@@ -191,7 +199,10 @@ provide("selectedLayers", selectedLayers);
     <ShareModal ref="refModalShare" />
     <LoginModal ref="refModalLogin" />
     <SaveModal ref="refModalSave" />
-    <PrintModal ref="refModalPrint" />
+    <PrintModal
+      ref="refModalPrint"
+      :print-options="printOptions"
+    />
   </div>
 </template>
 
