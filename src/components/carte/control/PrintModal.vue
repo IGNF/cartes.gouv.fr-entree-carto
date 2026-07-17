@@ -1,8 +1,8 @@
 <script lang="js" setup>
 
 import { ref, computed, reactive, inject } from 'vue';
+
 import { useElementSize } from '@vueuse/core';
-import { reactive } from 'vue';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 
