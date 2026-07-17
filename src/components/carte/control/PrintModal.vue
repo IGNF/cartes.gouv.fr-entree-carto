@@ -227,12 +227,18 @@ const dpiOptions = computed(() => {
   ];
 });
 
-// Surveille les changements de format de papier et de résolution d'impression pour ajuster le format de papier
+// Surveille les changements de format de papier et de résolution d'impression 
+// pour ajuster le format de papier
+// idem pour l'échelle : si le DPI est 300, on ne peut pas afficher l'échelle !
 watch(
   () => [printFormState.dpi, printFormState.paperFormat],
   ([dpiValue, paperFormat]) => {
     if (dpiValue === HIGH_DPI_VALUE && !isPaperFormatAllowedAtHighDpi(paperFormat)) {
       printFormState.paperFormat = 'A4';
+    }
+
+    if (dpiValue === HIGH_DPI_VALUE && printFormState.hasScale) {
+      printFormState.hasScale = false;
     }
   },
   { immediate: true },
@@ -717,6 +723,7 @@ const scaleLineOptions = {
           <DsfrCheckbox
             v-model="printFormState.hasScale"
             name="checkbox-simple"
+            :disabled="printFormState.dpi === HIGH_DPI_VALUE"
             :label="!printFormState.hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
           />
         </div>
