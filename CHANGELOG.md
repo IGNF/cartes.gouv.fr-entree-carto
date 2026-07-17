@@ -4,6 +4,97 @@ Toutes les modifications notables apportées à ce projet sont documentées dans
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) et ce projet respecte [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 🔖 version 1.0.19 - 17/07/2026
+
+### 🎉 Résumé
+
+Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impression, et correctifs sur le partage
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+#### 🔨 [Evolution]
+
+  - Espace personnel : recherche et tri des documents (#1128)
+  - Espace personnel : transformation de format de l'export pour les couches vectorielles (#1140)
+  - Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
+  - Espace personnel : suppression d'un favori présent dans un permalien (#1130)
+  - Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
+  - Espace personnel : gestion des documents supprimés dans un permalien (#1146)
+  - Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
+  - Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur (#1147)
+  - ControlList : Ferme le panel au click dans la page (#1151)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - UI : Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
+  - UI : Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
+  - Légendes : Plus de "alt" cassé dans l’affichage des légendes (#1164)
+  - Panoramax : Le panel des options peut défiler (#1164)
+  - Territories : Corrige et sérialise l'ordre des territoires (#1132)
+  - Map : Empêche la rotation de la carte (#1148)
+  - Partage : La geolocalisation est correctement partagée dans le permalien (#1155)
+  - Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
+  - Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
+  - Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
+  - Espace Personnel : synchroniser les positions des couches lors d'un appel de permalien via l'espace personnel (#1160)
+
+#### 🔒 [Sécurité]
+
+  - Suppression des notifications ESLint (#1159)
+  - Correction des failles  de sécurités (#1159)
+
+---
+
+## 🔖 version 1.0.18 - 15/06/2026
+
+### 🎉 Résumé
+
+Nouveau widget Panoramax qui permet de visualiser des photos immersives libres via des instances de contribution collaboratives.
+Refonte du menu de gestion des widgets sur l'interface. Routes dynamiques vers des pages de type "plan de ville"
+
+### 💥 Breaking changes
+
+### 📖 Changelog
+
+#### ✨ [Ajout]
+
+  - Panoramax : Ajout du nouveau widget Panoramax (#1046)
+  - Barre de Recherche : Ajout du Lambert II étendu dans les systèmes de références de la recherche avancée par coordonnées (#1080)
+  - Barre de Recherche : Conversion à la volée des coordonnées lors du changement de système de référence (#1080)
+  - Plan : Ajout de la route "/plan/:insee" pour afficher le plan d'une ville (#1094)
+
+#### 🔨 [Evolution]
+
+  - Gestionnaire de couche : au survol de son entrée, le titre de la couche s'affiche dans un tooltip (#1054)
+  - Header : la signature change pour "Notre territoire commun" (#1088)
+  - Gestionnaire d’outils : intégration du «nouveau» widget ControlList (#1093)
+  - Gestionnaire d’outils : déplacement des autres outils dans «Préférences d’affichage» (#1093)
+  - Panoramax : filtre image 360 actif par défaut (#1098)
+
+#### 🔥 [Obsolète]
+
+#### 🔥 [Suppression]
+
+#### 🐛 [Correction]
+
+  - UI extensions : fixe la position d'un panel dans un panel (#1078)
+  - UI : empêche le décalage de la page au focus clavier (#1082)
+  - UI : masque le badge en mobile (#1082)
+  - UI : les icones des thèmes Société et Océans du catalogue sont correctement affichés (#1083)
+  - Partage : les données issues de l'espace personnel sont correctement affichées dans les iframes (#1090)
+  - Panoramax : les filtres sur les photos ne sont plus exclusifs (#1101)
+
+#### 🔒 [Sécurité]
+
+---
 
 ## 🔖 version 1.0.17 - 19/05/2026
 

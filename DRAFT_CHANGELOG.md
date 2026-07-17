@@ -6,10 +6,7 @@
 
 ### 🎉 Résumé
 
-- Hotfix sur la sécurité
-- Evolution de l'espace personnel
-- Amélioration UI
-- Correctifs sur le partage
+Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impression, et correctifs sur le partage
 
 ### 💥 Breaking changes
 
