@@ -14,6 +14,8 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### ✨ [Ajout]
 
+- Impression : ajout d’une option pour choisir la résolution d’impression (#1125)
+
 #### 🔨 [Evolution]
 
 - Espace personnel : recherche et tri des documents (#1128)
