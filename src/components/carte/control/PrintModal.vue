@@ -1,10 +1,12 @@
 <script lang="js" setup>
+
+import { ref, computed, reactive, inject } from 'vue';
 import { useElementSize } from '@vueuse/core';
 import { reactive } from 'vue';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
 
-import Map from '@/components/carte/Map.vue';
+import MapView from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
 import Patience from '@/components/utils/Patience.vue';
 
@@ -752,7 +754,7 @@ const scaleLineOptions = {
           >
             {{ printFormState.printTitle }}
           </div>
-          <Map
+          <MapView
             v-if="printModalOpened" 
             ref="refMap" 
             class="map"
@@ -768,7 +770,7 @@ const scaleLineOptions = {
               :scale-line-options="scaleLineOptions"
               :map-id="printMap"
             />
-          </Map>
+          </MapView>
         </div>
       </div>
       <div

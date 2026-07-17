@@ -16,7 +16,7 @@ export default {
 
 <script setup lang="js">
 import { useMapStore } from '@/stores/mapStore';
-import { inject } from 'vue';
+import { inject, nextTick } from 'vue';
 
 // lib notification
 import { push } from 'notivue'
@@ -138,7 +138,7 @@ const buttons = [
 </script>
 
 <template>
-  <div class="fr-container">
+  <div class="fr-container fr-p-0">
     <div class="bookmark-content-container">
       <h4>
         Aucun enregistrement pour le moment

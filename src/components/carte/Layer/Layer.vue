@@ -1,6 +1,6 @@
 <script setup lang="js">
 
-import { inject, onMounted, onUnmounted } from 'vue';
+import { inject, onMounted, onUnmounted, watch } from 'vue';
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
@@ -21,6 +21,9 @@ import {
 // lib notification
 import { push } from 'notivue'
 import t from '@/features/translation';
+
+// Use WeakMap to safely store queues per map instance, avoiding prototype pollution
+const mapQueues = new WeakMap();
 
 const props = defineProps({
   layerOptions: {
@@ -44,6 +47,47 @@ const emit = defineEmits(['mounted', 'unmounted']);
 const map = inject(props.mapId);
 var layer = null;
 
+/**
+ * Synchronise les propriétés de la couche avec les options passées en props.
+ */
+const syncLayerWithOptions = () => {
+  if (!layer || !props.layerOptions) {
+    return;
+  }
+
+  const position = Number(props.layerOptions.position);
+  if (!Number.isNaN(position) && position >= 0 && layer.getZIndex && layer.setZIndex) {
+    if (layer.getZIndex() !== position) {
+      layer.setZIndex(position);
+    }
+  }
+
+  if (typeof props.layerOptions.opacity !== "undefined" && typeof layer.setOpacity === "function") {
+    const opacity = Number.parseFloat(props.layerOptions.opacity);
+    if (!Number.isNaN(opacity)) {
+      layer.setOpacity(Math.min(1, Math.max(0, opacity)));
+    }
+  }
+
+  if (typeof props.layerOptions.visible !== "undefined" && typeof layer.setVisible === "function") {
+    const v = props.layerOptions.visible;
+    const visible = typeof v === "string" ? (v === "1" || v === "true") : Boolean(v);
+    layer.setVisible(visible);
+  }
+
+  if (typeof props.layerOptions.grayscale !== "undefined" && typeof layer.set === "function") {
+    const g = props.layerOptions.grayscale;
+    const grayscale = typeof g === "string" ? (g === "1" || g === "true") : Boolean(g);
+    layer.set("grayscale", grayscale);
+  }
+};
+
+/**
+ * Gère les erreurs d'une couche et effectue le nettoyage si nécessaire.
+ * @param targetLayer La couche cible à surveiller.
+ * @param name Le nom de la couche.
+ * @param type Le type de la couche.
+ */
 const catchErrorAndCleanup = (targetLayer, name, type) => {
   if (!targetLayer) {
     return;
@@ -127,8 +171,9 @@ onMounted(() => {
         sourceParams : {crossOrigin : 'anonymous'},
         permalink : props.layerOptions.permalink || false
       };
-      // ajout des options de preload par defaut
-      var preload = {
+      
+      const olParams = {
+        ...options,
         preload : Infinity,
         cacheSize : 1024
       };
@@ -139,16 +184,16 @@ onMounted(() => {
           layer = new GeoportalWMS({
             layer : name,
             configuration : value,
-            apiKey : "entree-carto",
-            olParams : Object.assign(options, preload)
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
+            olParams
           });
           break;
         case "WMTS":
           layer = new GeoportalWMTS({
             layer : name,
             configuration : value,
-            apiKey : "entree-carto",
-            olParams : Object.assign(options, preload)
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
+            olParams
           });
           break;
         case "TMS":
@@ -158,7 +203,7 @@ onMounted(() => {
             layer : name,
             style : props.layerOptions.style,
             configuration : value,
-            apiKey : "entree-carto",
+            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
           }, options);
           break;
         default:
@@ -315,9 +360,8 @@ onMounted(() => {
     }
   };
 
-  const queueKey = "__layerAddQueue";
-  const currentQueue = map[queueKey] || Promise.resolve();
-  map[queueKey] = currentQueue
+  const currentQueue = mapQueues.get(map) || Promise.resolve();
+  mapQueues.set(map, currentQueue
     .then(() => enqueueOnMap()) 
     .catch((e) => {
       const name = props.layerOptions.name || props.layerOptions.id || "inconnue";
@@ -327,8 +371,26 @@ onMounted(() => {
         title: t.notification.title,
         message: t.notification.exception_add_layer(name, e.message)
       });
-    });
+    })
+  );
 })
+
+// INFO : 
+// On surveille les changements de props pour réappliquer les propriétés de la couche
+// Il est possible que le store soit modifié par un permalien sans remonter le composant (mounted),
+// donc on réapplique les propriétés de la couche.
+watch(
+  () => [
+    props.layerOptions?.position,
+    props.layerOptions?.opacity,
+    props.layerOptions?.visible,
+    props.layerOptions?.grayscale
+  ],
+  () => {
+    // Réapplique les propriétés quand un permalien modifie le store sans remonter le composant.
+    syncLayerWithOptions();
+  }
+);
 
 /**
  * @fixme un update sur un import ou drawing supprime le layer !?

@@ -90,10 +90,15 @@ const parseSearchQuery = (rawQuery = "") => {
  * @param fieldMap 
  */
 const matchesToken = (item, token, fieldMap) => {
-  const allFields = Object.values(fieldMap).flat();
-  const fields = token.field && fieldMap[token.field] ? fieldMap[token.field] : allFields;
+  const fieldEntries = Object.entries(fieldMap);
+  const fieldsByToken = new Map(fieldEntries);
+  const allFields = fieldEntries.flatMap(([, values]) => values);
+  const fields = token.field && fieldsByToken.has(token.field) ? fieldsByToken.get(token.field) : allFields;
 
-  return fields.some((field) => normalizeSearchValue(item[field]).includes(token.value));
+  return fields.some((field) => {
+    const valuesByField = new Map(Object.entries(item || {}));
+    return normalizeSearchValue(valuesByField.get(field)).includes(token.value);
+  });
 };
 
 /**
@@ -425,9 +430,12 @@ const sortFields = [
  * Compare deux éléments sur un champ unique, en tenant compte du type date.
  */
 const compareByField = (a, b, field, order) => {
+  const valuesA = new Map(Object.entries(a || {}));
+  const valuesB = new Map(Object.entries(b || {}));
+
   if (field === "date" || field === "date_create") {
-    const tsA = getTimestamp(a[field]);
-    const tsB = getTimestamp(b[field]);
+    const tsA = getTimestamp(valuesA.get(field));
+    const tsB = getTimestamp(valuesB.get(field));
     if (tsA !== null && tsB !== null) {
       return order === "desc" ? tsB - tsA : tsA - tsB;
     }
@@ -435,8 +443,8 @@ const compareByField = (a, b, field, order) => {
     if (tsB !== null) return 1;
     return 0;
   }
-  const strA = String(a[field] || "");
-  const strB = String(b[field] || "");
+  const strA = String(valuesA.get(field) || "");
+  const strB = String(valuesB.get(field) || "");
   const cmp = strA.localeCompare(strB, "fr", { numeric: true, sensitivity: "base" });
   return order === "desc" ? -cmp : cmp;
 };
@@ -460,7 +468,7 @@ onMounted(() => {});
 </script>
 
 <template>
-  <div class="fr-container fr-p-1w">
+  <div class="fr-container fr-p-0">
     <h4 v-if="props.title">
       {{ props.title }}
     </h4>
@@ -622,7 +630,6 @@ onMounted(() => {});
   overflow-y: scroll;
   scrollbar-width: thin;
   overflow-x: hidden;
-  max-height: calc(76.8vh - 270px);
   padding: 1em;
 }
 .button-action {

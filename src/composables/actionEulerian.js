@@ -1,7 +1,8 @@
 /**
  * @description
  * Ajout les attributs Eulerian sur l'element HTML
- * 
+ * @param {HTMLElement} element - Element HTML sur lequel ajouter les attributs Eulerian
+ * @fixme on desactive temporairement l'ajout des actions Eulerian
  * @example
  * <button id="..." 
  *    class="..." 
@@ -14,8 +15,7 @@
  * </button>
  */
 export function useActionButtonEulerian(element) {
-  // FIXME: desactive temporairement l'ajout des actions Eulerian
-
-  //element.setAttribute("data-fr-analytics-click", element.getAttribute('aria-label') || Math.random());
-  //element.setAttribute("data-fr-js-button-actionee", true);
-};
+  void element; // @fixme désactivé temporairement
+  // element.setAttribute("data-fr-analytics-click", element.getAttribute('aria-label') || Math.random());
+  // element.setAttribute("data-fr-js-button-actionee", true);
+}

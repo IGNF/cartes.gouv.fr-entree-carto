@@ -27,6 +27,23 @@ import {
 import { DEFAULT_STYLE } from './style';
 import t from './translation';
 
+// Validate tokens against explicit whitelists to avoid altering meaningful IDs
+const validateToken = (v, allowed, name) => {
+  if (typeof v !== 'string') {
+    throw new Error(`${name} must be a string`);
+  }
+  const lower = v.toLowerCase();
+  if (!allowed.includes(lower)) {
+    throw new Error(`${name} has invalid value: ${v}`);
+  }
+  return lower;
+};
+
+const ALLOWED_TYPES = ["drawing", "import", "bookmark", "compute", "layerimport", "measure"];
+const ALLOWED_FORMATS = ["geojson", "gpx", "kml", "mapbox", "wmts", "wms"];
+// compute types are application-specific; include common ones used in codebase
+const ALLOWED_COMPUTES = ["route", "isocurve", "profil", "elevationpath", "pieton", "voiture", "time"];
+
 /**
 * INFO
 * Toutes les couches ajoutées sur la carte ont un ID interne
@@ -139,6 +156,7 @@ const createVectorLayer = async (options) => {
         format: vectorFormat,
         loader : function (extent, resolution, projection, success, failure) {
           const mapProj = projection.getCode();
+          // eslint-disable-next-line secure-coding/no-xxe-injection -- XMLHttpRequest est une API navigateur native, pas un parseur XML configurable ; XXE non applicable côté client
           const xhr = new XMLHttpRequest();
           xhr.open('GET', options.url);
           const onError = function(details) {
@@ -193,7 +211,9 @@ const createVectorLayer = async (options) => {
   });
   
   if (options.id) {
-    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.format.toLowerCase() + ":" + options.id;
+    const t = validateToken(options.type, ALLOWED_TYPES, "options.type");
+    const f = validateToken(options.format, ALLOWED_FORMATS, "options.format");
+    vectorLayer.gpResultLayerId = "bookmark:" + t + "-" + f + ":" + options.id;
   } else {
     // la structure d'un ID issu d'un dessin ou d'un import (widget) est fixée
     // cf. onClickEditLayer dans LayerSwitcher.vue
@@ -202,11 +222,11 @@ const createVectorLayer = async (options) => {
       vectorLayer.gpResultLayerId = options.type;
       break;
       case "import":
-      vectorLayer.gpResultLayerId = "layer" + options.type + ":" + options.format.toLowerCase();
+      vectorLayer.gpResultLayerId = "layer" + validateToken(options.type, ALLOWED_TYPES, "options.type") + ":" + validateToken(options.format ? options.format.toLowerCase() : '', ALLOWED_FORMATS, "options.format");
       break;
       case "bookmark":
       case "compute":
-      throw new Error("Type not yet implemented : " + options.type);
+      throw new Error("Type not yet implemented : " + validateToken(options.type, ALLOWED_TYPES, "options.type"));
       default:
       vectorLayer.gpResultLayerId = options.type;
       break;
@@ -292,6 +312,7 @@ const createComputeLayer = async (options) => {
       // url: options.url
       loader : function (extent, resolution, projection, success, failure) {
         const mapProj = projection.getCode();
+        // eslint-disable-next-line secure-coding/no-xxe-injection -- XMLHttpRequest est une API navigateur native, pas un parseur XML configurable ; XXE non applicable côté client
         const xhr = new XMLHttpRequest();
         xhr.open('GET', options.url);
         const onError = function(details) {
@@ -346,9 +367,12 @@ const createComputeLayer = async (options) => {
   });
   
   if (options.compute) {
-    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + "-" + options.compute.toLowerCase() + ":" + options.id;
+    const t = validateToken(options.type, ALLOWED_TYPES, 'options.type');
+    const c = validateToken(options.compute ? options.compute.toLowerCase() : '', ALLOWED_COMPUTES, 'options.compute');
+    vectorLayer.gpResultLayerId = "bookmark:" + t + "-" + c + ":" + options.id;
   } else {
-    vectorLayer.gpResultLayerId = "bookmark:" +  options.type + ":" + options.id;
+    const t = validateToken(options.type, ALLOWED_TYPES, 'options.type');
+    vectorLayer.gpResultLayerId = "bookmark:" + t + ":" + options.id;
   }
   
   const failedLoadData = (e) => {
@@ -570,7 +594,11 @@ const createMapBoxLayer = async (options) => {
     var _glStyle = options.data;
     var _glSources = _glStyle.sources;
     var _glSourceId = Object.keys(_glSources)[0]; // first source only !
-    var _glSource = _glSources[_glSourceId]; 
+    // Validate against prototype pollution
+    var _glSource = Object.prototype.hasOwnProperty.call(_glSources, _glSourceId) ? _glSources[_glSourceId] : null;
+    if (!_glSource) {
+      throw new Error("Source non trouvée dans le style MapBox !");
+    }
     var _glType = _glSource.type; // type vector only !
     if (_glType === "vector") {
       var _glTiles = _glSource.tiles; // tiles only !

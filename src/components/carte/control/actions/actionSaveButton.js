@@ -1,3 +1,4 @@
+import { sanitizeHtml } from "geopf-extensions-openlayers";
 /**
  * Créer un document pour un vecteur de type :
  * - drawing
@@ -31,8 +32,8 @@ const useCreateDocument = async (data, iocEmitter, iocService) => {
     if (data.layer.gpResultLayerDiv) {
       var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
       if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
+        div.innerHTML = sanitizeHtml(data.name);
+        div.title = sanitizeHtml(data.description);
       }  
     }
 
@@ -98,8 +99,8 @@ const useUpdateDocument = async (data, iocEmitter, iocService) => {
     if (data.layer.gpResultLayerDiv) {
       var div = data.layer.gpResultLayerDiv.querySelector("label[id^=GPname_ID_]");
       if (div) {
-        div.innerHTML = data.name;
-        div.title = data.description;
+        div.innerHTML = sanitizeHtml(data.name);
+        div.title = sanitizeHtml(data.description);
       }  
     }
 

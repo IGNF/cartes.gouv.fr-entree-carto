@@ -81,7 +81,7 @@ const notifyAndCleanBookmark = (id: string) => {
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
-  var layersValided: any = [];
+  var layersValided: unknown[] = [];
   var layers = mapStore.getLayers();
   for (let i = 0; i < layers.length; i++) {
     var layerId = layers[i];
@@ -112,7 +112,7 @@ const selectedLayers = computed(() => {
 // liste des favoris selectionnés par l'utilisateur, donc disponibles dans le permalien
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedBookmarks = computed(() => {
-  var bookmarksValided: any = [];
+  var bookmarksValided: unknown[] = [];
   var bookmarks = mapStore.getBookmarks();
   for (let i = 0; i < bookmarks.length; i++) {
     var bookmark = bookmarks[i];
