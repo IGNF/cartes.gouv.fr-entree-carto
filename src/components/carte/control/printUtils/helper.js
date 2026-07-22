@@ -50,28 +50,27 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     }
 
     // Projection preview -> canvas d'export : même ancrage visuel, même paddings.
-    const scaleFactorX = canvasWidth / mapRect.width
+    // Utilise seulement scaleFactorY pour éviter les distorsions dues aux ratios différents selon le DPI
     const scaleFactorY = canvasHeight / mapRect.height
-    const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2
 
     const style = getComputedStyle(scaleLine)
     const styleInner = getComputedStyle(scaleLineInner)
     const scaleContent = scaleLineInner.textContent || ''
 
-    const outerX = (outerRect.left - mapRect.left) * scaleFactorX
+    const outerX = (outerRect.left - mapRect.left) * scaleFactorY
     const outerY = (outerRect.top - mapRect.top) * scaleFactorY
-    const outerWidth = outerRect.width * scaleFactorX
+    const outerWidth = outerRect.width * scaleFactorY
     const outerHeight = outerRect.height * scaleFactorY
-    const innerX = (innerRect.left - mapRect.left) * scaleFactorX
+    const innerX = (innerRect.left - mapRect.left) * scaleFactorY
     const innerY = (innerRect.top - mapRect.top) * scaleFactorY
-    const innerWidth = innerRect.width * scaleFactorX
+    const innerWidth = innerRect.width * scaleFactorY
     const innerHeight = innerRect.height * scaleFactorY
 
-    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorX
-    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorX
+    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorY
+    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorY
     const borderBottomWidth = parseFloat(styleInner.borderBottomWidth || '0') * scaleFactorY
-    // const borderRadius = parseFloat(style.borderRadius || '0') * avgScaleFactor
-    const outerBorderWidth = Math.max(avgScaleFactor * 0.75, 1)
+    // const borderRadius = parseFloat(style.borderRadius || '0') * scaleFactorY
+    const outerBorderWidth = Math.max(scaleFactorY * 0.75, 1)
 
     // Fond externe de la ScaleLine : padding, marge et arrondis inclus via la boîte DOM réelle.
     ctx.beginPath()
@@ -102,7 +101,7 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     }
 
     const baseFontSize = parseFloat(styleInner.fontSize || '10')
-    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor) + 'px ' + styleInner.fontFamily
+    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * scaleFactorY) + 'px ' + styleInner.fontFamily
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = styleInner.color || '#333333'

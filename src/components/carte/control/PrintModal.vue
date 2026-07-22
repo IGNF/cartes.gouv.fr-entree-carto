@@ -88,7 +88,7 @@ defineExpose({
  * Ref sur les elements du DOM
  **************************************************************************/
 
-const refMap = ref(null);
+const refPreviewMap = ref(null);
 const mapTitle = ref(null);
 const printPage = ref(null);
 const printForm = ref(null);
@@ -229,16 +229,11 @@ const dpiOptions = computed(() => {
 
 // Surveille les changements de format de papier et de résolution d'impression 
 // pour ajuster le format de papier
-// idem pour l'échelle : si le DPI est 300, on ne peut pas afficher l'échelle !
 watch(
   () => [printFormState.dpi, printFormState.paperFormat],
   ([dpiValue, paperFormat]) => {
     if (dpiValue === HIGH_DPI_VALUE && !isPaperFormatAllowedAtHighDpi(paperFormat)) {
       printFormState.paperFormat = 'A4';
-    }
-
-    if (dpiValue === HIGH_DPI_VALUE && printFormState.hasScale) {
-      // printFormState.hasScale = false;
     }
   },
   { immediate: true },
@@ -423,7 +418,7 @@ const cssPreviewPaddingPx = computed(() => {
  *************************************************************************************/
 
 const getPrintMapInstance = () => {
-  return refMap.value?.map ?? mapStore.getMap();
+  return refPreviewMap.value?.map ?? mapStore.getMap();
 };
 
 /************************************************************************************
@@ -505,6 +500,26 @@ const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeig
   scaleCanvas.width = mapWidthPx;
   scaleCanvas.height = mapHeightPx;
 
+  /**
+   * INFO 
+   * sur les ratios de taille entre le DOM de la carte preview et 
+   * le canvas d'export haute résolution.
+   * 
+   * À 96 DPI :
+   *
+   * - A4 portrait = 210mm × 297mm
+   * - convertMmToPx(210, 96) = ~785 px
+   * - La carte preview DOM fait une certaine taille (disons 600px)
+   * - Ratio = 785px / 600px = 1.3x
+   * 
+   * À 300 DPI :
+   *
+   * - A4 portrait = 210mm × 297mm (même papier physique)
+   * - convertMmToPx(210, 300) = ~2480 px (beaucoup plus de pixels!)
+   * - La carte preview DOM fait toujours 600px (c'est le même DOM)
+   * - Ratio = 2480px / 600px = 4.1x
+   */
+
   const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
   drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx);
   finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
@@ -557,24 +572,27 @@ const buildRasterExportCanvas = async () => {
   const mapHeightPx = Math.max(0, paperHeightPx - (marginPx * 2) - titleHeightPx);
 
   // Récupère l'instance de la carte à imprimer
-  const map = getPrintMapInstance();
+  const map = getPrintMapInstance(); // objet carte de la preview !
   // Récupère le canvas de la carte à exporter
-  const mapElement = refMap.value?.mapRef;
   const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
-
+  
   // Crée un canvas final pour l'export
   const finalWidthPx = mapWidthPx + (marginPx * 2);
   const finalHeightPx = mapHeightPx + titleHeightPx + (marginPx * 2);
   const { canvas: finalCanvas, ctx: finalCtx } = createFinalExportCanvas(finalWidthPx, finalHeightPx);
   finalCtx.drawImage(mapCanvas, marginPx, marginPx + titleHeightPx);
-
+  
   // Dessine le titre si nécessaire
   if (printFormState.hasTitle) {
     drawTitleOverlay(finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoeff);
   }
-
+  
   // Dessine l'échelle si nécessaire
+  const mapElement = refPreviewMap.value?.mapRef; // DOM !
   if (printFormState.hasScale && mapElement) {
+    // INFO
+    // on lit le DOM de la carte preview pour recuperer l'échelle (.ol-scale-line) et
+    // la dessiner sur le canvas final
     drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement);
   }
 
@@ -721,7 +739,6 @@ const scaleLineOptions = {
           <DsfrCheckbox
             v-model="printFormState.hasScale"
             name="checkbox-simple"
-            :disabled="printFormState.dpi === HIGH_DPI_VALUE"
             :label="!printFormState.hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
           />
         </div>
@@ -761,7 +778,7 @@ const scaleLineOptions = {
           </div>
           <MapView
             v-if="printModalOpened" 
-            ref="refMap" 
+            ref="refPreviewMap" 
             class="map"
             :map-id="printMap"
             :center="mapStore.center"
