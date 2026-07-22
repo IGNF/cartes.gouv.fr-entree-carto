@@ -33,53 +33,44 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer contenant une échelle
  * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
  * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
- * @param { Number } visibilityBoost Facteur d'agrandissement visuel pour l'export
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, visibilityBoost = 1) {
-    // Calculer les proportions entre la taille actuelle du mapRef et les dimensions cibles du canvas
-    const actualWidth = mapRef.offsetWidth || mapRef.clientWidth || canvasWidth;
-    const actualHeight = mapRef.offsetHeight || mapRef.clientHeight || canvasHeight;
-    const scaleFactorX = canvasWidth / actualWidth;
-    const scaleFactorY = canvasHeight / actualHeight;
-    const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2;
-    
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight) {
     const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]
     const scaleLineInner = scaleLine?.children[0]
     if (!scaleLine || !scaleLineInner) {
         return
     }
 
-    const style = getComputedStyle(scaleLine)
-    const styleInner = getComputedStyle(scaleLineInner)
     const mapRect = mapRef.getBoundingClientRect()
     const outerRect = scaleLine.getBoundingClientRect()
     const innerRect = scaleLineInner.getBoundingClientRect()
+    if (!mapRect.width || !mapRect.height) {
+        return
+    }
+
+    // Projection preview -> canvas d'export : même ancrage visuel, même paddings.
+    const scaleFactorX = canvasWidth / mapRect.width
+    const scaleFactorY = canvasHeight / mapRect.height
+    const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2
+
+    const style = getComputedStyle(scaleLine)
+    const styleInner = getComputedStyle(scaleLineInner)
     const scaleContent = scaleLineInner.textContent || ''
 
-    const rightOffset = parseFloat(style.right || '0')
-    const bottomOffset = parseFloat(style.bottom || '0')
-    const outerWidth = outerRect.width * scaleFactorX * visibilityBoost
-    const outerHeight = outerRect.height * scaleFactorY * visibilityBoost
-    const rightAnchor = Number.isFinite(rightOffset)
-        ? canvasWidth - (rightOffset * scaleFactorX)
-        : (outerRect.left - mapRect.left) * scaleFactorX + outerWidth
-    const bottomAnchor = Number.isFinite(bottomOffset)
-        ? canvasHeight - (bottomOffset * scaleFactorY)
-        : (outerRect.top - mapRect.top) * scaleFactorY + outerHeight
-    const outerX = rightAnchor - outerWidth
-    const outerY = bottomAnchor - outerHeight
-    const innerOffsetX = (innerRect.left - outerRect.left) * scaleFactorX * visibilityBoost
-    const innerOffsetY = (innerRect.top - outerRect.top) * scaleFactorY * visibilityBoost
-    const innerWidth = innerRect.width * scaleFactorX * visibilityBoost
-    const innerHeight = innerRect.height * scaleFactorY * visibilityBoost
-    const innerX = outerX + innerOffsetX
-    const innerY = outerY + innerOffsetY
+    const outerX = (outerRect.left - mapRect.left) * scaleFactorX
+    const outerY = (outerRect.top - mapRect.top) * scaleFactorY
+    const outerWidth = outerRect.width * scaleFactorX
+    const outerHeight = outerRect.height * scaleFactorY
+    const innerX = (innerRect.left - mapRect.left) * scaleFactorX
+    const innerY = (innerRect.top - mapRect.top) * scaleFactorY
+    const innerWidth = innerRect.width * scaleFactorX
+    const innerHeight = innerRect.height * scaleFactorY
 
-    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorX * visibilityBoost
-    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorX * visibilityBoost
-    const borderBottomWidth = parseFloat(styleInner.borderBottomWidth || '0') * scaleFactorY * visibilityBoost
-    // const borderRadius = parseFloat(style.borderRadius || '0') * avgScaleFactor * visibilityBoost
+    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorX
+    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorX
+    const borderBottomWidth = parseFloat(styleInner.borderBottomWidth || '0') * scaleFactorY
+    // const borderRadius = parseFloat(style.borderRadius || '0') * avgScaleFactor
     const outerBorderWidth = Math.max(avgScaleFactor * 0.75, 1)
 
     // Fond externe de la ScaleLine : padding, marge et arrondis inclus via la boîte DOM réelle.
@@ -111,7 +102,7 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, visibilityBoos
     }
 
     const baseFontSize = parseFloat(styleInner.fontSize || '10')
-    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor * visibilityBoost) + 'px ' + styleInner.fontFamily
+    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor) + 'px ' + styleInner.fontFamily
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = styleInner.color || '#333333'

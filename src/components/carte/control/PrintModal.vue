@@ -238,7 +238,7 @@ watch(
     }
 
     if (dpiValue === HIGH_DPI_VALUE && printFormState.hasScale) {
-      printFormState.hasScale = false;
+      // printFormState.hasScale = false;
     }
   },
   { immediate: true },
@@ -500,15 +500,13 @@ const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoef
  * @param {number} titleHeightPx - Hauteur du titre en pixels
  * @param {HTMLElement} mapElement - Élément HTML de la carte
  */
-const SCALE_LINE_PRINT_BOOST = 2; // Facteur d'agrandissement pour l'échelle lors de l'export
-
 const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement) => {
   const scaleCanvas = document.createElement('canvas');
   scaleCanvas.width = mapWidthPx;
   scaleCanvas.height = mapHeightPx;
 
   const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
-  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, SCALE_LINE_PRINT_BOOST);
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx);
   finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
   scaleCanvas.remove();
 };
@@ -561,8 +559,8 @@ const buildRasterExportCanvas = async () => {
   // Récupère l'instance de la carte à imprimer
   const map = getPrintMapInstance();
   // Récupère le canvas de la carte à exporter
-  const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
   const mapElement = refMap.value?.mapRef;
+  const mapCanvas = await renderMapCanvasForExport(map, mapWidthPx, mapHeightPx);
 
   // Crée un canvas final pour l'export
   const finalWidthPx = mapWidthPx + (marginPx * 2);
