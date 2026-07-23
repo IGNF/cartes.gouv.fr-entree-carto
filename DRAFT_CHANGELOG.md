@@ -45,6 +45,7 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 - Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
 - Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
 - Espace Personnel : synchroniser les positions des couches lors d'un appel de permalien via l'espace personnel (#1160)
+- Print : Correctif sur l'échelle sur l'impression en 300 dpi (#1190)
 
 #### 🔒 [Sécurité]
 
