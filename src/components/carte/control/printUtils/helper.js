@@ -28,63 +28,192 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
 }
 
 /**
+ * Capture un snapshot de la scaleline en coordonnées relatives à la map.
+ * Permet de redessiner ensuite une échelle figée même si OL recalcule la DOM.
+ * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
+ * @returns {Object | null}
+ */
+export function captureScaleLineSnapshot(mapRef) {
+    const scaleLine = mapRef?.getElementsByClassName("ol-scale-line")?.[0]
+    const scaleLineInner = scaleLine?.children?.[0]
+    if (!scaleLine || !scaleLineInner) {
+        return null
+    }
+
+    const mapRect = mapRef.getBoundingClientRect()
+    const outerRect = scaleLine.getBoundingClientRect()
+    const innerRect = scaleLineInner.getBoundingClientRect()
+    if (!mapRect.width || !mapRect.height) {
+        return null
+    }
+
+    const style = getComputedStyle(scaleLine)
+    const styleInner = getComputedStyle(scaleLineInner)
+
+    return {
+        mapRect: {
+            width: mapRect.width,
+            height: mapRect.height,
+        },
+        outer: {
+            x: outerRect.left - mapRect.left,
+            y: outerRect.top - mapRect.top,
+            width: outerRect.width,
+            height: outerRect.height,
+            backgroundColor: style.backgroundColor || 'rgba(255, 255, 255, 0.75)',
+        },
+        inner: {
+            x: innerRect.left - mapRect.left,
+            y: innerRect.top - mapRect.top,
+            width: innerRect.width,
+            height: innerRect.height,
+            borderLeftWidth: styleInner.borderLeftWidth || '0',
+            borderRightWidth: styleInner.borderRightWidth || '0',
+            borderBottomWidth: styleInner.borderBottomWidth || '0',
+            fontStyle: styleInner.fontStyle,
+            fontVariant: styleInner.fontVariant,
+            fontWeight: styleInner.fontWeight,
+            fontSize: styleInner.fontSize,
+            fontFamily: styleInner.fontFamily,
+            color: styleInner.color || '#333333',
+            text: scaleLineInner.textContent || '',
+        },
+    }
+}
+
+/**
  * Crée une image de l'échelle sur un canvas
  * @param { * } ctx Context d'un canvas
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer contenant une échelle
  * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
  * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
- * @param { Number } visibilityBoost Facteur d'agrandissement visuel pour l'export
+ * @param { Object | null } scaleSnapshot Snapshot figé de la scaleline (optionnel)
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, visibilityBoost = 1) {
-    // Calculer les proportions entre la taille actuelle du mapRef et les dimensions cibles du canvas
-    const actualWidth = mapRef.offsetWidth || mapRef.clientWidth || canvasWidth;
-    const actualHeight = mapRef.offsetHeight || mapRef.clientHeight || canvasHeight;
-    const scaleFactorX = canvasWidth / actualWidth;
-    const scaleFactorY = canvasHeight / actualHeight;
-    const avgScaleFactor = (scaleFactorX + scaleFactorY) / 2;
-    
-    const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]
-    const scaleLineInner = scaleLine?.children[0]
-    if (!scaleLine || !scaleLineInner) {
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot = null) {
+    let mapRect
+    let outerRect
+    let innerRect
+    let outerBackgroundColor
+    let innerBorderLeftWidth
+    let innerBorderRightWidth
+    let innerBorderBottomWidth
+    let innerFontStyle
+    let innerFontVariant
+    let innerFontWeight
+    let innerFontSize
+    let innerFontFamily
+    let innerColor
+    let scaleContent
+
+    if (scaleSnapshot) {
+        mapRect = {
+            width: scaleSnapshot.mapRect.width,
+            height: scaleSnapshot.mapRect.height,
+            left: 0,
+            top: 0,
+        }
+        outerRect = {
+            left: scaleSnapshot.outer.x,
+            top: scaleSnapshot.outer.y,
+            width: scaleSnapshot.outer.width,
+            height: scaleSnapshot.outer.height,
+        }
+        innerRect = {
+            left: scaleSnapshot.inner.x,
+            top: scaleSnapshot.inner.y,
+            width: scaleSnapshot.inner.width,
+            height: scaleSnapshot.inner.height,
+        }
+        outerBackgroundColor = scaleSnapshot.outer.backgroundColor
+        innerBorderLeftWidth = scaleSnapshot.inner.borderLeftWidth
+        innerBorderRightWidth = scaleSnapshot.inner.borderRightWidth
+        innerBorderBottomWidth = scaleSnapshot.inner.borderBottomWidth
+        innerFontStyle = scaleSnapshot.inner.fontStyle
+        innerFontVariant = scaleSnapshot.inner.fontVariant
+        innerFontWeight = scaleSnapshot.inner.fontWeight
+        innerFontSize = scaleSnapshot.inner.fontSize
+        innerFontFamily = scaleSnapshot.inner.fontFamily
+        innerColor = scaleSnapshot.inner.color
+        scaleContent = scaleSnapshot.inner.text || ''
+    } else {
+        const scaleLine = mapRef.getElementsByClassName("ol-scale-line")[0]
+        const scaleLineInner = scaleLine?.children[0]
+        if (!scaleLine || !scaleLineInner) {
+            return
+        }
+
+        mapRect = mapRef.getBoundingClientRect()
+        outerRect = scaleLine.getBoundingClientRect()
+        innerRect = scaleLineInner.getBoundingClientRect()
+        if (!mapRect.width || !mapRect.height) {
+            return
+        }
+
+        const style = getComputedStyle(scaleLine)
+        const styleInner = getComputedStyle(scaleLineInner)
+        outerBackgroundColor = style.backgroundColor || 'rgba(255, 255, 255, 0.75)'
+        innerBorderLeftWidth = styleInner.borderLeftWidth || '0'
+        innerBorderRightWidth = styleInner.borderRightWidth || '0'
+        innerBorderBottomWidth = styleInner.borderBottomWidth || '0'
+        innerFontStyle = styleInner.fontStyle
+        innerFontVariant = styleInner.fontVariant
+        innerFontWeight = styleInner.fontWeight
+        innerFontSize = styleInner.fontSize
+        innerFontFamily = styleInner.fontFamily
+        innerColor = styleInner.color || '#333333'
+        scaleContent = scaleLineInner.textContent || ''
+    }
+
+    if (!mapRect.width || !mapRect.height) {
         return
     }
 
-    const style = getComputedStyle(scaleLine)
-    const styleInner = getComputedStyle(scaleLineInner)
-    const mapRect = mapRef.getBoundingClientRect()
-    const outerRect = scaleLine.getBoundingClientRect()
-    const innerRect = scaleLineInner.getBoundingClientRect()
-    const scaleContent = scaleLineInner.textContent || ''
+    // Projection preview -> canvas d'export : même ancrage visuel, même paddings.
+    // Utilise seulement scaleFactorY pour éviter les distorsions dues aux ratios différents selon le DPI
+    const scaleFactorY = canvasHeight / mapRect.height
 
-    const rightOffset = parseFloat(style.right || '0')
-    const bottomOffset = parseFloat(style.bottom || '0')
-    const outerWidth = outerRect.width * scaleFactorX * visibilityBoost
-    const outerHeight = outerRect.height * scaleFactorY * visibilityBoost
-    const rightAnchor = Number.isFinite(rightOffset)
-        ? canvasWidth - (rightOffset * scaleFactorX)
-        : (outerRect.left - mapRect.left) * scaleFactorX + outerWidth
-    const bottomAnchor = Number.isFinite(bottomOffset)
-        ? canvasHeight - (bottomOffset * scaleFactorY)
-        : (outerRect.top - mapRect.top) * scaleFactorY + outerHeight
-    const outerX = rightAnchor - outerWidth
-    const outerY = bottomAnchor - outerHeight
-    const innerOffsetX = (innerRect.left - outerRect.left) * scaleFactorX * visibilityBoost
-    const innerOffsetY = (innerRect.top - outerRect.top) * scaleFactorY * visibilityBoost
-    const innerWidth = innerRect.width * scaleFactorX * visibilityBoost
-    const innerHeight = innerRect.height * scaleFactorY * visibilityBoost
-    const innerX = outerX + innerOffsetX
-    const innerY = outerY + innerOffsetY
+    const outerX = (outerRect.left - mapRect.left) * scaleFactorY
+    const outerY = (outerRect.top - mapRect.top) * scaleFactorY
+    const outerWidth = outerRect.width * scaleFactorY
+    const outerHeight = outerRect.height * scaleFactorY
+    const innerX = (innerRect.left - mapRect.left) * scaleFactorY
+    const innerY = (innerRect.top - mapRect.top) * scaleFactorY
+    const innerWidth = innerRect.width * scaleFactorY
+    const innerHeight = innerRect.height * scaleFactorY
 
-    const borderLeftWidth = parseFloat(styleInner.borderLeftWidth || '0') * scaleFactorX * visibilityBoost
-    const borderRightWidth = parseFloat(styleInner.borderRightWidth || '0') * scaleFactorX * visibilityBoost
-    const borderBottomWidth = parseFloat(styleInner.borderBottomWidth || '0') * scaleFactorY * visibilityBoost
-    // const borderRadius = parseFloat(style.borderRadius || '0') * avgScaleFactor * visibilityBoost
-    const outerBorderWidth = Math.max(avgScaleFactor * 0.75, 1)
+    const borderLeftWidth = parseFloat(innerBorderLeftWidth || '0') * scaleFactorY
+    const borderRightWidth = parseFloat(innerBorderRightWidth || '0') * scaleFactorY
+    const borderBottomWidth = parseFloat(innerBorderBottomWidth || '0') * scaleFactorY
+
+    // Debug impression: permet de vérifier que le mode snapshot fige bien la largeur source.
+    const sourceRatio = outerRect.height > 0 ? (outerRect.width / outerRect.height) : 0
+    console.debug('[print][scaleline] drawScale', {
+        mode: scaleSnapshot ? 'snapshot' : 'live',
+        source: {
+            width: outerRect.width,
+            height: outerRect.height,
+            ratio: sourceRatio,
+            text: scaleContent,
+            mapWidth: mapRect.width,
+            mapHeight: mapRect.height,
+        },
+        export: {
+            canvasWidth,
+            canvasHeight,
+            scaleFactorY,
+            projectedWidth: outerWidth,
+            projectedHeight: outerHeight,
+            projectedRatio: outerHeight > 0 ? (outerWidth / outerHeight) : 0,
+        },
+    })
+
+    // const borderRadius = parseFloat(style.borderRadius || '0') * scaleFactorY
+    const outerBorderWidth = Math.max(scaleFactorY * 0.75, 1)
 
     // Fond externe de la ScaleLine : padding, marge et arrondis inclus via la boîte DOM réelle.
     ctx.beginPath()
-    ctx.fillStyle = style.backgroundColor || 'rgba(255, 255, 255, 0.75)'
+    ctx.fillStyle = outerBackgroundColor
     // if (typeof ctx.roundRect === 'function' && borderRadius > 0) {
     //     ctx.roundRect(outerX, outerY, outerWidth, outerHeight, borderRadius)
     //     ctx.fill()
@@ -110,11 +239,11 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, visibilityBoos
         ctx.fillRect(innerX, innerY + innerHeight - borderBottomWidth, innerWidth, borderBottomWidth)
     }
 
-    const baseFontSize = parseFloat(styleInner.fontSize || '10')
-    ctx.font = styleInner.fontStyle + ' ' + styleInner.fontVariant + ' ' + styleInner.fontWeight + ' ' + (baseFontSize * avgScaleFactor * visibilityBoost) + 'px ' + styleInner.fontFamily
+    const baseFontSize = parseFloat(innerFontSize || '10')
+    ctx.font = innerFontStyle + ' ' + innerFontVariant + ' ' + innerFontWeight + ' ' + (baseFontSize * scaleFactorY) + 'px ' + innerFontFamily
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillStyle = styleInner.color || '#333333'
+    ctx.fillStyle = innerColor
     ctx.fillText(scaleContent, innerX + (innerWidth / 2), innerY + (innerHeight / 2))
 };
 
