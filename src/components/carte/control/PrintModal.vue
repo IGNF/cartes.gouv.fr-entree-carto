@@ -13,6 +13,7 @@ import Patience from '@/components/utils/Patience.vue';
 import { printMap } from '@/composables/keys';
 import { 
   computeScaleCoeff, 
+  captureScaleLineSnapshot,
   drawScale, 
   drawTitle } 
 from './printUtils/helper.js';
@@ -495,7 +496,7 @@ const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoef
  * @param {number} titleHeightPx - Hauteur du titre en pixels
  * @param {HTMLElement} mapElement - Élément HTML de la carte
  */
-const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement) => {
+const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot = null) => {
   const scaleCanvas = document.createElement('canvas');
   scaleCanvas.width = mapWidthPx;
   scaleCanvas.height = mapHeightPx;
@@ -521,7 +522,7 @@ const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeig
    */
 
   const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
-  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx);
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, scaleSnapshot);
   finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
   scaleCanvas.remove();
 };
@@ -571,6 +572,13 @@ const buildRasterExportCanvas = async () => {
   const mapWidthPx = Math.max(0, paperWidthPx - (marginPx * 2));
   const mapHeightPx = Math.max(0, paperHeightPx - (marginPx * 2) - titleHeightPx);
 
+  // Snapshot de référence en DOM "preview" pour figer la largeur d'échelle du mode 96 DPI.
+  // Utilisé uniquement pour les exports 300 DPI.
+  const mapElement = refPreviewMap.value?.mapRef;
+  const scaleSnapshot = (printFormState.hasScale && dpiValue === HIGH_DPI_VALUE && mapElement)
+    ? captureScaleLineSnapshot(mapElement)
+    : null;
+
   // Récupère l'instance de la carte à imprimer
   const map = getPrintMapInstance(); // objet carte de la preview !
   // Récupère le canvas de la carte à exporter
@@ -588,12 +596,11 @@ const buildRasterExportCanvas = async () => {
   }
   
   // Dessine l'échelle si nécessaire
-  const mapElement = refPreviewMap.value?.mapRef; // DOM !
   if (printFormState.hasScale && mapElement) {
     // INFO
     // on lit le DOM de la carte preview pour recuperer l'échelle (.ol-scale-line) et
     // la dessiner sur le canvas final
-    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement);
+    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot);
   }
 
   // Supprime le canvas temporaire de la carte
