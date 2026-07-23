@@ -2,7 +2,7 @@
   "territories": [
     {
         "id": "FXX",
-        "title": "France métropolitaine",
+        "title": "France hexagonale",
         "description": "",
         "zoom": null,
         "bbox": [-9.86, 41.15, 10.38, 51.56],

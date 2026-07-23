@@ -13590,7 +13590,7 @@
   "territories": [
     {
       "id": "FXX",
-      "title": "France métropolitaine",
+      "title": "France hexagonale",
       "description": "",
       "zoom": null,
       "bbox": [
