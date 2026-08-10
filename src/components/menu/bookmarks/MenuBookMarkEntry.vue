@@ -267,9 +267,10 @@ const onClickButtonExport = (e) => {
 };
 const onConfirmExportDocument = (format) => {
   log.debug("onConfirmExportDocument", format);
+  const type = props.data.type;
   var data = {
     uuid : props.data.id,
-    type : props.data.type
+    type : type
   };
   service.exportDocument(data)
   .then((o) => {
@@ -290,7 +291,8 @@ const onConfirmExportDocument = (format) => {
           id : o.uuid,
           name: o.extra.name,
           format: o.extra.ext,
-          data: o.extra.content
+          data: o.extra.content,
+          type: type // FIXME oubli dans la réponse : ex. drawing, import, service, compute
         });
         // transformer le format de la couche vectorielle
         // ex. geojson -> gpx, kml...
