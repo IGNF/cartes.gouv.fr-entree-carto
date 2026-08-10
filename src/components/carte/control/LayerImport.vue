@@ -172,6 +172,14 @@ const saveImportVector = (e) => {
 
   promise
   .then((o) => {
+    layerImport.value.setCollapsed(true);
+    // INFO 
+    // on utilise le composant des favoris pour ajouter la couche à la carte
+    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
+    map.removeLayer(data.layer);
+    return o;
+  })
+  .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
@@ -186,11 +194,6 @@ const saveImportVector = (e) => {
         throw new Error("Action not yet implemented !");
       }
     }
-  })
-  .then(() => {
-    layerImport.value.setCollapsed(true);
-    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
-    map.removeLayer(data.layer); 
   })
   .then(() => {
     // notification
