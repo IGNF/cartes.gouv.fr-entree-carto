@@ -27,7 +27,7 @@ export class MainPage {
     await expect(mapViewport.locator('canvas').first()).toBeVisible({ timeout: timeoutMs });
 
     // Signal emitted by Carto.vue once Layers.vue has emitted "ready".
-    await expect(this.page.locator('.ol-map-fully-loaded')).toBeVisible({ timeout: timeoutMs });
+    await expect(this.page.locator('.ol-layers-fully-loaded')).toBeVisible({ timeout: timeoutMs });
   }
 
   async waitForControlsReady(options?: { timeoutMs?: number }) {
