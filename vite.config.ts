@@ -96,6 +96,7 @@ export default defineConfig({
     // Permet de garder le CSS lisible dans un bundle de production
     cssMinify: false,
     sourcemap: process.env.SOURCE_MAP === 'true',
+    target: ['es2021', 'safari16'],
   },
   server: {
     allowedHosts: true,
