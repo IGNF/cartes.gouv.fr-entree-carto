@@ -96,7 +96,15 @@ export default defineConfig({
     // Permet de garder le CSS lisible dans un bundle de production
     cssMinify: false,
     sourcemap: process.env.SOURCE_MAP === 'true',
-    target: ['es2021', 'safari16'],
+    // Cibles esbuild alignées sur le browserslist (package.json) :
+    //   safari16   → Safari >= 16.0 (macOS 12+ / iOS 16+).
+    //                Les Safari antérieurs (ex. macOS 10.13 = Safari 13) sont
+    //                exclus par la règle "Safari >= 16" du browserslist, pas par cette cible.
+    //   firefox140 → Firefox ESR 140 (juin 2025), version résolue par "Firefox ESR"
+    //                dans le browserslist. esbuild attend un numéro de version concret.
+    //   es2021     → plancher syntaxique ES explicite ; déjà couvert par les deux
+    //                cibles navigateur ci-dessus qui supportent toutes ES2021.
+    target: ['es2021', 'safari16', 'firefox140'],
   },
   server: {
     allowedHosts: true,
