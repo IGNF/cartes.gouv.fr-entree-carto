@@ -187,26 +187,28 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot 
     const borderBottomWidth = parseFloat(innerBorderBottomWidth || '0') * scaleFactorY
 
     // Debug impression: permet de vérifier que le mode snapshot fige bien la largeur source.
-    const sourceRatio = outerRect.height > 0 ? (outerRect.width / outerRect.height) : 0
-    console.debug('[print][scaleline] drawScale', {
-        mode: scaleSnapshot ? 'snapshot' : 'live',
-        source: {
-            width: outerRect.width,
-            height: outerRect.height,
-            ratio: sourceRatio,
-            text: scaleContent,
-            mapWidth: mapRect.width,
-            mapHeight: mapRect.height,
-        },
-        export: {
-            canvasWidth,
-            canvasHeight,
-            scaleFactorY,
-            projectedWidth: outerWidth,
-            projectedHeight: outerHeight,
-            projectedRatio: outerHeight > 0 ? (outerWidth / outerHeight) : 0,
-        },
-    })
+    if (import.meta.env.MODE !== 'production') {
+        const sourceRatio = outerRect.height > 0 ? (outerRect.width / outerRect.height) : 0
+        console.debug('[print][scaleline] drawScale', {
+            mode: scaleSnapshot ? 'snapshot' : 'live',
+            source: {
+                width: outerRect.width,
+                height: outerRect.height,
+                ratio: sourceRatio,
+                text: scaleContent,
+                mapWidth: mapRect.width,
+                mapHeight: mapRect.height,
+            },
+            export: {
+                canvasWidth,
+                canvasHeight,
+                scaleFactorY,
+                projectedWidth: outerWidth,
+                projectedHeight: outerHeight,
+                projectedRatio: outerHeight > 0 ? (outerWidth / outerHeight) : 0,
+            },
+        })
+    }
 
     // const borderRadius = parseFloat(style.borderRadius || '0') * scaleFactorY
     const outerBorderWidth = Math.max(scaleFactorY * 0.75, 1)
