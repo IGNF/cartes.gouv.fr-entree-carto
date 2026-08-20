@@ -77,6 +77,7 @@
     "@vueuse/components": "^13.1.0",
     "@vueuse/core": "^13.1.0",
     "ajv-formats": "^2.1.1",
+    "autoprefixer": "^10.5.4",
     "eslint": "^9.24.0",
     "eslint-plugin-browser-security": "^1.2.5",
     "eslint-plugin-secure-coding": "^3.3.1",
@@ -110,6 +111,14 @@
     "vue-router": "^4.5.0",
     "vue-tsc": "^2.2.8"
   },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "Safari >= 16",
+    "not dead",
+    "not IE 11"
+  ],
   "msw": {
     "workerDirectory": [
       "./public"

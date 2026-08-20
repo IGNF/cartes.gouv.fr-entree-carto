@@ -46,15 +46,24 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    // {
-    //   name: "firefox",
-    //   use: { ...devices["Desktop Firefox"] },
-    // },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+    },
 
-    // {
-    //   name: "webkit",
-    //   use: { ...devices["Desktop Safari"] },
-    // },
+    {
+      name: "webkit",
+      use: {
+        ...devices["Desktop Safari"],
+        // webkit utilise le proxy système sans bypass automatique pour localhost,
+        // contrairement à chromium (--proxy-bypass-list=<-loopback>).
+        // On hérite le proxy corporatif mais on exclut les adresses loopback.
+        proxy: {
+          server: process.env.http_proxy ?? process.env.HTTP_PROXY ?? 'direct://',
+          bypass: 'localhost,127.0.0.1',
+        },
+      },
+    },
 
     /* Test against mobile viewports. */
     // {
