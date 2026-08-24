@@ -5,6 +5,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
+import { getShortPermalink } from '@/features/permalink';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
@@ -125,12 +126,27 @@ export const useMapStore = defineStore('map', () => {
         }
       });
     }
+    // on est sur un permalien en mode réduit
+    if (type === "short") {
+      getShortPermalink(params.sid)
+      .then((data) => {
+        console.error("Permalien court récupéré :", data);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération du permalien court :", error);
+      });
+    }
+
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage
         // elles sont gérées par en mode computed()
         // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "permalink") {
+          continue;
+        }
+        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
+        if (key === "sid") {
           continue;
         }
         // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret

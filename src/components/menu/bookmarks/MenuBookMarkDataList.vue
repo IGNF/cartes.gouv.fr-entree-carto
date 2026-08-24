@@ -22,6 +22,8 @@ import { inject, ref, useTemplateRef } from 'vue';
 import Sort from '@/components/utils/Sort.vue';
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
 
+import { fromShare } from "@/features/share";
+
 import { useMapStore } from '@/stores/mapStore';
 
 // lib notification
@@ -335,9 +337,41 @@ const name = ref('');
 
 const onClickMapButtonValidateName = () => {
   refDivMapName.value.classList.toggle("fr-hidden");
-  // recupèrer le permalien
-  var permalink = mapStore.permalink;
   
+  // recupérer les couches du catalogue
+  // on retourne un tableau d'objets avec les propriétés utiles pour l'enregistrement du document
+  var _layers = mapStore.getLayers().map((id) => {
+    var props = mapStore.getLayerProperty(id);
+    return {
+      id : id,
+      position : props.position,
+      opacity : props.opacity,
+      visible : props.visible,
+      grayscale : props.grayscale,
+      style : props.style
+    };
+  });
+  
+  // recupérer les bookmarks de la carte
+  // on retourne un tableau d'objets avec les propriétés utiles pour l'enregistrement du document
+  var _bookmarks = mapStore.getBookmarks().map((bookmark) => {
+    var obj = fromShare(decodeURIComponent(bookmark));
+    if (!obj) {
+      return null;
+    };
+    var doc = service.find(obj.id);
+    if (!doc) {
+      return null;
+    }
+    return {
+      ...doc,
+      opacity : Number(obj.opacity),
+      visible : JSON.parse(obj.visible),
+      grayscale : JSON.parse(obj.grayscale),
+      position : Number(obj.position)
+    };
+  }).filter((bookmark) => bookmark !== null);
+
   // fournir un nom au document via UI
   const data = {
     name : name.value,
@@ -348,10 +382,18 @@ const onClickMapButtonValidateName = () => {
     content : JSON.stringify({
       name : name.value,
       date : new Date().toISOString(),
-      permalink : permalink
+      permalink : mapStore.permalink,
+      x : mapStore.x,
+      y : mapStore.y,
+      zoom : mapStore.zoom,
+      documents : {
+        layers : _layers, // lien vers les couches du catalogue
+        bookmarks : _bookmarks // lien vers les bookmarks de la carte
+      }
     }),
-    extra : {
-      bookmarks : mapStore.getBookmarksByID() // lien vers les bookmarks de la carte
+    extra : { // trace !
+      layers : mapStore.getLayers(),
+      bookmarks : mapStore.getBookmarksByID()
     }
   };
 
@@ -406,6 +448,13 @@ const createCarteDocument = async (data) => {
       extra : data.extra
     });
     console.debug(x);
+
+    // rendre public le document
+    const s = await service.sharingDocument({
+      uuid : uuid,
+      type : data.type
+    });
+    console.debug(s);
 
     return o;
   } catch (e) {
