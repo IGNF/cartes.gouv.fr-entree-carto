@@ -101,7 +101,6 @@ var GetDocuments = {
     var data = await this.getFileById(id);
     if (typeof data === "string") {
       try {
-        // eslint-disable-next-line secure-coding/no-xxe-injection -- schéma validé dans la promise
         data = JSON.parse(data);
       } catch {
         return Promise.reject("Le contenu du calcul n'est pas un JSON valide");
@@ -148,7 +147,6 @@ var GetDocuments = {
     var data = await this.getFileById(id);
     if (typeof data === "string") {
       try {
-        // eslint-disable-next-line secure-coding/no-xxe-injection -- schéma validé dans la promise
         data = JSON.parse(data);
       } catch {
         return Promise.reject("Le contenu du service n'est pas un JSON valide");
@@ -210,7 +208,6 @@ var GetDocuments = {
     var data = await this.getFileById(id);
     if (typeof data === "string") {
       try {
-        // eslint-disable-next-line secure-coding/no-xxe-injection -- schéma validé dans la promise
         data = JSON.parse(data);
       } catch {
         return Promise.reject("Le contenu des cartes n'est pas un JSON valide");

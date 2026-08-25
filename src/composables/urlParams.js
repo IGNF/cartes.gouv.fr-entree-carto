@@ -1,4 +1,3 @@
-/* eslint-disable secure-coding/detect-object-injection -- clé filtrée car accès restreint par whitelist explicite via switch */
 import { useUrlSearchParams } from '@vueuse/core';
 import {
   fromLonLat as fromLonLatProj
@@ -36,7 +35,6 @@ export function useUrlParams(url) {
   if (url) {
     const _url = new URL(url);
     const _urlSearchParams = new URLSearchParams(_url.search);
-    /* eslint-disable-next-line secure-coding/no-unchecked-loop-condition -- la whitelist explicitevia le switch ecarte les clefs */
     for (const [key, value] of _urlSearchParams.entries()) {
       urlParams[key] = value;
     }
@@ -46,7 +44,6 @@ export function useUrlParams(url) {
   if (urlParams) {
     try {
       const keys = Object.keys(urlParams);
-      /* eslint-disable-next-line secure-coding/no-unchecked-loop-condition -- la whitelist via switch contrôle les paramètres acceptés */
       for (let index = 0; index < keys.length; index++) {
         const key = keys[index];
         switch (key) {
