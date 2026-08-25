@@ -1,5 +1,6 @@
 import { useUrlParams } from "@/composables/urlParams";
 import { useMapStore } from "@/stores/mapStore";
+import { useServiceStore } from "@/stores/serviceStore";
 
 import { toShare } from "@/features/share";
 
@@ -170,4 +171,29 @@ export const setShortPermalinkData = (data) => {
     view.setZoom(store.zoom);
     view.setCenter([store.x, store.y]);
   });
+};
+
+/**
+ * Création d'un permalien court à partir de l'identifiant unique du document
+ * @param {string} uuid - L'identifiant unique du document
+ * @returns {string} - L'URL du permalien court
+ */
+export const createShortPermalinkUrl = (uuid) => {
+  var store = useServiceStore();
+  var service = store.getService();
+  // on recherche le document dans le service pour récupérer le SID du permalien court
+  var document = service.find(uuid);
+  // on extrait le sid de l'url publique : 
+  if (!document || !document.public_url) {
+    throw new Error("Le document n'a pas d'url publique pour avoir un permalien court");
+  }
+  // ex "https://data.geopf.fr/documents/v27JWDEL8p.json" --> sid = "v27JWDEL8p"
+  var sid = document.public_url.split("/").pop().replace(".json", "");
+
+  // on construit l'url du permalien court
+  var last = location.pathname.slice(-1);
+  var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
+  var shortPermalinkUrl = `${location.origin}${path}?permalink=short&sid=${sid}`;
+  
+  return shortPermalinkUrl;
 };

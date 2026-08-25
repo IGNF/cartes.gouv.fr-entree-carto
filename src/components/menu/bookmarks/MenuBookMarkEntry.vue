@@ -28,7 +28,12 @@ import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 import ServiceError from '@/services/ServiceError';
 import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
-import { loadPermalink, setShortPermalinkData } from '@/features/permalink.js';
+import { 
+  loadPermalink, 
+  setShortPermalinkData, 
+  createShortPermalinkUrl } 
+from '@/features/permalink.js';
+
 import { toShare } from '@/features/share.js';
 import { 
   createVectorLayer, 
@@ -382,16 +387,7 @@ const onClickButtonCopyPermalink = (e) => {
     if (!isShortPermalink) {
       copy(response.permalink);
     } else {
-      // on recherche le document dans le service pour récupérer le SID du permalien court
-      var document = service.find(data.uuid);
-      // on extrait le sid de l'url publique : 
-      if (!document || !document.public_url) {
-        throw new Error(t.bookmark.failed_copy_permalink("Le document n'a pas d'url publique"));
-      }
-      // ex "https://data.geopf.fr/documents/v27JWDEL8p.json" --> sid = "v27JWDEL8p"
-      var sid = document.public_url.split("/").pop().replace(".json", "");
-      // on construit l'url du permalien court
-      var shortPermalinkUrl = `${location.origin}/?permalink=short&sid=${sid}`;
+      var shortPermalinkUrl = createShortPermalinkUrl(data.uuid);
       copy(shortPermalinkUrl);
     }
   })
