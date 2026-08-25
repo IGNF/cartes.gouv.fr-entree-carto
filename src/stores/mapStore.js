@@ -5,7 +5,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
-import { getShortPermalink } from '@/features/permalink';
+import { loadShortPermalink } from '@/features/permalink';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
@@ -120,17 +120,19 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
-          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // FIXME 
+          // si on a plusieurs onglets ouverts sur un même navigateur,
           // la suppression du localStorage est répercutée sur tous les onglets !
+          // mais, on ne souhaite pas un nettoyage aussi radical...
           // localStorage.removeItem(key);
         }
       });
     }
     // on est sur un permalien en mode réduit
     if (type === "short") {
-      getShortPermalink(params.sid)
+      loadShortPermalink(params.sid)
       .then((data) => {
-        console.error("Permalien court récupéré :", data);
+        console.debug("Permalien court récupéré :", data);
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération du permalien court :", error);
@@ -258,7 +260,7 @@ export const useMapStore = defineStore('map', () => {
   });
 
   var isPermalink = () => {
-    return location.search.includes("permalink=yes");
+    return location.search.includes("permalink=yes") || location.search.includes("permalink=short");
   };
   
   var permalink = computed(() => {
