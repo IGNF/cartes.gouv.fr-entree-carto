@@ -36,6 +36,7 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 - UI : Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
 - UI : Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
+- UI : LayerImport affiche la liste des couches WMS/WMTS/Tuiles vectorielles (#1218)
 - Légendes : Plus de "alt" cassé dans l’affichage des légendes (#1164)
 - Panoramax : Le panel des options peut défiler (#1164)
 - Territories : Corrige et sérialise l'ordre des territoires (#1132)
