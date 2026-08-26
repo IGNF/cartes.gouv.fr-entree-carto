@@ -100,14 +100,12 @@ export const loadPermalink = (url) => {
 export const loadShortPermalink = async (sid) => {
   var data = null;
   try {
-    // Validate and sanitize the sid parameter
     if (!sid || typeof sid !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(sid)) {
       throw new Error("Invalid sid parameter");
     }
-    const baseUrl = new URL("https://data.geopf.fr/documents/"); // FIXME production uniquement !
-    const documentUrl = new URL(`${baseUrl.pathname}${sid}.json`, baseUrl.origin);
+    const baseUrl = import.meta.env.VITE_GPF_BASE_URL_DOCUMENT || "https://data.geopf.fr/documents/";
+    const documentUrl = new URL(`${sid}.json`, baseUrl);
     data = await getShortPermalinkDocument(documentUrl.toString());
-
   } catch (error) {
     throw new Error("Erreur lors de la récupération du permalien court : " + error.message);
   }
@@ -147,7 +145,18 @@ export const setShortPermalinkData = (data) => {
   const store = useMapStore();
   addShortPermalink();
   data.documents.layers.forEach((layer) => {
-    store.addLayer(layer.id);
+    var properties = "(";
+    properties += layer.position + ";";
+    properties += layer.opacity + ";";
+    properties += (layer.visible ? 1 : 0) + ";";
+    properties += (layer.grayscale ? 1 : 0);
+    // si couche TMS, y'a un style en plus !
+    if (layer.id.endsWith("TMS")) {
+      properties += ";";
+      properties += layer.style;
+    }
+    properties += ")";
+    store.addLayer(layer.id, properties);
   });
   data.documents.bookmarks.forEach((bookmark) => {
     var url = toShare(bookmark, { 

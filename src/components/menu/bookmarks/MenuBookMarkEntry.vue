@@ -129,10 +129,10 @@ const onAddData = (data) => {
     .then((response) => {
       
       if (data.type === "carte") {
-        var isShortPermalink = Object.hasOwn(response, "x") && 
-          Object.hasOwn(response, "y") && 
-          Object.hasOwn(response, "zoom") && 
-          Object.hasOwn(response, "documents");
+        var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") && 
+          Object.prototype.hasOwnProperty.call(response, "y") && 
+          Object.prototype.hasOwnProperty.call(response, "zoom") && 
+          Object.prototype.hasOwnProperty.call(response, "documents");
         if (!isShortPermalink) {
           // on charge le permalien classique
           loadPermalink(response.permalink);
@@ -380,10 +380,10 @@ const onClickButtonCopyPermalink = (e) => {
 
   service.getCartes(data.uuid)
   .then((response) => {
-    var isShortPermalink = Object.hasOwn(response, "x") &&
-      Object.hasOwn(response, "y") &&
-      Object.hasOwn(response, "zoom") &&
-      Object.hasOwn(response, "documents");
+    var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") &&
+      Object.prototype.hasOwnProperty.call(response, "y") &&
+      Object.prototype.hasOwnProperty.call(response, "zoom") &&
+      Object.prototype.hasOwnProperty.call(response, "documents");
     if (!isShortPermalink) {
       copy(response.permalink);
     } else {

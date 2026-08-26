@@ -201,12 +201,12 @@ var GetDocuments = {
    * Obtenir la liste des cartes (téléchargement)
    * 
    * Le contenu est une liste sous forme
-   * de clef/valeur dont le permalienk est la valeur de la clef "permalink".
+   * de clef/valeur dont le permalien est la valeur de la clef "permalink".
    * 
    * @example
    * {
    *  "permalink": "https://cartes.gouv.fr/carte?...",
-   * " name": "Géoportail",
+   *  "name": "Géoportail",
    *  "description": "Le Géoportail est le portail cartographique de l'administration française. Il permet d'accéder à de nombreuses données géographiques et cartographiques.",
    * }
    * ou
