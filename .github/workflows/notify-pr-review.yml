@@ -1,37 +1,43 @@
 name: Rappel PR en attente de review
 
 on:
-  # TODO activer la planification automatique des notifications
+  # TODO activer le déclenchement automatique selon un planning si nécessaire
   # schedule:
-    # Tous les jours ouvrés à 9h00 (heure de Paris, UTC+1/+2)
-    # - cron: '0 8 * * 1-5'
+  #   # Tous les jours ouvrés à 9h00 (heure de Paris, UTC+1/+2)
+  #   - cron: '0 8 * * 1-5'
   workflow_dispatch: {}   # permet de le lancer manuellement pour tester
 
 jobs:
-  notify-pr-review:
+  notify-stale-prs:
     runs-on: ubuntu-latest
     steps:
       - name: Vérifier les PR en attente et notifier Discord
         uses: actions/github-script@v7
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          STALE_DAYS: '3'          # <-- seuil en jours, à ajuster
-          IGNORE_DRAFTS: 'true'    # <-- ignorer les PR en brouillon
+          STALE_DAYS: '3'                    # <-- seuil en jours, à ajuster
+          IGNORE_DRAFTS: 'true'              # <-- ignorer les PR en brouillon
+          IGNORED_AUTHORS: 'renovate[bot]'   # <-- liste d'auteurs à exclure, séparés par des virgules
         with:
           script: |
             const staleDays = parseInt(process.env.STALE_DAYS, 10);
             const ignoreDrafts = process.env.IGNORE_DRAFTS === 'true';
             const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
- 
+            // Liste séparée par des virgules, ex: "renovate[bot],dependabot[bot]"
+            const IGNORED_AUTHORS = (process.env.IGNORED_AUTHORS || 'renovate[bot]')
+              .split(',')
+              .map(s => s.trim())
+              .filter(Boolean);
+
             if (!webhookUrl) {
               core.setFailed('DISCORD_WEBHOOK_URL manquant dans les secrets du repo.');
               return;
             }
- 
+
             const { owner, repo } = context.repo;
             const now = Date.now();
             const msPerDay = 1000 * 60 * 60 * 24;
- 
+
             // Récupère toutes les PR ouvertes (pagination incluse)
             const pulls = await github.paginate(github.rest.pulls.list, {
               owner,
@@ -39,28 +45,31 @@ jobs:
               state: 'open',
               per_page: 100,
             });
- 
+
             const stalePrs = [];
- 
+
             for (const pr of pulls) {
               if (ignoreDrafts && pr.draft) continue;
- 
+
+              // Écarte les PR ouvertes par des bots (renovate, dependabot, etc.)
+              if (IGNORED_AUTHORS.includes(pr.user.login)) continue;
+
               const ageDays = (now - new Date(pr.created_at).getTime()) / msPerDay;
               if (ageDays < staleDays) continue;
- 
+
               // Reviewers individuels demandés
               const requestedUsers = (pr.requested_reviewers || []).map(u => u.login);
               // Teams demandées (ex: "frontend-team")
               const requestedTeams = (pr.requested_teams || []).map(t => `@${t.slug} (team)`);
               const pendingReviewers = [...requestedUsers, ...requestedTeams];
- 
+
               // Récupère tout l'historique de reviews de la PR
               const reviews = (await github.rest.pulls.listReviews({
                 owner,
                 repo,
                 pull_number: pr.number,
               })).data;
- 
+
               // Ne garde que la review la PLUS RÉCENTE de chaque reviewer
               // (listReviews retourne l'historique complet, chronologique)
               const latestReviewByUser = {};
@@ -68,21 +77,21 @@ jobs:
                 if (!r.user) continue;
                 latestReviewByUser[r.user.login] = r;
               }
- 
+
               const headSha = pr.head.sha;
               const stillRequested = pendingReviewers.length > 0;
- 
+
               // Une approbation ne "compte" que si elle porte sur le DERNIER commit poussé.
               // Une approbation sur un commit périmé (nouveau push depuis) ne couvre plus la PR.
               const hasCurrentApproval = Object.values(latestReviewByUser)
                 .some(r => r.state === 'APPROVED' && r.commit_id === headSha);
- 
+
               const hasUnresolvedChangesRequested = Object.values(latestReviewByUser)
                 .some(r => r.state === 'CHANGES_REQUESTED');
- 
+
               // Traitée = approuvée sur le commit actuel, personne redemandé, rien en "changes requested"
               const isHandled = hasCurrentApproval && !stillRequested && !hasUnresolvedChangesRequested;
- 
+
               if (!isHandled) {
                 stalePrs.push({
                   number: pr.number,
@@ -94,12 +103,12 @@ jobs:
                 });
               }
             }
- 
+
             if (stalePrs.length === 0) {
               core.info('Aucune PR en attente au-delà du seuil, rien à notifier.');
               return;
             }
- 
+
             // Construit le message Discord
             const lines = stalePrs
               .sort((a, b) => b.ageDays - a.ageDays)
@@ -109,24 +118,24 @@ jobs:
                   : '⚠️ aucun reviewer assigné';
                 return `• **#${pr.number}** [${pr.title}](${pr.url}) — ouverte par \`${pr.author}\`, en attente depuis **${pr.ageDays}j** → ${reviewers}`;
               });
- 
+
             const content = [
               `📋 **PR en attente de review (> ${staleDays}j) sur \`${repo}\`**`,
               '',
               ...lines,
             ].join('\n');
- 
+
             // Discord limite un message à 2000 caractères : on tronque si besoin
             const finalContent = content.length > 1900
               ? content.slice(0, 1900) + '\n… (liste tronquée)'
               : content;
- 
+
             const res = await fetch(webhookUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ content: finalContent }),
             });
- 
+
             if (!res.ok) {
               const text = await res.text();
               core.setFailed(`Échec de l'envoi Discord (${res.status}): ${text}`);
