@@ -498,7 +498,7 @@ const buttonsMap = [
   ...buttonsCommon,
   {
     label: 'Copier',
-    icon: "fr-icon-link",
+    icon: props.data.status ? "fr-icon-links-fill" : "fr-icon-link",
     "data-id": props.data.id,
     "data-type": props.data.type,
     "data-name": props.data.name,

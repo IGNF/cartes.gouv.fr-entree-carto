@@ -250,6 +250,8 @@ const lstMap = computed(() => {
   if (service.documents.carte) {
     for (let i = 0; i < service.documents.carte.length; i++) {
       const document = service.documents.carte[i];
+      // les anciens documents n'ont pas de permalien court !
+      var isOldDocument = Object.prototype.hasOwnProperty.call(document, "public_url") === false;
       map.push({
         id : document._id,
         name : document.name,
@@ -258,6 +260,7 @@ const lstMap = computed(() => {
         type : "carte",
         type_fr : "", // no translation, otherwise e.g. "carte", "permalien"
         icon : "ri-map-2-line",
+        status : isOldDocument
       });
     }
   }
