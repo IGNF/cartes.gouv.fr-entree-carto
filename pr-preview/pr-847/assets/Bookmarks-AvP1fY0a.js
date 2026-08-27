@@ -1,0 +1,2 @@
+import{M as n,j as r,o as c,c as l,b as e,t as i,d as _,bs as d,r as f,F as p}from"./index-CtOXGKxW.js";const m={class:"fr-container fr-p-2w"},u={},g=Object.assign(u,{__name:"Bookmarks",setup(B){const t="Favoris",o="Not yet implemented !";return n(()=>{}),r(()=>{}),(s,b)=>{const a=d;return c(),l(p,null,[e("div",m,[e("h2",null,i(t)),_(a,{type:"info",title:"Information",description:o,closed:!1,closeable:!1})]),f(s.$slots,"default")],64)}}});export{g as default};
+//# sourceMappingURL=Bookmarks-AvP1fY0a.js.map
