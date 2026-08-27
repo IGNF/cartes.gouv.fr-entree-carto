@@ -1,7 +1,8 @@
 name: Rappel PR en attente de review
 
 on:
-  schedule:
+  # TODO activer la planification automatique des notifications
+  # schedule:
     # Tous les jours ouvrés à 9h00 (heure de Paris, UTC+1/+2)
     # - cron: '0 8 * * 1-5'
   workflow_dispatch: {}   # permet de le lancer manuellement pour tester
