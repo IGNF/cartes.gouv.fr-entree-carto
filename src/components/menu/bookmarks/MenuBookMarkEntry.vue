@@ -296,9 +296,10 @@ const onClickButtonExport = (e) => {
 };
 const onConfirmExportDocument = (format) => {
   log.debug("onConfirmExportDocument", format);
+  const type = props.data.type;
   var data = {
     uuid : props.data.id,
-    type : props.data.type
+    type : type
   };
   service.exportDocument(data)
   .then((o) => {
@@ -319,7 +320,8 @@ const onConfirmExportDocument = (format) => {
           id : o.uuid,
           name: o.extra.name,
           format: o.extra.ext,
-          data: o.extra.content
+          data: o.extra.content,
+          type: type // FIXME oubli dans la réponse : ex. drawing, import, service, compute
         });
         // transformer le format de la couche vectorielle
         // ex. geojson -> gpx, kml...
@@ -329,10 +331,7 @@ const onConfirmExportDocument = (format) => {
         o.extra.mimeType = results.mimeType;
       } catch (e) {
         console.error(e);
-        push.error({
-          title: t.bookmark.title,
-          message: t.bookmark.failed_transform_format,
-        });
+        throw new Error("Failed to transform vector layer format");
       }
     }
     return o;
@@ -358,7 +357,8 @@ const onConfirmExportDocument = (format) => {
     } else {
       link.click();
     }
-  }).catch((e) => {
+  })
+  .catch((e) => {
     console.error(e);
     if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
       isNeedToReSync(data.uuid, data.type);

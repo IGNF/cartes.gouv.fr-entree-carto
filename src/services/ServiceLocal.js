@@ -295,7 +295,10 @@ class ServiceLocal extends ServiceBase {
     }
 
     // IAM logout local
-    if (!code && (session !== null || session === this.session)) {
+    // On détecte uniquement un vrai retour du logout IAM (session_state présent dans l'URL)
+    // La condition "session === this.session" est volontairement exclue : elle produisait
+    // un faux positif (null === null) quand aucune session n'était en cours.
+    if (!code && session !== null) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
