@@ -48,6 +48,7 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 - Espace Personnel : synchroniser les positions des couches lors d'un appel de permalien via l'espace personnel (#1160)
 - Print : Correctif sur l'échelle sur l'impression en 300 dpi (#1190)
 - GPX : Correctif sur l'export du format GPX (#1206)
+- Espace personnel : Correctif sur l'enregistrement d'une carte avec un import (#1207)
 
 #### 🔒 [Sécurité]
 
