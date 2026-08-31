@@ -1,0 +1,41 @@
+name: Preview PR
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+env:
+  SOURCE_MAP: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use nodejs
+        if: github.event.action != 'closed'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      - name: Install dependencies
+        if: github.event.action != 'closed'
+        run: npm install
+
+      - name: Build
+        if: github.event.action != 'closed'
+        env:
+          BASE_URL: /cartes.gouv.fr-entree-carto/pr-preview/pr-${{ github.event.number }}
+        run: IAM_CLIENT_ID=${{ secrets.IAM_CLIENT_ID }} IAM_CLIENT_SECRET=${{ secrets.IAM_CLIENT_SECRET }} SOURCE_MAP=${{ env.SOURCE_MAP }} npm run build-only -- --mode demo
+
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./dist
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
