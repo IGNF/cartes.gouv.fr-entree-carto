@@ -846,7 +846,7 @@ onMounted(() => {
   transform: translate($widget-btn-size - $widget-btn-padding * 2, $widget-btn-padding);
 }
 // modales: au dessus quand active
-.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]) {
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"] + .gpf-panel) {
   z-index: 2;
 
   // au dessus de tout en mobile
