@@ -67,7 +67,11 @@ onMounted(() => {
 <template>
   <div>
     <div class="title-copy">
-      <div>{{ label }}</div>            
+      <div>
+        <slot name="label">
+          {{ label }}
+        </slot>
+      </div>            
       <DsfrButton
         secondary
         icon-right
@@ -79,7 +83,9 @@ onMounted(() => {
       </DsfrButton>
     </div>
     <p class="fr-hint-text hint-class">
-      {{ description }}
+      <slot name="description">
+        {{ description }}
+      </slot>
     </p>            
   </div>    
 </template>

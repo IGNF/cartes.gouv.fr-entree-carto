@@ -27,6 +27,7 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 - Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
 - Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur (#1147)
 - ControlList : Ferme le panel au click dans la page (#1151)
+- Espce personnel : Mise en place du permalien court dans les favoris (#1216)
 
 #### 🔥 [Obsolète]
 
