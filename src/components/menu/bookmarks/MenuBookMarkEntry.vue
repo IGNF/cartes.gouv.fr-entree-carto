@@ -302,10 +302,7 @@ const onConfirmExportDocument = (format) => {
         o.extra.mimeType = results.mimeType;
       } catch (e) {
         console.error(e);
-        push.error({
-          title: t.bookmark.title,
-          message: t.bookmark.failed_transform_format,
-        });
+        throw new Error("Failed to transform vector layer format");
       }
     }
     return o;
@@ -331,7 +328,8 @@ const onConfirmExportDocument = (format) => {
     } else {
       link.click();
     }
-  }).catch((e) => {
+  })
+  .catch((e) => {
     console.error(e);
     if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
       isNeedToReSync(data.uuid, data.type);
