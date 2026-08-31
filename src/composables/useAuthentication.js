@@ -107,10 +107,18 @@ export function useAuthentication(deps = {}) {
         log.debug(`Checking session validity : ${isValid} !`);
         authenticated.value = Boolean(isValid);
 
-        if (!isValid && service.authenticated) {
-          console.warn('Incoherent local session (401 côté IAM/API), redirect to logout.');
+        if (!isValid) {
+          // La session locale est invalide (token expiré, refresh token révoqué, erreur réseau).
+          // On fait une déconnexion locale silencieuse sans forcer un logout IAM complet,
+          // pour éviter d'éjecter l'utilisateur vers /logout à l'ouverture de la page.
+          // Le check SSO automatique pourra le reconnecter si sa session Keycloak est encore active.
+          console.warn('Session locale invalide ou expirée, déconnexion locale silencieuse.');
+          service.authenticated = false;
+          if (typeof service.saveStore === 'function') {
+            service.saveStore();
+          }
           authenticated.value = false;
-          router.push({ path: '/logout', query: { from: 'authInvalid' } });
+          onLogout();
           return;
         }
 

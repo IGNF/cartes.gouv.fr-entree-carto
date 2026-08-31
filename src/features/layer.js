@@ -94,40 +94,40 @@ const createVectorLayer = async (options) => {
   var extended = (options.extended === undefined) ? true : options.extended;
   switch (options.format.toLowerCase()) {
     case "geojson":
-    vectorFormat = new GeoJSON(); 
-    // Extended
-    if (extended) {
-      vectorFormat = new GeoJSONExtended({
-        defaultStyle : DEFAULT_STYLE
-      }); 
-    }
-    break;
+      vectorFormat = new GeoJSON(); 
+      // Extended
+      if (extended) {
+        vectorFormat = new GeoJSONExtended({
+          defaultStyle : DEFAULT_STYLE
+        }); 
+      }
+      break;
     case "kml":
-    vectorFormat = new KML();
-    // Extended
-    if (extended) {
-      vectorFormat = new KMLExtended({
-        defaultStyle : DEFAULT_STYLE
-      }); 
-    }
-    break;
+      vectorFormat = new KML();
+      // Extended
+      if (extended) {
+        vectorFormat = new KMLExtended({
+          defaultStyle : DEFAULT_STYLE
+        }); 
+      }
+      break;
     case "gpx":
-    vectorFormat = new GPX();
-    // Extended
-    if (extended) {
-      // HACK
-      // modifier la classe GPXExtended dans les extensions !
-      // > gestion de la callback interne readExtensions()
-      vectorFormat = new GPXExtended({
-        defaultStyle : DEFAULT_STYLE,
-        readExtensions : function (feature, node) {
-          this.readExtensions(feature, node);
-        }
-      }); 
-    }
-    break;
+      vectorFormat = new GPX();
+      // Extended
+      if (extended) {
+        // HACK
+        // modifier la classe GPXExtended dans les extensions !
+        // > gestion de la callback interne readExtensions()
+        vectorFormat = new GPXExtended({
+          defaultStyle : DEFAULT_STYLE,
+          readExtensions : function (feature, node) {
+            this.readExtensions(feature, node);
+          }
+        }); 
+      }
+      break;
     default:
-    break;
+      break;
   }
   
   if (!vectorFormat) {
