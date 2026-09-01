@@ -50,6 +50,7 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 - GPX : Correctif sur l'export du format GPX (#1206)
 - Espace personnel : Correctif sur l'enregistrement d'une carte avec un import (#1207)
 - Espace personnel : Deconnexion silencieuse si incoherence détéctée de la session (#1210)
+- GFI : améliorations sur l’ouverture au sein du panel (#1225)
 
 #### 🔒 [Sécurité]
 
