@@ -898,7 +898,9 @@ onMounted(() => {
   max-height: initial !important;
 }
 @include max(sm) {
-  .gpf-panel {
+  .gpf-panel,
+  .position-container-top-left .gpf-panel,
+  .position-container-bottom-left .gpf-panel {
     max-width: 100vw !important;
     max-height: 100cqb !important;
   }
