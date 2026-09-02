@@ -32,6 +32,7 @@ export default {
     failed_delete_data: (value) => { return `Erreur sur la suppression de la donnée : ${value}` },
     failed_rename_data: (value) => { return `Erreur sur le renommage de la donnée : ${value}` },
     warning_delete_document_in_bookmarks_carte: "Attention : en cas de suppression, ce document ne sera plus affiché au chargement des permaliens partagés et de(s) enregistrement(s) de type 'cartes' suivant(s) :",
+    warning_delete_permalink_in_bookmarks_carte: "Attention : en cas de suppression, si vous avez partagé ce permalien, il ne sera plus disponible pour les utilisateurs.",
     confirm_delete_document: "Voulez-vous vraiment supprimer le document ?",
     confirm_delete_document_with_name: (value) => { return `Voulez-vous vraiment supprimer le document "${value}" ?` },
   },
