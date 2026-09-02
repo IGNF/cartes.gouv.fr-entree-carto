@@ -30,7 +30,7 @@ async function deriveEncryptionKey () {
 }
 
 async function encryptValue (plainText) {
-  if (plainText == null) {
+  if (plainText === null) {
     return plainText;
   }
   const encoder = new TextEncoder();
@@ -49,7 +49,7 @@ async function encryptValue (plainText) {
 }
 
 async function decryptValue (cipherText) {
-  if (cipherText == null) {
+  if (cipherText === null) {
     return cipherText;
   }
   const binary = atob(cipherText);

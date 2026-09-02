@@ -5,7 +5,7 @@ import { defineConfig, /* ProxyOptions, ViteDevServer */ } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import EnvRuntime from 'vite-plugin-env-runtime';
-import htmlPurge from 'vite-plugin-purgecss'
+import pluginPurgeCss from 'vite-plugin-purgecss-updated-v5';
 
 // INFO 
 // mode https avec certificats unsecure (dev)
@@ -25,15 +25,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    // @ts-expect-error htmlPurge types not fully compatible with Vite plugin interface
-    htmlPurge({
-      safelist: [
-        /^(?!fr-).*/,  // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
-        /^fr-btn--/,   // préserver toutes les classes fr-btn-- (utilisées par DsfrShare avec ::before/::after)
-        /^fr-.+::/,    // préserver les sélecteurs avec pseudo-éléments
-      ],
-      variables: true, // supprime les variables css inutilisées
-    }),
     // INFO mode https
     // basicSsl(),
     AutoImport({
@@ -76,6 +67,15 @@ export default defineConfig({
         'gzip',
         'brotliCompress'
       ]
+    }),
+    pluginPurgeCss({
+      safelist: [
+        /^(?!fr-).*/,    // safelist: ce qui ne commence pas par fr- (= purge les classes dsfr uniquement)
+        /^fr-icon-ign-/, // préserver les icônes DSFR injectées par geopf-extensions-openlayers
+        /^fr-btn--/,     // préserver toutes les classes fr-btn-- (utilisées par DsfrShare avec ::before/::after)
+        /^fr-.+::/,      // préserver les sélecteurs avec pseudo-éléments
+      ],
+      variables: true, // supprime les variables css inutilisées
     })
   ],
   // INFO

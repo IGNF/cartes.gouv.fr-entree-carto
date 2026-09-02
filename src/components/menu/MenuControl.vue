@@ -13,12 +13,10 @@
 
 <script setup lang="js">
 import { useControlsMenuOptions } from '@/composables/controls';
-import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
 import { useDomStore } from "@/stores/domStore";
 import ControlListElement from './ControlListElement.vue';
 
-const log = useLogger();
 const mapStore = useMapStore();
 const domStore = useDomStore();
 
@@ -49,12 +47,15 @@ const allOptions = computed(() => {
   // ]
   // puis filtrage des items par la recherche
   // puis filtrage si pas d'items
-  let items = Object.entries(
-    opts.reduce((acc, item) => {
-      (acc[item.group] ??= []).push(item);
-      return acc;
-    }, {})
-  ).map(([group, items]) => ({
+  const groupedItems = opts.reduce((acc, item) => {
+    if (!acc.has(item.group)) {
+      acc.set(item.group, []);
+    }
+    acc.get(item.group).push(item);
+    return acc;
+  }, new Map());
+
+  let items = Array.from(groupedItems.entries()).map(([group, items]) => ({
     group,
     items: items.filter(opt => {
       return (
@@ -74,9 +75,6 @@ const allOptions = computed(() => {
 });
 
 const searchString = ref("");
-function updateSearch(e) {
-  searchString.value = e;
-}
 
 watch(selectedControlsModel, (values) => {
   mapStore.cleanControls();

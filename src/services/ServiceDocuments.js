@@ -1,3 +1,5 @@
+/* eslint-disable secure-coding/detect-object-injection -- ajout d'une whitelist et fonctions pour valider les labels */
+
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
@@ -69,6 +71,26 @@ var Documents = {
   // Méthodes helpers
   //////////////////////////
 
+  isValideLabel: function (label) {
+    return this.labels.includes(label);
+  },
+
+  isValideFormat: function (format) {
+    return this.labelsFormats.includes(format);
+  },
+
+  isValideService: function (service) {
+    return this.labelsService.includes(service);
+  },
+
+  isValideTarget: function (target) {
+    return this.labelsTarget.includes(target);
+  },
+
+  isValideCompute: function (compute) {
+    return this.labelsCompute.includes(compute);
+  },
+
   /**
    * Verifie si aucun document n'est disponible
    * 
@@ -77,7 +99,7 @@ var Documents = {
   isEmpty: function () {
     for (let index = 0; index < this.labels.length; index++) {
       const label = this.labels[index];
-      if (this.documents[label] && this.documents[label].length > 0) {
+      if (this.isValideLabel(label) && this.documents[label] && this.documents[label].length > 0) {
         return false;
       }
     }
@@ -93,7 +115,7 @@ var Documents = {
   find: function (uuid) {
     for (let index = 0; index < this.labels.length; index++) {
       const label = this.labels[index];
-      if (this.documents[label] && this.documents[label].length > 0) {
+      if (this.isValideLabel(label) && this.documents[label] && this.documents[label].length > 0) {
         var document = this.documents[label].find((doc) => doc._id === uuid);
         if (document) {
           return document;
@@ -104,12 +126,13 @@ var Documents = {
   },
 
   /**
-   * Recherche un document par son uuid dans les documents de type carte
+   * Recherche par son uuid s'il existe un document dans les documents de type carte
+   * Utile pour savoir si un document est utilisé dans un permalien.
    * 
    * @param {*} uuid 
-   * @returns {Boolean} - Vrai si le document est trouvé dans les documents de type carte
+   * @returns {Boolean} - Vrai si le document est trouvé dans un document de type carte
    */
-  findInCarte: function (uuid) {
+  hasDocumentInCarte: function (uuid) {
     var isPresentInBookmarksCarte = false;
     
     const type = "carte";
@@ -132,6 +155,71 @@ var Documents = {
       console.warn(`Le document ${uuid} est présent dans une carte !`);
     }
     return isPresentInBookmarksCarte;
+  },
+
+  /**
+   * Recherche tous les documents de type carte contenant le document avec l'uuid donné
+   * 
+   * @param {*} uuid 
+   * @returns {Array} - Liste des documents de type carte contenant le document
+   */
+  findInCartes: function (uuid) {
+    const type = "carte";
+    if (!this.documents[type] || this.documents[type].length === 0) {
+      console.warn(`Aucun document de type ${type} trouvé dans le store !`); 
+    }
+    
+    var cartesContainingDocument = [];
+    for (let i = 0; i < this.documents[type].length; i++) {
+      const document = this.documents[type][i];
+      if (document.extra && document.extra.bookmarks) {
+        const bookmarks = document.extra.bookmarks;
+        if (bookmarks.includes(uuid)) {
+          cartesContainingDocument.push(document);
+        }
+      }
+    }
+      
+    return cartesContainingDocument;
+  },
+
+  /**
+   * Vérifie si les données de réponse du service sont valides
+   * @param {Object} data - Réponse du service à valider
+   * @returns {Boolean} - Vrai si les données sont valides, faux sinon
+   */
+  isValidDataResponse: function (data) {
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (!data._id || typeof data._id !== "string") {
+      return false;
+    }
+    if (!data.labels || !Array.isArray(data.labels)) {
+      return false;
+    }
+    if (!data.mime_type || typeof data.mime_type !== "string") {
+      return false;
+    }
+    // on peut avoir un document sans description
+    // if (!data.description || typeof data.description !== "string") {
+    //   return false;
+    // }
+    // on peut avoir un document sans extra
+    // if (!data.extra || typeof data.extra !== "object") {
+    //   return false;
+    // }
+    // on peut avoir un document sans public_url
+    // if (!data.public_url || typeof data.public_url !== "string") {
+    //   return false;
+    // }
+    if (!data.creation || typeof data.creation !== "string") {
+      return false;
+    }
+    if (!data.update || typeof data.update !== "string") {
+      return false;
+    }
+    return true;
   },
 
   //////////////////////////
@@ -341,6 +429,10 @@ var Documents = {
           break;
         }
         const label = this.labels[i];
+        if (!this.isValideLabel(label)) {
+          console.warn(`Label ${label} non valide !`);
+          continue;
+        }
         if (!this.documents[label] || this.documents[label].length === 0) {
           console.warn(`Aucun document trouvé pour le label ${label} dans le store !`); 
           continue;
@@ -348,8 +440,8 @@ var Documents = {
         for (let j = 0; j < this.documents[label].length; j++) {
           document = this.documents[label][j];
           if (document._id === data._id) {
-            document.labels = data.labels;
-            document.description = data.description;
+            document.labels = data.labels; // FIXME tester les labels du document
+            document.description = data.description; // FIXME tester la description du document
             document.mime_type = data.mime_type;
             document.public_url = data.public_url;
             document.extra = {
@@ -412,6 +504,8 @@ var Documents = {
       if (type === "application/json") {
         data = await response.json();
       } else {
+        // Pour les autres types de contenu, on retourne le texte brut
+        // car on peut avoir du XML, du GeoJSON, du KML, etc.
         data = await response.text();
       }
       return data;

@@ -2,9 +2,10 @@ import {
   defineStore
 } from 'pinia';
 
+import { useScheme } from '@gouvminint/vue-dsfr';
 import { useStorage } from '@vueuse/core';
 
-const { setScheme, theme, scheme } = useScheme();
+const { setScheme, scheme } = useScheme();
 
 /**
  * Espace de noms des clefs du localStorage

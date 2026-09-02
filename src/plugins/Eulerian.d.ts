@@ -6,9 +6,9 @@ export interface EulerianOptions {
   site?: {
     environment?: string;
     entity?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export class Eulerian {

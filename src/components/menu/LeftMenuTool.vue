@@ -32,7 +32,7 @@ const tabArray = computed(() => {
         {
             componentName : "MenuTierce",
             icon : "ri-menu-add-fill",
-            title : "Accéder à d'autres outils",
+            title : "Gérer la carte",
             visibility: true,
             secondary: true
         },
@@ -47,6 +47,11 @@ const tabArray = computed(() => {
 
     return arr
 })
+
+let tabArrayActive = computed(() => {
+  let filtered = tabArray.value.filter(tab => tab.componentName + "Content" === activeTab.value);
+  return (filtered.length) ? filtered[0] : "";
+});
 
 const activeTab = ref("MenuCatalogueContent")
 const wrapper = ref(null)
@@ -67,7 +72,7 @@ function tabIsActive(componentName) {
 
 // abonnement sur la fermeture du catalogue sur un evenement emis
 const emitter = inject('emitter');
-emitter.addEventListener("leftmenu:close", (e) => {
+emitter.addEventListener("leftmenu:close", () => {
   wrapper.value.closeMenu();
 });
 
@@ -124,7 +129,7 @@ const emit = defineEmits([
 watch(() => domStore.getleftControlMenu(), (newVal) => {
   leftControls.value = newVal
   leftControls.value?.addEventListener("click", function (e) {
-  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed == "true") {
+  if (!e.target.id.includes('OverviewMap') && e.target.ariaPressed === "true") {
     is_expanded.value = false;
   }
 })
@@ -138,6 +143,8 @@ watch(() => domStore.getleftControlMenu(), (newVal) => {
     v-model="is_expanded"
     :side="side"
     :visibility="true"
+    :title="tabArrayActive.title"
+    :icon="tabArrayActive.icon"
   >
     <template #content>
       <div

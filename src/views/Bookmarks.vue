@@ -8,11 +8,6 @@ export default {};
 </script>
 
 <script setup lang="js">
-import { inject } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const service = inject('services');
 
 const title = "Favoris";
 const description = "Not yet implemented !";

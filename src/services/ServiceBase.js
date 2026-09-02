@@ -254,8 +254,18 @@ class ServiceBase {
   }
 }
 
-// Mixin
-Object.assign(ServiceBase.prototype, Users);
-Object.assign(ServiceBase.prototype, Documents);
+// Mixin with prototype pollution protection
+const dangerousKeys = ['__proto__', 'constructor', 'prototype'];
+const safeAssign = (target, source) => {
+  const entries = new Map(Object.entries(source));
+  entries.forEach((value, key) => {
+    if (!dangerousKeys.includes(key) && Object.prototype.hasOwnProperty.call(source, key)) {
+      target[key] = value;
+    }
+  });
+};
+
+safeAssign(ServiceBase.prototype, Users);
+safeAssign(ServiceBase.prototype, Documents);
 
 export default ServiceBase;

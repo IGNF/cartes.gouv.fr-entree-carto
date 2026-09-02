@@ -21,6 +21,7 @@ import { useMatchMedia } from '@/composables/matchMedia'
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
+import { useScheme } from '@gouvminint/vue-dsfr';
 import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
@@ -107,8 +108,14 @@ onMounted(() => {
     <router-view />
   </div>
 
-  <div class="CustomFooter" v-if="!domStore.isFullscreenPanoramax">
-    <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
+  <div 
+    v-if="!domStore.isFullscreenPanoramax"
+    class="CustomFooter"
+  >
+    <CgfrFooter 
+      v-if="!mobileScreen && !isEmbedRoute"
+      compact 
+    />
   </div>
 
 
@@ -162,13 +169,21 @@ hr {
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /*
-  .Notivue__content-message {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
+  
+  .Notivue__content {
+    width: min(92vw, 34rem);
+    max-width: min(92vw, 34rem);
   }
-  */
+
+  .Notivue__content-message {
+    max-height: min(32vh, 12rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
   /*
   .Notivue__icon {
     color: white;

@@ -16,7 +16,8 @@ export function useMatchMedia(size) {
         XL : 1440 - 1
     };
 
-    if (sizes[size] !== undefined) {
+    // Validate against prototype pollution
+    if (Object.prototype.hasOwnProperty.call(sizes, size)) {
         const query = "(max-width: " + sizes[size] + "px)";
         return useMediaQuery(query)
     }
@@ -31,7 +32,8 @@ export function useMatchMediaHeight(size) {
         XL : "859px",
     };
 
-    if (sizes[size] !== undefined) {
+    // Validate against prototype pollution
+    if (Object.prototype.hasOwnProperty.call(sizes, size)) {
         const query = "(max-height: " + sizes[size] + ")";
         return useMediaQuery(query)
     }

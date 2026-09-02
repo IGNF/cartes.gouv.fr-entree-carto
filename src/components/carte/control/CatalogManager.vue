@@ -16,6 +16,8 @@ const props = defineProps({
   analytic: Boolean,
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
@@ -35,6 +37,7 @@ emitter.addEventListener("catalog:open:clicked", () => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(catalog.value);
     log.info("CatalogManager mounted", catalog.value);
@@ -105,6 +108,16 @@ const onCatalogLayerRemove = (e) => {
     mapStore.removeLayer(id);
   }
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

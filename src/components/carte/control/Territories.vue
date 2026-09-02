@@ -24,6 +24,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
 const dataStore = useDataStore();
 const mapStore = useMapStore();
@@ -95,6 +97,7 @@ function addTerritories () {
 }
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     addTerritories();
     map.addControl(territories.value)
@@ -180,6 +183,16 @@ const onRemoveTerritories = (e) => {
     message: t.territories.remove(e.territory.title),
   });
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

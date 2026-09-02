@@ -1,4 +1,5 @@
 <script setup>
+import { useScheme } from '@gouvminint/vue-dsfr';
 import { useDomStore } from "@/stores/domStore";
 import { useHeaderParams } from '@/composables/headerParams';
 import { useMatchMedia } from '@/composables/matchMedia';

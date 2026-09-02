@@ -1,4 +1,6 @@
 <script setup lang="js">
+import { nextTick, onMounted, inject } from 'vue';
+
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import TileLayer from 'ol/layer/Tile';
@@ -76,7 +78,7 @@ function isVectorTileLayer(layer) {
   if (!source) return false;
 
   return typeof source.getTileGrid === 'function' &&
-         layer.service == 'TMS';
+         layer.service === 'TMS';
 }
 
 function cloneLayer(layer) {

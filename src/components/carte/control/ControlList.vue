@@ -5,17 +5,20 @@ import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import {
   ControlList
 } from 'geopf-extensions-openlayers';
+import { mainMap } from '@/composables/keys';
 
 import { selectedControls } from '@/composables/mapControls';
 
 const mapStore = useMapStore();
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
-  controlListOptions: Object
+  controlListOptions: { type: Object, default: () => ({}) }
 });
+
+const emit = defineEmits(['ready']);
 
 const map = inject(props.mapId);
 const controlList = new ControlList(props.controlListOptions);
@@ -29,18 +32,31 @@ controlList.on('controllist:sorted', (e) => {
   mapStore.controls = controls.join(',');
 });
 
-// sélecteurs pour chaque chaque widget OL
-let controlSelectors = {
-  MeasureLength:  'div[id^="GPmeasureLength-"]',
-  MeasureArea:    'div[id^="GPmeasureArea-"]',
-  Drawing:        'div[id^="GPdrawing-"]',
-  Route:          'div[id^="GProute-"]',
-  Isocurve:       'div[id^="GPisochron-"]',
-  ReverseGeocode: 'div[id^="GPreverseGeocoding-"]',
-  MousePosition:  'div[id^="GPmousePosition-"]',
-  ElevationPath:  'div[id^="GPelevationPath-"]',
-  MeasureAzimuth: 'div[id^="GPmeasureAzimuth-"]',
+controlList.on('change:collapsed', () => {
+  let opened = !controlList.collapsed;
+  if (opened) {
+    document.addEventListener('click', onDocumentClick);
+  } else {
+    document.removeEventListener('click', onDocumentClick);
+  }
+});
+
+let onDocumentClick = () => {
+  controlList.setCollapsed(true);
 };
+
+// sélecteurs pour chaque chaque widget OL
+const controlSelectors = new Map([
+  ['MeasureLength', 'div[id^="GPmeasureLength-"]'],
+  ['MeasureArea', 'div[id^="GPmeasureArea-"]'],
+  ['Drawing', 'div[id^="GPdrawing-"]'],
+  ['Route', 'div[id^="GProute-"]'],
+  ['Isocurve', 'div[id^="GPisochron-"]'],
+  ['ReverseGeocode', 'div[id^="GPreverseGeocoding-"]'],
+  ['MousePosition', 'div[id^="GPmousePosition-"]'],
+  ['ElevationPath', 'div[id^="GPelevationPath-"]'],
+  ['MeasureAzimuth', 'div[id^="GPmeasureAzimuth-"]'],
+]);
 
 // liste des outils controlés par controllist (au milieu dans le localstorage)
 let orderedManagedControls = computed(() => {
@@ -63,7 +79,7 @@ function applyControlsOrder() {
 
   // reordonne les 9 contrôles gérés
   orderedManagedControls.value.forEach((control) => {
-    const selector = controlSelectors[control];
+    const selector = controlSelectors.get(control);
     if (!selector) return;
     const widget = document.querySelector('#position-container-top-right > ' + selector);
     if (!widget) return;
@@ -80,6 +96,7 @@ function applyControlsOrder() {
 }
 
 onMounted(() => {
+  emit('ready');
   applyControlsOrder();
   if (props.visibility) {
     map.addControl(controlList);
@@ -105,6 +122,16 @@ onMounted(() => {
 //     }
 //   }
 // })
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

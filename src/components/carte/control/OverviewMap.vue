@@ -2,15 +2,18 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 import { useControlsOptions } from '@/composables/controls';
 
 import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
   analytic: Boolean,
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 
@@ -34,6 +37,7 @@ watch(isSmallScreen, () => {
 })
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
     overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
@@ -60,6 +64,16 @@ onBeforeUpdate(() => {
 function onToggleOverviewMap (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

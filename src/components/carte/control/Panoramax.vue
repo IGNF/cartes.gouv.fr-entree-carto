@@ -1,7 +1,7 @@
 <script setup lang="js">
 
-import { useDomStore } from '@/stores/domStore';
 import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { useDomStore } from '@/stores/domStore';
 
 import "@panoramax/web-viewer/build/photoviewer.js";
 import "@panoramax/web-viewer/build/photoviewer.css";
@@ -81,6 +81,7 @@ const openPanoramaxViewer = ({ picture, sequence }) => {
 };
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(panoramax);
     if (props.analytic) {

@@ -1,4 +1,5 @@
 <script setup>
+import { useScheme } from '@gouvminint/vue-dsfr';
 import LogoSun from "@gouvfr/dsfr/dist/artwork/pictograms/environment/sun.svg";
 import LogoMoon from "@gouvfr/dsfr/dist/artwork/pictograms/environment/moon.svg";
 import LogoSystem from "@gouvfr/dsfr/dist/artwork/pictograms/system/system.svg";
@@ -33,7 +34,7 @@ const themeOptions = [
     id: 'fr-radios-theme-system',
     value: 'system',
     name: 'fr-radios-theme',
-    hint: 'Utilise les paramètres sytème.',
+    hint: 'Utilise les paramètres système.',
     img: LogoSystem,
   }
 ];

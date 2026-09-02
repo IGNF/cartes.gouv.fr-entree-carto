@@ -4,7 +4,6 @@ import { useCreateDocument } from '@/components/carte/control/actions/actionSave
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
 import {
   ElevationPath,
@@ -21,14 +20,21 @@ const emitter = inject('emitter');
 var service = inject('services');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
   analytic: Boolean,
-  elevationPathOptions: Object
+  elevationPathOptions: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const log = useLogger();
-const store = useDataStore();
+
+const emit = defineEmits(['ready']);
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
@@ -83,6 +89,7 @@ const btnSave = ref(new ButtonExport({
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(elevationPath.value);
     if (import.meta.env.IAM_DISABLE === '1') {
@@ -196,6 +203,8 @@ const onCompute = (e) => {
   layer.set("data", widget.getData());
   // layer.set("geojson", widget.getGeoJSON());
 }
+
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -263,6 +272,9 @@ const onSaveElevationPath = (e) => {
     return; // pas plus loin...
   }
 
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -294,6 +306,11 @@ const onSaveElevationPath = (e) => {
       title: t.profil.title,
       message: t.profil.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
@@ -316,6 +333,16 @@ const onExportElevationPath = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

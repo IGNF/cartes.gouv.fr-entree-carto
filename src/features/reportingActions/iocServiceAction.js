@@ -40,7 +40,7 @@ class MyServiceAction {
                 "EPSG:4326"
             );
         }
-        const permalink = `https://cartes.gouv.fr/cartes?c=${location[0]},${location[1]}&p=${location[0]},${location[1]}&z=11&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&w=OverviewMap,SearchEngine,ScaleLine,LayerSwitcher,GetFeatureInfo,Legends,Zoom,FullScreen,Share,Print,Territories,LayerImport,ControlList,ContextMenu&permalink=yes`;
+        const permalink = `https://cartes.gouv.fr/cartes?c=${location[0]},${location[1]}&p=${location[0]},${location[1]}&z=11&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&permalink=yes`;
         const anomaly = {
             name: data.name + " (Anomalie) (cartes.gouv.fr)",
             description: data.desc,
@@ -91,9 +91,10 @@ class MyServiceAction {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer undefined",
+                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
             },
             mode: "cors",
+            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
             credentials: "same-origin",
             body: JSON.stringify(drawingRequestBody),
         });
@@ -106,9 +107,10 @@ class MyServiceAction {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer undefined",
+                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
             },
             mode: "cors",
+            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
             credentials: "same-origin",
             body: JSON.stringify(requestBody),
         });

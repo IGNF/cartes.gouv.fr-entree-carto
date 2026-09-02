@@ -190,20 +190,23 @@ onMounted(() => {});
 
 const refDivRename = useTemplateRef('div-rename');
 const rename = ref('');
-const isConfirmDeleteModalOpened = ref(false);
 
 const onClickButtonRename = (e) => {
   console.debug(e);
   refDivRename.value.classList.toggle("fr-hidden");
   rename.value = props.data.name;
 };
+
+const isConfirmDeleteModalOpened = ref(false);
+var lstDocumentsCarte = []; 
+
 const onClickButtonDelete = (e) => {
   console.debug(e);
 
-  // on verifie si le document est présent dans les cartes enregistrées
-  var isPresentInBookmarksCarte = service.findInCarte(props.data.id);
+  // on recherche si le document est présent dans les cartes enregistrées
+  lstDocumentsCarte = service.findInCartes(props.data.id);
   // si oui, on ouvre un modal de confirmation pour prévenir l'utilisateur
-  if (isPresentInBookmarksCarte) {
+  if (lstDocumentsCarte.length > 0) {
     isConfirmDeleteModalOpened.value = true;
   }
   // sinon, on supprime directement le document
@@ -264,9 +267,10 @@ const onClickButtonExport = (e) => {
 };
 const onConfirmExportDocument = (format) => {
   log.debug("onConfirmExportDocument", format);
+  const type = props.data.type;
   var data = {
     uuid : props.data.id,
-    type : props.data.type
+    type : type
   };
   service.exportDocument(data)
   .then((o) => {
@@ -287,7 +291,8 @@ const onConfirmExportDocument = (format) => {
           id : o.uuid,
           name: o.extra.name,
           format: o.extra.ext,
-          data: o.extra.content
+          data: o.extra.content,
+          type: type // FIXME oubli dans la réponse : ex. drawing, import, service, compute
         });
         // transformer le format de la couche vectorielle
         // ex. geojson -> gpx, kml...
@@ -297,10 +302,7 @@ const onConfirmExportDocument = (format) => {
         o.extra.mimeType = results.mimeType;
       } catch (e) {
         console.error(e);
-        push.error({
-          title: t.bookmark.title,
-          message: t.bookmark.failed_transform_format,
-        });
+        throw new Error("Failed to transform vector layer format");
       }
     }
     return o;
@@ -326,7 +328,8 @@ const onConfirmExportDocument = (format) => {
     } else {
       link.click();
     }
-  }).catch((e) => {
+  })
+  .catch((e) => {
     console.error(e);
     if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
       isNeedToReSync(data.uuid, data.type);
@@ -491,6 +494,21 @@ const buttonsData = [
   }
 ];
 
+const convertTime = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+};
+const convertDate = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
 const openedFormatExport = ref(false);
 const modelValueFormatExport = ref('geojson');
 const optionsFormatExport = [
@@ -564,8 +582,13 @@ const onModalExportClose = () => {
   -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span v-if="data.type_fr"> {{ data.type_fr }}</span>
+    <span v-if="data.type_fr && (data.format || data.date)"> - </span>
     <span v-if="data.format"> {{ data.format }}</span>
-    <span v-if="data.date"> {{ data.date }}</span>
+    <span v-if="data.format && data.date"> - </span>
+    <span 
+      v-if="data.date" 
+      :title="convertTime(data.date)"
+    >{{ convertDate(data.date) }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
   <div
@@ -629,6 +652,16 @@ const onModalExportClose = () => {
     @confirm="onConfirmDeleteDocument"
   >
     {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
+    <div v-if="lstDocumentsCarte.length > 0">
+      <ul class="fr-mt-2w">
+        <li
+          v-for="doc in lstDocumentsCarte"
+          :key="doc.id"
+        >
+          {{ doc.name }}
+        </li>
+      </ul>
+    </div>
   </ModalConfirm>  
   <slot />
 </template>

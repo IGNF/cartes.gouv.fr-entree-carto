@@ -50,6 +50,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const mapStore = useMapStore();
 const appStore = useAppStore();
 const serviceStore = useServiceStore();
@@ -66,6 +68,7 @@ emitter.addEventListener("layerimport:open:clicked", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(layerImport.value);
     if (props.analytic) {
@@ -100,6 +103,15 @@ onUpdated(() => {
     layerImport.value.on("layerimport:compute:added", onSaveImportCompute);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 /**
  * ouverture de la modale de connexion pour proposer à l'utilisateur
@@ -160,6 +172,14 @@ const saveImportVector = (e) => {
 
   promise
   .then((o) => {
+    layerImport.value.setCollapsed(true);
+    // INFO 
+    // on utilise le composant des favoris pour ajouter la couche à la carte
+    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
+    map.removeLayer(data.layer);
+    return o;
+  })
+  .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
@@ -174,11 +194,6 @@ const saveImportVector = (e) => {
         throw new Error("Action not yet implemented !");
       }
     }
-  })
-  .then(() => {
-    layerImport.value.setCollapsed(true);
-    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
-    map.removeLayer(data.layer); 
   })
   .then(() => {
     // notification

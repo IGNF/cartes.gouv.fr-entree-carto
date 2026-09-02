@@ -35,6 +35,7 @@ export function useAuthentication(deps = {}) {
   };
 
   const hasAutoSSOBeenAttempted = () => {
+    // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
     return sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
   };
 
@@ -64,6 +65,7 @@ export function useAuthentication(deps = {}) {
     if (hasKeycloakSession) {
       setAutoSSOAttemptedFlag();
       console.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
+      // eslint-disable-next-line secure-coding/no-insecure-comparison -- vérification d'une valeur de conf, pas d'une donnée sensible
       if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
         await router.push({ path: '/login', query: { from: 'auto-sso' } });
       }
@@ -79,12 +81,14 @@ export function useAuthentication(deps = {}) {
     try {
       const status = await service.resolveAccessStatus();
 
+      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status !== 'no-auth') {
         log.debug(`Access validated : ${status} !`);
         serviceStore.setAuthentificateSyncNeeded(false);
         router.replace({ path: '/', query: undefined });
       }
 
+      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status === 'login') {
         log.debug('User connected.');
         cleanAutoSSOAttemptedFlag();
@@ -93,6 +97,7 @@ export function useAuthentication(deps = {}) {
         return;
       }
 
+      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status === 'logout') {
         log.debug('User disconnected.');
         cleanAutoSSOAttemptedFlag();
@@ -107,11 +112,35 @@ export function useAuthentication(deps = {}) {
         log.debug(`Checking session validity : ${isValid} !`);
         authenticated.value = Boolean(isValid);
 
-        if (!isValid && service.authenticated) {
-          console.warn('Incoherent local session (401 côté IAM/API), redirect to logout.');
+        if (!isValid) {
+          // La session locale est invalide (token expiré, refresh token révoqué, erreur réseau).
+          // On fait une déconnexion locale silencieuse sans forcer un logout IAM complet,
+          // pour éviter d'éjecter l'utilisateur vers /logout à l'ouverture de la page.
+          // Le check SSO automatique pourra le reconnecter si sa session Keycloak est encore active.
+          console.warn('Session locale invalide ou expirée, déconnexion locale silencieuse.');
+          service.authenticated = false;
+          if (typeof service.saveStore === 'function') {
+            service.saveStore();
+          }
           authenticated.value = false;
-          router.push({ path: '/logout', query: { from: 'authInvalid' } });
+          onLogout();
           return;
+        }
+
+        if (isValid) {
+          log.debug('Session locale valide, synchronisation des documents...');
+          try {
+            const documents = await service.getDocuments();
+            const emitter = typeof service.getEmitter === 'function' ? service.getEmitter() : null;
+            if (emitter) {
+              emitter.dispatchEvent('service:documents:loaded', {
+                bubbles: true,
+                detail: documents
+              });
+            }
+          } catch (syncError) {
+            console.warn('Unable to refresh documents after page reload:', syncError);
+          }
         }
 
         log.debug('validateAuthentication() finished !');

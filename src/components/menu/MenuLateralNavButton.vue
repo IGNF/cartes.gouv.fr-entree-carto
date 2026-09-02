@@ -26,10 +26,19 @@ const props = defineProps({
         type: [String, Object],
         default: ''
     },
-    id: String,
+    id: {
+        type: String,
+        default: ''
+    },
     active: Boolean,
-    title: String,
-    side: String,
+    title: {
+        type: String,
+        default: ''
+    },
+    side: {
+        type: String,
+        default: ''
+    },
     visibility: Boolean,
     secondary: Boolean
 })
@@ -39,10 +48,10 @@ const icon = props.icon
 const emit = defineEmits(['tabClicked'])
 
 const tabClicked = () => {
-  if(props.side == "left") {
+  if(props.side === "left") {
       closeLeftPanels()
   }
-  if(props.side == "right") {
+  if(props.side === "right") {
     closeRightPanels()
   }
   emit("tabClicked", props.id);
@@ -58,7 +67,7 @@ function closePanel(control) {
   if (button[0].getAttribute("aria-pressed") === "true")
     button[0].click()
 }
-function closeRightPanels(event) {
+function closeRightPanels() {
   mapStore.getMap().getControls().getArray().forEach(control => {
     if (controlsPosition.right.includes(control.CLASSNAME)) {
       closePanel(control)
@@ -86,7 +95,7 @@ defineExpose({
 })
 
 onMounted(() => {
-  if (props.id == "MenuCatalogue") {
+  if (props.id === "MenuCatalogue") {
     domStore.setmenuCatalogueButton(button.value)
   }
 })

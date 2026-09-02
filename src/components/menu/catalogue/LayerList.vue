@@ -16,9 +16,18 @@
 import LayerCatalogue from "@/components/menu/catalogue/LayerCatalogue.vue"
 
 const props = defineProps({
-    layers: Array,
-    selectedLayers: Object,
-    listName: String
+    layers: {
+        type: Array,
+        default: () => []
+    },
+    selectedLayers: {
+        type: Object,
+        default: () => ({})
+    },
+    listName: {
+        type: String,
+        default: ''
+    }
 });
 
 function getUniqueKey(layer) {

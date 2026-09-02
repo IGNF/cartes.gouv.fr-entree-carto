@@ -153,7 +153,6 @@ onBeforeUnmount(() => {});
               :id="idx" 
               class="w100"
             >
-
               <div class="fr-grid-row fr-grid-row--center w100">
                 <a
                   :href="link.to"

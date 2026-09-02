@@ -13,12 +13,19 @@ export default {
 </script>
 
 <script lang="js" setup>
+import { ref, onMounted, onBeforeMount, nextTick } from 'vue'
 import ShareModal from '@/components/carte/control/ShareModal.vue'
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  shareOptions: Object
+  shareOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
 const refModalShare = ref(null)

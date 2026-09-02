@@ -11,6 +11,8 @@ export default {};
 </script>
 
 <script lang="js" setup>
+import { ref, computed, onMounted, onBeforeMount, nextTick } from 'vue';
+
 import { useDataStore }  from '@/stores/dataStore';
 import { useMapStore }  from '@/stores/mapStore';
 import { useEulerian } from '@/plugins/Eulerian.js';
@@ -88,8 +90,6 @@ const iframe = computed(() => {
     allowfullscreen>
   </iframe>`;
 });
-
-const target = ref(null);
 
 onMounted(() => {
   nextTick(function () {
