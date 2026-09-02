@@ -25,6 +25,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const domStore = useDomStore();
 
 const map = inject(props.mapId);

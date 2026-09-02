@@ -518,6 +518,7 @@ const panoramaxOptions = {
     size : "fullscreen-map"
   },
   viewer : {
+    "share" : "geoplateforme",
     "widgets" : [
       "btnClose",
       "btnZoom",
