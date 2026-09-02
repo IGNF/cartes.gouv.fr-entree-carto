@@ -1,11 +1,14 @@
 <script lang="js">
 /**
  * @description
- * Panneau de partage de carte
- *
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrButton}
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrModal}
- * {@link https://github.com/dnum-mi/vue-dsfr/tree/main/src/components/DsfrShare}
+ * Composant utilitaire pour copier du texte dans le presse-papiers.
+ * Un titre, une description, une zone de saisie et un bouton pour copier par défaut.
+ * 
+ * Plusieurs slots pour customiser le composant
+ * - `label` : pour remplacer le titre
+ * - `description` : pour remplacer la description
+ * - `buttons-before` : pour ajouter des boutons avant le bouton de copie
+ * - `buttons-after` : pour ajouter des boutons après le bouton de copie  
  */
 export default {};
 </script>
@@ -66,21 +69,25 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="title-copy">
+    <div class="container-title">
       <div>
         <slot name="label">
           {{ label }}
         </slot>
-      </div>            
-      <DsfrButton
-        secondary
-        icon-right
-        :icon-only="isSmallScreen"
-        :icon="iconProps"
-        @click="copyAction()"
-      >
-        {{ BtnLabel }}
-      </DsfrButton>
+      </div>
+      <div class="container-buttons">
+        <slot name="buttons-before" />
+        <DsfrButton
+          secondary
+          icon-right
+          :icon-only="isSmallScreen"
+          :icon="iconProps"
+          @click="copyAction()"
+        >
+          {{ BtnLabel }}
+        </DsfrButton>
+        <slot name="buttons-after" />
+      </div>          
     </div>
     <p class="fr-hint-text hint-class">
       <slot name="description">
@@ -91,10 +98,14 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.title-copy {
+.container-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
+.container-buttons {
+  display: inline-flex;
+}
+
 </style>
