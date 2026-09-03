@@ -194,7 +194,8 @@ onUpdated(() => {
 }
 
 // photo viewer au dessus
-.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax[aria-pressed="true"]) {
+// HACK : specificite doublee (classe repetee) pour surclasser Controls.vue quel que soit l'ordre du bundle CSS
+.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax.gpf-btn-icon-panoramax[aria-pressed="true"]) {
   z-index: 3;
 }
 </style>
