@@ -37,8 +37,8 @@ import Reporting from './control/Reporting.vue';
 import CatalogManager from './control/CatalogManager.vue';
 import Panoramax from './control/Panoramax.vue';
 
-import { useDomStore } from '@/stores/domStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useDomStore } from '@/stores/domStore';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin';
 
@@ -518,8 +518,11 @@ const panoramaxOptions = {
     size : "fullscreen-map"
   },
   viewer : {
-    "share" : "geoplateforme",
-    "widgets" : [
+    share : {
+      type : "geoplateforme",
+      url : location.origin + import.meta.env.BASE_URL // beurk !
+    },
+    widgets : [
       "btnClose",
       "btnZoom",
       "btnFullscreen",
