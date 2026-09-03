@@ -4014,7 +4014,7 @@ div[id^=GPlayerInfoContent] {
     left: 0 !important;
 }
 }
-.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax[aria-pressed=true]) {
+.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax.gpf-btn-icon-panoramax[aria-pressed=true]) {
   z-index: 3;
 }.ol-overlaycontainer-stopevent {
   z-index: initial !important;
