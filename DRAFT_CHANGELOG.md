@@ -16,6 +16,9 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### 🔨 [Evolution]
 
+- GFI : l'activation du getFeatureInfo se fait au clic gauche (#1232)
+- Menu Contextuel : le nombre d'entrées affichées dans le menu contextuel clic droit) est réduit (#1232)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
