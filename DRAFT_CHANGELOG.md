@@ -14,6 +14,8 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### ✨ [Ajout]
 
+- Panoramax : ajout d'une fonctionnalité de partage de photo depuis la visionneuse panoramax (#1103)
+
 #### 🔨 [Evolution]
 
 #### 🔥 [Obsolète]
