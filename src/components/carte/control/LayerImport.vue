@@ -25,6 +25,7 @@ import {
 } from 'geopf-extensions-openlayers'
 
 import { toShare } from '@/features/share';
+import { notifyQuotaError, notifyQuotaWarning } from '@/features/quota';
 
 // lib notification
 import { push } from 'notivue';
@@ -473,10 +474,13 @@ const getDataServiceWMTS = (data) => {
       action : action // added, updated, deleted
     });
 
+    notifyQuotaWarning();
+
     return o;
 
   } catch (error) {
     console.error(error);
+    notifyQuotaError(error);
     throw error;
   }
 }
