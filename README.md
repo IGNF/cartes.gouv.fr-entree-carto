@@ -59,11 +59,15 @@ npm run preview
 
 Déployer le contenu du dossier `dist` après avoir généré le code de production.
 
-### Vérifier la syntaxe et le formattage avec [ESLint](https://eslint.org/)
+## Vérifier la syntaxe et le formattage avec [ESLint](https://eslint.org/)
 
 ```sh
 npm run lint
 ```
+
+## Lancer les tests
+
+Voir la documentation dans [tests/README.md](tests/README.md) et le plan de tests [tests/PLAN.md](tests/PLAN.md).
 
 ### Lancer les Tests Unitaires avec [Vitest](https://vitest.dev/)
 
@@ -106,8 +110,7 @@ Le rapport
 npx playwright show-report
 ```
 
-### Analyse statique du code avec [ESLint](https://eslint.org/)
+### Utiliser les mocks HTTP (MSW)
 
-```sh
-npm run lint
-```
+Voir la documentation dans [src/mocks/README.md](src/mocks/README.md).
+
