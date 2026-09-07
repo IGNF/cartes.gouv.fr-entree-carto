@@ -106,6 +106,6 @@ export default {
     title: "Erreur",
     unknown_error: "Une erreur inconnue est survenue",
     quota_exceeded: (value) => { return `Le quota ou taille des documents a été atteint : ${value} !` },
-    quota_warning: "Le quota des documents a atteint 80% l'espace disponible"
+    quota_warning: "Le quota des documents a atteint 80% de l'espace disponible"
   }
 }
