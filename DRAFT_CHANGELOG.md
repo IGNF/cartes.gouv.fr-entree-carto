@@ -14,7 +14,12 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### ✨ [Ajout]
 
+- Panoramax : ajout d'une fonctionnalité de partage de photo depuis la visionneuse panoramax (#1103)
+
 #### 🔨 [Evolution]
+
+- GFI : l'activation du getFeatureInfo se fait au clic gauche (#1232)
+- Menu Contextuel : le nombre d'entrées affichées dans le menu contextuel clic droit) est réduit (#1232)
 
 #### 🔥 [Obsolète]
 
