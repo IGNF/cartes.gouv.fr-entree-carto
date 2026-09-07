@@ -37,8 +37,8 @@ import Reporting from './control/Reporting.vue';
 import CatalogManager from './control/CatalogManager.vue';
 import Panoramax from './control/Panoramax.vue';
 
-import { useDomStore } from '@/stores/domStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useDomStore } from '@/stores/domStore';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin';
 
@@ -63,6 +63,10 @@ const props = defineProps({
   controlOptions: {
     type: Array,
     default: () => []
+  },
+  layersReady: {
+    type: Boolean,
+    default: false
   },
   mapId: {
     type: String,
@@ -516,7 +520,11 @@ const panoramaxOptions = {
     size : "fullscreen-map"
   },
   viewer : {
-    "widgets" : [
+    share : {
+      type : "geoplateforme",
+      url : location.origin + import.meta.env.BASE_URL // beurk !
+    },
+    widgets : [
       "btnClose",
       "btnZoom",
       "btnFullscreen",
@@ -758,6 +766,7 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
     :analytic="useControls.Panoramax.analytic"
     :panoramax-options="panoramaxOptions"
+    :layers-ready="props.layersReady"
     :map-id="mapId"
     @ready="onControlReady('Panoramax')"
   />
