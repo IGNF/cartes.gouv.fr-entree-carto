@@ -31,7 +31,7 @@ export const addPermalink = () => {
   const params = new URLSearchParams(window.location.search);
   params.set('permalink', 'yes');
   var newUrlwithParam = `${window.location.pathname}?${params.toString()}`;
-  window.history.pushState({}, '', newUrlwithParam);
+  window.history.pushState(window.history.state, '', newUrlwithParam);
 };
 
 /** 
@@ -53,8 +53,8 @@ export const removePermalink = () => {
   const newUrlwithoutParam = params.toString() 
   ? `${window.location.pathname}?${params.toString()}` 
   : window.location.pathname;
-  window.history.pushState({}, '', newUrlwithoutParam);
-};
+  window.history.pushState(window.history.state, '', newUrlwithoutParam);
+}
 
 /**
  * Lecture d'un permalien classique

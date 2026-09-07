@@ -37,8 +37,8 @@ import Reporting from './control/Reporting.vue';
 import CatalogManager from './control/CatalogManager.vue';
 import Panoramax from './control/Panoramax.vue';
 
-import { useDomStore } from '@/stores/domStore';
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useDomStore } from '@/stores/domStore';
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useLogger } from 'vue-logger-plugin';
 
@@ -63,6 +63,10 @@ const props = defineProps({
   controlOptions: {
     type: Array,
     default: () => []
+  },
+  layersReady: {
+    type: Boolean,
+    default: false
   },
   mapId: {
     type: String,
@@ -209,6 +213,8 @@ const territoriesOptions = {
 const getFeatureInfoOptions = {
   id: "6",
   position: useControlsExtensionPosition().getFeatureInfoOptions,
+  button : false,
+  active : true,
   noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
@@ -514,7 +520,11 @@ const panoramaxOptions = {
     size : "fullscreen-map"
   },
   viewer : {
-    "widgets" : [
+    share : {
+      type : "geoplateforme",
+      url : location.origin + import.meta.env.BASE_URL // beurk !
+    },
+    widgets : [
       "btnClose",
       "btnZoom",
       "btnFullscreen",
@@ -756,6 +766,7 @@ onMounted(() => {
     :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
     :analytic="useControls.Panoramax.analytic"
     :panoramax-options="panoramaxOptions"
+    :layers-ready="props.layersReady"
     :map-id="mapId"
     @ready="onControlReady('Panoramax')"
   />
@@ -898,7 +909,9 @@ onMounted(() => {
   max-height: initial !important;
 }
 @include max(sm) {
-  .gpf-panel {
+  .gpf-panel,
+  .position-container-top-left .gpf-panel,
+  .position-container-bottom-left .gpf-panel {
     max-width: 100vw !important;
     max-height: 100cqb !important;
   }
