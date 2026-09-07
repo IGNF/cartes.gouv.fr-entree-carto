@@ -31,7 +31,7 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
  * Capture un snapshot de la scaleline en coordonnées relatives à la map.
  * Permet de redessiner ensuite une échelle figée même si OL recalcule la DOM.
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
- * @param { Number } domScaleCoeff Coefficient du transform CSS (scale) applique a la preview (paper2PreviewScaleCoeff)
+ * @param { Number } domScaleCoeff Coefficient du transform CSS (scale) appliqué à la preview (paper2PreviewScaleCoeff)
  * @returns {Object | null}
  */
 export function captureScaleLineSnapshot(mapRef, domScaleCoeff = 1) {
