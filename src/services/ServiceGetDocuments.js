@@ -200,8 +200,28 @@ var GetDocuments = {
   /**
    * Obtenir la liste des cartes (téléchargement)
    * 
-   * Le contenu est une liste de permaliens sous forme
-   * de clef/valeur.
+   * Le contenu est une liste sous forme
+   * de clef/valeur dont le permalien est la valeur de la clef "permalink".
+   * 
+   * @example
+   * {
+   *  "permalink": "https://cartes.gouv.fr/carte?...",
+   *  "name": "Géoportail",
+   *  "description": "Le Géoportail est le portail cartographique de l'administration française. Il permet d'accéder à de nombreuses données géographiques et cartographiques.",
+   * }
+   * ou
+   * {
+   *  "permalink": "https://www.geoportail.gouv.fr/carte?...",
+   *  "name": "Géoportail",
+   *  "description": "Le Géoportail est le portail cartographique de l'administration française. Il permet d'accéder à de nombreuses données géographiques et cartographiques.",
+   *  "x": 2.294481,
+   *  "y": 48.858370,
+   *  "zoom": 15,
+   *  "documents": {
+   *     "bookmarks": [],
+   *     "layers": []
+   *   }
+   * }
    * 
    * @param {*} id 
    * @returns {Promise} - Le contenu du fichier
@@ -221,11 +241,12 @@ var GetDocuments = {
         reject("Le contenu des cartes est invalide");
         return;
       }
+      // obligatoire : la propriété "permalink" doit exister et ne pas être vide !
       if (!Object.prototype.hasOwnProperty.call(data, "permalink") || !data.permalink) {
         reject("Le permalink est introuvable dans les données");
         return;
       }
-      resolve(data.permalink); // retourne une string !
+      resolve(data);
     });
     return promise;
   }

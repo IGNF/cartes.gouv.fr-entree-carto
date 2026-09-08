@@ -139,9 +139,21 @@ defineExpose({
           <template #label>
             <TextCopyToClipboard
               :copied-text="mapStore.permalink"
-              label="Lien permanent"
-              description="Toute personne ayant ce lien peut visualiser votre carte sans avoir à se créer de compte."
-            />
+            >
+              <template #label>
+                <div class="share-permalink-help">
+                  <span>Lien permanent</span>
+                  <DsfrTooltip 
+                    class="fr-hidden"
+                    content="Pour obtenir un permalien court, utiliser le menu des enregistrements d'une carte." 
+                    :on-hover="false" 
+                  />
+                </div>
+              </template>
+              <template #description>
+                <span>Toute personne ayant ce lien peut visualiser votre carte sans avoir à se créer de compte.</span>
+              </template>
+            </TextCopyToClipboard>
           </template>
         </DsfrInput>
       </p>
@@ -182,6 +194,10 @@ defineExpose({
 
 <style scoped>
   
+  .share-permalink-help {
+    display: inline-flex;
+    align-items: center;
+  }
   .share-iframe-input {
     height: 200px;
   }

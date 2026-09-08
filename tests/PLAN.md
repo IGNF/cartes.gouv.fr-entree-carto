@@ -71,12 +71,12 @@ Fichiers sources : `src/features/permalink.js`, `src/features/share.js`, `src/co
 |---|-------------|-------------|
 | U-PL-01 | `addPermalink` — ajoute le paramètre `permalink=yes` | Vérifie que l'URL est mise à jour correctement |
 | U-PL-02 | `removePermalink` — supprime le paramètre `permalink` | Vérifie le nettoyage de l'URL (avec et sans autres paramètres) |
-| U-PL-03 | `getLayersFromPermalink` — couche WMTS Géoportail | Parse les paramètres d'une couche WMTS et met à jour le store |
-| U-PL-04 | `getLayersFromPermalink` — couche WMS | Parse les paramètres d'une couche WMS |
-| U-PL-05 | `getLayersFromPermalink` — couche vecteur (GeoJSON) | Parse les paramètres d'une couche vecteur interne |
-| U-PL-06 | `getLayersFromPermalink` — couche Mapbox | Parse les paramètres d'un style Mapbox |
-| U-PL-07 | `getLayersFromPermalink` — données de l'espace personnel | Gestion des documents personnels dans l'URL |
-| U-PL-08 | `getLayersFromPermalink` — URL invalide / malformée | Aucun crash, comportement dégradé gracieux |
+| U-PL-03 | `loadPermalink` — couche WMTS Géoportail | Parse les paramètres d'une couche WMTS et met à jour le store |
+| U-PL-04 | `loadPermalink` — couche WMS | Parse les paramètres d'une couche WMS |
+| U-PL-05 | `loadPermalink` — couche vecteur (GeoJSON) | Parse les paramètres d'une couche vecteur interne |
+| U-PL-06 | `loadPermalink` — couche Mapbox | Parse les paramètres d'un style Mapbox |
+| U-PL-07 | `loadPermalink` — données de l'espace personnel | Gestion des documents personnels dans l'URL |
+| U-PL-08 | `loadPermalink` — URL invalide / malformée | Aucun crash, comportement dégradé gracieux |
 
 #### `share.spec.js`
 | # | Cas de test | Description |
