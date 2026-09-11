@@ -127,15 +127,22 @@ const onOpenModalLogin = (e) => {
     // les autres types ne sont pas encore concernés par la sauvegarde
     // Pour garder les informations de sauvegarde temporaire,
     // on les stocke dans le localStorage
-      appStore.setDocumentTemporary(JSON.stringify({
-        content : e.data,
-        name : e.name,
-        description : e.description,
-        format : e.format,
-        target : "internal",
-        type : "import",
-      }));
+    // si possible !
+    var bDocumentTemporarySaved = appStore.setDocumentTemporary(JSON.stringify({
+      content : e.data,
+      name : e.name,
+      description : e.description,
+      format : e.format,
+      target : "internal",
+      type : "import",
+    }));
+    if (!bDocumentTemporarySaved) {
+      push.warning({
+        title: t.layerimport.title,
+        message: t.layerimport.temporary_save_failed
+      });
     }
+  }
   if (refModalLogin) {
     // true pour proposer le message 'Ne plus afficher le message'
     refModalLogin.value.openModalLogin(true);
@@ -153,7 +160,7 @@ const onOpenModalSave = () => {
 }
 
 /**
- *
+ * sauvegarde d'un import de type vecteur
  * @param e - donnée de sauvegarde de l'import
  */
 const saveImportVector = (e) => {
