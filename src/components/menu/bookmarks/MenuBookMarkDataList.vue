@@ -28,6 +28,8 @@ import { useMapStore } from '@/stores/mapStore';
 import { push } from 'notivue'
 import t from '@/features/translation';
 
+import { notifyQuotaError, notifyQuotaWarning } from '@/features/quota';
+
 const mapStore = useMapStore();
 const service = inject('services');
 const emitter = inject('emitter');
@@ -406,10 +408,11 @@ const createCarteDocument = async (data) => {
       extra : data.extra
     });
     console.debug(x);
-
+    notifyQuotaWarning();
     return o;
   } catch (e) {
     console.error(e);
+    notifyQuotaError(e);
     throw e;
   }
 };

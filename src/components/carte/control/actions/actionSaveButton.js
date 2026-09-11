@@ -1,4 +1,5 @@
 import { sanitizeHtml } from "geopf-extensions-openlayers";
+import { notifyQuotaError, notifyQuotaWarning } from "@/features/quota";
 /**
  * Créer un document pour un vecteur de type :
  * - drawing
@@ -66,10 +67,13 @@ const useCreateDocument = async (data, iocEmitter, iocService) => {
       action : action // added, updated, deleted
     });
 
+    notifyQuotaWarning();
+    
     return o;
 
   } catch (error) {
     console.error(error);
+    notifyQuotaError(error);
     throw error;
   }
 }
@@ -140,6 +144,7 @@ const useUpdateDocument = async (data, iocEmitter, iocService) => {
 
   } catch (error) {
     console.error(error);
+    notifyQuotaError(error);
     throw error;
   }
 }

@@ -300,7 +300,11 @@ var Documents = {
         page += 1;
       }
 
-      this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, "fr", { sensitivity: "base" }));
+      this.documents[label] = data.sort((a, b) => {
+        const updateA = typeof a.update === "string" ? a.update : "";
+        const updateB = typeof b.update === "string" ? b.update : "";
+        return updateA.localeCompare(updateB, "fr", { sensitivity: "base" });
+      });
 
       this.saveStore();
   
