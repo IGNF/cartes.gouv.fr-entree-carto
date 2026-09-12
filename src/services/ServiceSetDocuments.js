@@ -1,4 +1,3 @@
-/* eslint-disable secure-coding/detect-object-injection -- valide les labels et la reponse du service avant de l'enregistrer */
 
 /**
  * @description 
