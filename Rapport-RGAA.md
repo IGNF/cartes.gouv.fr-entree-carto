@@ -1,6 +1,6 @@
 # Rapport d'audit RGAA statique
 
-Prompt (vscode):
+Prompt (vscode) :
 
 ```text
 @rgaa.md Analyse mes fichiers de composants actuels et les pages de vues par rapport aux critères RGAA définis dans ce skill. Liste les écarts de conformité potentiels, l'impact pour les utilisateurs (ex: navigation au clavier, lecteurs d'écran) et fournis un exemple de code corrigé pour chaque problème.
@@ -8,42 +8,42 @@ Le résultat est à placer dans un fichier : Rapport-RGAA.md
 ```
 
 ```text
-Analyse de la navigation au clavier de la page principal uniquement
+Analyse de la navigation au clavier de la page principale uniquement.
 ```
 
 ## Diagnostic RGAA
 
-### Resume
+### Résumé
 
-- Perimetre : composants Vue de `src/components/` et vues de `src/views/`, avec verification de `index.html` et des points d'integration globaux.
-- Methode : analyse statique des templates et scripts. Les composants DSFR et `geopf-extensions-openlayers` n'ont pas ete audites dans leur code genere ; les points qui en dependent restent a confirmer au navigateur.
-- Statut : conformite non demontree ; plusieurs ecarts potentiels et risques eleves sont identifies.
-- Risque utilisateur : eleve pour les personnes naviguant au clavier ou avec un lecteur d'ecran, notamment autour de la carte, des menus et des modales.
+- Périmètre : composants Vue de `src/components/` et vues de `src/views/`, avec vérification de `index.html` et des points d'intégration globaux.
+- Méthode : analyse statique des templates et scripts. Les composants DSFR et `geopf-extensions-openlayers` n'ont pas été audités dans leur code généré ; les points qui en dépendent restent à confirmer au navigateur.
+- Statut : conformité non démontrée ; plusieurs écarts potentiels et risques élevés sont identifiés.
+- Risque utilisateur : élevé pour les personnes naviguant au clavier ou avec un lecteur d'écran, notamment autour de la carte, des menus et des modales.
 
-### Criteres RGAA concernes
+### Critères RGAA concernés
 
-- **1.1, 1.2** : les logos et pictogrammes doivent avoir une alternative pertinente ou etre correctement masques.
-- **2.1, 2.2** : les cadres externes et contenus integres doivent avoir un titre explicite ; les vues embarquees doivent rester comprehensibles.
-- **3.2, 3.3** : le contraste et l'indication d'etat ne doivent pas reposer uniquement sur la couleur.
-- **6.1, 6.2** : les liens doivent avoir un intitule explicite et une destination comprehensible.
-- **7.1, 7.3, 7.5** : les scripts doivent etre utilisables au clavier, conserver le focus et annoncer les changements de contexte.
-- **8.2, 8.5, 8.6** : le titre, la langue et la structure HTML doivent etre coherents.
-- **9.1, 9.2** : les titres, regions et listes doivent structurer l'information.
-- **10.1, 10.7, 10.11** : la presentation ne doit pas supprimer le focus ni empecher l'adaptation a 200 %.
-- **11.1, 11.2, 11.9, 11.10** : les champs doivent avoir un label, un etat et des erreurs comprehensibles.
-- **12.1, 12.2, 12.6, 12.8** : l'ordre de tabulation, les liens d'evitement, les zones de navigation et l'absence de piege au clavier doivent etre verifies.
+- **1.1, 1.2** : les logos et pictogrammes doivent avoir une alternative pertinente ou être correctement masqués.
+- **2.1, 2.2** : les cadres externes et contenus intégrés doivent avoir un titre explicite ; les vues embarquées doivent rester compréhensibles.
+- **3.2, 3.3** : le contraste et l'indication d'état ne doivent pas reposer uniquement sur la couleur.
+- **6.1, 6.2** : les liens doivent avoir un intitulé explicite et une destination compréhensible.
+- **7.1, 7.3, 7.5** : les scripts doivent être utilisables au clavier, conserver le focus et annoncer les changements de contexte.
+- **8.2, 8.5, 8.6** : le titre, la langue et la structure HTML doivent être cohérents.
+- **9.1, 9.2** : les titres, régions et listes doivent structurer l'information.
+- **10.1, 10.7, 10.11** : la présentation ne doit pas supprimer le focus ni empêcher l'adaptation à 200 %.
+- **11.1, 11.2, 11.9, 11.10** : les champs doivent avoir un libellé, un état et des erreurs compréhensibles.
+- **12.1, 12.2, 12.6, 12.8** : l'ordre de tabulation, les liens d'évitement, les zones de navigation et l'absence de piège au clavier doivent être vérifiés.
 - **13.3** : les contenus et fonctions doivent rester utilisables avec agrandissement et reflow.
 
-## Ecarts detectes
+## Écarts détectés
 
-### 1. Focus de la carte deplace au survol
+### 1. Focus de la carte déplacé au survol
 
 - **Fichier** : `src/components/carte/Map.vue`, dans `onFocusOnMap` et le template du conteneur.
-- **Critere RGAA** : 7.1, 7.3, 10.7.
+- **Critère RGAA** : 7.1, 7.3, 10.7.
 - **Constat** : `@mouseover` appelle `mapRef.value.focus()`. Un simple passage de la souris peut donc retirer le focus d'un champ, d'un bouton ou d'un lien. Le conteneur et le canvas sont aussi rendus focusables sans nom accessible ni instruction textuelle.
 - **Impact** : une personne au clavier ou utilisant une loupe peut perdre sa position de lecture ; une personne avec un handicap moteur peut voir son focus interrompu sans action volontaire.
-- **Correctif propose** : supprimer le focus automatique au survol. Donner un nom a la carte et documenter une commande clavier. Garder un seul point de tabulation, sauf besoin technique demontre.
-- **Exemple de code corrige** :
+- **Correctif proposé** : supprimer le focus automatique au survol. Donner un nom à la carte et documenter une commande clavier. Garder un seul point de tabulation, sauf besoin technique démontré.
+- **Exemple de code corrigé** :
 
 ```vue
 <template>
@@ -55,7 +55,7 @@ Analyse de la navigation au clavier de la page principal uniquement
     tabindex="0"
   >
     <p class="sr-only" :id="`${mapId}-help`">
-      Carte interactive. Utilisez les fleches pour vous deplacer et les touches plus et moins pour modifier le zoom.
+      Carte interactive. Utilisez les flèches pour vous déplacer et les touches plus et moins pour modifier le zoom.
     </p>
     <slot />
   </div>
@@ -68,16 +68,16 @@ const props = defineProps({
 </script>
 ```
 
-- **Verification** : parcourir un formulaire au clavier, passer la souris au-dessus de la carte et verifier que le focus reste sur le champ actif ; verifier que la carte est annoncee par NVDA/VoiceOver.
+- **Vérification** : parcourir un formulaire au clavier, passer la souris au-dessus de la carte et vérifier que le focus reste sur le champ actif ; vérifier que la carte est annoncée par NVDA/VoiceOver.
 
 ### 2. Carte canvas sans alternative fonctionnelle
 
 - **Fichier** : `src/components/carte/Map.vue`.
-- **Critere RGAA** : 7.1, 7.3, 9.2, 13.3.
-- **Constat** : le canvas OpenLayers est seulement rendu focusable avec `tabIndex = 0`. Aucun parcours textuel des couches, objets, resultats de recherche ou informations affichees sur la carte n'est fourni dans ce composant.
-- **Impact** : les utilisateurs de lecteur d'ecran ne peuvent pas comprendre les informations geographiques ni atteindre les fonctions de la carte si elles ne sont disponibles que par interaction visuelle ou pointeur.
-- **Correctif propose** : fournir une alternative hors carte : liste des couches actives, resultats de recherche et informations selectionnees, avec les memes actions essentielles.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 9.2, 13.3.
+- **Constat** : le canvas OpenLayers est seulement rendu focusable avec `tabIndex = 0`. Aucun parcours textuel des couches, objets, résultats de recherche ou informations affichées sur la carte n'est fourni dans ce composant.
+- **Impact** : les utilisateurs de lecteur d'écran ne peuvent pas comprendre les informations géographiques ni atteindre les fonctions de la carte si elles ne sont disponibles que par interaction visuelle ou pointeur.
+- **Correctif proposé** : fournir une alternative hors carte : liste des couches actives, résultats de recherche et informations sélectionnées, avec les mêmes actions essentielles.
+- **Exemple de code corrigé** :
 
 ```vue
 <template>
@@ -87,7 +87,7 @@ const props = defineProps({
       <slot />
     </div>
     <p id="map-help" class="sr-only">
-      Cette carte est interactive. Une liste textuelle des couches et des resultats est disponible ci-dessous.
+      Cette carte est interactive. Une liste textuelle des couches et des résultats est disponible ci-dessous.
     </p>
     <div aria-live="polite">
       <slot name="accessible-summary" />
@@ -96,16 +96,16 @@ const props = defineProps({
 </template>
 ```
 
-- **Verification** : sans souris, atteindre la liste alternative, lire une couche/resultat et executer ses actions ; confirmer que le contenu essentiel n'existe pas uniquement dans le canvas.
+- **Vérification** : sans souris, atteindre la liste alternative, lire une couche/résultat et exécuter ses actions ; confirmer que le contenu essentiel n'existe pas uniquement dans le canvas.
 
 ### 3. Boutons contenant des liens et bouton de connexion ambigu
 
 - **Fichier** : `src/components/header/CustomNavigationMenu.vue`.
-- **Critere RGAA** : 7.1, 7.3, 8.5, 8.6.
-- **Constat** : un `DsfrButton` contient un element `<a>`, et un `<button>` contient lui aussi un `<a>` pour la connexion/deconnexion. Cela produit des controles imbriques avec des roles et comportements contradictoires.
-- **Impact** : la tabulation peut rencontrer deux controles pour une seule action ; les lecteurs d'ecran peuvent annoncer un bouton puis un lien avec un libelle incoherent. L'activation avec Espace ou Entree peut differer.
-- **Correctif propose** : choisir un seul element interactif. Pour une navigation, utiliser un lien stylise ; pour une action Vue, utiliser un bouton sans lien enfant.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 8.5, 8.6.
+- **Constat** : un `DsfrButton` contient un élément `<a>`, et un `<button>` contient aussi un `<a>` pour la connexion/déconnexion. Cela produit des contrôles imbriqués avec des rôles et comportements contradictoires.
+- **Impact** : la tabulation peut rencontrer deux contrôles pour une seule action ; les lecteurs d'écran peuvent annoncer un bouton puis un lien avec un libellé incohérent. L'activation avec Espace ou Entrée peut différer.
+- **Correctif proposé** : choisir un seul élément interactif. Pour une navigation, utiliser un lien stylisé ; pour une action Vue, utiliser un bouton sans lien enfant.
+- **Exemple de code corrigé** :
 
 ```vue
 <a
@@ -121,20 +121,20 @@ const props = defineProps({
   :href="authenticated ? `${url}/logout` : `${url}/login`"
   class="fr-btn fr-btn--tertiary w100 justify-center"
 >
-  {{ authenticated ? 'Se deconnecter' : 'Se connecter' }}
+  {{ authenticated ? 'Se déconnecter' : 'Se connecter' }}
 </a>
 ```
 
-- **Verification** : compter les arrets de tabulation sur le controle ; tester Entree et Espace ; verifier l'arbre d'accessibilite avec axe ou Accessibility Insights.
+- **Vérification** : compter les arrêts de tabulation sur le contrôle ; tester Entrée et Espace ; vérifier l'arbre d'accessibilité avec Axe ou Accessibility Insights.
 
-### 4. Menus et modales : focus et fermeture incomplets a confirmer/corriger
+### 4. Menus et modales : focus et fermeture incomplets à confirmer/corriger
 
 - **Fichiers** : `src/components/header/CustomNavigation.vue`, `src/components/modals/Modal.vue`, `src/components/modals/Modals.vue`.
-- **Critere RGAA** : 7.1, 7.3, 12.1, 12.6, 12.8.
-- **Constat** : le menu ferme sur `Escape`, mais le focus n'est pas explicitement replace sur le bouton qui l'a ouvert. `Modal.vue` delegue la gestion au `DsfrModal`, sans test local prouvant le piege de focus, le focus initial et le retour au declencheur. La modale de bienvenue peut s'ouvrir automatiquement.
-- **Impact** : apres fermeture, l'utilisateur peut etre renvoye au debut du document ou dans un element masque ; une personne de lecteur d'ecran peut ne pas savoir qu'une modale est apparue.
-- **Correctif propose** : memoriser le declencheur, placer le focus dans le menu/dialogue a l'ouverture, le maintenir dans la modale et le rendre au declencheur a la fermeture. Ajouter une action d'acces au contenu si le header est long.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 12.1, 12.6, 12.8.
+- **Constat** : le menu ferme sur `Escape`, mais le focus n'est pas explicitement replacé sur le bouton qui l'a ouvert. `Modal.vue` délègue la gestion au `DsfrModal`, sans test local prouvant le piège de focus, le focus initial et le retour au déclencheur. La modale de bienvenue peut s'ouvrir automatiquement.
+- **Impact** : après fermeture, l'utilisateur peut être renvoyé au début du document ou dans un élément masqué ; une personne utilisant un lecteur d'écran peut ne pas savoir qu'une modale est apparue.
+- **Correctif proposé** : mémoriser le déclencheur, placer le focus dans le menu/dialogue à l'ouverture, le maintenir dans la modale et le rendre au déclencheur à la fermeture. Ajouter une action d'accès au contenu si le header est long.
+- **Exemple de code corrigé** :
 
 ```vue
 <button
@@ -162,16 +162,16 @@ watch(expanded, async (isExpanded) => {
 })
 ```
 
-- **Verification** : ouvrir/fermer chaque menu et modale avec clavier, presser `Echap`, tabuler en boucle et verifier le retour au declencheur. Refaire le test avec NVDA/Firefox ou VoiceOver/Safari.
+- **Vérification** : ouvrir/fermer chaque menu et modale avec le clavier, presser `Echap`, tabuler en boucle et vérifier le retour au déclencheur. Refaire le test avec NVDA/Firefox ou VoiceOver/Safari.
 
-### 5. Recherche et widgets OpenLayers generes non verifies
+### 5. Recherche et widgets OpenLayers générés non vérifiés
 
 - **Fichier** : `src/components/carte/control/SearchEngine.vue` et `src/components/carte/Controls.vue`.
-- **Critere RGAA** : 7.1, 7.3, 7.5, 11.1, 11.9, 12.1.
-- **Constat** : le template Vue ne rend qu'un `<div />` ; les champs, boutons, autocompletions et popups sont injectes par `SearchEngineAdvanced`. Les options de placeholder ne constituent pas une etiquette. Le code ne controle pas l'association label/champ, l'annonce des resultats, la navigation par fleches ou le message d'erreur.
-- **Impact** : une recherche peut etre utilisable a la souris mais silencieuse ou impossible a parcourir au clavier et au lecteur d'ecran.
-- **Correctif propose** : verifier le DOM final et completer le widget avec un label visible, `aria-autocomplete`, `aria-controls`, `aria-expanded`, une liste de resultats et une region live.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 7.5, 11.1, 11.9, 12.1.
+- **Constat** : le template Vue ne rend qu'un `<div />` ; les champs, boutons, autocomplétions et popups sont injectés par `SearchEngineAdvanced`. Les options de placeholder ne constituent pas une étiquette. Le code ne contrôle pas l'association libellé/champ, l'annonce des résultats, la navigation par flèches ou le message d'erreur.
+- **Impact** : une recherche peut être utilisable à la souris mais silencieuse ou impossible à parcourir au clavier et au lecteur d'écran.
+- **Correctif proposé** : vérifier le DOM final et compléter le widget avec un libellé visible, `aria-autocomplete`, `aria-controls`, `aria-expanded`, une liste de résultats et une région live.
+- **Exemple de code corrigé** :
 
 ```html
 <label for="search-place">Rechercher un lieu</label>
@@ -192,16 +192,16 @@ watch(expanded, async (isExpanded) => {
 <p id="search-status" role="status" aria-live="polite">{{ status }}</p>
 ```
 
-- **Verification** : rechercher sans souris, parcourir les resultats avec les fleches, entendre le nombre de resultats et l'erreur ; inspecter le DOM apres injection du widget.
+- **Vérification** : rechercher sans souris, parcourir les résultats avec les flèches, entendre le nombre de résultats et l'erreur ; inspecter le DOM après injection du widget.
 
-### 6. Formulaires de controles et etats non relies de maniere demontrable
+### 6. Formulaires de contrôles et états non reliés de manière démontrable
 
 - **Fichiers** : `src/components/carte/control/PrintModal.vue`, `src/components/menu/ControlListElement.vue`, `src/components/menu/MenuControl.vue`.
-- **Critere RGAA** : 11.1, 11.2, 11.9, 11.10.
-- **Constat** : les composants DSFR fournissent probablement une partie du balisage, mais plusieurs champs reutilisent le meme `name="checkbox-simple"`. Le composant `ControlListElement` passe a la fois `v-model` et `:model-value` au toggle. Aucun message d'erreur, d'aide ou d'etat de traitement n'est relie au bouton d'export.
-- **Impact** : des champs peuvent etre regroupes ou annonces de facon ambigue ; les utilisateurs ne savent pas toujours quel controle est actif ni pourquoi une exportation est indisponible.
-- **Correctif propose** : utiliser un nom unique par champ, un `id` stable, un label associe et une description/erreur reliee par `aria-describedby` et `aria-invalid`. Ne pas fournir deux sources de verite au meme composant.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 11.1, 11.2, 11.9, 11.10.
+- **Constat** : les composants DSFR fournissent probablement une partie du balisage, mais plusieurs champs réutilisent le même `name="checkbox-simple"`. Le composant `ControlListElement` passe à la fois `v-model` et `:model-value` au toggle. Aucun message d'erreur, d'aide ou d'état de traitement n'est relié au bouton d'export.
+- **Impact** : des champs peuvent être regroupés ou annoncés de façon ambiguë ; les utilisateurs ne savent pas toujours quel contrôle est actif ni pourquoi une exportation est indisponible.
+- **Correctif proposé** : utiliser un nom unique par champ, un `id` stable, un libellé associé et une description/erreur reliée par `aria-describedby` et `aria-invalid`. Ne pas fournir deux sources de vérité au même composant.
+- **Exemple de code corrigé** :
 
 ```vue
 <DsfrCheckbox
@@ -212,7 +212,7 @@ watch(expanded, async (isExpanded) => {
   aria-describedby="print-title-help"
 />
 <p id="print-title-help" class="fr-hint-text">
-  Le titre sera ajoute a la sortie imprimee.
+  Le titre sera ajouté à la sortie imprimée.
 </p>
 
 <DsfrButton
@@ -227,16 +227,16 @@ watch(expanded, async (isExpanded) => {
 </p>
 ```
 
-- **Verification** : inspecter chaque champ dans l'arbre d'accessibilite, tester la relation label/description, puis declencher une erreur et verifier son annonce.
+- **Vérification** : inspecter chaque champ dans l'arbre d'accessibilité, tester la relation libellé/description, puis déclencher une erreur et vérifier son annonce.
 
-### 7. Accordions et controles d'etat incomplets
+### 7. Accordions et contrôles d'état incomplets
 
 - **Fichier** : `src/components/utils/CustomAccordeon.vue`.
-- **Critere RGAA** : 7.1, 7.3, 9.2.
-- **Constat** : le bouton change son texte mais ne declare ni `aria-expanded` ni `aria-controls`. Le contenu n'a pas d'identifiant cible.
-- **Impact** : le lecteur d'ecran ne connait pas l'etat ouvert/ferme et peut lire le bouton sans associer le contenu qu'il controle.
-- **Correctif propose** : utiliser `<details>/<summary>` quand le comportement suffit, ou declarer explicitement l'etat et la relation.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 9.2.
+- **Constat** : le bouton change son texte mais ne déclare ni `aria-expanded` ni `aria-controls`. Le contenu n'a pas d'identifiant cible.
+- **Impact** : le lecteur d'écran ne connaît pas l'état ouvert/fermé et peut lire le bouton sans associer le contenu qu'il contrôle.
+- **Correctif proposé** : utiliser `<details>/<summary>` quand le comportement suffit, ou déclarer explicitement l'état et la relation.
+- **Exemple de code corrigé** :
 
 ```vue
 <button
@@ -251,16 +251,16 @@ watch(expanded, async (isExpanded) => {
 </div>
 ```
 
-- **Verification** : verifier l'annonce « developpe/replie » et l'acces au contenu avec Tab et un lecteur d'ecran.
+- **Vérification** : vérifier l'annonce « développée / repliée » et l'accès au contenu avec Tab et un lecteur d'écran.
 
-### 8. Chargements et changements dynamiques non annonces
+### 8. Chargements et changements dynamiques non annoncés
 
 - **Fichiers** : `src/components/utils/Patience.vue`, `src/views/Plan.vue`, `src/views/Main.vue`.
-- **Critere RGAA** : 7.5, 9.2, 12.2.
-- **Constat** : `Patience` ne contient qu'un `<span>` anime sans texte, `role` ou `aria-live`. `Plan` affiche un texte seulement si `city` est present, puis redirige vers `/` sans annonce ni mise a jour du titre/focus. Les notifications Notivue sont montees globalement sans preuve de leur role live.
-- **Impact** : une personne non voyante peut attendre sans savoir si l'application charge, a echoue ou a change de page.
-- **Correctif propose** : ajouter un statut live, un message textuel et une gestion explicite du titre/focus apres navigation.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.5, 9.2, 12.2.
+- **Constat** : `Patience` ne contient qu'un `<span>` animé sans texte, `role` ou `aria-live`. `Plan` affiche un texte seulement si `city` est présent, puis redirige vers `/` sans annonce ni mise à jour du titre/focus. Les notifications Notivue sont montées globalement sans preuve de leur rôle live.
+- **Impact** : une personne non voyante peut attendre sans savoir si l'application charge, a échoué ou a changé de page.
+- **Correctif proposé** : ajouter un statut live, un message textuel et une gestion explicite du titre/focus après navigation.
+- **Exemple de code corrigé** :
 
 ```vue
 <div class="patience-container" role="status" aria-live="polite" aria-busy="true">
@@ -275,21 +275,21 @@ import { useHead } from '@unhead/vue'
 useHead({ title: computed(() => city ? `Chargement du plan : ${city}` : 'Chargement du plan') })
 
 onMounted(async () => {
-  // Apres une erreur, afficher un message focusable avant la redirection
+  // Après une erreur, afficher un message focusable avant la redirection
   // ou conserver la vue pour permettre la lecture de l'erreur.
 })
 ```
 
-- **Verification** : utiliser un lecteur d'ecran pendant le chargement, une erreur reseau et une notification ; verifier une annonce unique et utile, sans repetition continue.
+- **Vérification** : utiliser un lecteur d'écran pendant le chargement, une erreur réseau et une notification ; vérifier une annonce unique et utile, sans répétition continue.
 
-### 9. Titres de pages et hierarchie des vues
+### 9. Titres de pages et hiérarchie des vues
 
 - **Fichiers** : `src/views/Bookmarks.vue`, `src/views/Embed.vue`, `src/views/Plan.vue`, `src/views/Login.vue`.
-- **Critere RGAA** : 8.6, 9.1, 12.2.
-- **Constat** : la page document a un titre statique dans `index.html`, mais les vues SPA n'actualisent pas le titre selon la route. `Bookmarks.vue` commence par un `<h2>` et les vues de chargement/authentification ne fournissent pas de contenu de page structure.
-- **Impact** : l'utilisateur peut ne pas savoir quelle vue est active dans l'historique du lecteur d'ecran ou parmi les onglets ; la navigation par titres devient incoherente.
-- **Correctif propose** : definir un titre unique par route et commencer chaque vue autonome par un titre de niveau 1, ou documenter l'en-tete global comme titre principal unique.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 8.6, 9.1, 12.2.
+- **Constat** : la page document a un titre statique dans `index.html`, mais les vues SPA n'actualisent pas le titre selon la route. `Bookmarks.vue` commence par un `<h2>` et les vues de chargement/authentification ne fournissent pas de contenu de page structuré.
+- **Impact** : l'utilisateur peut ne pas savoir quelle vue est active dans l'historique du lecteur d'écran ou parmi les onglets ; la navigation par titres devient incohérente.
+- **Correctif proposé** : définir un titre unique par route et commencer chaque vue autonome par un titre de niveau 1, ou documenter l'en-tête global comme titre principal unique.
+- **Exemple de code corrigé** :
 
 ```vue
 <template>
@@ -305,20 +305,20 @@ useHead({ title: 'Favoris | cartes.gouv.fr' })
 </script>
 ```
 
-- **Verification** : ouvrir directement chaque route, verifier le titre de l'onglet, le premier titre annonce et le focus apres navigation SPA.
+- **Vérification** : ouvrir directement chaque route, vérifier le titre de l'onglet, le premier titre annoncé et le focus après navigation SPA.
 
-### 10. Liens ouvrant une nouvelle fenetre et images/pictogrammes
+### 10. Liens ouvrant une nouvelle fenêtre et images/pictogrammes
 
 - **Fichiers** : `src/components/modals/ModalReportingStart.vue`, `src/components/modals/Alerts.vue`, `src/components/modals/ModalWelcome.vue`, `src/components/header/CustomHeader.vue`.
-- **Critere RGAA** : 1.1, 6.1, 6.2, 7.3.
-- **Constat** : plusieurs liens ont `target="_blank"`. Certains ont un `title`, d'autres non. Le logo cartes.gouv.fr de la modale de bienvenue a `alt=""` alors qu'il peut porter une information de marque ; les icones decoratives ne sont pas toutes verifiees dans le DOM genere.
-- **Impact** : l'utilisateur peut ne pas savoir qu'une nouvelle fenetre va s'ouvrir, ou perdre le contexte. Un lecteur d'ecran peut manquer l'identite ou la fonction associee a un visuel informatif.
-- **Correctif propose** : annoncer l'ouverture dans l'intitule visible ou par texte masque ; attribuer une alternative aux images informatives et masquer explicitement les icones decoratives.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 1.1, 6.1, 6.2, 7.3.
+- **Constat** : plusieurs liens ont `target="_blank"`. Certains ont un `title`, d'autres non. Le logo cartes.gouv.fr de la modale de bienvenue a `alt=""` alors qu'il peut porter une information de marque ; les icônes décoratives ne sont pas toutes vérifiées dans le DOM généré.
+- **Impact** : l'utilisateur peut ne pas savoir qu'une nouvelle fenêtre va s'ouvrir, ou perdre le contexte. Un lecteur d'écran peut manquer l'identité ou la fonction associée à un visuel informatif.
+- **Correctif proposé** : annoncer l'ouverture dans l'intitulé visible ou par texte masqué ; attribuer une alternative aux images informatives et masquer explicitement les icônes décoratives.
+- **Exemple de code corrigé** :
 
 ```vue
 <a :href="faq" target="_blank" rel="noopener noreferrer">
-  Foire aux questions (nouvelle fenetre)
+  Foire aux questions (nouvelle fenêtre)
 </a>
 
 <img
@@ -328,41 +328,41 @@ useHead({ title: 'Favoris | cartes.gouv.fr' })
 <span class="fr-icon-brush-line" aria-hidden="true" />
 ```
 
-- **Verification** : verifier chaque lien hors contexte, son annonce dans NVDA/VoiceOver et les alternatives de toutes les images non decoratives.
+- **Vérification** : vérifier chaque lien hors contexte, son annonce dans NVDA/VoiceOver et les alternatives de toutes les images non décoratives.
 
-## Analyse ciblee : navigation au clavier de la page principale
+## Analyse ciblée : navigation au clavier de la page principale
 
-### Perimetre et methode
+### Périmètre et méthode
 
-- Page ciblee : route `/`, rendue par `Main.vue` puis `Load.vue`/`CartoAndTools.vue`.
-- Parcours analyse : `Tab`, `Shift+Tab`, `Entree`, `Espace`, `Echap` et fleches dans les composants de carte.
-- Cette analyse est statique : elle deduit l'ordre probable du DOM et les comportements a partir du code. Elle ne peut pas confirmer les elements injectes par DSFR ou OpenLayers sans inspection du navigateur.
+- Page ciblée : route `/`, rendue par `Main.vue` puis `Load.vue`/`CartoAndTools.vue`.
+- Parcours analysé : `Tab`, `Shift+Tab`, `Entrée`, `Espace`, `Echap` et flèches dans les composants de carte.
+- Cette analyse est statique : elle déduit l'ordre probable du DOM et les comportements à partir du code. Elle ne peut pas confirmer les éléments injectés par DSFR ou OpenLayers sans inspection du navigateur.
 
 ### Parcours clavier attendu
 
-Le parcours attendu devrait etre proche de celui-ci :
+Le parcours attendu devrait être proche de celui-ci :
 
-1. lien d'acces rapide vers le contenu principal ;
+1. lien d'accès rapide vers le contenu principal ;
 2. logo ou lien d'accueil, navigation principale et liens du header ;
 3. alertes et notifications actives ;
-4. recherche et controles de carte exposes ;
-5. boutons des menus lateraux « Gerer la carte » et « Choisir mes outils » ;
+4. recherche et contrôles de carte exposés ;
+5. boutons des menus latéraux « Gérer la carte » et « Choisir mes outils » ;
 6. contenu du panneau ouvert, puis son bouton « Fermer » ;
 7. carte et son alternative textuelle ;
 8. footer.
 
-L'ordre reel est incertain pour les controles OpenLayers, mais la structure de `Main.vue` et `CartoAndTools.vue` place `Carto` avant `LeftMenuTool` dans le DOM. Les boutons lateraux, pourtant visuellement superposes a la carte, risquent donc d'etre atteints apres le canvas et les widgets de carte. Cette divergence doit etre verifiee dans l'arbre d'accessibilite.
+L'ordre réel est incertain pour les contrôles OpenLayers, mais la structure de `Main.vue` et `CartoAndTools.vue` place `Carto` avant `LeftMenuTool` dans le DOM. Les boutons latéraux, pourtant visuellement superposés à la carte, risquent donc d'être atteints après le canvas et les widgets de carte. Cette divergence doit être vérifiée dans l'arbre d'accessibilité.
 
-### Ecarts et risques du parcours principal
+### Écarts et risques du parcours principal
 
-#### A. Absence de lien d'acces rapide vers la carte et les outils
+#### A. Absence de lien d'accès rapide vers la carte et les outils
 
 - **Fichiers** : `src/views/Main.vue`, `src/components/header/CustomHeader.vue`.
-- **Critere RGAA** : 12.1, 12.2, 12.6.
-- **Constat** : aucun lien « Aller au contenu » n'est visible dans le montage de la page principale. Le header peut preceder un grand nombre de liens et de boutons avant la carte.
-- **Impact** : une personne naviguant avec `Tab` doit traverser tout le header a chaque chargement avant d'atteindre la fonction principale de cartographie.
-- **Correctif propose** : ajouter un lien d'evitement en premiere position du document et une cible focusable autour du contenu principal.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 12.1, 12.2, 12.6.
+- **Constat** : aucun lien « Aller au contenu » n'est visible dans le montage de la page principale. Le header peut précéder un grand nombre de liens et de boutons avant la carte.
+- **Impact** : une personne naviguant avec `Tab` doit traverser tout le header à chaque chargement avant d'atteindre la fonction principale de cartographie.
+- **Correctif proposé** : ajouter un lien d'évitement en première position du document et une cible focusable autour du contenu principal.
+- **Exemple de code corrigé** :
 
 ```vue
 <template>
@@ -376,16 +376,16 @@ L'ordre reel est incertain pour les controles OpenLayers, mais la structure de `
 </template>
 ```
 
-- **Verification** : depuis le debut de la page, presser `Tab`, activer le lien, puis verifier que le focus arrive sur `main-content` sans parcourir le header.
+- **Vérification** : depuis le début de la page, presser `Tab`, activer le lien, puis vérifier que le focus arrive sur `main-content` sans parcourir le header.
 
-#### B. Focus non restitue apres fermeture des menus lateraux
+#### B. Focus non restitué après fermeture des menus latéraux
 
 - **Fichiers** : `src/components/menu/MenuLateralWrapper.vue`, `src/components/menu/LeftMenuTool.vue`, `src/components/menu/RightMenuTool.vue`.
-- **Critere RGAA** : 7.1, 7.3, 12.1, 12.6.
+- **Critère RGAA** : 7.1, 7.3, 12.1, 12.6.
 - **Constat** : `closeMenu()` modifie uniquement `is_expanded`. Il n'appelle pas `focus()` sur le bouton qui a ouvert le panneau. Aucun traitement `Escape` n'est visible dans `MenuLateralWrapper`.
-- **Impact** : apres fermeture, le focus peut rester sur un element masque, revenir a un emplacement imprevisible ou obliger l'utilisateur a refaire une longue tabulation.
-- **Correctif propose** : conserver une reference au bouton declencheur, rendre le panneau focusable a l'ouverture et restituer le focus au declencheur a la fermeture. Gerer `Escape` au niveau du panneau.
-- **Exemple de code corrige** :
+- **Impact** : après fermeture, le focus peut rester sur un élément masqué, revenir à un emplacement imprévisible ou obliger l'utilisateur à refaire une longue tabulation.
+- **Correctif proposé** : conserver une référence au bouton déclencheur, rendre le panneau focusable à l'ouverture et restituer le focus au déclencheur à la fermeture. Gérer `Escape` au niveau du panneau.
+- **Exemple de code corrigé** :
 
 ```vue
 <script setup>
@@ -414,7 +414,7 @@ function onKeydown(event) {
 </script>
 
 <template>
-  <button @click="openMenu">Gerer la carte</button>
+  <button @click="openMenu">Gérer la carte</button>
   <div
     v-show="isExpanded"
     ref="panel"
@@ -428,16 +428,16 @@ function onKeydown(event) {
 </template>
 ```
 
-- **Verification** : ouvrir chaque panneau avec `Entree` et `Espace`, presser `Echap`, puis verifier que le focus revient exactement au bouton d'origine.
+- **Vérification** : ouvrir chaque panneau avec `Entrée` et `Espace`, presser `Echap`, puis vérifier que le focus revient exactement au bouton d'origine.
 
-#### C. Panneaux ouverts sans relation explicite avec leur declencheur
+#### C. Panneaux ouverts sans relation explicite avec leur déclencheur
 
 - **Fichiers** : `src/components/menu/MenuLateralNavButton.vue`, `src/components/menu/MenuLateralWrapper.vue`.
-- **Critere RGAA** : 7.1, 7.3, 9.2.
-- **Constat** : le bouton lateral possede un `aria-label`, mais le code ne lui associe pas `aria-expanded` ni `aria-controls`. Le panneau contient un titre visuel mais n'est pas expose comme une region liee au bouton.
-- **Impact** : un lecteur d'ecran annonce le bouton « Gerer la carte » sans annoncer clairement si le panneau est ouvert ni quel contenu il controle.
-- **Correctif propose** : utiliser un identifiant stable du panneau et synchroniser `aria-expanded`/`aria-controls` sur le bouton.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 9.2.
+- **Constat** : le bouton latéral possède un `aria-label`, mais le code ne lui associe pas `aria-expanded` ni `aria-controls`. Le panneau contient un titre visuel mais n'est pas exposé comme une région liée au bouton.
+- **Impact** : un lecteur d'écran annonce le bouton « Gérer la carte » sans annoncer clairement si le panneau est ouvert ni quel contenu il contrôle.
+- **Correctif proposé** : utiliser un identifiant stable du panneau et synchroniser `aria-expanded`/`aria-controls` sur le bouton.
+- **Exemple de code corrigé** :
 
 ```vue
 <DsfrButton
@@ -460,15 +460,15 @@ function onKeydown(event) {
 </div>
 ```
 
-- **Verification** : inspecter l'arbre d'accessibilite avant et apres ouverture ; verifier l'annonce du nom, de l'etat et de la relation controle/panneau.
+- **Vérification** : inspecter l'arbre d'accessibilité avant et après ouverture ; vérifier l'annonce du nom, de l'état et de la relation contrôle/panneau.
 
-#### D. Focus carte deplace par la souris et carte placee dans le parcours sans alternative
+#### D. Focus carte déplacé par la souris et carte placée dans le parcours sans alternative
 
 - **Fichiers** : `src/components/carte/Map.vue`, `src/components/carte/Carto.vue`.
-- **Critere RGAA** : 7.1, 7.3, 10.7, 13.3.
-- **Constat** : `Map.vue` applique le focus au `mouseover`. Le conteneur principal est focusable, mais le code ne fournit pas de resume textuel des couches, resultats ou objets visibles. Les controles clavier propres a la carte ne sont pas definis dans ce composant.
-- **Impact** : le focus d'un utilisateur peut etre vole par un mouvement de souris ; un utilisateur de lecteur d'ecran peut atteindre une carte dont le contenu et les actions ne sont pas comprehensibles.
-- **Correctif propose** : supprimer le `mouseover` qui force le focus, donner un nom et une aide clavier a la carte et fournir une alternative textuelle equivalente.
+- **Critère RGAA** : 7.1, 7.3, 10.7, 13.3.
+- **Constat** : `Map.vue` applique le focus au `mouseover`. Le conteneur principal est focusable, mais le code ne fournit pas de résumé textuel des couches, résultats ou objets visibles. Les contrôles clavier propres à la carte ne sont pas définis dans ce composant.
+- **Impact** : le focus d'un utilisateur peut être volé par un mouvement de souris ; un utilisateur de lecteur d'écran peut atteindre une carte dont le contenu et les actions ne sont pas compréhensibles.
+- **Correctif proposé** : supprimer le `mouseover` qui force le focus, donner un nom et une aide clavier à la carte et fournir une alternative textuelle équivalente.
 - **Exemple de correction minimale** :
 
 ```vue
@@ -481,22 +481,22 @@ function onKeydown(event) {
   aria-describedby="map-keyboard-help"
 >
   <p id="map-keyboard-help" class="sr-only">
-    Utilisez les fleches pour vous deplacer dans la carte. Les controles de zoom sont disponibles avant la carte.
+    Utilisez les flèches pour vous déplacer dans la carte. Les contrôles de zoom sont disponibles avant la carte.
   </p>
   <slot />
 </div>
 ```
 
-- **Verification** : placer le focus sur un champ puis deplacer la souris au-dessus de la carte ; le focus ne doit pas changer. Atteindre ensuite la carte au clavier et lire son nom et son aide.
+- **Vérification** : placer le focus sur un champ puis déplacer la souris au-dessus de la carte ; le focus ne doit pas changer. Atteindre ensuite la carte au clavier et lire son nom et son aide.
 
-#### E. Visibilite clavier des menus et panneaux basee sur `v-show`/CSS
+#### E. Visibilité clavier des menus et panneaux basée sur `v-show`/CSS
 
 - **Fichiers** : `src/components/menu/MenuLateralWrapper.vue`, `src/components/menu/LeftMenuTool.vue`, `src/components/menu/RightMenuTool.vue`.
-- **Critere RGAA** : 7.1, 7.3, 12.8.
-- **Constat** : les panneaux utilisent `v-show` et des classes `activeTab`/`inactiveTab`. Le comportement attendu est probablement correct si le CSS applique `display: none`, mais il faut confirmer qu'aucun element masque ne reste focusable ou accessible aux lecteurs d'ecran. Le bouton de fermeture n'est pas relie au panneau par `aria-controls`.
-- **Impact** : un utilisateur peut tabuler vers un controle invisible, ou entendre le contenu d'un panneau qui semble ferme visuellement.
-- **Correctif propose** : utiliser `v-if` pour detruire les panneaux non actifs lorsque leur etat n'a pas besoin d'etre conserve, ou garantir `hidden`, `aria-hidden` et l'absence de focus sur tout panneau ferme.
-- **Exemple de code corrige** :
+- **Critère RGAA** : 7.1, 7.3, 12.8.
+- **Constat** : les panneaux utilisent `v-show` et des classes `activeTab`/`inactiveTab`. Le comportement attendu est probablement correct si le CSS applique `display: none`, mais il faut confirmer qu'aucun élément masqué ne reste focusable ou accessible aux lecteurs d'écran. Le bouton de fermeture n'est pas relié au panneau par `aria-controls`.
+- **Impact** : un utilisateur peut tabuler vers un contrôle invisible, ou entendre le contenu d'un panneau qui semble fermé visuellement.
+- **Correctif proposé** : utiliser `v-if` pour détruire les panneaux non actifs lorsque leur état n'a pas besoin d'être conservé, ou garantir `hidden`, `aria-hidden` et l'absence de focus sur tout panneau fermé.
+- **Exemple de code corrigé** :
 
 ```vue
 <section
@@ -516,7 +516,7 @@ function onKeydown(event) {
 </section>
 ```
 
-- **Verification** : fermer le panneau puis presser `Tab` ; aucun controle du panneau ferme ne doit recevoir le focus ni etre annonce.
+- **Vérification** : fermer le panneau puis presser `Tab` ; aucun contrôle du panneau fermé ne doit recevoir le focus ni être annoncé.
 
 ### Conclusion pour la page principale
 
