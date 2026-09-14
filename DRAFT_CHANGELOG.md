@@ -20,7 +20,7 @@
 
 #### 🐛 [Correction]
 
-- Menu Contextuel : le numéro de parcelle s'affiche correctement lorsqu'on clique sur Adresse & Coordonnées du lieu
+- Menu Contextuel : le numéro de parcelle s'affiche correctement lorsqu'on clique sur Adresse & Coordonnées du lieu (#1251)
 
 #### 🔒 [Sécurité]
 
