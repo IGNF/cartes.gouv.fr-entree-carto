@@ -28,7 +28,12 @@ import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 import ServiceError from '@/services/ServiceError';
 import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
-import { getLayersFromPermalink } from '@/features/permalink.js';
+import { 
+  loadPermalink, 
+  setShortPermalinkData, 
+  createShortPermalinkUrl } 
+from '@/features/permalink.js';
+
 import { toShare } from '@/features/share.js';
 import { 
   createVectorLayer, 
@@ -107,6 +112,9 @@ const onAddData = (data) => {
         fct = service.getService;
         break;
       case "carte":
+        // 2 formats possible : 
+        // - permalien classique : contient l'url du permalien
+        // - directement les données : contient les informations utiles de la carte
         fct = service.getCartes;
         break;
       default:
@@ -121,11 +129,25 @@ const onAddData = (data) => {
     .then((response) => {
       
       if (data.type === "carte") {
-        getLayersFromPermalink(response);
-        push.success({
-          title: t.bookmark.title,
-          message: t.bookmark.success_add_data("permalien")
-        });
+        var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") && 
+          Object.prototype.hasOwnProperty.call(response, "y") && 
+          Object.prototype.hasOwnProperty.call(response, "zoom") && 
+          Object.prototype.hasOwnProperty.call(response, "documents");
+        if (!isShortPermalink) {
+          // on charge le permalien classique
+          loadPermalink(response.permalink);
+          push.success({
+            title: t.bookmark.title,
+            message: t.bookmark.success_add_data("permalien")
+          });
+        } else {
+          // on transmet les informations utiles de la carte
+          setShortPermalinkData(response);
+          push.success({
+            title: t.bookmark.title,
+            message: t.bookmark.success_add_data("permalien court")
+          });
+        }
         return;
       }
       if (data.type === "service") {
@@ -158,10 +180,11 @@ const onAddData = (data) => {
       }
     })
     .then(() => {
+      // on ne notifie pas l'ajout d'une couche issue d'un permalien
       if (mapStore.isPermalink()) {
-        // on ne notifie pas l'ajout d'une couche du permalien
         return;
       }
+      // on notifie l'ajout d'une couche sur la carte
       push.success({
         title: t.bookmark.title,
         message: t.bookmark.success_add_data(document.extra.format),
@@ -202,6 +225,12 @@ var lstDocumentsCarte = [];
 
 const onClickButtonDelete = (e) => {
   console.debug(e);
+
+  if (props.data.type === "carte") {
+    // on ne supprime pas directement le document carte
+    isConfirmDeleteModalOpened.value = true;
+    return;
+  }
 
   // on recherche si le document est présent dans les cartes enregistrées
   lstDocumentsCarte = service.findInCartes(props.data.id);
@@ -351,7 +380,16 @@ const onClickButtonCopyPermalink = (e) => {
 
   service.getCartes(data.uuid)
   .then((response) => {
-    copy(response);
+    var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") &&
+      Object.prototype.hasOwnProperty.call(response, "y") &&
+      Object.prototype.hasOwnProperty.call(response, "zoom") &&
+      Object.prototype.hasOwnProperty.call(response, "documents");
+    if (!isShortPermalink) {
+      copy(response.permalink);
+    } else {
+      var shortPermalinkUrl = createShortPermalinkUrl(data.uuid);
+      copy(shortPermalinkUrl);
+    }
   })
   .then(() => {
     push.success({
@@ -460,7 +498,7 @@ const buttonsMap = [
   ...buttonsCommon,
   {
     label: 'Copier',
-    icon: "fr-icon-link",
+    icon: props.data.status ? "fr-icon-links-fill" : "fr-icon-link",
     "data-id": props.data.id,
     "data-type": props.data.type,
     "data-name": props.data.name,
@@ -651,16 +689,21 @@ const onModalExportClose = () => {
     cancel-label="Annuler"
     @confirm="onConfirmDeleteDocument"
   >
-    {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
-    <div v-if="lstDocumentsCarte.length > 0">
-      <ul class="fr-mt-2w">
-        <li
-          v-for="doc in lstDocumentsCarte"
-          :key="doc.id"
-        >
-          {{ doc.name }}
-        </li>
-      </ul>
+    <div v-if="props.type === 'map'">
+      {{ t.bookmark.warning_delete_permalink_in_bookmarks_carte }}
+    </div>
+    <div v-else>
+      {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
+      <div v-if="lstDocumentsCarte.length > 0">
+        <ul class="fr-mt-2w">
+          <li
+            v-for="doc in lstDocumentsCarte"
+            :key="doc.id"
+          >
+            {{ doc.name }}
+          </li>
+        </ul>
+      </div>
     </div>
   </ModalConfirm>  
   <slot />

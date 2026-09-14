@@ -21,6 +21,7 @@ Le menu contextuel affiché au clic droit est allégé, et l'information des cou
 
 - GFI : l'activation du getFeatureInfo se fait au clic gauche (#1232)
 - Menu Contextuel : le nombre d'entrées affichées dans le menu contextuel clic droit) est réduit (#1232)
+- Espce personnel : Mise en place du permalien court dans les favoris (#1216)
 
 #### 🔥 [Obsolète]
 
