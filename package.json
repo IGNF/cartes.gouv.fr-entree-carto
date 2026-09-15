@@ -1,9 +1,9 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.20",
+  "version": "1.0.20-hotfix-sso",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "07/09/2026",
+  "date": "15/09/2026",
   "directories": {},
   "engines": {
     "node": ">=24.15.0"
