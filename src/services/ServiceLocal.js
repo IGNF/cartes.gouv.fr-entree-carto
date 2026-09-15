@@ -20,6 +20,12 @@ const OAUTH_PKCE_STORAGE_KEY = "oauth2:pkce";
 const OAUTH_STATE_STORAGE_KEY = "oauth2:state";
 const OAUTH_CALLBACK_URL_STORAGE_KEY = "oauth2:callback-url";
 
+function buildLogoutRedirectUri (url, session) {
+  const redirectUrl = new URL(url);
+  redirectUrl.searchParams.set("session_status", session);
+  return encodeURIComponent(redirectUrl.toString());
+}
+
 function buildOAuthState () {
   if (window.crypto && window.crypto.getRandomValues) {
     const bytes = new Uint8Array(16);
@@ -217,6 +223,7 @@ class ServiceLocal extends ServiceBase {
     const code = urlParams.get('code');
     const session = urlParams.get('session_state');
     const error = urlParams.get('error');
+    const from = urlParams.get('from');
     let status = "no-auth";
 
     // On traite l'erreur IAM en priorité.
@@ -298,7 +305,7 @@ class ServiceLocal extends ServiceBase {
     // On détecte uniquement un vrai retour du logout IAM (session_state présent dans l'URL)
     // La condition "session === this.session" est volontairement exclue : elle produisait
     // un faux positif (null === null) quand aucune session n'était en cours.
-    if (!code && session !== null) {
+    if (!code && (session !== null || from === 'logout')) {
       this.session = null;
       this.code = null;
       this.authenticated = false;
@@ -399,8 +406,8 @@ class ServiceLocal extends ServiceBase {
       scope=openid%20profile%20email&
       approval_prompt=auto&
       response_type=code&
-      post_logout_redirect_uri=${url}?session_state=${this.session}&
-      client_id=${this.#client.settings.clientId}`.replace(/ /g, '');
+      client_id=${this.#client.settings.clientId}&
+      post_logout_redirect_uri=${buildLogoutRedirectUri(url, this.session)}`.replace(/ /g, '');
 
     return Promise.resolve(responseIAM);
   }
@@ -423,10 +430,11 @@ class ServiceLocal extends ServiceBase {
       return Promise.reject(new Error('No ID token available for silent logout'));
     }
     
+    
     var responseIAM = `${this.#client.settings.server}/realms/${this.#client.settings.index}/protocol/openid-connect/logout?
       id_token_hint=${this.token.idToken}&
-      post_logout_redirect_uri=${url}?session_state=${this.session}&
-      client_id=${this.#client.settings.clientId}`.replace(/ /g, '');
+      client_id=${this.#client.settings.clientId}&
+      post_logout_redirect_uri=${buildLogoutRedirectUri(url, this.session)}`.replace(/ /g, '');
 
     return Promise.resolve(responseIAM);
   } 
