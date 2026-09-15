@@ -221,7 +221,7 @@ class ServiceLocal extends ServiceBase {
     const urlParams = new URLSearchParams(location.search);
     // parametres
     const code = urlParams.get('code');
-    const session = urlParams.get('session_state');
+    const session = urlParams.get('session_state') || urlParams.get('session_status');
     const error = urlParams.get('error');
     const from = urlParams.get('from');
     let status = "no-auth";
@@ -302,7 +302,8 @@ class ServiceLocal extends ServiceBase {
     }
 
     // IAM logout local
-    // On détecte uniquement un vrai retour du logout IAM (session_state présent dans l'URL)
+    // Logout.vue consomme session_state/session_status puis redirige vers '/' avec from=logout,
+    // donc "session" est ici toujours null pour ce cas : la détection repose sur from === 'logout'.
     // La condition "session === this.session" est volontairement exclue : elle produisait
     // un faux positif (null === null) quand aucune session n'était en cours.
     if (!code && (session !== null || from === 'logout')) {
