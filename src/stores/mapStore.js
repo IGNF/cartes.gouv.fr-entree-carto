@@ -129,15 +129,12 @@ export const useMapStore = defineStore('map', () => {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage
         // elles sont gérées par en mode computed()
-        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "permalink") {
           continue;
         }
-        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "redirect") {
           continue;
         }
-        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "controls") {
           var myControls = params[key].split(",");
           defaultControls.forEach(function(defaultControl) {
@@ -147,7 +144,6 @@ export const useMapStore = defineStore('map', () => {
           })
         }
         var value = params[key];
-        // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
         if (key === "layers") {
           // 2 cas :
           // - permalink = yes : remplace la conf
@@ -425,26 +421,21 @@ export const useMapStore = defineStore('map', () => {
       for (const key in props) {
         if (Object.prototype.hasOwnProperty.call(props, key)) {
           const value = props[key];
-          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "position") {
             values[0] = value;
           }
-          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "opacity") {
             values[1] = value;
           }
-          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "visible") {
             values[2] = +value; // cast true -> 1 | false -> 0
           }
-          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "grayscale") {
             values[3] = +value; // cast true -> 1 | false -> 0
           }
           // INFO
           // property facultative
           // uniquement pour le TMS
-          // eslint-disable-next-line secure-coding/no-insecure-comparison -- comparaison de clefs metier, pas de secret
           if (key === "style") {
             values[4] = value;
           }

@@ -156,7 +156,6 @@ const createVectorLayer = async (options) => {
         format: vectorFormat,
         loader : function (extent, resolution, projection, success, failure) {
           const mapProj = projection.getCode();
-          // eslint-disable-next-line secure-coding/no-xxe-injection -- XMLHttpRequest est une API navigateur native, pas un parseur XML configurable ; XXE non applicable côté client
           const xhr = new XMLHttpRequest();
           xhr.open('GET', options.url);
           const onError = function(details) {
@@ -312,7 +311,6 @@ const createComputeLayer = async (options) => {
       // url: options.url
       loader : function (extent, resolution, projection, success, failure) {
         const mapProj = projection.getCode();
-        // eslint-disable-next-line secure-coding/no-xxe-injection -- XMLHttpRequest est une API navigateur native, pas un parseur XML configurable ; XXE non applicable côté client
         const xhr = new XMLHttpRequest();
         xhr.open('GET', options.url);
         const onError = function(details) {
