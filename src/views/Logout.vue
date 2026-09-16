@@ -20,6 +20,7 @@ onMounted(() => {
   var session = urlParams.get('session_state');
   var success = urlParams.get('success'); // remote
   var from = urlParams.get('from'); // logout redirection
+  var logoutCallback = urlParams.get('session_status') !== null;
 
   // INFO
   // La session expirée n'est plus utilisée 
@@ -66,10 +67,7 @@ onMounted(() => {
   // IAM de deconnexion redirige vers la route '/logout' aprés validation
   // Et, elle fournit la 'session' en mode 'local' ou 'success' pour le mode 'remote'
   var value = 0;
-  if (service.mode === "local" && session !== null) {
-    // HACK
-    // On considere que si on a une session, la deconnexion a reussi, 
-    // même si on ne peut pas le verifier
+  if (service.mode === "local" && (logoutCallback || session !== null)) {
     value = 1;
   } else if (service.mode === "remote" && success !== null) {
     value = parseInt(success, 10);
