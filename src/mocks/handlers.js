@@ -108,10 +108,14 @@ export const handlers = {
         response = [{
           "name": "academie",
           "size": 495,
+          "creation": "2025-01-10T10:00:00.000Z",
+          "update": "2025-01-12T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66aba0"
         },{
           "name": "insee",
           "size": 497,
+          "creation": "2025-01-11T10:00:00.000Z",
+          "update": "2025-01-13T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66aba1"
         }];
       }
@@ -119,14 +123,20 @@ export const handlers = {
         response = [{
           "name": "Profil altimétrique.geojson",
           "size": 20935,
+          "creation": "2025-02-10T10:00:00.000Z",
+          "update": "2025-02-12T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa0"
         },{
           "name": "isocurve (pieton).geojson",
           "size": 58050,
+          "creation": "2025-02-11T10:00:00.000Z",
+          "update": "2025-02-13T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa1"
         },{
           "name": "itineraire (voiture).geojson",
           "size": 8916,
+          "creation": "2025-02-12T10:00:00.000Z",
+          "update": "2025-02-14T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa2"
         }];
       }
@@ -134,10 +144,14 @@ export const handlers = {
         response = [{
           "name": "croquis1.kml",
           "size": 2621,
+          "creation": "2025-03-10T10:00:00.000Z",
+          "update": "2025-03-12T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa3"
         },{
           "name": "croquis2.kml",
           "size": 3652,
+          "creation": "2025-03-11T10:00:00.000Z",
+          "update": "2025-03-13T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa4"
         }];
       }
@@ -145,21 +159,29 @@ export const handlers = {
         response = [{
           "name": "regions.geojson",
           "size": 529739,
+          "creation": "2025-04-10T10:00:00.000Z",
+          "update": "2025-04-12T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
         },
         {
           "name": "rando_corse.gpx",
           "size": 70165,
+          "creation": "2025-04-11T10:00:00.000Z",
+          "update": "2025-04-13T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         },
         {
           "name": "decoupage_top100.kml",
           "size": 142017,
+          "creation": "2025-04-12T10:00:00.000Z",
+          "update": "2025-04-14T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa7"
         },
         {
           "name": "regions.json",
           "size": 142017,
+          "creation": "2025-04-13T10:00:00.000Z",
+          "update": "2025-04-15T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afa8"
         }];
       }
@@ -167,21 +189,29 @@ export const handlers = {
         response = [{
           "name": "wms.json",
           "size": 0,
+          "creation": "2025-05-10T10:00:00.000Z",
+          "update": "2025-05-12T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb0"
         },
         {
           "name": "wmts.json",
           "size": 0,
+          "creation": "2025-05-11T10:00:00.000Z",
+          "update": "2025-05-13T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb1"
         },
         {
           "name": "mapbox1.json",
           "size": 0,
+          "creation": "2025-05-12T10:00:00.000Z",
+          "update": "2025-05-14T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb2"
         },
         {
           "name": "mapbox2.json",
           "size": 0,
+          "creation": "2025-05-13T10:00:00.000Z",
+          "update": "2025-05-15T10:00:00.000Z",
           "_id": "3fa85f64-5717-4562-b3fc-2c963f66afb3"
         }];
       }
@@ -523,7 +553,7 @@ export const handlers = {
     http.post(`${API_URL}/users/me/documents`, async ({ request, /* params */ }) => {      
       const data = await request.formData();
       console.debug(...data);
-      const labels = data.getAll('labels');
+      const labels = data.getAll('labels').flatMap((value) => String(value).split(','));
       const file = data.get('file');
 
       // on simule un upload file
@@ -551,6 +581,8 @@ export const handlers = {
           "name": data.get("name"),
           "description": data.get("description"),
           "size": 3485,
+          "creation": "2025-06-01T10:00:00.000Z",
+          "update": "2025-06-01T10:00:00.000Z",
           "mime_type": file.type,
           "labels": [
             "cartes.gouv.fr",
@@ -607,5 +639,16 @@ export const handlers = {
     http.get(`${API_URL}/users/documents`, async (/* { request } */) => {
       return new HttpResponse(null, { status: 401 })
     })
-  ]
+  ],
+  error_quota : success.concat(
+    /**
+     * echec sur la création d'un document : quota de documents dépassé
+     */
+    http.post(`${API_URL}/users/me/documents`, async (/* { request } */) => {
+      return HttpResponse.json({
+        "error": "Conflit",
+        "error_description": ["Quota atteint"]
+      }, { status: 409 });
+    })
+  )
 }

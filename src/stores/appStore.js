@@ -38,6 +38,10 @@ const SCHEME_KEY_LS_CARTES = "vue-dsfr-scheme";
  */
 const DOCUMENT_TEMP_KEY_LS = "document-temporary";
 
+const isQuotaExceededError = (error) => {
+  return error?.name === "QuotaExceededError" || error?.code === 22 || error?.code === 1014;
+};
+
 export const useAppStore = defineStore('app', () => {
 
   // INFO version
@@ -103,17 +107,40 @@ export const useAppStore = defineStore('app', () => {
   var documentTemporary = useStorage(DOCUMENT_TEMP_KEY_LS, "");
 
   watch(documentTemporary, () => {
-    localStorage.setItem(DOCUMENT_TEMP_KEY_LS, documentTemporary.value);
+    try {
+      localStorage.setItem(DOCUMENT_TEMP_KEY_LS, documentTemporary.value);
+    } catch (error) {
+      if (isQuotaExceededError(error)) {
+        clearDocumentTemporary();
+        return;
+      }
+      throw error;
+    }
   })
 
   const setDocumentTemporary = (data) => {
-    documentTemporary.value = data;
+    try {
+      localStorage.setItem(DOCUMENT_TEMP_KEY_LS, data);
+      documentTemporary.value = data;
+      return true;
+    } catch (error) {
+      if (isQuotaExceededError(error)) {
+        clearDocumentTemporary();
+        return false;
+      }
+      throw error;
+    }
   }
   const getDocumentTemporary = () => {
     return documentTemporary.value;
   }
   const clearDocumentTemporary = () => {
-   documentTemporary.value = "";
+    documentTemporary.value = "";
+    try {
+      localStorage.removeItem(DOCUMENT_TEMP_KEY_LS);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return {
