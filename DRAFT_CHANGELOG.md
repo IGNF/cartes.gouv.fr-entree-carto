@@ -19,6 +19,7 @@ Corrections sur la barre de recherche, mise à jour du footer et du calcul d'azi
 - Espce personnel : Mise en place du permalien court dans les favoris (#1216)
 - Footer : Mise à jour cartes.gouv.fr-vue-components (#1286)
 - Mesure d'azimuth : activation de l’azimuth géodésique (#1285)
+- Reporting: intégration service anomaily + geocaptcha (#1284)
 
 #### 🔥 [Obsolète]
 
