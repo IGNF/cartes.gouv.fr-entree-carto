@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+- Reporting: intégration service anomaily + geocaptcha (#1284)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]

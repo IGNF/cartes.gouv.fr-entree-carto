@@ -11,6 +11,24 @@ import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
 import { Reporting } from 'geopf-extensions-openlayers';
 
+function loadScript (url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Impossible de charger ${url}`));
+
+        document.head.appendChild(script);
+    });
+}
+
 const emitter = inject('emitter');
 
 const props = defineProps({
@@ -41,6 +59,9 @@ emitter.addEventListener("reporting:open:clicked", (e) => {
   if (reporting.value) {
     reporting.value.setCollapsed(!e.open);
   }
+  // load geocaptcha
+  loadScript("https://geocaptcha.ign.fr/api/v1/lib.js?dsfr=true");
+
 });
 emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
   refModalReportingStart.value.openModalReportingStart(true);
