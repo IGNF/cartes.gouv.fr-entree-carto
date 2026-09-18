@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+  - Report d'anomalie : ajour d'une option pour désactiver la fonctionnalité
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
