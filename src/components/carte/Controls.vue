@@ -462,7 +462,6 @@ const elevationPathOptions = {
   id: "19",
   position: useControlsExtensionPosition().elevationPathOptions,
   gutter: false,
-  listable: false,
   elevationPathOptions : {
     serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`,
     resource : altiResource
