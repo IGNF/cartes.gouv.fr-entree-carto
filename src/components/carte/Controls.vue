@@ -304,6 +304,7 @@ const measureAzimuthOptions = {
   gutter: false,
   listable: true,
   id: "17",
+  geodesic: true,
 };
 
 const mousePositionOptions = {

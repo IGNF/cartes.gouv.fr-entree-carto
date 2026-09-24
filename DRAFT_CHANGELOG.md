@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+- MeasureAzimuth: activation de l’azimuth géodésique (#1285)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
