@@ -14,6 +14,7 @@
 
 #### 🔨 [Evolution]
 
+- Reporting: intégration service anomaily + geocaptcha (#1284)
 - MeasureAzimuth: activation de l’azimuth géodésique (#1285)
 
 #### 🔥 [Obsolète]

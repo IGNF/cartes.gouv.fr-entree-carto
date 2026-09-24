@@ -2,10 +2,13 @@ import {
   transform as olTransformProj
 } from "ol/proj";
 
+import { useMapStore } from "@/stores/mapStore";
+let mapStore = useMapStore();
+
 class MyServiceAction {
     constructor () {
         console.info("MyServiceAction constructor");
-        this.url = import.meta.env.VITE_GPF_SERVICE_ANOMALY || "https://www.geoportail.gouv.fr/wp-json/wp/v2";
+        this.url = import.meta.env.VITE_GPF_SERVICE_ANOMALY || "https://cartes.gouv.fr/anomaily";
     }
     // ######################################################## //
     // ########################## API ######################### //
@@ -25,14 +28,32 @@ class MyServiceAction {
     // ######################################################## //
     // ######################### privates ##################### //
 
+
+    _getCaptchaToken () {
+        return new Promise((resolve, reject) => {
+            if (!window.geoCaptcha) {
+                reject(new Error("GéoCaptcha non chargé"));
+            }
+            window.geoCaptcha.launch({
+                submit: resolve,
+                cancel: () => reject(new Error("GéoCaptcha non résolu")),
+            });
+        });
+    }
+
     /**
      * @summary
      * Le code est issu de l'appli mobile Carte IGN
      */
     async _send (data) {
         console.info("MyServiceAction #send", data);
+
+        // geocaptcha
+        let token = await this._getCaptchaToken(); // resolved uniquement si captcha ok
+        data.geocaptchaToken = token;
+
         var location = data.location.features[0].geometry.coordinates;
-        if (data.location.crs.properties.name !== "EPSG::4326") {
+        if (data.location.crs.properties.name !== "EPSG:4326") {
             // reprojection
             location = olTransformProj(
                 data.location.features[0].geometry.coordinates,
@@ -40,15 +61,6 @@ class MyServiceAction {
                 "EPSG:4326"
             );
         }
-        const permalink = `https://cartes.gouv.fr/cartes?c=${location[0]},${location[1]}&p=${location[0]},${location[1]}&z=11&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&permalink=yes`;
-        const anomaly = {
-            name: data.name + " (Anomalie) (cartes.gouv.fr)",
-            description: data.desc,
-            theme: data.theme,
-            permalink: permalink,
-            id_drawing: "",
-            mail: data.mail,
-        };
 
         // KML par défaut si aucun croquis n'a été renseigné
         // on positionne sur la saisie initiale
@@ -79,41 +91,43 @@ class MyServiceAction {
             </Point>
           </Placemark>
         </kml>`;
-        const drawing = {
-            is_anomaly: 1,
-            kml: data.drawing || kml,
-            layername: data.name,
-            name: data.name,
+
+        let layername = data.name + " (Anomalie) (cartes.gouv.fr)";
+        let mapZoom = Math.round(mapStore.getMap().getView().getZoom());
+
+        let anomaly = {
+            anomaly: {
+                name: layername,
+                description: data.desc,
+                theme: data.theme,
+                mail: data.mail,
+                center: location,
+                zoom: mapZoom,
+            },
+            drawing: {
+                kml: data.drawing || kml,
+                layername: layername,
+                name: layername,
+            },
+            geocaptchaToken: data.geocaptchaToken,
         };
 
-        const drawingRequestBody = {drawing: drawing};
-        const drawingResponse = await fetch(this.url + "/drawing", {
+        const response = await fetch(this.url + "/anomaly", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
+                "Authorization": "Bearer undefined",
             },
             mode: "cors",
-            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
             credentials: "same-origin",
-            body: JSON.stringify(drawingRequestBody),
+            body: JSON.stringify(anomaly),
         });
-        const drawingResults = await drawingResponse.json();
 
-        anomaly.id_drawing = drawingResults.drawing[0].id;
-
-        const requestBody = {anomaly: anomaly};
-        await fetch(this.url + "/anomaly", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer undefined", // eslint-disable-line secure-coding/no-hardcoded-credentials -- pas de token pour cette requête
-            },
-            mode: "cors",
-            // eslint-disable-next-line secure-coding/no-hardcoded-credentials -- option standard Fetch API (mode de gestion des cookies), pas un credential
-            credentials: "same-origin",
-            body: JSON.stringify(requestBody),
-        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => null);
+            const message = error?.message || "Erreur inconnue";
+            throw new Error(`Erreur du service (${response.status}) : ${message}`);
+        }
     }
 
 }
