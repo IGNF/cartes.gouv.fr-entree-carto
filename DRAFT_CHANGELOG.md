@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+- Mise à jour cartes.gouv.fr-vue-components (#1286)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
