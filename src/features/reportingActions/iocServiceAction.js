@@ -112,7 +112,7 @@ class MyServiceAction {
             geocaptchaToken: data.geocaptchaToken,
         };
 
-        await fetch(this.url + "/anomaly", {
+        const response = await fetch(this.url + "/anomaly", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -122,6 +122,12 @@ class MyServiceAction {
             credentials: "same-origin",
             body: JSON.stringify(anomaly),
         });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => null);
+            const message = error?.message || "Erreur inconnue";
+            throw new Error(`Erreur du service (${response.status}) : ${message}`);
+        }
     }
 
 }
