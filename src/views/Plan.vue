@@ -18,7 +18,7 @@ import { transformExtent as olTransformExtent } from 'ol/proj';
 
 import Patience from '@/components/utils/Patience.vue';
 import { getCityInfo } from '@/features/cityinfo';
-import { getLayersFromPermalink } from '@/features/permalink.js';
+import { loadPermalink } from '@/features/permalink.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -133,7 +133,7 @@ onMounted(async () => {
     // Redirection vers la page d'accueil avec les données de la ville dans le state
     await router.replace({ path: '/', state: { cityinfo: cityinfo } });
     // On charge le permalien pour afficher la carte centrée sur la ville avec les bonnes couches
-    getLayersFromPermalink(permalink);
+    loadPermalink(permalink);
   }
 })
 </script>
