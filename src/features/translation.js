@@ -39,16 +39,19 @@ export default {
     title: "Croquis",
     save_success: "Le croquis est enregistré dans l'espace personnel",
     save_failed: "Une erreur est survenue sur l'enregistrement du croquis",
-    restore_failed : "Une erreur est survenue lors de la restauration du document"
+    restore_failed : "Une erreur est survenue lors de la restauration du document",
+    temporary_save_failed: "Le croquis ne peut pas être conservé temporairement dans le navigateur (trop volumineux)."
   },
   layerimport: {
     title: "Import de couche",
     save_success: "L'import est enregistré dans l'espace personnel",
     save_failed: "Une erreur est survenue sur l'enregistrement de l'import",
+    save_auth_required: "Connectez-vous pour enregistrer l'import dans votre espace personnel.",
     add_success_service: (value) => { return `La couche du service "${value}" est ajoutée à la carte` },
     add_failed_service: (value) => { return `Une erreur est survenue dans l'ajout de la couche "${value}" !` },
     add_success_mapbox: "La couche MapBox est ajoutée à la carte",
     add_failed_mapbox: "Une erreur est survenue dans l'ajout de la couche MapBox !",
+    temporary_save_failed: "L'import ne peut pas être conservé temporairement dans le navigateur (trop volumineux)."
   },
   layerswitcher: {
     title: "Gestionnaire de couche",
@@ -101,5 +104,11 @@ export default {
     title: "Ajout de couche",
     unknown_add_layer: (name, service) => { return `La couche "${name}" du service "${service}" n'est pas reconnue dans le catalogue !` },
     exception_add_layer: (name, message) => { return `Erreur lors de l'ajout de la couche "${name}" : ${message}` }
+  },
+  generic : {
+    title: "Erreur",
+    unknown_error: "Une erreur inconnue est survenue",
+    quota_exceeded: (value) => { return `Le quota ou taille des documents a été atteint : ${value} !` },
+    quota_warning: "Le quota des documents a atteint 80% de l'espace disponible"
   }
 }

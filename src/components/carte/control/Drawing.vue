@@ -232,8 +232,7 @@ const saveTemporaryDocument = (payload) => {
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (payload.layer) {
-    serviceStore.setAuthentificateSyncNeeded(true);
-    appStore.setDocumentTemporary(JSON.stringify({
+    var bDocumentTemporarySaved = appStore.setDocumentTemporary(JSON.stringify({
       content : payload.content,
       name : payload.name,
       description : payload.description,
@@ -241,6 +240,14 @@ const saveTemporaryDocument = (payload) => {
       target : payload.target,
       type : payload.type
     }));
+    if (bDocumentTemporarySaved) {
+      serviceStore.setAuthentificateSyncNeeded(true);
+    } else {
+      push.warning({
+        title: t.drawing.title,
+        message: t.drawing.temporary_save_failed
+      });
+    }
   }
 };
 

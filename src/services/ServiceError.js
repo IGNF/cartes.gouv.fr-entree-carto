@@ -199,7 +199,8 @@ class ServiceError {
         });
 
         if (error) {
-            serviceError.cause = ServiceError.serializeCause(error);
+            // on privilégie la cause d'origine (payload utile) pour éviter un niveau de cause imbriqué en trop
+            serviceError.cause = ServiceError.serializeCause(error.cause !== undefined ? error.cause : error);
         }
 
         return serviceError;
