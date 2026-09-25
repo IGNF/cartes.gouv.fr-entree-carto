@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { CgfrModalCookies, CgfrModalTheme } from 'cartes.gouv.fr-vue-components';
+import { CgfrModalCookies, CgfrModalTheme } from '@ignf/cartes.gouv.fr-vue-components';
 
 import Modal from '@/components/modals/Modal.vue';
 import ModalConsent from '@/components/modals/ModalConsent.vue';
