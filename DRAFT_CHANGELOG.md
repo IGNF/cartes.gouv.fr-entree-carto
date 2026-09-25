@@ -14,6 +14,7 @@
 
 #### 🔨 [Evolution]
 
+- Mise à jour cartes.gouv.fr-vue-components (#1286)
 - Mesure d'azimuth: activation de l’azimuth géodésique (#1285)
 
 #### 🔥 [Obsolète]
