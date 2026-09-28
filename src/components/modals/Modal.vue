@@ -7,20 +7,19 @@
   >
     <slot />
 
-    <div
+    <template
       v-if="dismissible"
-      class="fr-mt-2v fr-ml-4v"
+      #footer
     >
       <DsfrCheckbox
         v-model="askDismiss"
-        class="fr-mt-8w"
         value="valeur 1"
         name="checkbox-simple"
         label="Ne plus afficher"
         small
         inline
       />
-    </div>
+    </template>
   </DsfrModal>
 </template>
 
@@ -81,3 +80,28 @@ let onDismiss = (modalName) => {
   localStorage.setItem(appStore.ns('modals'), JSON.stringify(dismissibleModals));
 }
 </script>
+
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+.fr-modal__footer {
+  align-items: center;
+
+  @include max(lg) {
+    flex-direction: column-reverse;
+  }
+}
+
+</style>
+
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
+.fr-fieldset__element {
+  margin: 0;
+
+  @include max(lg) {
+    margin-top: 1rem;
+  }
+}
+</style>
