@@ -476,6 +476,9 @@ const layerImportOptions = {
   gutter: true,
 };
 
+const isReportingDisabled = false;
+domStore.setReportingDisabled(isReportingDisabled);
+
 const reportingOptions = {
   id: "21",
   position: useControlsExtensionPosition().reportingOptions,
@@ -484,12 +487,9 @@ const reportingOptions = {
 };
 
 const contextMenuOptions = computed(() => {
-  return {
-    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
-    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
-    altiResource : altiResource,
-    contextMenuItemsOptions : [
-      {
+  const contextMenuItemsOptions = isReportingDisabled
+    ? []
+    : [{
         text : "Signaler une anomalie",
         callback : () => {
           setTimeout(() => {
@@ -505,8 +505,13 @@ const contextMenuOptions = computed(() => {
             });
           }, 0);
         }
-      }
-    ]
+      }];
+
+  return {
+    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
+    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
+    contextMenuItemsOptions
   }
 })
 
@@ -755,7 +760,7 @@ onMounted(() => {
     @ready="onControlReady('ContextMenu')"
   />
   <Reporting
-    v-if="controlOptions"
+    v-if="controlOptions && !domStore.isReportingDisabled"
     :visibility="props.controlOptions.includes(useControls.Reporting.id)"
     :analytic="useControls.Reporting.analytic"
     :reporting-options="reportingOptions"
