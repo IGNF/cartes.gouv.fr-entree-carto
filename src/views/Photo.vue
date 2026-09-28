@@ -16,7 +16,7 @@ import { onMounted } from 'vue';
 
 import Patience from '@/components/utils/Patience.vue';
 
-import { getLayersFromPermalink } from '@/features/permalink.js';
+import { loadPermalink } from '@/features/permalink.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -64,7 +64,7 @@ onMounted(async () => {
   
   // On charge le permalien pour afficher la carte centrée sur la photo 
   // sans detruire les couches déjà chargées
-  getLayersFromPermalink(permalink);
+  loadPermalink(permalink);
 });
 </script>
 

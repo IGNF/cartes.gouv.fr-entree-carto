@@ -12,7 +12,7 @@ import NotificationClose from '@/icons/NotificationClose.vue'
 import Alerts from '@/components/modals/Alerts.vue'
 import Modals from '@/components/modals/Modals.vue'
 import CustomHeader from '@/components/header/CustomHeader.vue'
-import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
+import { CgfrFooter } from '@ignf/cartes.gouv.fr-vue-components';
 
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'

@@ -304,6 +304,7 @@ const measureAzimuthOptions = {
   gutter: false,
   listable: true,
   id: "17",
+  geodesic: true,
 };
 
 const mousePositionOptions = {
@@ -475,7 +476,7 @@ const layerImportOptions = {
   gutter: true,
 };
 
-const isReportingDisabled = true;
+const isReportingDisabled = false;
 domStore.setReportingDisabled(isReportingDisabled);
 
 const reportingOptions = {
