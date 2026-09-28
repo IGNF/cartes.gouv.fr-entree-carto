@@ -19,6 +19,7 @@ export const useDomStore = defineStore('dom', () => {
   var BookmarksButton = ref();
   var leftControlMenu = ref();
   var rightControlMenu = ref();
+  var isReportingDisabled = ref(false);
   var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
   let isFullscreenPanoramax = ref(false);
 
@@ -50,6 +51,14 @@ export const useDomStore = defineStore('dom', () => {
     rightControlMenu.value = m;
   }
 
+  function getReportingDisabled () {
+    return isReportingDisabled.value;
+  }
+
+  function setReportingDisabled (value) {
+    isReportingDisabled.value = value;
+  }
+
   return {
     isHeaderCompact,
     isFullscreenPanoramax,
@@ -57,6 +66,7 @@ export const useDomStore = defineStore('dom', () => {
     leftControlMenu,
     rightControlMenu,
     BookmarksButton,
+    isReportingDisabled,
     getmenuCatalogueButton,
     setmenuCatalogueButton,
     getBookmarksButton,
@@ -65,5 +75,7 @@ export const useDomStore = defineStore('dom', () => {
     setrightControlMenu,
     getleftControlMenu,
     setleftControlMenu,
+    getReportingDisabled,
+    setReportingDisabled,
   }
 });

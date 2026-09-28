@@ -111,8 +111,9 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isReportingDisabled }"
       icon="fr-icon-feedback-line"
-      @click="onOpenControlReporting()"
+      @click="!domStore.isReportingDisabled && onOpenControlReporting()"
     >
       Signaler une anomalie
     </DsfrButton>
