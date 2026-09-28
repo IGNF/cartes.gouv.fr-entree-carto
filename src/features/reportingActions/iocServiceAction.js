@@ -14,6 +14,15 @@ class MyServiceAction {
     // ########################## API ######################### //
     active () {
         console.info("MyServiceAction active");
+
+        // add geocaptcha information
+        let geocaptchaElement = document.querySelector('.geocaptcha-element-info') || document.createElement('p');
+        geocaptchaElement.classList.add('geocaptcha-element-info', 'fr-hint-text', 'fr-mt-3w', 'fr-mb-0');
+        geocaptchaElement.innerText = "Ce formulaire nécessite la validation d’un captcha, qui sera automatiquement lancé lors de la soumission du formulaire.";
+        let inputMail = document.querySelector('[name="GPreportingLabelEmail"]');
+        if (inputMail) {
+            inputMail.after(geocaptchaElement);
+        }
     }
     disable () {
         console.info("MyServiceAction disable");
