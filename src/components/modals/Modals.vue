@@ -26,7 +26,7 @@
           },
         },
         {
-          label: 'En savoir plus',
+          label: 'Découvrir cartes.gouv.fr',
           secondary: true,
           onClick () {
             setUrl('/decouvrir');
