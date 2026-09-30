@@ -4,7 +4,6 @@ import { ref, computed, reactive, inject } from 'vue';
 
 import { useElementSize } from '@vueuse/core';
 import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian.js';
 
 import MapView from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
@@ -22,7 +21,6 @@ import { renderMapCanvasForExport } from './printUtils/mapExport.js';
 
 import { jsPDF } from "jspdf";
 
-const eulerian = useEulerian();
 const mapStore = useMapStore();
 
 // INFO
@@ -69,12 +67,10 @@ const isExportInProgress = ref(false);
 const onModalPrintOpen = () => {
   emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
-  eulerian.pause();
 };
 const onModalPrintClose = () => {
   isExportInProgress.value = false;
   printModalOpened.value = false;
-  eulerian.resume();
   mapStore.getMap().renderSync();
 };
 

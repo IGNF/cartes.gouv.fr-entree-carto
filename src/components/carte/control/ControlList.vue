@@ -1,7 +1,6 @@
 <script setup lang="js">
 import { nextTick } from "vue";
 import { useMapStore } from "@/stores/mapStore";
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import {
   ControlList
 } from 'geopf-extensions-openlayers';
@@ -14,7 +13,6 @@ const mapStore = useMapStore();
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
   controlListOptions: { type: Object, default: () => ({}) }
 });
 
@@ -100,29 +98,8 @@ onMounted(() => {
   applyControlsOrder();
   if (props.visibility) {
     map.addControl(controlList);
-    if (props.analytic) {
-      var el = controlList.element.querySelector("button[id^=GPshowControlListPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
-
-// onBeforeUpdate(() => {
-//   if (!props.visibility) {
-//     map.removeControl(controlList.value);
-//   }
-// })
-
-// onUpdated(() => {
-//   if (props.visibility) {
-//     map.addControl(controlList.value);
-//     if (props.analytic) {
-//       var el = controlList.value.element.querySelector("button[id^=GPshowControlListPicto-]");
-//       useActionButtonEulerian(el);
-//     }
-//   }
-// })
-
 
 watch(
   () => props.visibility,

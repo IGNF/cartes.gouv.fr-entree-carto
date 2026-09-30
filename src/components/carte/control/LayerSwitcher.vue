@@ -3,7 +3,6 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import {
     transformExtent as olTransformExtentProj
@@ -21,7 +20,6 @@ const props = defineProps({
     required: true
   },
   visibility: Boolean,
-  analytic: Boolean,
   layerSwitcherOptions: {
     type: Object,
     default: () => ({})
@@ -43,10 +41,6 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(layerSwitcher.value);
-    if (props.analytic) {
-      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
     layerSwitcher.value.on("layerswitcher:remove", onRemoveLayer);
@@ -63,10 +57,6 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (!props.visibility) {
     map.removeControl(layerSwitcher.value);
-    if (props.analytic) {
-      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 

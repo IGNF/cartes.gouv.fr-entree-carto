@@ -2,7 +2,6 @@
 
 import { useLogger } from 'vue-logger-plugin';
 
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
 import ReportingSuccessSentModal from '@/components/modals/ModalReportingSuccessSent.vue';
 import ReportingStartModal from '@/components/modals/ModalReportingStart.vue';
@@ -37,7 +36,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   reportingOptions: {
     type: Object,
     default: () => ({})
@@ -79,10 +77,6 @@ onMounted(() => {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value)
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget */
     reporting.value.on("reporting:sending", onSendingReporting);
   }
@@ -99,10 +93,6 @@ onUpdated(() => {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value);
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
