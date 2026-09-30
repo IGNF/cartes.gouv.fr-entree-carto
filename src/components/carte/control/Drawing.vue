@@ -10,7 +10,6 @@
 </script>
 
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
@@ -48,7 +47,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   drawingOptions: {
     type: Object,
     default: () => ({})
@@ -254,10 +252,6 @@ onMounted(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
@@ -284,10 +278,6 @@ onBeforeUpdate(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);

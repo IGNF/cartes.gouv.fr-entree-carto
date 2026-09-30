@@ -14,6 +14,8 @@ Corrections sur la barre de recherche, mise à jour du footer et du calcul d'azi
 
 #### ✨ [Ajout]
 
+- Intégration Matomo IGN (#1322)
+
 #### 🔨 [Evolution]
 
 - Report d'anomalie : ajour d'une option pour désactiver la fonctionnalité (#1280)

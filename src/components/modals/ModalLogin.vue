@@ -10,10 +10,8 @@ export default {
 
 <script setup lang="js">
 import { useRouter } from 'vue-router';
-import { useEulerian } from '@/plugins/Eulerian';
 import { useMapStore } from "@/stores/mapStore";
 
-const eulerian = useEulerian();
 const router = useRouter();
 const store = useMapStore();
 
@@ -41,19 +39,13 @@ const opened = ref(false);
 const style = ref({ display: "none" });
 const active = ref(false);
 
-if (opened.value) {
-  eulerian.pause();
-}
-
 const openModalLogin = (active) => {
   style.value = (active) ? { display: "block" } : { display: "none" };
   opened.value = true;
-  eulerian.pause();
 };
 
 const onModalLoginClose = () => {
   opened.value = false;
-  eulerian.resume();
 };
 
 const onModalLoginNoInformation = (status) => {
