@@ -15,16 +15,12 @@ import {
 
 const emitter = inject('emitter');
 
-// FIXME
-// choisir où placer le tracker Eulerian sur ce widget !
-
 const props = defineProps({
   mapId: {
     type: String,
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   searchEngineOptions: {
     type: Object,
     default: () => ({})

@@ -8,7 +8,6 @@
  *    id: 'OverviewMap',
  *    active: true,      // rendre actif le widget sur la carte
  *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
- *    analytic: false    // remontée d'interaction pour Eulerian sur le clic du bouton principal
  *    default: true      // actif par défaut sur la carte
  *    icon: "ri:navigation-line" // icône du contrôle
  * }
@@ -30,7 +29,6 @@ export const useControls = {
     id: 'Catalog',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "fr-icon-feedback-line"
   },
@@ -38,7 +36,6 @@ export const useControls = {
     id: 'LayerSwitcher',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "fr-icon-stack-line"
   },
@@ -46,7 +43,6 @@ export const useControls = {
     id: 'MeasureLength',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:ruler-line"
   },
@@ -54,7 +50,6 @@ export const useControls = {
     id: 'MeasureArea',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:custom-size"
   },
@@ -62,7 +57,6 @@ export const useControls = {
     id: 'Drawing',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:pencil-line"
   },
@@ -70,7 +64,6 @@ export const useControls = {
     id: 'Route',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:route-line"
   },
@@ -78,7 +71,6 @@ export const useControls = {
     id: 'Isocurve',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:map-pin-time-line"
   },
@@ -86,7 +78,6 @@ export const useControls = {
     id: 'ReverseGeocode',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:signpost-line"
   },
@@ -94,7 +85,6 @@ export const useControls = {
     id: 'MousePosition',
     active: true,
     disable: false,
-    analytic: false,
     default: true,
     icon: "gpf:coordonnee"
   },
@@ -102,7 +92,6 @@ export const useControls = {
     id: 'ElevationPath',
     active: true,
     disable: false,
-    analytic: false,
     default: true,
     icon: "ri:line-chart-line"
   },
@@ -110,7 +99,6 @@ export const useControls = {
     id: 'MeasureAzimuth',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "ri:compasses-2-line"
   },
@@ -118,7 +106,6 @@ export const useControls = {
     id: 'ControlList',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "ri:list-check"
   },
@@ -126,7 +113,6 @@ export const useControls = {
     id: 'OverviewMap',
     active: false,
     disable: false,
-    analytic: true,
     default: false,
     icon: "ri:navigation-line"
   },
@@ -134,7 +120,6 @@ export const useControls = {
     id: 'SearchEngine',
     active: true,
     disable: true,
-    analytic: false,
     default: true,
     icon: "ri:search-line"
   },
@@ -142,7 +127,6 @@ export const useControls = {
     id: 'ScaleLine',
     active: true,
     disable: true,
-    analytic: false,
     default: true,
     // The ScaleLine control is a non-interactive widget and does not require an icon.
     icon: ""
@@ -151,7 +135,6 @@ export const useControls = {
     id: 'GetFeatureInfo',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "gpf:getfeature-line"
   },
@@ -159,7 +142,6 @@ export const useControls = {
     id: 'Legends',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "ri:list-indefinite"
   },
@@ -167,7 +149,6 @@ export const useControls = {
     id: 'Zoom',
     active: true,
     disable: false,
-    analytic: false,
     default: !isMobile.value,
     icon: "ri:zoom-in-line"
   },
@@ -175,7 +156,6 @@ export const useControls = {
     id: 'FullScreen',
     active: true,
     disable: false,
-    analytic: false,
     default: true,
     icon: "ri:fullscreen-line"
   },
@@ -183,7 +163,6 @@ export const useControls = {
     id: 'Share',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "ri:map-2-line"
   },
@@ -191,7 +170,6 @@ export const useControls = {
     id: 'Print',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "fr-icon-printer-line"
   },
@@ -199,7 +177,6 @@ export const useControls = {
     id: 'Territories',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "fr-icon-france-line"
   },
@@ -207,7 +184,6 @@ export const useControls = {
     id: 'LayerImport',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "ri:file-upload-line"
   },
@@ -215,7 +191,6 @@ export const useControls = {
     id: 'ContextMenu',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "ri:menu-2-line"
   },
@@ -223,7 +198,6 @@ export const useControls = {
     id: 'Reporting',
     active: true,
     disable: true,
-    analytic: true,
     default: true,
     icon: "fr-icon-feedback-line" // ri:feedback-line
   },
@@ -231,7 +205,6 @@ export const useControls = {
     id: 'Panoramax',
     active: true,
     disable: false,
-    analytic: true,
     default: true,
     icon: "gpf:panoramax"
   }

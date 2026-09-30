@@ -4,7 +4,6 @@ import ScaleLine from 'ol/control/ScaleLine'
 
 // FIXME
 // - utiliser le widget GeoportalScaleLine !
-// - tracker Eulerian ?
 
 const props = defineProps({
   mapId: {
@@ -12,7 +11,6 @@ const props = defineProps({
     required: true
   },
   visibility: Boolean,
-  analytic: Boolean,
   scaleLineOptions: {
     type: Object,
     default: () => ({})
