@@ -171176,7 +171176,7 @@
         "title": "TAAF Îles Australes",
         "description": "",
         "zoom": null,
-        "bbox": [-154.72, -27.90, -143.48, -21],
+        "bbox": [49.0, -45, 80.5, -36.50],
         "icon": "img/territories/aus.svg"
     },
     {
