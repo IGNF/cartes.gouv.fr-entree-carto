@@ -636,6 +636,7 @@ export function useControlsOptions () {
           id : "base",
           order : false,
           featured : true,
+          producer: false,
           filter : {
             field : "base",
             value : "true"
