@@ -1,0 +1,5 @@
+
+{
+  "date": "11/01/2025",
+  "permalink": "http://localhost:5173/cartes.gouv.fr-entree-carto?c=2.3296522028125297,48.85822042904283&z=12&l=ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;1;0),LIMITES_ADMINISTRATIVES_EXPRESS.LATEST$GEOPORTAIL:OGC:WMTS(1;1;0),ACADEMIES.2015$GEOPORTAIL:OGC:WMS(1;1;0),DEPARTEMENT.2015$GEOPORTAIL:OGC:WMS(1;1;0)&w=OverviewMap,SearchEngine,ScaleLine,LayerSwitcher,GetFeatureInfo,Legends,Zoom,FullScreen,Share,Print,Territories,LayerImport,ControlList&permalink=yes"
+}
