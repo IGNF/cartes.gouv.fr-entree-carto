@@ -1,12 +1,20 @@
 {
   "territories": [
     {
-        "id": "FXX",
-        "title": "France métropolitaine",
+        "id": "FHX",
+        "title": "France hexagonale",
         "description": "",
         "zoom": null,
         "bbox": [-9.86, 41.15, 10.38, 51.56],
-        "icon": "img/territories/fxx.svg"
+        "icon": "img/territories/fhx.svg"
+    },
+    {
+        "id": "COR",
+        "title": "Corse",
+        "description": "",
+        "zoom": null,
+        "bbox": [8.20, 41.15, 9.80, 43.23],
+        "icon": "img/territories/cor.svg"
     },
     {
         "id": "IDF",
@@ -105,12 +113,36 @@
         "icon": "img/territories/ncl.svg"
     },
     {
-        "id": "ATF",
-        "title": "Terres australes et antarctiques françaises",
+        "id": "EPA",
+        "title": "TAAF Îles Éparses",
         "description": "",
         "zoom": null,
-        "bbox": [50.00, -60.00, 90.00, -45.00],
-        "icon": "img/territories/atf.svg"
+        "bbox": [39.75, -22.33, 54.52, -11.55],
+        "icon": "img/territories/epa.svg"
+    },
+    {
+        "id": "AUS",
+        "title": "TAAF Îles Australes",
+        "description": "",
+        "zoom": null,
+        "bbox": [49.0, -51.97, 80.5, -36.50],
+        "icon": "img/territories/aus.svg"
+    },
+    {
+        "id": "ADE",
+        "title": "TAAF Terre Adélie",
+        "description": "",
+        "zoom": null,
+        "bbox": [136,-70, 142,-66],
+        "icon": "img/territories/ade.svg"
+    },
+    {
+        "id": "CLP",
+        "title": "Clipperton",
+        "description": "",
+        "zoom": null,
+        "bbox": [-109.25, 10.27, -109.20, 10.33],
+        "icon": "img/territories/clp.svg"
     }
   ]
 }
