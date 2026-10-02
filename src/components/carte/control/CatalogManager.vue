@@ -152,4 +152,9 @@ watch(
   max-height: 100% !important;
   overflow: initial !important;
 }
+
+// masque les producteurs pour les couches "base"
+#GPcatalogContainerTabs [role="label-collapse-more-base"] + span {
+  display: none;
+}
 </style>
