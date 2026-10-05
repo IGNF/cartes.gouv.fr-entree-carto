@@ -42,7 +42,7 @@ log.debug(props.layerOptions);
 const dataStore = useDataStore();
 const mapStore = useMapStore();
 
-const emit = defineEmits(['mounted', 'unmounted']);
+const emit = defineEmits(['mounted', 'unmounted', 'error']);
 
 const map = inject(props.mapId);
 var layer = null;
@@ -159,74 +159,85 @@ onMounted(() => {
     // INFO
     // ajout du traitement des couches issues du catalogue
     if (name && service) {
-      var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
-      var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
-      value.params = params; // fusion
-
-      var options = {
-        position : props.layerOptions.position,
-        visible : props.layerOptions.visible,
-        opacity : props.layerOptions.opacity,
-        grayscale : props.layerOptions.grayscale,
-        sourceParams : {crossOrigin : 'anonymous'},
-        permalink : props.layerOptions.permalink || false
-      };
-      
-      const olParams = {
-        ...options,
-        preload : Infinity,
-        cacheSize : 1024
-      };
-
-      log.debug("layer to add (catalog)", name, service, options, value);
-      switch (service) {
-        case "WMS":
-          layer = new GeoportalWMS({
-            layer : name,
-            configuration : value,
-            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
-            olParams
-          });
-          break;
-        case "WMTS":
-          layer = new GeoportalWMTS({
-            layer : name,
-            configuration : value,
-            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
-            olParams
-          });
-          break;
-        case "TMS":
-          options.declutter = true;
-          options.styleName = props.layerOptions.style || "default";
-          layer = new GeoportalMapBox({
-            layer : name,
-            style : props.layerOptions.style,
-            configuration : value,
-            apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
-          }, options);
-          break;
-        default:
-      }
-
-      if (layer) {
-        log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
-        if (position !== layer.getZIndex()) {
-          if (Number(position) === -1) {
-            log.debug(name, "| position auto");
-          } else {
-            log.debug(name, "| change position", position);
-            layer.setZIndex(Number(position));
-          }
+      try {
+        var value  = dataStore.getLayerByName(props.layerOptions.name, props.layerOptions.service);
+        if (!value) {
+          throw new Error("Couche introuvable dans le catalogue");
         }
-        map.addLayer(layer);
-        emit('mounted');
-      } else {
-        log.warn("La couche n'est pas reconnue !");
-        push.warning({
-          title: t.notification.title,
-          message: t.notification.unknown_add_layer(name, service)
-        });
+        var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
+        value.params = params; // fusion
+
+        var options = {
+          position : props.layerOptions.position,
+          visible : props.layerOptions.visible,
+          opacity : props.layerOptions.opacity,
+          grayscale : props.layerOptions.grayscale,
+          sourceParams : {crossOrigin : 'anonymous'},
+          permalink : props.layerOptions.permalink || false
+        };
+        
+        const olParams = {
+          ...options,
+          preload : Infinity,
+          cacheSize : 1024
+        };
+
+        log.debug("layer to add (catalog)", name, service, options, value);
+        switch (service) {
+          case "WMS":
+            layer = new GeoportalWMS({
+              layer : name,
+              configuration : value,
+              apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
+              olParams
+            });
+            break;
+          case "WMTS":
+            layer = new GeoportalWMTS({
+              layer : name,
+              configuration : value,
+              apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
+              olParams
+            });
+            break;
+          case "TMS":
+            options.declutter = true;
+            options.styleName = props.layerOptions.style || "default";
+            layer = new GeoportalMapBox({
+              layer : name,
+              style : props.layerOptions.style,
+              configuration : value,
+              apiKey : "entree-carto", // eslint-disable-line secure-coding/no-hardcoded-credentials -- clef publique
+            }, options);
+            break;
+          default:
+        }
+
+        if (layer) {
+          log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
+          if (position !== layer.getZIndex()) {
+            if (Number(position) === -1) {
+              log.debug(name, "| position auto");
+            } else {
+              log.debug(name, "| change position", position);
+              layer.setZIndex(Number(position));
+            }
+          }
+          map.addLayer(layer);
+          emit('mounted');
+        } else {
+          log.warn("La couche n'est pas reconnue !");
+          push.warning({
+            title: t.notification.title,
+            message: t.notification.unknown_add_layer(name, service)
+          });
+        }
+      } catch (e) {
+        log.warn("Exception sur la couche " + name + " !");
+        console.warn(e);
+        // Émettre un événement pour notifier le parent de retirer la couche du store
+        // (le warning sera géré par le parent via onLayerError)
+        emit('error', { id: props.layerOptions.key, name: name, error: e });
       }
       return;
     }
@@ -352,10 +363,9 @@ onMounted(() => {
       } catch (e) {
         log.warn("Exception sur la couche " + name + " !");
         console.warn(e);
-        push.warning({
-          title: t.notification.title,
-          message: t.notification.exception_add_layer(name, e.message)
-        });
+        // Émettre un événement pour notifier le parent de retirer la couche du store
+        // (le warning sera géré par le parent via onLayerError)
+        emit('error', { id: props.layerOptions.key, name: name, error: e });
       }
     }
   };
@@ -367,10 +377,9 @@ onMounted(() => {
       const name = props.layerOptions.name || props.layerOptions.id || "inconnue";
       log.warn("Exception sur la couche " + name + " !");
       console.warn(e);
-      push.warning({
-        title: t.notification.title,
-        message: t.notification.exception_add_layer(name, e.message)
-      });
+      // Émettre un événement pour notifier le parent de retirer la couche du store
+      // (le warning sera géré par le parent via onLayerError)
+      emit('error', { id: props.layerOptions.key, name: name, error: e });
     })
   );
 })
