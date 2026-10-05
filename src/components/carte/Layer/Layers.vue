@@ -5,7 +5,6 @@ import Layer from '@/components/carte/Layer/Layer.vue'
 import { removePermalink } from '@/features/permalink.js';
 import { useMapStore } from '@/stores/mapStore';
 import { push } from 'notivue'
-import t from '@/features/translation';
 
 const props = defineProps({
   selectedLayers: {
