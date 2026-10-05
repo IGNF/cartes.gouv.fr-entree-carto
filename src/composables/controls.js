@@ -16,6 +16,7 @@
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useDataStore } from "@/stores/dataStore";
 import { LayerWMTS as GeoportalWMTS } from 'geopf-extensions-openlayers';
+import { useLogger } from 'vue-logger-plugin';
 
 let isMobile = useMatchMedia('SM');
 
@@ -682,15 +683,29 @@ export function useControlsOptions () {
       id: "7",
       collapsed: false,
       position: useControlsExtensionPosition().overviewMapOptions,
-      layers : [
-        new GeoportalWMTS({
-          layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
-          configuration : {
-            ...dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS"),
-            params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+      layers : (() => {
+        try {
+          const log = useLogger();
+          const planIgnV2Data = dataStore.getLayerByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS");
+          if (!planIgnV2Data) {
+            log.warn("La couche PLANIGNV2 est introuvable dans le catalogue");
+            return [];
           }
-        })
-      ]
+          return [
+            new GeoportalWMTS({
+              layer : "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+              configuration : {
+                ...planIgnV2Data,
+                params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+              }
+            })
+          ];
+        } catch (e) {
+          const log = useLogger();
+          log.warn("Erreur lors de la création de la couche PLANIGNV2 pour l'overviewMap", e);
+          return [];
+        }
+      })()
     },
   };
 };
