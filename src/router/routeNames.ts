@@ -5,4 +5,5 @@ export const ROUTE_NAMES = {
   LOGOUT: 'Se deconnecter',
   BOOKMARKS: 'Favoris',
   PLAN: 'Plan',
+  NOT_FOUND: 'Page non trouvée',
 } as const;

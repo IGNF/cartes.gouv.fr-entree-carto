@@ -47,6 +47,18 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Photo',
     component: () => import('../views/Photo.vue'), // Lazy loading
     props: true
+  },
+  {
+    path: '/404',
+    name: ROUTE_NAMES.NOT_FOUND,
+    component: () => import('../views/NotFound.vue'),
+    meta: {
+      title: ROUTE_NAMES.NOT_FOUND,
+    },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: ROUTE_NAMES.NOT_FOUND },
   }
 ]
 
