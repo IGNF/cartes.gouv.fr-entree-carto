@@ -49,16 +49,12 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/404',
+    path: '/:pathMatch(.*)*',
     name: ROUTE_NAMES.NOT_FOUND,
     component: () => import('../views/NotFound.vue'),
     meta: {
       title: ROUTE_NAMES.NOT_FOUND,
     },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: { name: ROUTE_NAMES.NOT_FOUND },
   }
 ]
 
