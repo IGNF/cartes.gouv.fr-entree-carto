@@ -62,14 +62,29 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-<div class="fr-container fr-my-7w fr-mt-md-12w fr-mb-md-10w">
-  <DsfrErrorPage
-    :title="title"
-    :subtitle="subtitle"
-    :description="description"
-    :help="help"
-    :buttons="buttons"
-  />
-</div>
+  <div class="not-found-page fr-container fr-my-7w fr-mt-md-12w fr-mb-md-10w">
+    <DsfrErrorPage
+      :title="title"
+      :subtitle="subtitle"
+      :description="description"
+      :help="help"
+      :buttons="buttons"
+    />
+  </div>
 </template>
+
+<style scoped>
+.not-found-page {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 48em) {
+  .not-found-page {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding-inline: 1rem;
+  }
+}
+</style>
 
