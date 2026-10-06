@@ -4,6 +4,7 @@ import {
 
 import { useScheme } from '@gouvminint/vue-dsfr';
 import { useStorage } from '@vueuse/core';
+import { useClearStorage } from '@/composables/clearStorage';
 
 const { setScheme, scheme } = useScheme();
 
@@ -48,7 +49,7 @@ export const useAppStore = defineStore('app', () => {
   // si la version du localStorage est differente de celle du code,
   // on nettoie le localStorage et on enregistre la bonne version.
   if (version.value !== VERSION) {
-    localStorage.clear();
+    useClearStorage(NAMESPACE);
     localStorage.setItem(ns('version'), VERSION);
     version.value = VERSION;
   }
