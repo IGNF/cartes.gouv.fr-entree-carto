@@ -640,6 +640,9 @@ export const useMapStore = defineStore('map', () => {
   function getTerritories() {
     return parseTerritories();
   }
+  function cleanTerritories() {
+    territories.value = "";
+  }
   function addTerritory(json_territory) {
     if (!json_territory) {
       return;
@@ -683,6 +686,7 @@ export const useMapStore = defineStore('map', () => {
     isPermalink,
     noLoginInformation,
     getTerritories,
+    cleanTerritories,
     addTerritory,
     removeTerritory,
     addTerritories,
