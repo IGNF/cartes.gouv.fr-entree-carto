@@ -10,18 +10,16 @@ export default {
 
 <script setup lang="js">
 
-import { useEulerian } from '@/plugins/Eulerian';
 import { useMapStore } from "@/stores/mapStore";
 import { useDataStore } from "@/stores/dataStore";
 import { useBaseUrl } from '@/composables/baseUrl';
 
 const emitter = inject('emitter');
 
-const eulerian = useEulerian();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const faq = `${useBaseUrl()}/aide/fr/`;
+const faq = `${useBaseUrl()}/aide/fr/guides-utilisateur/visualiseur-cartographique/signaler-une-anomalie/`;
 const title = "Avant d'effectuer un signalement";
 const icon = 'fr-icon-feedback-line';
 const actions = [
@@ -45,19 +43,13 @@ const actions = [
 const opened = ref(false);
 const style = ref({ display: "none" });
 
-if (opened.value) {
-  eulerian.pause();
-}
-
 const openModalReportingStart = (active) => {
   style.value = (active) ? { display: "block" } : { display: "none" };
   opened.value = true;
-  eulerian.pause();
 };
 
 const onModalReportingStartClose = () => {
   opened.value = false;
-  eulerian.resume();
   emitter.dispatchEvent("reporting:open:clicked", {
     open : true,
     componentName: "Reporting"

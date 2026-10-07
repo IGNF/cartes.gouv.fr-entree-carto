@@ -5,13 +5,9 @@ import {
   GeoportalZoom
 } from 'geopf-extensions-openlayers'
 
-// FIXME
-// tracker Eulerian !?
-
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
   zoomOptions: { type: Object, default: () => ({}) }
 })
 

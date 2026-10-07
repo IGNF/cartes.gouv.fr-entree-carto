@@ -5,6 +5,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
+import { loadShortPermalink } from '@/features/permalink';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
@@ -119,17 +120,33 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
-          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // FIXME 
+          // si on a plusieurs onglets ouverts sur un même navigateur,
           // la suppression du localStorage est répercutée sur tous les onglets !
+          // mais, on ne souhaite pas un nettoyage aussi radical...
           // localStorage.removeItem(key);
         }
       });
     }
+    // on est sur un permalien en mode réduit
+    if (type === "short") {
+      loadShortPermalink(params.sid)
+      .then((data) => {
+        console.debug("Permalien court récupéré :", data);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération du permalien court :", error);
+      });
+    }
+
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage
         // elles sont gérées par en mode computed()
         if (key === "permalink") {
+          continue;
+        }
+        if (key === "sid") {
           continue;
         }
         if (key === "redirect") {
@@ -238,7 +255,7 @@ export const useMapStore = defineStore('map', () => {
   });
 
   var isPermalink = () => {
-    return location.search.includes("permalink=yes");
+    return location.search.includes("permalink=yes") || location.search.includes("permalink=short");
   };
   
   var permalink = computed(() => {
@@ -613,6 +630,9 @@ export const useMapStore = defineStore('map', () => {
   function getTerritories() {
     return parseTerritories();
   }
+  function cleanTerritories() {
+    territories.value = "";
+  }
   function addTerritory(json_territory) {
     if (!json_territory) {
       return;
@@ -656,6 +676,7 @@ export const useMapStore = defineStore('map', () => {
     isPermalink,
     noLoginInformation,
     getTerritories,
+    cleanTerritories,
     addTerritory,
     removeTerritory,
     addTerritories,

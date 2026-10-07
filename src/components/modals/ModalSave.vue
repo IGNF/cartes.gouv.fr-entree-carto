@@ -9,9 +9,7 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useEulerian } from '@/plugins/Eulerian';
 
-const eulerian = useEulerian();
 
 var delegateCbk = null;
 
@@ -40,17 +38,12 @@ const actions = [
 
 const opened = ref(false);
 
-if (opened.value) {
-  eulerian.pause();
-}
 const openModalSave = () => {
   opened.value = true;
-  eulerian.pause();
 };
 
 const onModalSaveClose = () => {
   opened.value = false;
-  eulerian.resume();
 };
 
 /**

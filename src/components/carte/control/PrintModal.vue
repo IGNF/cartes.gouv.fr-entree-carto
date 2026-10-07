@@ -4,7 +4,6 @@ import { ref, computed, reactive, inject } from 'vue';
 
 import { useElementSize } from '@vueuse/core';
 import { useMapStore }  from '@/stores/mapStore';
-import { useEulerian } from '@/plugins/Eulerian.js';
 
 import MapView from '@/components/carte/Map.vue';
 import PrintLayers from '@/components/carte/Layer/PrintLayers.vue';
@@ -22,7 +21,6 @@ import { renderMapCanvasForExport } from './printUtils/mapExport.js';
 
 import { jsPDF } from "jspdf";
 
-const eulerian = useEulerian();
 const mapStore = useMapStore();
 
 // INFO
@@ -69,12 +67,10 @@ const isExportInProgress = ref(false);
 const onModalPrintOpen = () => {
   emitter.dispatchEvent("leftmenu:close");
   printModalOpened.value = true;
-  eulerian.pause();
 };
 const onModalPrintClose = () => {
   isExportInProgress.value = false;
   printModalOpened.value = false;
-  eulerian.resume();
   mapStore.getMap().renderSync();
 };
 
@@ -496,7 +492,7 @@ const drawTitleOverlay = (finalCtx, mapWidthPx, titleHeightPx, marginPx, dpiCoef
  * @param {number} titleHeightPx - Hauteur du titre en pixels
  * @param {HTMLElement} mapElement - Élément HTML de la carte
  */
-const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot = null) => {
+const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot = null, domScaleCoeff = 1) => {
   const scaleCanvas = document.createElement('canvas');
   scaleCanvas.width = mapWidthPx;
   scaleCanvas.height = mapHeightPx;
@@ -522,7 +518,7 @@ const drawScaleOverlay = (finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeig
    */
 
   const scaleCtx = getCanvas2DContext(scaleCanvas, 'Impossible de récupérer le contexte 2D de l\'échelle.');
-  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, scaleSnapshot);
+  drawScale(scaleCtx, mapElement, mapWidthPx, mapHeightPx, scaleSnapshot, domScaleCoeff);
   finalCtx.drawImage(scaleCanvas, marginPx, marginPx + titleHeightPx);
   scaleCanvas.remove();
 };
@@ -576,7 +572,7 @@ const buildRasterExportCanvas = async () => {
   // Utilisé uniquement pour les exports 300 DPI.
   const mapElement = refPreviewMap.value?.mapRef;
   const scaleSnapshot = (printFormState.hasScale && dpiValue === HIGH_DPI_VALUE && mapElement)
-    ? captureScaleLineSnapshot(mapElement)
+    ? captureScaleLineSnapshot(mapElement, paper2PreviewScaleCoeff.value)
     : null;
 
   // Récupère l'instance de la carte à imprimer
@@ -600,7 +596,7 @@ const buildRasterExportCanvas = async () => {
     // INFO
     // on lit le DOM de la carte preview pour recuperer l'échelle (.ol-scale-line) et
     // la dessiner sur le canvas final
-    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot);
+    drawScaleOverlay(finalCtx, mapWidthPx, mapHeightPx, marginPx, titleHeightPx, mapElement, scaleSnapshot, paper2PreviewScaleCoeff.value);
   }
 
   // Supprime le canvas temporaire de la carte

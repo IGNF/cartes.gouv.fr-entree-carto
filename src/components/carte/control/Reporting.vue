@@ -2,7 +2,6 @@
 
 import { useLogger } from 'vue-logger-plugin';
 
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
 import ReportingSuccessSentModal from '@/components/modals/ModalReportingSuccessSent.vue';
 import ReportingStartModal from '@/components/modals/ModalReportingStart.vue';
@@ -10,6 +9,24 @@ import ReportingStartModal from '@/components/modals/ModalReportingStart.vue';
 import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
 import { Reporting } from 'geopf-extensions-openlayers';
+
+function loadScript (url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Impossible de charger ${url}`));
+
+        document.head.appendChild(script);
+    });
+}
 
 const emitter = inject('emitter');
 
@@ -19,7 +36,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   reportingOptions: {
     type: Object,
     default: () => ({})
@@ -41,6 +57,9 @@ emitter.addEventListener("reporting:open:clicked", (e) => {
   if (reporting.value) {
     reporting.value.setCollapsed(!e.open);
   }
+  // load geocaptcha
+  loadScript("https://geocaptcha.ign.fr/api/v1/lib.js?dsfr=true");
+
 });
 emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
   refModalReportingStart.value.openModalReportingStart(true);
@@ -58,10 +77,6 @@ onMounted(() => {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value)
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget */
     reporting.value.on("reporting:sending", onSendingReporting);
   }
@@ -78,10 +93,6 @@ onUpdated(() => {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value);
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })

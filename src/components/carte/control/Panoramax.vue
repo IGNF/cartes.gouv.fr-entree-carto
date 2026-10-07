@@ -1,6 +1,5 @@
 <script setup lang="js">
 
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useDomStore } from '@/stores/domStore';
 
 import "@panoramax/web-viewer/build/photoviewer.js";
@@ -14,7 +13,10 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
+  layersReady: {
+    type: Boolean,
+    default: false
+  },
   panoramaxOptions: {
     type: Object,
     default: () => ({})
@@ -25,22 +27,64 @@ const emit = defineEmits(['ready']);
 
 const domStore = useDomStore();
 
-const map = inject(props.mapId)
+const map = inject(props.mapId);
+
 const panoramax = new Panoramax(props.panoramaxOptions);
 
 panoramax.on("pnx:fullscreen", (e) => {
   domStore.isFullscreenPanoramax = e.data.fullscreen;
 });
+ 
+const getHistoryState = () => {
+  const state = window.history.state ?? {};
+  if (!state) {
+    return {};
+  }
+  const { picture, sequence } = state;
+  if (!picture || !sequence) {
+    return {};
+  }
+  return { picture, sequence };
+}
+
+const clearHistoryState = () => {
+  const state = window.history.state ?? {};
+  if (!state) {
+    return;
+  }
+
+  const { picture, sequence, ...rest } = state;
+  if (!picture && !sequence) {
+    return;
+  }
+
+  window.history.replaceState(rest, document.title, window.location.href);
+}
+
+const openPanoramaxViewer = ({ picture, sequence }) => {
+  if (!picture || !sequence) {
+    return;
+  }
+  if (!props.layersReady) {
+    return;
+  }
+
+  panoramax.setCollapsed(false);
+  // mécanisme sur le widget pour prendre en compte les changements
+  // si les properties suivantes sont modifiées, le widget ouvre automatiquement
+  // une photo dans le viewer
+  panoramax.set("sequence", sequence);
+  panoramax.set("picture", picture);
+  panoramax.set("display", true);
+  // on supprime les infos de l'historique
+  clearHistoryState();
+};
 
 onMounted(() => {
   emit('ready');
   if (props.visibility) {
-    map.addControl(panoramax)
-    if (props.analytic) {
-      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
-      useActionButtonEulerian(el);
-    }
-    /* abonnement au widget */
+    map.addControl(panoramax);
+    openPanoramaxViewer(getHistoryState());
   }
 })
 
@@ -53,29 +97,9 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(panoramax);
-    if (props.analytic) {
-      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
-      useActionButtonEulerian(el);
-    }
-    /* abonnement au widget */
-    
+    openPanoramaxViewer(getHistoryState());
   }
 })
-
-watch(
-  () => props.visibility,
-  (visible) => {
-    if (visible) {
-      emit('ready');
-    }
-  }
-);
-  
-/** 
- * gestionnaire d'evenement sur les abonnements
- * @description
- * ...
- */
 
 </script>
 
@@ -160,7 +184,8 @@ watch(
 }
 
 // photo viewer au dessus
-.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax[aria-pressed="true"]) {
+// HACK : specificite doublee (classe repetee) pour surclasser Controls.vue quel que soit l'ordre du bundle CSS
+.position:has(> .gpf-widget-button > .gpf-btn-icon.gpf-btn-icon-panoramax.gpf-btn-icon-panoramax[aria-pressed="true"]) {
   z-index: 3;
 }
 </style>

@@ -1,12 +1,12 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.19...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.21...HEAD>
 
-## 🔖 version 1.0.19 - __DATE__
+## 🔖 version 1.0.21 - __DATE__
 
 ### 🎉 Résumé
 
-Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impression, et correctifs sur le partage
+Corrections sur la barre de recherche, mise à jour du footer et du calcul d'azimuth, et mise en place d'un nouveau service de remontées d'anomalies.
 
 ### 💥 Breaking changes
 
@@ -14,19 +14,16 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### ✨ [Ajout]
 
-- Impression : ajout d’une option pour choisir la résolution d’impression (#1125)
+- Intégration Matomo IGN (#1322)
 
 #### 🔨 [Evolution]
 
-- Espace personnel : recherche et tri des documents (#1128)
-- Espace personnel : transformation de format de l'export pour les couches vectorielles (#1140)
-- Espace personnel : gestion des erreurs de service et sync des documents supprimés (#1131)
-- Espace personnel : suppression d'un favori présent dans un permalien (#1130)
-- Espace personnel : ajout de la synchronisation des documents lors d'un rafraîchissement de la page (#1143)
-- Espace personnel : gestion des documents supprimés dans un permalien (#1146)
-- Espace Personnel : Ajout d'un délai de désactivation pour le bouton de sauvegard (#1152)
-- Partage : Le paramètre «w» n’est plus utilisé. Le chargement d’un permalink ne modifie pas les outils de l’utilisateur (#1147)
-- ControlList : Ferme le panel au click dans la page (#1151)
+- Report d'anomalie : ajour d'une option pour désactiver la fonctionnalité (#1280)
+- Espce personnel : Mise en place du permalien court dans les favoris (#1216)
+- Footer : Mise à jour cartes.gouv.fr-vue-components (#1286)
+- Mesure d'azimuth : activation de l’azimuth géodésique (#1285)
+- Modale d’embarquement : mise à jour des textes et position «Ne plus afficher» (#1295)
+- Reporting: intégration service anomaily aavec validation par geocaptcha (#1284)
 
 #### 🔥 [Obsolète]
 
@@ -34,24 +31,8 @@ Evolution de l'espace personnel, améliorations UI, nouvelle option pour l'impre
 
 #### 🐛 [Correction]
 
-- UI : Empêche un bug lors de la modification des outils dans la barre d’outils (#1134)
-- UI : Uniformisation entête/corps des panels du menu latéral («mes enregistrements», etc.) (#1164)
-- UI : LayerImport affiche la liste des couches WMS/WMTS/Tuiles vectorielles (#1218)
-- Légendes : Plus de "alt" cassé dans l’affichage des légendes (#1164)
-- Panoramax : Le panel des options peut défiler (#1164)
-- Territories : Corrige et sérialise l'ordre des territoires (#1132)
-- Map : Empêche la rotation de la carte (#1148)
-- Partage : La geolocalisation est correctement partagée dans le permalien (#1155)
-- Partage : ajout d'un slash dans le chemin des permaliens simples pour gestion de l'historique de navigation (#1127)
-- Report : correction du lien vers la F.A.Q dans la modale de pré-signalement (#1157)
-- Annotation : reactivation de l'edition d'imports de données vecteur en mode non connecté (#6979c57)
-- Espace Personnel : synchroniser les positions des couches lors d'un appel de permalien via l'espace personnel (#1160)
-- Print : Correctif sur l'échelle sur l'impression en 300 dpi (#1190)
-- GPX : Correctif sur l'export du format GPX (#1206)
-- Espace personnel : Correctif sur l'enregistrement d'une carte avec un import (#1207)
-- Espace personnel : Deconnexion silencieuse si incoherence détéctée de la session (#1210)
+- Recherche avancée : les parcelles contenues dans des sections contenant plus de 1000 parcelles sont trouvables en autocompletion (#1287)
+- Barre de recherche : la recherche de communes dont le nom contient 3 caractères renvoie bien un résultat (#1283)
 
 #### 🔒 [Sécurité]
 
-- Suppression des notifications ESLint (#1159)
-- Correction des failles  de sécurités (#1159)

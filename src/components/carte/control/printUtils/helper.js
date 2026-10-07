@@ -31,9 +31,10 @@ export function computeScaleCoeff(containerWidth, containerHeight, contentWidth,
  * Capture un snapshot de la scaleline en coordonnées relatives à la map.
  * Permet de redessiner ensuite une échelle figée même si OL recalcule la DOM.
  * @param {*} mapRef Référence vers le DOM d'une map OpenLayer
+ * @param { Number } domScaleCoeff Coefficient du transform CSS (scale) appliqué à la preview (paper2PreviewScaleCoeff)
  * @returns {Object | null}
  */
-export function captureScaleLineSnapshot(mapRef) {
+export function captureScaleLineSnapshot(mapRef, domScaleCoeff = 1) {
     const scaleLine = mapRef?.getElementsByClassName("ol-scale-line")?.[0]
     const scaleLineInner = scaleLine?.children?.[0]
     if (!scaleLine || !scaleLineInner) {
@@ -78,6 +79,7 @@ export function captureScaleLineSnapshot(mapRef) {
             color: styleInner.color || '#333333',
             text: scaleLineInner.textContent || '',
         },
+        domScaleCoeff,
     }
 }
 
@@ -88,9 +90,10 @@ export function captureScaleLineSnapshot(mapRef) {
  * @param { Number } canvasWidth Largeur du canvas (en haute résolution)
  * @param { Number } canvasHeight Hauteur du canvas (en haute résolution)
  * @param { Object | null } scaleSnapshot Snapshot figé de la scaleline (optionnel)
+ * @param { Number } domScaleCoeff Coefficient du transform CSS (scale) applique a la preview (paper2PreviewScaleCoeff), ignoré si scaleSnapshot fourni
  * @returns
  */
-export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot = null) {
+export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot = null, domScaleCoeff = 1) {
     let mapRect
     let outerRect
     let innerRect
@@ -173,6 +176,12 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot 
     // Utilise seulement scaleFactorY pour éviter les distorsions dues aux ratios différents selon le DPI
     const scaleFactorY = canvasHeight / mapRect.height
 
+    // Coefficient du transform: scale() CSS de la preview (figé dans le snapshot si fourni).
+    // Nécessaire uniquement pour les valeurs issues de getComputedStyle (police, bordures),
+    // car getBoundingClientRect() (utilisé ci-dessous) intègre déjà ce transform CSS.
+    const effectiveDomScaleCoeff = scaleSnapshot ? (scaleSnapshot.domScaleCoeff ?? 1) : domScaleCoeff
+    const computedStyleScaleFactor = scaleFactorY * effectiveDomScaleCoeff
+
     const outerX = (outerRect.left - mapRect.left) * scaleFactorY
     const outerY = (outerRect.top - mapRect.top) * scaleFactorY
     const outerWidth = outerRect.width * scaleFactorY
@@ -182,9 +191,9 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot 
     const innerWidth = innerRect.width * scaleFactorY
     const innerHeight = innerRect.height * scaleFactorY
 
-    const borderLeftWidth = parseFloat(innerBorderLeftWidth || '0') * scaleFactorY
-    const borderRightWidth = parseFloat(innerBorderRightWidth || '0') * scaleFactorY
-    const borderBottomWidth = parseFloat(innerBorderBottomWidth || '0') * scaleFactorY
+    const borderLeftWidth = parseFloat(innerBorderLeftWidth || '0') * computedStyleScaleFactor
+    const borderRightWidth = parseFloat(innerBorderRightWidth || '0') * computedStyleScaleFactor
+    const borderBottomWidth = parseFloat(innerBorderBottomWidth || '0') * computedStyleScaleFactor
 
     // Debug impression: permet de vérifier que le mode snapshot fige bien la largeur source.
     if (import.meta.env.MODE !== 'production') {
@@ -242,7 +251,7 @@ export function drawScale(ctx, mapRef, canvasWidth, canvasHeight, scaleSnapshot 
     }
 
     const baseFontSize = parseFloat(innerFontSize || '10')
-    ctx.font = innerFontStyle + ' ' + innerFontVariant + ' ' + innerFontWeight + ' ' + (baseFontSize * scaleFactorY) + 'px ' + innerFontFamily
+    ctx.font = innerFontStyle + ' ' + innerFontVariant + ' ' + innerFontWeight + ' ' + (baseFontSize * computedStyleScaleFactor) + 'px ' + innerFontFamily
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = innerColor

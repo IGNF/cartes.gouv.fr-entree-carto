@@ -129,6 +129,7 @@ onMounted(() => {
       v-if="mapIsReady"
       :map-id="mainMap"
       :control-options="props.selectedControls"
+      :layers-ready="layersReady"
       @ready="onControlsReady"
     />
     <!-- Composant pour ajouter les couches sur la carte -->

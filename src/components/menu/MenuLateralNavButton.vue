@@ -60,12 +60,20 @@ const tabClicked = () => {
 const controlsPosition = useControlsPosition()
 
 function closePanel(control) {
-  let button = [...control.element.children].filter(e => {
-  if (e.className.includes("GPshowOpen"))
-      return e
-  })
-  if (button[0].getAttribute("aria-pressed") === "true")
-    button[0].click()
+  if (!control.element) return
+  if (control.CLASSNAME === "GetFeatureInfo") {
+    const closeButton = control.element.querySelector(".GPpanelClose")
+    if (closeButton)
+      closeButton.click()
+  }
+  else {
+    let button = [...control.element.children].filter(e => {
+    if (e.className.includes("GPshowOpen"))
+        return e
+    })
+    if (button[0].getAttribute("aria-pressed") === "true")
+      button[0].click()
+  }
 }
 function closeRightPanels() {
   mapStore.getMap().getControls().getArray().forEach(control => {
