@@ -340,3 +340,45 @@ watch(
 <template>
   <div />
 </template>
+
+<style lang="scss">
+@use "@/assets/variables" as *;
+
+@include max(sm) {
+  .gpf-widget[id^="GPelevationPath-"] {
+    .container-buttons-plugin {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: $gap;
+      width: 100%;
+    }
+
+    .gpf-export-menu-container {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: $gap;
+    }
+
+    .GPexportMenuName,
+    .gpf-input {
+      width: 100%;
+    }
+
+    .gpf-input {
+      box-sizing: border-box;
+    }
+
+    button[id^="GPexportButton-"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button[id^="GPexportButton-"] {
+      min-width: 0;
+      margin: 0;
+    }
+  }
+}
+</style>
