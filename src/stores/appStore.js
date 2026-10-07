@@ -1,5 +1,6 @@
 import {
-  defineStore
+  defineStore,
+  acceptHMRUpdate
 } from 'pinia';
 
 import { useScheme } from '@gouvminint/vue-dsfr';
@@ -127,3 +128,11 @@ export const useAppStore = defineStore('app', () => {
   }
 
 });
+
+// uniquement pour le mode développement
+// modifier le store pourra alors mettre celui-ci à jour sans propager
+// systématiquement la modification aux composants parents.
+// donc, pas de déclenchement de la suppression des couches !
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAppStore, import.meta.hot));
+}
