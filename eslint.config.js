@@ -34,10 +34,7 @@ export default [
       sourceType: 'module',
       parser: vueParser,
       parserOptions: {
-        parser: {
-          "js": "espree",
-          "ts": "@typescript-eslint/parser",
-        }
+        parser: ts.parser
       },
       globals: {
         ...globals.browser,
