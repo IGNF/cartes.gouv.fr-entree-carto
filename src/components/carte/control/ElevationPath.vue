@@ -373,9 +373,6 @@ watch(
     button[id^="GPexportButton-"] {
       width: 100%;
       box-sizing: border-box;
-    }
-
-    button[id^="GPexportButton-"] {
       min-width: 0;
       margin: 0;
     }
