@@ -35,7 +35,6 @@ export function useAuthentication(deps = {}) {
   };
 
   const hasAutoSSOBeenAttempted = () => {
-    // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
     return sessionStorage.getItem(AUTO_SSO_ATTEMPTED_KEY) === '1';
   };
 
@@ -65,7 +64,6 @@ export function useAuthentication(deps = {}) {
     if (hasKeycloakSession) {
       setAutoSSOAttemptedFlag();
       console.debug('Keycloak session detected, redirecting to /login for silent auto-auth.');
-      // eslint-disable-next-line secure-coding/no-insecure-comparison -- vérification d'une valeur de conf, pas d'une donnée sensible
       if (IAM_CHECK_SSO_AUTO_AUTH === '1') {
         await router.push({ path: '/login', query: { from: 'auto-sso' } });
       }
@@ -81,14 +79,12 @@ export function useAuthentication(deps = {}) {
     try {
       const status = await service.resolveAccessStatus();
 
-      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status !== 'no-auth') {
         log.debug(`Access validated : ${status} !`);
         serviceStore.setAuthentificateSyncNeeded(false);
         router.replace({ path: '/', query: undefined });
       }
 
-      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status === 'login') {
         log.debug('User connected.');
         cleanAutoSSOAttemptedFlag();
@@ -97,7 +93,6 @@ export function useAuthentication(deps = {}) {
         return;
       }
 
-      // eslint-disable-next-line secure-coding/no-insecure-comparison -- status est un état validé du service, pas un secret
       if (status === 'logout') {
         log.debug('User disconnected.');
         cleanAutoSSOAttemptedFlag();
