@@ -8,18 +8,18 @@ import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
-import { useDataStore } from "@/stores/dataStore"
-import { useMapStore } from "@/stores/mapStore"
 import { useAppStore } from "@/stores/appStore"
+import { useMapStore } from "@/stores/mapStore"
+import { useDataStore } from "@/stores/dataStore"
 
 import { fromShare } from "@/features/share";
 
 // lib notification
 import { push } from "notivue";
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
-const appStore = useAppStore();
 
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
