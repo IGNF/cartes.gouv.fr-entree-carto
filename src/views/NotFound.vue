@@ -78,16 +78,21 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 @use "@/assets/variables" as *;
 
-.not-found-page {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
 @include max(md) {
-  .not-found-page {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding-inline: 1rem;
+  
+  .not-found-page :deep(.fr-container.flex) {
+    flex-direction: column;
+  }
+
+  .not-found-page :deep(.half) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .not-found-page :deep(.error-img) {
+    max-width: 100%;
+    height: auto;
   }
 }
 </style>
