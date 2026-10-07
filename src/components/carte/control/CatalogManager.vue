@@ -2,7 +2,6 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useControlsOptions } from '@/composables/controls';
 
 import { Catalog } from 'geopf-extensions-openlayers';
@@ -13,7 +12,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
 });
 
 const emit = defineEmits(['ready']);
@@ -46,9 +44,6 @@ onMounted(() => {
     el.classList.remove('gpf-btn--tertiary');
     el.classList.remove('gpf-btn--icon');
     el.classList.add('gpf-btn--primary');
-    if (props.analytic) {
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget 
      * @fires catalog:loaded
      * @fires catalog:layer:add
@@ -71,10 +66,6 @@ onUpdated(() => {
   if (props.visibility) {
     map.addControl(catalog.value);
   log.info("CatalogManager updated", catalog.value);
-    if (props.analytic) {
-      var el = catalog.value.element.querySelector("button[id^=GPshowCatalogPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget 
      * @fires catalog:loaded
      * @fires catalog:layer:add
