@@ -9,7 +9,7 @@ vi.mock('geopf-extensions-openlayers', () => ({
   LayerWMS: class LayerWMS {},
 }));
 
-import { addPermalink, removePermalink, getLayersFromPermalink } from '@/features/permalink';
+import { addPermalink, removePermalink, loadPermalink } from '@/features/permalink';
 import { useMapStore } from '@/stores/mapStore';
 import { setActivePinia, createPinia } from 'pinia';
 import Map from 'ol/Map';
@@ -72,9 +72,9 @@ describe('removePermalink', () => {
   });
 });
 
-// ─── getLayersFromPermalink ────────────────────────────────────────────────────
+// ─── loadPermalink ────────────────────────────────────────────────────
 
-describe('getLayersFromPermalink', () => {
+describe('loadPermalink', () => {
   var mapStore = null;
 
   beforeEach(() => {
@@ -88,52 +88,52 @@ describe('getLayersFromPermalink', () => {
     window.history.pushState({}, '', '/');
   });
 
-  it('U-PL-03 - getLayersFromPermalink - couche WMTS Géoportail met à jour le store', () => {
+  it('U-PL-03 - loadPermalink - couche WMTS Géoportail met à jour le store', () => {
     const url = "https://cartes.gouv.fr/?c=2.602777,46.493888&z=6&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(-1;1;1;0)&permalink=yes";
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     expect(mapStore.zoom).toEqual(6);
     expect(mapStore.layers).toEqual("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(-1;1;1;0)");
     expect(mapStore.center).toEqual(['2.602777', '46.493888']);
   });
 
-  it('U-PL-04 - getLayersFromPermalink - couche WMS met à jour le store', () => {
+  it('U-PL-04 - loadPermalink - couche WMS met à jour le store', () => {
     const url = "https://cartes.gouv.fr/?c=2.3,48.8&z=10&l=BDCARTO$GEOPORTAIL:OGC:WMS(1;1;1;0)&permalink=yes";
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     expect(mapStore.zoom).toEqual(10);
     expect(mapStore.layers).toEqual("BDCARTO$GEOPORTAIL:OGC:WMS(1;1;1;0)");
   });
 
-  it('U-PL-05 - getLayersFromPermalink - couche vecteur GeoJSON met à jour le store', () => {
+  it('U-PL-05 - loadPermalink - couche vecteur GeoJSON met à jour le store', () => {
     const url = "https://cartes.gouv.fr/?z=8&l=https://example.com/regions.geojson$EXTERNAL:GeoJSON(1;1;1;0)&permalink=yes";
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     expect(mapStore.zoom).toEqual(8);
     expect(mapStore.layers).toEqual("https://example.com/regions.geojson$EXTERNAL:GeoJSON(1;1;1;0)");
   });
 
-  it('U-PL-06 - getLayersFromPermalink - couche Mapbox met à jour le store', () => {
+  it('U-PL-06 - loadPermalink - couche Mapbox met à jour le store', () => {
     const url = "https://cartes.gouv.fr/?z=7&l=https://example.com/mapbox1.json$EXTERNAL:Mapbox(1;1;1;0)&permalink=yes";
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     expect(mapStore.zoom).toEqual(7);
     expect(mapStore.layers).toContain('Mapbox');
   });
 
-  it('U-PL-07 - getLayersFromPermalink - données espace personnel (d=) stockées dans bookmarks', () => {
+  it('U-PL-07 - loadPermalink - données espace personnel (d=) stockées dans bookmarks', () => {
     const docUrl = "https://data.geopf.fr/documents/abc.bin?uuid=123&name=Mon+croquis&format=kml&opacity=1&visible=1&grayscale=0";
     const url = `https://cartes.gouv.fr/?z=6&l=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)&d=${encodeURIComponent(docUrl)}&permalink=yes`;
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     expect(mapStore.bookmarks).toBeTruthy();
     expect(mapStore.bookmarks).toContain('geopf.fr/documents');
   });
 
-  it('U-PL-08 - getLayersFromPermalink - URL invalide lève une erreur sans crash inattendu', () => {
+  it('U-PL-08 - loadPermalink - URL invalide lève une erreur sans crash inattendu', () => {
     const url = "https://cartes.gouv.fr/?c=invalide&permalink=yes";
-    expect(() => getLayersFromPermalink(url)).toThrow();
+    expect(() => loadPermalink(url)).toThrow();
   });
 
-  it('U-PL-08 - getLayersFromPermalink - URL sans paramètre ne modifie pas le store', () => {
+  it('U-PL-08 - loadPermalink - URL sans paramètre ne modifie pas le store', () => {
     const zoomAvant = mapStore.zoom;
     const url = "https://cartes.gouv.fr/?permalink=yes";
-    getLayersFromPermalink(url);
+    loadPermalink(url);
     // Aucun paramètre métier → le store reste inchangé
     expect(mapStore.zoom).toEqual(zoomAvant);
   });

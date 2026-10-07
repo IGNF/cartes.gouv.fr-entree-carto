@@ -5,12 +5,10 @@ import { mainMap } from '@/composables/keys'
 
 // FIXME
 // - utiliser le widget GeoportalAttribution !
-// - tracker Eulerian !?
 
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
   attributionsOptions: { type: Object, default: () => ({}) }
 })
 

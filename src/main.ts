@@ -2,7 +2,7 @@ import '@gouvfr/dsfr/dist/core/core.main.min.css'
 import '@gouvfr/dsfr/dist/component/component.main.min.css'
 import '@gouvfr/dsfr/dist/utility/utility.main.min.css'
 import '@gouvminint/vue-dsfr/styles'
-import 'cartes.gouv.fr-vue-components/dist/index.css'
+import '@ignf/cartes.gouv.fr-vue-components/dist/index.css'
 
 import '@gouvfr/dsfr/dist/scheme/scheme.min.css'
 
@@ -16,10 +16,9 @@ import "geopf-extensions-openlayers/css/Dsfr.css";
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
-// plugin local
-import { createEulerian } from './plugins/Eulerian.js'
 import { createServices } from './plugins/Services.js'
 import { createBusEvent } from './plugins/BusEvent.js'
+import { initAnalytics } from './features/analytics.js'
 
 // library notification
 import { createNotivue } from 'notivue'
@@ -49,7 +48,7 @@ async function waitingPrepareApp() {
       onUnhandledRequest(request, print) {
         // Ignore any requests containing in their URL.
         if (request.url.includes('data.geopf.fr') ||
-            request.url.includes('acwg.cartes.gouv.fr')
+          request.url.includes('acwg.cartes.gouv.fr')
         ) {
           return
         }
@@ -65,15 +64,6 @@ async function waitingPrepareApp() {
 // on recupere les info de connexion de la session, et les transmettre !
 const storage = localStorage.getItem('service')
 const services = createServices(storage ? JSON.parse(storage).connexion : {})
-
-const eulerian = createEulerian({
-  verbose : !isProduction, // option du plugin
-  domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
-  site: {
-    environment: isProduction ? "production" : "development",
-    entity: "IGN"
-  }
-})
 
 const logger = createLogger({
   enabled: true,
@@ -109,13 +99,17 @@ const app = createApp(App);
 app.use(pinia)
 app.use(router)
 app.use(logger)
-app.use(eulerian)
 app.use(notivue)
 app.use(bus)
 app.use(services)
 
 waitingPrepareApp().then(async () => {
   // Ensure initial route is fully resolved before first render.
-  await router.isReady()
-  app.mount('#app')
-})
+  await router.isReady();
+  app.mount('#app');
+
+  // une fois l'app initialisée, chargement des analytics
+  initAnalytics().catch((error) => {
+    console.error('Analytics initialization failed', error);
+  });
+});

@@ -9,10 +9,8 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useEulerian } from '@/plugins/Eulerian';
 
 const emitter = inject('emitter');
-const eulerian = useEulerian();
 
 const title = "Merci de contribuer à améliorer cartes.gouv.fr !";
 const icon = 'fr-icon-feedback-line';
@@ -40,19 +38,13 @@ const actions = [
 const opened = ref(false);
 const style = ref({ display: "none" });
 
-if (opened.value) {
-  eulerian.pause();
-}
-
 const openModalReportingSent = (active) => {
   style.value = (active) ? { display: "block" } : { display: "none" };
   opened.value = true;
-  eulerian.pause();
 };
 
 const onModalReportingSentClose = () => {
   opened.value = false;
-  eulerian.resume();
 };
 
 defineExpose({

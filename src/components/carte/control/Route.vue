@@ -2,7 +2,6 @@
 
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
@@ -26,7 +25,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   routeOptions: {
     type: Object,
     default: () => ({})
@@ -110,10 +108,6 @@ onMounted(() => {
     route.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportRoute);
     btnSave.value.on("button:clicked", onSaveRoute);
-    if (props.analytic) {
-      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
@@ -133,10 +127,6 @@ onUpdated(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires route:drawstart
     * @fires route:drawend

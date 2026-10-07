@@ -304,6 +304,7 @@ const measureAzimuthOptions = {
   gutter: false,
   listable: true,
   id: "17",
+  geodesic: true,
 };
 
 const mousePositionOptions = {
@@ -475,6 +476,9 @@ const layerImportOptions = {
   gutter: true,
 };
 
+const isReportingDisabled = false;
+domStore.setReportingDisabled(isReportingDisabled);
+
 const reportingOptions = {
   id: "21",
   position: useControlsExtensionPosition().reportingOptions,
@@ -483,12 +487,9 @@ const reportingOptions = {
 };
 
 const contextMenuOptions = computed(() => {
-  return {
-    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
-    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
-    altiResource : altiResource,
-    contextMenuItemsOptions : [
-      {
+  const contextMenuItemsOptions = isReportingDisabled
+    ? []
+    : [{
         text : "Signaler une anomalie",
         callback : () => {
           setTimeout(() => {
@@ -504,8 +505,13 @@ const contextMenuOptions = computed(() => {
             });
           }, 0);
         }
-      }
-    ]
+      }];
+
+  return {
+    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
+    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
+    contextMenuItemsOptions
   }
 })
 
@@ -582,14 +588,12 @@ onMounted(() => {
 <template>
   <CatalogManager
     :visibility="props.controlOptions.includes(useControls.Catalog.id)"
-    :analytic="false"
     :map-id="mapId"
     @ready="onControlReady('CatalogManager')"
   />
   <LayerSwitcher
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
-    :analytic="useControls.LayerSwitcher.analytic"
     :layer-switcher-options="layerSwitcherOptions"
     :map-id="mapId"
     @ready="onControlReady('LayerSwitcher')"
@@ -597,7 +601,6 @@ onMounted(() => {
   <Legends
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Legends.id)"
-    :analytic="useControls.Legends.analytic"
     :legends-options="legendsOptions"
     :map-id="mapId"
     @ready="onControlReady('Legends')"
@@ -605,7 +608,6 @@ onMounted(() => {
   <Route
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Route.id)"
-    :analytic="useControls.Route.analytic"
     :route-options="routeOptions"
     :map-id="mapId"
     @ready="onControlReady('Route')"
@@ -613,7 +615,6 @@ onMounted(() => {
   <Isocurve
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
-    :analytic="useControls.Isocurve.analytic"
     :isocurve-options="isocurveOptions"
     :map-id="mapId"
     @ready="onControlReady('Isocurve')"
@@ -621,7 +622,6 @@ onMounted(() => {
   <ReverseGeocode
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
-    :analytic="useControls.ReverseGeocode.analytic"
     :reverse-geocode-options="reverseGeocodeOptions"
     :map-id="mapId"
     @ready="onControlReady('ReverseGeocode')"
@@ -629,7 +629,6 @@ onMounted(() => {
   <FullScreen
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-    :analytic="useControls.FullScreen.analytic"
     :fullscreen-options="fullscreenOptions"
     :map-id="mapId"
     @ready="onControlReady('FullScreen')"
@@ -637,7 +636,6 @@ onMounted(() => {
   <Zoom
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Zoom.id)"
-    :analytic="useControls.Zoom.analytic"
     :zoom-options="zoomOptions"
     :map-id="mapId"
     @ready="onControlReady('Zoom')"
@@ -645,7 +643,6 @@ onMounted(() => {
   <SearchEngine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
-    :analytic="useControls.SearchEngine.analytic"
     :search-engine-options="searchEngineOptions"
     :map-id="mapId"
     @ready="onControlReady('SearchEngine')"
@@ -653,7 +650,6 @@ onMounted(() => {
   <GetFeatureInfo
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
-    :analytic="useControls.GetFeatureInfo.analytic"
     :get-feature-info-options="getFeatureInfoOptions"
     :map-id="mapId"
     @ready="onControlReady('GetFeatureInfo')"
@@ -661,7 +657,6 @@ onMounted(() => {
   <ScaleLine
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
-    :analytic="useControls.ScaleLine.analytic"
     :scale-line-options="scaleLineOptions"
     :map-id="mapId"
     @ready="onControlReady('ScaleLine')"
@@ -669,14 +664,12 @@ onMounted(() => {
   <OverviewMap
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
-    :analytic="useControls.OverviewMap.analytic"
     :map-id="mapId"
     @ready="onControlReady('OverviewMap')"
   />
   <Territories
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Territories.id)"
-    :analytic="useControls.Territories.analytic"
     :territories-options="territoriesOptions"
     :map-id="mapId"
     @ready="onControlReady('Territories')"
@@ -684,7 +677,6 @@ onMounted(() => {
   <MeasureLength
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
-    :analytic="useControls.MeasureLength.analytic"
     :measure-length-options="measureLengthOptions"
     :map-id="mapId"
     @ready="onControlReady('MeasureLength')"
@@ -692,7 +684,6 @@ onMounted(() => {
   <MeasureArea
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
-    :analytic="useControls.MeasureArea.analytic"
     :measure-area-options="measureAreaOptions"
     :map-id="mapId"
     @ready="onControlReady('MeasureArea')"
@@ -700,7 +691,6 @@ onMounted(() => {
   <MeasureAzimuth
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
-    :analytic="useControls.MeasureAzimuth.analytic"
     :measure-azimuth-options="measureAzimuthOptions"
     :map-id="mapId"
     @ready="onControlReady('MeasureAzimuth')"
@@ -708,7 +698,6 @@ onMounted(() => {
   <MousePosition
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
-    :analytic="useControls.MousePosition.analytic"
     :mouse-position-options="mousePositionOptions"
     :map-id="mapId"
     @ready="onControlReady('MousePosition')"
@@ -716,7 +705,6 @@ onMounted(() => {
   <Drawing
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Drawing.id)"
-    :analytic="useControls.Drawing.analytic"
     :drawing-options="drawingOptions"
     :map-id="mapId"
     @ready="onControlReady('Drawing')"
@@ -724,7 +712,6 @@ onMounted(() => {
   <ElevationPath
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
-    :analytic="useControls.ElevationPath.analytic"
     :elevation-path-options="elevationPathOptions"
     :map-id="mapId"
     @ready="onControlReady('ElevationPath')"
@@ -732,7 +719,6 @@ onMounted(() => {
   <LayerImport
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
-    :analytic="useControls.LayerImport.analytic"
     :layer-import-options="layerImportOptions"
     :map-id="mapId"
     @ready="onControlReady('LayerImport')"
@@ -740,7 +726,6 @@ onMounted(() => {
   <ControlList
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ControlList.id)"
-    :analytic="useControls.ControlList.analytic"
     :control-list-options="controlListOptions"
     :map-id="mapId"
     @ready="onControlReady('ControlList')"
@@ -748,15 +733,13 @@ onMounted(() => {
   <ContextMenu
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
-    :analytic="useControls.ContextMenu.analytic"
     :context-menu-options="contextMenuOptions"
     :map-id="mapId"
     @ready="onControlReady('ContextMenu')"
   />
   <Reporting
-    v-if="controlOptions"
+    v-if="controlOptions && !domStore.isReportingDisabled"
     :visibility="props.controlOptions.includes(useControls.Reporting.id)"
-    :analytic="useControls.Reporting.analytic"
     :reporting-options="reportingOptions"
     :map-id="mapId"
     @ready="onControlReady('Reporting')"
@@ -764,7 +747,6 @@ onMounted(() => {
   <Panoramax
     v-if="controlOptions"
     :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
-    :analytic="useControls.Panoramax.analytic"
     :panoramax-options="panoramaxOptions"
     :layers-ready="props.layersReady"
     :map-id="mapId"

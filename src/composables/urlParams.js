@@ -92,10 +92,13 @@ export function useUrlParams(url) {
             break;
           case "permalink":
             var permalink = urlParams[key].toLowerCase();
-            if (permalink !== "yes" && permalink !== "no") {
+            if (permalink !== "yes" && permalink !== "no" && permalink !== "short") {
               throw new Error(`Le paramètre 'permalink' du permalien est invalide : ${urlParams[key]} !`);
             }
-            params.permalink = permalink; // yes | no
+            params.permalink = permalink; // yes | no | short
+            break;
+          case "sid":
+            params.sid = urlParams[key]; // id du permalien court
             break;
           case "redirect":
             params.redirect = urlParams[key]; // url de redirection
