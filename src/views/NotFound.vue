@@ -3,9 +3,11 @@ import { onMounted, onBeforeUnmount } from 'vue'
 
 import { useBaseUrl } from '@/composables/baseUrl'
 
-const siteBaseUrl = useBaseUrl()
-const homeUrl = `${siteBaseUrl}/`
-const contactUrl = `${siteBaseUrl}/nous-ecrire`
+const siteBaseUrl = useBaseUrl();
+
+function navigateTo(url) {
+  window.location.assign(url)
+}
 
 const title = 'Page non trouvée'
 const subtitle = 'Erreur 404'
@@ -14,11 +16,11 @@ const help = `Si vous avez tapé l’adresse web dans le navigateur, vérifiez q
 const buttons = [
   {
     label: 'Page d’accueil',
-    href: homeUrl,
+    onClick: () => navigateTo(siteBaseUrl),
   },
   {
     label: 'Contactez-nous',
-    href: contactUrl,
+    onClick: () => navigateTo(siteBaseUrl + '/nous-ecrire'),
     secondary: true,
   },
 ]
@@ -73,13 +75,15 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use "@/assets/variables" as *;
+
 .not-found-page {
   max-width: 100%;
   overflow-x: hidden;
 }
 
-@media (max-width: 48em) {
+@include max(md) {
   .not-found-page {
     margin-top: 2rem;
     margin-bottom: 2rem;
