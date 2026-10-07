@@ -44,7 +44,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/photo/:slug(.*)*',
-    name: 'Photo',
+    name: ROUTE_NAMES.PHOTO,
     component: () => import('../views/Photo.vue'), // Lazy loading
     props: true
   },

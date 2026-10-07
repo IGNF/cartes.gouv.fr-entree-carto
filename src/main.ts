@@ -14,6 +14,7 @@ import "ol/ol.css";
 import "geopf-extensions-openlayers/css/Dsfr.css";
 
 import { createApp } from 'vue'
+import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
 import { createLogger } from 'vue-logger-plugin'
 // plugin local
@@ -106,6 +107,7 @@ const store = storePlugin({
 pinia.use(store)
 
 const app = createApp(App);
+app.use(createHead())
 app.use(pinia)
 app.use(router)
 app.use(logger)

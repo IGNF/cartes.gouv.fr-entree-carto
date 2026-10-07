@@ -1,7 +1,14 @@
 <script setup lang="js">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { useHead } from '@unhead/vue'
 
 import { useBaseUrl } from '@/composables/baseUrl'
+
+useHead({
+  meta: [{
+    name: 'robots',
+    content: 'noindex',
+  }],
+})
 
 const siteBaseUrl = useBaseUrl();
 
@@ -24,43 +31,6 @@ const buttons = [
     secondary: true,
   },
 ]
-
-const robotsMetaSelector = 'meta[name="robots"]'
-let robotsMetaElement = null
-let createdRobotsMeta = false
-let previousRobotsContent = null
-
-onMounted(() => {
-  robotsMetaElement = document.querySelector(robotsMetaSelector)
-  if (!robotsMetaElement) {
-    robotsMetaElement = document.createElement('meta')
-    robotsMetaElement.name = 'robots'
-    document.head.appendChild(robotsMetaElement)
-    createdRobotsMeta = true
-  } else {
-    previousRobotsContent = robotsMetaElement.getAttribute('content')
-  }
-
-  robotsMetaElement.setAttribute('content', 'noindex')
-})
-
-onBeforeUnmount(() => {
-  if (!robotsMetaElement) {
-    return
-  }
-
-  if (createdRobotsMeta) {
-    robotsMetaElement.remove()
-    return
-  }
-
-  if (previousRobotsContent === null) {
-    robotsMetaElement.removeAttribute('content')
-    return
-  }
-
-  robotsMetaElement.setAttribute('content', previousRobotsContent)
-})
 </script>
 
 <template>
@@ -79,7 +49,7 @@ onBeforeUnmount(() => {
 @use "@/assets/variables" as *;
 
 @include max(md) {
-  
+
   .not-found-page :deep(.fr-container.flex) {
     flex-direction: column;
   }
