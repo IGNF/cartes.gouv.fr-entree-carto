@@ -712,7 +712,7 @@ onMounted(() => {
   />
   <Reporting
     v-if="controlOptions && !domStore.isReportingDisabled"
-    v-bind="getControlProps(useControls.Reporting, { reportingOptions })"
+    v-bind="getControlProps(useControls.Reporting, { reportingOptions }, false)"
     @ready="onControlReady(useControls.Reporting.id)"
   />
   <Panoramax
