@@ -572,6 +572,15 @@ domStore.setShareDisabled(isShareDisabled);
 const isPrintDisabled = useControls.Print.disabled;
 domStore.setPrintDisabled(isPrintDisabled);
 
+// gestion des propriétés des contrôles
+const isControlVisible = (controlId) => props.controlOptions.includes(controlId);
+const getControlProps = (control, additionalProps = {}, includeDisabled = true) => ({
+  visibility: isControlVisible(control.id),
+  ...(includeDisabled ? { disabled: control.disabled } : {}),
+  mapId: props.mapId,
+  ...additionalProps
+});
+
 // On écoute l'événement "ready" émis par les composants de type Controls
 const onControlReady = (controlName) => {
   log.debug(`Control ${controlName} is ready`);
@@ -590,198 +599,126 @@ onMounted(() => {
 });
 
 </script>
-<!-- INFO : Affichage du contrôle
->>> option visibility:true, si le contrôle est dans la liste
->>> sinon, visibility:false
--->
+
 <template>
   <CatalogManager
-    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
-    :disabled="useControls.Catalog.disabled"
-    :map-id="mapId"
-    @ready="onControlReady('CatalogManager')"
+    v-bind="getControlProps(useControls.Catalog)"
+    @ready="onControlReady(useControls.Catalog.id)"
   />
   <LayerSwitcher
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
-    :disabled="useControls.LayerSwitcher.disabled"
-    :layer-switcher-options="layerSwitcherOptions"
-    :map-id="mapId"
-    @ready="onControlReady('LayerSwitcher')"
+    v-bind="getControlProps(useControls.LayerSwitcher, { layerSwitcherOptions })"
+    @ready="onControlReady(useControls.LayerSwitcher.id)"
   />
   <Legends
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Legends.id)"
-    :disabled="useControls.Legends.disabled"
-    :legends-options="legendsOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Legends')"
+    v-bind="getControlProps(useControls.Legends, { legendsOptions })"
+    @ready="onControlReady(useControls.Legends.id)"
   />
   <Route
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Route.id)"
-    :disabled="useControls.Route.disabled"
-    :route-options="routeOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Route')"
+    v-bind="getControlProps(useControls.Route, { routeOptions })"
+    @ready="onControlReady(useControls.Route.id)"
   />
   <Isocurve
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
-    :disabled="useControls.Isocurve.disabled"
-    :isocurve-options="isocurveOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Isocurve')"
+    v-bind="getControlProps(useControls.Isocurve, { isocurveOptions })"
+    @ready="onControlReady(useControls.Isocurve.id)"
   />
   <ReverseGeocode
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
-    :disabled="useControls.ReverseGeocode.disabled"
-    :reverse-geocode-options="reverseGeocodeOptions"
-    :map-id="mapId"
-    @ready="onControlReady('ReverseGeocode')"
+    v-bind="getControlProps(useControls.ReverseGeocode, { reverseGeocodeOptions })"
+    @ready="onControlReady(useControls.ReverseGeocode.id)"
   />
   <FullScreen
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-    :disabled="useControls.FullScreen.disabled"
-    :fullscreen-options="fullscreenOptions"
-    :map-id="mapId"
-    @ready="onControlReady('FullScreen')"
+    v-bind="getControlProps(useControls.FullScreen, { fullscreenOptions })"
+    @ready="onControlReady(useControls.FullScreen.id)"
   />
   <Zoom
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
-    :zoom-options="zoomOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Zoom')"
+    v-bind="getControlProps(useControls.Zoom, { zoomOptions }, false)"
+    @ready="onControlReady(useControls.Zoom.id)"
   />
   <SearchEngine
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
-    :disabled="useControls.SearchEngine.disabled"
-    :search-engine-options="searchEngineOptions"
-    :map-id="mapId"
-    @ready="onControlReady('SearchEngine')"
+    v-bind="getControlProps(useControls.SearchEngine, { searchEngineOptions })"
+    @ready="onControlReady(useControls.SearchEngine.id)"
   />
   <GetFeatureInfo
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
-    :get-feature-info-options="getFeatureInfoOptions"
-    :map-id="mapId"
-    @ready="onControlReady('GetFeatureInfo')"
+    v-bind="getControlProps(useControls.GetFeatureInfo, { getFeatureInfoOptions }, false)"
+    @ready="onControlReady(useControls.GetFeatureInfo.id)"
   />
   <ScaleLine
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
-    :disabled="useControls.ScaleLine.disabled"
-    :scale-line-options="scaleLineOptions"
-    :map-id="mapId"
-    @ready="onControlReady('ScaleLine')"
+    v-bind="getControlProps(useControls.ScaleLine, { scaleLineOptions })"
+    @ready="onControlReady(useControls.ScaleLine.id)"
   />
   <OverviewMap
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
-    :disabled="useControls.OverviewMap.disabled"
-    :map-id="mapId"
-    @ready="onControlReady('OverviewMap')"
+    v-bind="getControlProps(useControls.OverviewMap)"
+    @ready="onControlReady(useControls.OverviewMap.id)"
   />
   <Territories
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Territories.id)"
-    :disabled="useControls.Territories.disabled"
-    :territories-options="territoriesOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Territories')"
+    v-bind="getControlProps(useControls.Territories, { territoriesOptions })"
+    @ready="onControlReady(useControls.Territories.id)"
   />
   <MeasureLength
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
-    :disabled="useControls.MeasureLength.disabled"
-    :measure-length-options="measureLengthOptions"
-    :map-id="mapId"
-    @ready="onControlReady('MeasureLength')"
+    v-bind="getControlProps(useControls.MeasureLength, { measureLengthOptions })"
+    @ready="onControlReady(useControls.MeasureLength.id)"
   />
   <MeasureArea
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
-    :disabled="useControls.MeasureArea.disabled"
-    :measure-area-options="measureAreaOptions"
-    :map-id="mapId"
-    @ready="onControlReady('MeasureArea')"
+    v-bind="getControlProps(useControls.MeasureArea, { measureAreaOptions })"
+    @ready="onControlReady(useControls.MeasureArea.id)"
   />
   <MeasureAzimuth
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
-    :disabled="useControls.MeasureAzimuth.disabled"
-    :measure-azimuth-options="measureAzimuthOptions"
-    :map-id="mapId"
-    @ready="onControlReady('MeasureAzimuth')"
+    v-bind="getControlProps(useControls.MeasureAzimuth, { measureAzimuthOptions })"
+    @ready="onControlReady(useControls.MeasureAzimuth.id)"
   />
   <MousePosition
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
-    :disabled="useControls.MousePosition.disabled"
-    :mouse-position-options="mousePositionOptions"
-    :map-id="mapId"
-    @ready="onControlReady('MousePosition')"
+    v-bind="getControlProps(useControls.MousePosition, { mousePositionOptions })"
+    @ready="onControlReady(useControls.MousePosition.id)"
   />
   <Drawing
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
-    :disabled="useControls.Drawing.disabled"
-    :drawing-options="drawingOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Drawing')"
+    v-bind="getControlProps(useControls.Drawing, { drawingOptions })"
+    @ready="onControlReady(useControls.Drawing.id)"
   />
   <ElevationPath
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
-    :disabled="useControls.ElevationPath.disabled"
-    :elevation-path-options="elevationPathOptions"
-    :map-id="mapId"
-    @ready="onControlReady('ElevationPath')"
+    v-bind="getControlProps(useControls.ElevationPath, { elevationPathOptions })"
+    @ready="onControlReady(useControls.ElevationPath.id)"
   />
   <LayerImport
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
-    :disabled="useControls.LayerImport.disabled"
-    :layer-import-options="layerImportOptions"
-    :map-id="mapId"
-    @ready="onControlReady('LayerImport')"
+    v-bind="getControlProps(useControls.LayerImport, { layerImportOptions })"
+    @ready="onControlReady(useControls.LayerImport.id)"
   />
   <ControlList
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ControlList.id)"
-    :disabled="useControls.ControlList.disabled"
-    :control-list-options="controlListOptions"
-    :map-id="mapId"
-    @ready="onControlReady('ControlList')"
+    v-bind="getControlProps(useControls.ControlList, { controlListOptions })"
+    @ready="onControlReady(useControls.ControlList.id)"
   />
   <ContextMenu
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
-    :disabled="useControls.ContextMenu.disabled"
-    :context-menu-options="contextMenuOptions"
-    :map-id="mapId"
-    @ready="onControlReady('ContextMenu')"
+    v-bind="getControlProps(useControls.ContextMenu, { contextMenuOptions })"
+    @ready="onControlReady(useControls.ContextMenu.id)"
   />
   <Reporting
     v-if="controlOptions && !domStore.isReportingDisabled"
-    :visibility="props.controlOptions.includes(useControls.Reporting.id)"
-    :disabled="useControls.Reporting.disabled"
-    :reporting-options="reportingOptions"
-    :map-id="mapId"
-    @ready="onControlReady('Reporting')"
+    v-bind="getControlProps(useControls.Reporting, { reportingOptions })"
+    @ready="onControlReady(useControls.Reporting.id)"
   />
   <Panoramax
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Panoramax.id)"
-    :disabled="useControls.Panoramax.disabled"
-    :panoramax-options="panoramaxOptions"
-    :layers-ready="props.layersReady"
-    :map-id="mapId"
-    @ready="onControlReady('Panoramax')"
+    v-bind="getControlProps(useControls.Panoramax, { panoramaxOptions, layersReady: props.layersReady })"
+    @ready="onControlReady(useControls.Panoramax.id)"
   />
 </template>
 

@@ -195,7 +195,7 @@ export const useControls = {
   Panoramax: {
     id: 'Panoramax',
     visible: true,
-    active: false,
+    active: true,
     disabled: false,
     icon: "gpf:panoramax"
   }
