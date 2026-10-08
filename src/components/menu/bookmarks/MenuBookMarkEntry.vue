@@ -225,23 +225,10 @@ var lstDocumentsCarte = [];
 
 const onClickButtonDelete = (e) => {
   console.debug(e);
-
-  if (props.data.type === "carte") {
-    // on ne supprime pas directement le document carte
-    isConfirmDeleteModalOpened.value = true;
-    return;
-  }
-
   // on recherche si le document est présent dans les cartes enregistrées
   lstDocumentsCarte = service.findInCartes(props.data.id);
-  // si oui, on ouvre un modal de confirmation pour prévenir l'utilisateur
-  if (lstDocumentsCarte.length > 0) {
-    isConfirmDeleteModalOpened.value = true;
-  }
-  // sinon, on supprime directement le document
-  else {
-    onConfirmDeleteDocument();
-  }
+  // et, on ouvre un modal de confirmation pour prévenir l'utilisateur
+  isConfirmDeleteModalOpened.value = true;
 };
 
 const onConfirmDeleteDocument = () => {
@@ -693,8 +680,8 @@ const onModalExportClose = () => {
       {{ t.bookmark.warning_delete_permalink_in_bookmarks_carte }}
     </div>
     <div v-else>
-      {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
       <div v-if="lstDocumentsCarte.length > 0">
+        {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
         <ul class="fr-mt-2w">
           <li
             v-for="doc in lstDocumentsCarte"
