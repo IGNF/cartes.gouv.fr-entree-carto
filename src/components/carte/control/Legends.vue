@@ -8,6 +8,7 @@ const props = defineProps({
     required: true
   },
   visibility: Boolean,
+  disabled: Boolean,
   legendsOptions: {
     type: Object,
     default: () => ({})
@@ -23,6 +24,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(legends.value);
+    if (props.disabled) {
+      legends.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

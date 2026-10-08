@@ -13,6 +13,7 @@ const mapStore = useMapStore();
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   controlListOptions: { type: Object, default: () => ({}) }
 });
 
@@ -98,6 +99,9 @@ onMounted(() => {
   applyControlsOrder();
   if (props.visibility) {
     map.addControl(controlList);
+    if (props.disabled) {
+      controlList.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

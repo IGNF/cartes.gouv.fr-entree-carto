@@ -25,6 +25,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   routeOptions: {
     type: Object,
     default: () => ({})
@@ -93,6 +94,9 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(route.value);
     map.addControl(btnExport.value);
+    if (props.disabled) {
+      route.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }

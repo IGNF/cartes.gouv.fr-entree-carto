@@ -5,6 +5,7 @@ import { MeasureArea } from 'geopf-extensions-openlayers';
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   measureAreaOptions: { type: Object, default: () => ({}) }
 })
 
@@ -18,6 +19,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(measureArea.value);
+    if (props.disabled) {
+      measureArea.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

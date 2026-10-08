@@ -6,209 +6,205 @@
  * {
  *  OverviewMap: {
  *    id: 'OverviewMap',
- *    active: true,      // rendre actif le widget sur la carte
- *    disable: false     // non selectionnable dans le menu : src/components/menu/MenuControl.vue
- *    default: true      // actif par défaut sur la carte
+ *    visible: true,     // visibilité sur la carte / dans le menu
+ *    active: false,     // état pour les contrôles togglables qui peuvent être activés ou désactivés
+ *    disabled: false,   // interaction autorisée ou non (grisé lorsque true)
  *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
 import { useMatchMedia } from '@/composables/matchMedia';
 import { useDataStore } from "@/stores/dataStore";
-import { LayerWMTS as GeoportalWMTS } from 'geopf-extensions-openlayers';
 import { useLogger } from 'vue-logger-plugin';
+
+import { LayerWMTS as GeoportalWMTS } from 'geopf-extensions-openlayers';
 
 let isMobile = useMatchMedia('SM');
 
-
-// la gestion des controles, l'ordre est important:
-// 1. Catalog 2. Layerswitcher
-// 3 à ControlList - 1 Outils à droite
-// ControlList
-// les autres (ordre non important)
+/**
+ * Liste des contrôles disponibles avec leurs propriétés par défaut
+ * Chaque contrôle possède les propriétés suivantes :
+ * - id : identifiant unique du contrôle
+ * - visible : visibilité sur la carte / dans le menu
+ * - active : état pour les contrôles togglables qui peuvent être activés ou désactivés
+ * - disabled : interaction autorisée ou non (grisé lorsque true)
+ * - icon : icône du contrôle
+ * 
+ * Attention, l'ordre est important:
+ * 1. Catalog
+ * 2. LayerSwitcher
+ * 3. ControlList
+ * 4. Les autres contrôles (ordre non important)
+ * 
+ * Composable utilisé uniquement dans Controls.vue
+ */
 export const useControls = {
   Catalog: {
     id: 'Catalog',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "fr-icon-feedback-line"
   },
   LayerSwitcher: {
     id: 'LayerSwitcher',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "fr-icon-stack-line"
   },
   MeasureLength: {
     id: 'MeasureLength',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:ruler-line"
   },
   MeasureArea: {
     id: 'MeasureArea',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:custom-size"
   },
   Drawing: {
     id: 'Drawing',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:pencil-line"
   },
   Route: {
     id: 'Route',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:route-line"
   },
   Isocurve: {
     id: 'Isocurve',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:map-pin-time-line"
   },
   ReverseGeocode: {
     id: 'ReverseGeocode',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:signpost-line"
   },
   MousePosition: {
     id: 'MousePosition',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "gpf:coordonnee"
   },
   ElevationPath: {
     id: 'ElevationPath',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:line-chart-line"
   },
   MeasureAzimuth: {
     id: 'MeasureAzimuth',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:compasses-2-line"
   },
   ControlList: {
     id: 'ControlList',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:list-check"
   },
   OverviewMap: {
     id: 'OverviewMap',
+    visible: true,
     active: false,
-    disable: false,
-    default: false,
+    disabled: false,
     icon: "ri:navigation-line"
   },
   SearchEngine: {
     id: 'SearchEngine',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:search-line"
   },
   ScaleLine: {
     id: 'ScaleLine',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     // The ScaleLine control is a non-interactive widget and does not require an icon.
     icon: ""
   },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "gpf:getfeature-line"
   },
   Legends: {
     id: 'Legends',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:list-indefinite"
   },
   Zoom: {
     id: 'Zoom',
-    active: true,
-    disable: false,
-    default: !isMobile.value,
+    visible: true,
+    active: !isMobile.value,
+    disabled: false,
     icon: "ri:zoom-in-line"
   },
   FullScreen: {
     id: 'FullScreen',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:fullscreen-line"
   },
   Share: {
     id: 'Share',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:map-2-line"
   },
   Print: {
     id: 'Print',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "fr-icon-printer-line"
   },
   Territories: {
     id: 'Territories',
+    visible: true,
     active: true,
-    disable: false,
-    default: true,
+    disabled: false,
     icon: "fr-icon-france-line"
   },
   LayerImport: {
     id: 'LayerImport',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:file-upload-line"
   },
   ContextMenu: {
     id: 'ContextMenu',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "ri:menu-2-line"
   },
   Reporting: {
     id: 'Reporting',
-    active: true,
-    disable: true,
-    default: true,
+    visible: true,
+    disabled: false,
     icon: "fr-icon-feedback-line" // ri:feedback-line
   },
   Panoramax: {
     id: 'Panoramax',
-    active: true,
-    disable: false,
-    default: true,
+    visible: true,
+    active: false,
+    disabled: false,
     icon: "gpf:panoramax"
   }
+}
+
+const controlsById = new Map(Object.values(useControls).map(control => [control.id, control]));
+
+export function isControlVisible(controlId) {
+  return controlsById.get(controlId)?.visible !== false;
 }
 
 /**
@@ -216,18 +212,17 @@ export const useControls = {
  * @returns
  */
 export function useDefaultControls() {
-  var defaultControls = [];
-  // récupération des controls par défaut
-  for (var control in useControls) {
-    if (useControls[control].default === true || (useControls[control].active === true && useControls[control].disable === true)) {
-      defaultControls.push(useControls[control].id);
-    }
-  }
-  return defaultControls;
+  // INFO
+  // Filtre les contrôles pour ne garder que ceux qui sont visibles et actifs
+  // Actif pour les contrôles togglables !
+  return Object.values(useControls)
+    .filter(control => control.visible && control.active !== false)
+    .map(control => control.id);
 }
 
 /**
- * Obtenir les options du menu des contrôles
+ * Obtenir les options pour le menu des contrôles
+ * (cf. MenuControl.vue)
  * @returns
  */
 export function useControlsMenuOptions() {
@@ -236,7 +231,7 @@ export function useControlsMenuOptions() {
       label: 'Mesurer une distance',
       id: 'measureLength',
       name: useControls.MeasureLength.id,
-      disabled: useControls.MeasureLength.disable,
+      disabled: useControls.MeasureLength.disabled,
       icon: "ri:ruler-line",
       group: 'Mesure',
     },
@@ -244,7 +239,7 @@ export function useControlsMenuOptions() {
       label: 'Mesurer une surface',
       id: 'measureArea',
       name: useControls.MeasureArea.id,
-      disabled: useControls.MeasureArea.disable,
+      disabled: useControls.MeasureArea.disabled,
       icon: "ri:custom-size",
       group: 'Mesure',
     },
@@ -252,7 +247,7 @@ export function useControlsMenuOptions() {
       label: 'Mesurer un angle',
       id: 'measureAzimuth',
       name: useControls.MeasureAzimuth.id,
-      disabled: useControls.MeasureAzimuth.disable,
+      disabled: useControls.MeasureAzimuth.disabled,
       icon: "ri:compasses-2-line",
       group: 'Mesure',
     },
@@ -260,7 +255,7 @@ export function useControlsMenuOptions() {
       label: 'Coordonnées du curseur',
       id: 'mousePosition',
       name: useControls.MousePosition.id,
-      disabled: useControls.MousePosition.disable,
+      disabled: useControls.MousePosition.disabled,
       icon: "gpf:coordonnee",
       group: 'Mesure',
     },
@@ -269,7 +264,7 @@ export function useControlsMenuOptions() {
       id: 'elevationPath',
       name: useControls.ElevationPath.id,
       hint: 'Afficher l’altitude le long d’un trajet',
-      disabled: useControls.ElevationPath.disable,
+      disabled: useControls.ElevationPath.disabled,
       icon: "ri:line-chart-line",
       group: 'Mesure',
     },
@@ -278,7 +273,7 @@ export function useControlsMenuOptions() {
       id: 'drawing',
       name: useControls.Drawing.id,
       hint: 'Ajouter des points, lignes, formes ou textes directement sur la carte',
-      disabled: useControls.Drawing.disable,
+      disabled: useControls.Drawing.disabled,
       icon: "ri:pencil-line",
       group: 'Dessin',
     },
@@ -286,7 +281,7 @@ export function useControlsMenuOptions() {
       label: 'Itinéraire',
       id: 'route',
       name: useControls.Route.id,
-      disabled: useControls.Route.disable,
+      disabled: useControls.Route.disabled,
       icon: "ri:route-line",
       group: 'Déplacements',
     },
@@ -295,7 +290,7 @@ export function useControlsMenuOptions() {
       id: 'reverseGeocode',
       name: useControls.ReverseGeocode.id,
       hint: 'Obtenir l’adresse ou le nom d’un lieu à partir d’un point ou d’une zone sur la carte',
-      disabled: useControls.ReverseGeocode.disable,
+      disabled: useControls.ReverseGeocode.disabled,
       icon: "ri:signpost-line",
       group: 'Déplacements',
     },
@@ -304,7 +299,7 @@ export function useControlsMenuOptions() {
       id: 'isocurve',
       name: useControls.Isocurve.id,
       hint: 'Afficher la zone que l’on peut atteindre en un temps donné depuis un point de départ',
-      disabled: useControls.Isocurve.disable,
+      disabled: useControls.Isocurve.disabled,
       icon: "ri:map-pin-time-line",
       group: 'Déplacements',
     },
@@ -313,7 +308,7 @@ export function useControlsMenuOptions() {
       id: 'overview',
       name: useControls.OverviewMap.id,
       hint: 'Aperçu de la zone pour se répérer facilement',
-      disabled: useControls.OverviewMap.disable,
+      disabled: useControls.OverviewMap.disabled,
       icon: "ri:navigation-line",
       group: 'Affichage',
     },
@@ -321,7 +316,7 @@ export function useControlsMenuOptions() {
       label: 'Sélecteur de territoires',
       id: 'territories',
       name: useControls.Territories.id,
-      disabled: useControls.Territories.disable,
+      disabled: useControls.Territories.disabled,
       icon: "fr-icon-france-line",
       group: 'Affichage',
     },
@@ -329,7 +324,7 @@ export function useControlsMenuOptions() {
       label: 'Zoom',
       id: 'zoom',
       name: useControls.Zoom.id,
-      disabled: useControls.Zoom.disable,
+      disabled: useControls.Zoom.disabled,
       icon: "ri:zoom-in-line",
       group: 'Affichage',
     },
@@ -337,7 +332,7 @@ export function useControlsMenuOptions() {
       label: 'Plein écran',
       id: 'fullscreen',
       name: useControls.FullScreen.id,
-      disabled: useControls.FullScreen.disable,
+      disabled: useControls.FullScreen.disabled,
       icon: "ri:fullscreen-line",
     },
     {
@@ -345,96 +340,96 @@ export function useControlsMenuOptions() {
       id: 'searchEngine',
       name: useControls.SearchEngine.id,
       hint: 'Barre de recherche sur la carte',
-      disabled: useControls.SearchEngine.disable,
+      disabled: useControls.SearchEngine.disabled,
     },
     {
       label: 'Scale Line',
       id: 'scaleLine',
       name: useControls.ScaleLine.id,
-      disabled: useControls.ScaleLine.disable,
+      disabled: useControls.ScaleLine.disabled,
     },
     {
       label: 'Gestionnaire de couches',
       id: 'layerSwitcher',
       name: useControls.LayerSwitcher.id,
-      disabled: useControls.LayerSwitcher.disable,
+      disabled: useControls.LayerSwitcher.disabled,
       icon: "fr-icon-stack-line"
     },
     {
       label: 'GetFeatureInfo',
       id: 'getFeatureInfo',
       name: useControls.GetFeatureInfo.id,
-      disabled: useControls.GetFeatureInfo.disable,
+      disabled: useControls.GetFeatureInfo.disabled,
       icon: "gpf:getfeature-line"
     },
     {
       label: 'Légendes',
       id: 'legends',
       name: useControls.Legends.id,
-      disabled: useControls.Legends.disable,
+      disabled: useControls.Legends.disabled,
       icon: "ri:list-indefinite"
     },
     {
       label: 'Partager une carte',
       id: 'share',
       name: useControls.Share.id,
-      disabled: useControls.Share.disable,
+      disabled: useControls.Share.disabled,
       icon: "ri:map-2-line"
     },
     {
       label: 'Importer des données',
       id: 'layerImport',
       name: useControls.LayerImport.id,
-      disabled: useControls.LayerImport.disable,
+      disabled: useControls.LayerImport.disabled,
       icon: "ri:file-upload-line"
     },
     {
       label: 'Imprimer une carte',
       id: 'print',
       name: useControls.Print.id,
-      disabled: useControls.Print.disable,
+      disabled: useControls.Print.disabled,
       icon: "fr-icon-printer-line"
     },
     {
       label: 'Liste des controles',
       id: 'controlList',
       name: useControls.ControlList.id,
-      disabled: useControls.ControlList.disable,
+      disabled: useControls.ControlList.disabled,
       icon: "ri:list-check"
     },
     {
       label: 'Menu contextuel',
       id: 'contextMenu',
       name: useControls.ContextMenu.id,
-      disabled: useControls.ContextMenu.disable,
+      disabled: useControls.ContextMenu.disabled,
       icon: "ri:menu-2-line"
     },
     {
       label: 'Signaler une anomalie',
       id: 'reporting',
       name: useControls.Reporting.id,
-      disabled: useControls.Reporting.disable,
+      disabled: useControls.Reporting.disabled,
       icon: "fr-icon-feedback-line"
     },
     {
       label: 'Catalogue',
       id: 'catalog',
       name: useControls.Catalog.id,
-      disabled: useControls.Catalog.disable,
+      disabled: useControls.Catalog.disabled,
       icon: "ri:map-2-line"
     },
     {
       label: 'Visionneuse Panoramax',
       id: 'panoramax',
       name: useControls.Panoramax.id,
-      disabled: useControls.Panoramax.disable,
+      disabled: useControls.Panoramax.disabled,
       hint: "Explorez les lieux photographiés et visionnez les photos",
       icon: "gpf:panoramax",
       group: 'Affichage'
     }
   ]
   .filter(opt => Object.keys(useControls).includes(opt.name))
-  .filter(opt => !opt.disabled)
+  .filter(opt => controlsById.get(opt.name)?.visible === true)
 }
 
 /**

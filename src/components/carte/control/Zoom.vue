@@ -21,7 +21,7 @@ const zoom = ref(new GeoportalZoom(props.zoomOptions))
 onMounted(() => {
   emit('ready');
   if (props.visibility) {
-    map.addControl(zoom.value)
+    map.addControl(zoom.value);
     zoom.value.on('zoom:in', onClickZoomIn)
     zoom.value.on('zoom:out', onClickZoomOut)
   }
@@ -35,7 +35,10 @@ onBeforeUpdate(() => {
 
 onUpdated(() => {
   if (props.visibility) {
-    map.addControl(zoom.value)
+    map.addControl(zoom.value);
+    if (props.disabled) {
+      zoom.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

@@ -85,6 +85,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isLayerImportDisabled }"
       icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
@@ -93,6 +94,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isShareDisabled }"
       icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
@@ -101,6 +103,7 @@ onMounted(() => {
     <DsfrButton
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isPrintDisabled }"
       icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"

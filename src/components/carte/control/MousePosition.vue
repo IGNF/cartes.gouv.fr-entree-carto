@@ -7,6 +7,7 @@ import {
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   mousePositionOptions: { type: Object, default: () => ({}) }
 })
 
@@ -19,6 +20,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(mousePosition.value);
+    if (props.disabled) {
+      mousePosition.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 
