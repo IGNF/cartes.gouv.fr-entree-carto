@@ -17,6 +17,7 @@ Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
 #### ✨ [Ajout]
 
 - Intégration Matomo IGN (#1322)
+- Territoires : ajout de nouveaux territoires au widget de selecteur de territoires (#1320)
 
 #### 🔨 [Evolution]
 
