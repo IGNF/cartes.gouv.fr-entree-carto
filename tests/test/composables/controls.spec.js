@@ -27,15 +27,15 @@ describe('composables/controls', () => {
       expect(control).toHaveProperty('id');
       expect(control).toHaveProperty('visible');
       expect(control).toHaveProperty('disabled');
-      if ('active' in control) {
-        expect(typeof control.active).toBe('boolean');
+      if ('defaultEnabled' in control) {
+        expect(typeof control.defaultEnabled).toBe('boolean');
       }
     }
   });
 
   it('U-CT-03 - useDefaultControls et useControlsMenuOptions - excluent un contrôle invisible', () => {
     useControls.OverviewMap.visible = false;
-    useControls.OverviewMap.active = true;
+    useControls.OverviewMap.defaultEnabled = true;
 
     expect(useDefaultControls()).not.toContain('OverviewMap');
     expect(isControlVisible('OverviewMap')).toBe(false);
@@ -44,6 +44,7 @@ describe('composables/controls', () => {
   });
 
   it('U-CT-04 - useControlsMenuOptions - conserve un contrôle visible mais désactivé', () => {
+    useControls.OverviewMap.disabled = true;
     const overviewMapOption = useControlsMenuOptions().find(option => option.name === 'OverviewMap');
 
     expect(overviewMapOption).toMatchObject({
@@ -52,8 +53,8 @@ describe('composables/controls', () => {
     });
   });
 
-  it('U-CT-05 - useDefaultControls - inclut un contrôle dont active est indéfini', () => {
-    expect(useControls.Catalog.active).toBeUndefined();
+  it('U-CT-05 - useDefaultControls - inclut un contrôle dont defaultEnabled est indéfini', () => {
+    expect(useControls.Catalog.defaultEnabled).toBeUndefined();
     expect(useDefaultControls()).toContain('Catalog');
     expect(useDefaultControls()).not.toContain('OverviewMap');
   });

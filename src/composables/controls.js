@@ -6,9 +6,9 @@
  * {
  *  OverviewMap: {
  *    id: 'OverviewMap',
- *    visible: true,     // visibilité sur la carte / dans le menu
- *    active: false,     // état pour les contrôles togglables qui peuvent être activés ou désactivés
- *    disabled: false,   // interaction autorisée ou non (grisé lorsque true)
+ *    visible: true,        // visibilité sur la carte / dans le menu
+ *    defaultEnabled: true, // activé par défaut au chargement
+ *    disabled: false,      // interaction autorisée ou non (grisé lorsque true)
  *    icon: "ri:navigation-line" // icône du contrôle
  * }
  */
@@ -25,9 +25,15 @@ let isMobile = useMatchMedia('SM');
  * Chaque contrôle possède les propriétés suivantes :
  * - id : identifiant unique du contrôle
  * - visible : visibilité sur la carte / dans le menu
- * - active : état pour les contrôles togglables qui peuvent être activés ou désactivés
+ * - defaultEnabled : cf. note ci-dessous
  * - disabled : interaction autorisée ou non (grisé lorsque true)
  * - icon : icône du contrôle
+ * 
+ * Note:
+ * - Si defaultEnabled est défini sur true, le contrôle est activé par défaut au chargement.
+ * - Si defaultEnabled est défini sur false, le contrôle est désactivé par défaut au chargement.
+ * - Si defaultEnabled est indéfini, le contrôle visible reste activé par défaut.
+ * Au premier chargement, son toggle sera coché et le contrôle sera ajouté à la carte
  * 
  * Attention, l'ordre est important:
  * 1. Catalog
@@ -35,7 +41,12 @@ let isMobile = useMatchMedia('SM');
  * 3. ControlList
  * 4. Les autres contrôles (ordre non important)
  * 
- * Composable utilisé uniquement dans Controls.vue
+ * Autre point important :
+ * La presence des controles dans le localStorage prime sur les paramètres par défaut 
+ * définis dans ce composable.
+ * Cela permet de conserver les préférences de l'utilisateur entre les sessions.
+ * 
+ * @see {@link Controls.vue}
  */
 export const useControls = {
   Catalog: {
@@ -113,7 +124,7 @@ export const useControls = {
   OverviewMap: {
     id: 'OverviewMap',
     visible: true,
-    active: false,
+    defaultEnabled: false,
     disabled: false,
     icon: "ri:navigation-line"
   },
@@ -145,7 +156,7 @@ export const useControls = {
   Zoom: {
     id: 'Zoom',
     visible: true,
-    active: !isMobile.value,
+    defaultEnabled: !isMobile.value,
     disabled: false,
     icon: "ri:zoom-in-line"
   },
@@ -170,7 +181,7 @@ export const useControls = {
   Territories: {
     id: 'Territories',
     visible: true,
-    active: true,
+    defaultEnabled: true,
     disabled: false,
     icon: "fr-icon-france-line"
   },
@@ -195,7 +206,7 @@ export const useControls = {
   Panoramax: {
     id: 'Panoramax',
     visible: true,
-    active: true,
+    defaultEnabled: true,
     disabled: false,
     icon: "gpf:panoramax"
   }
@@ -212,11 +223,10 @@ export function isControlVisible(controlId) {
  * @returns
  */
 export function useDefaultControls() {
-  // INFO
-  // Filtre les contrôles pour ne garder que ceux qui sont visibles et actifs
-  // Actif pour les contrôles togglables !
+  // Cette liste initialise la configuration du store ; elle ne représente pas l'état courant des toggles.
+  // Sans defaultEnabled, un contrôle visible reste activé par défaut.
   return Object.values(useControls)
-    .filter(control => control.visible && control.active !== false)
+    .filter(control => control.visible && control.defaultEnabled !== false)
     .map(control => control.id);
 }
 
