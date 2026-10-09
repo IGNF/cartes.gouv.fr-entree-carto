@@ -2,7 +2,6 @@
 
 import { useLogger } from 'vue-logger-plugin'
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
@@ -26,7 +25,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   isocurveOptions: {
     type: Object,
     default: () => ({})
@@ -98,10 +96,6 @@ onMounted(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires isocurve:drawstart
     * @fires isocurve:drawend
@@ -132,10 +126,6 @@ onUpdated(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires isocurve:drawstart
     * @fires isocurve:drawend

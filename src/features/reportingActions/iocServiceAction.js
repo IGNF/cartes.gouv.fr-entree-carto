@@ -3,7 +3,6 @@ import {
 } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore";
-let mapStore = useMapStore();
 
 class MyServiceAction {
     constructor () {
@@ -102,6 +101,7 @@ class MyServiceAction {
         </kml>`;
 
         let layername = data.name + " (Anomalie) (cartes.gouv.fr)";
+        const mapStore = useMapStore();
         let mapZoom = Math.round(mapStore.getMap().getView().getZoom());
 
         let anomaly = {
