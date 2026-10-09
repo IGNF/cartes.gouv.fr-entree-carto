@@ -8,7 +8,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   contextMenuOptions: {
     type: Object,
     default: () => ({})

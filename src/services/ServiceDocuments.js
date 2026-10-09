@@ -1,4 +1,3 @@
-/* eslint-disable secure-coding/detect-object-injection -- ajout d'une whitelist et fonctions pour valider les labels */
 
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";

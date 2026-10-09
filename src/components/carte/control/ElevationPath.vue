@@ -1,5 +1,4 @@
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
@@ -25,7 +24,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   elevationPathOptions: {
     type: Object,
     default: () => ({})
@@ -110,9 +108,6 @@ onMounted(() => {
     btnSave.value.on("button:clicked", onSaveElevationPath);
 
     var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
-    if (props.analytic) {
-      useActionButtonEulerian(el);
-    }
     // INFO
     // si on clique pour desactiver le profil alti, cette action supprime le tracé en cours !
     // mais, par contre, si on interdit cette action, la couche n'est pas supprimée, 
@@ -146,9 +141,6 @@ onUpdated(() => {
     map.addControl(btnSave.value);
 
     var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
-    if (props.analytic) {
-      useActionButtonEulerian(el);
-    }
     // cf. HACK
     el.dataset.removeMeasure = "false";
     el.dataset.removeLayer = "false";

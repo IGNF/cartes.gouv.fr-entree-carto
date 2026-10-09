@@ -10,7 +10,6 @@
 </script>
 
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
@@ -43,7 +42,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   layerImportOptions: {
     type: Object,
     default: () => ({})
@@ -71,10 +69,6 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(layerImport.value);
-    if (props.analytic) {
-      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     layerImport.value.on("layerimport:vector:added", onSaveImportVector);
     layerImport.value.on("layerimport:service:added", onSaveImportService);
@@ -92,10 +86,6 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(layerImport.value);
-    if (props.analytic) {
-      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     layerImport.value.on("layerimport:vector:added", onSaveImportVector);
     layerImport.value.on("layerimport:service:added", onSaveImportService);
