@@ -30,6 +30,7 @@ Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
 #### 🐛 [Correction]
 
 - Ajout d'une page 404 en cas de route inconnue sur explorer-les-cartes (#1328)
+- Bandeau d'alerte : invalidation du cache sur les alertes (#1336)
 
 #### 🔒 [Sécurité]
 
