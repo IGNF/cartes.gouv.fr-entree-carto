@@ -6,7 +6,7 @@
 
 ### 🎉 Résumé
 
-Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
+Ajout de nouveaux territoires dans les selecteur de territoires et évolutions mineures sur l'espace personnel et le cartalogue.
 
 ### 💥 Breaking changes
 
