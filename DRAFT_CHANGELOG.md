@@ -26,6 +26,7 @@ Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
 - Mesure d'azimuth : activation de l’azimuth géodésique (#1285)
 - Modale d’embarquement : mise à jour des textes et position «Ne plus afficher» (#1295)
 - Reporting: intégration service anomaily aavec validation par geocaptcha (#1284)
+- Cartalogue: n’affiche plus les producteurs des cartes de base (#1327)
 
 #### 🔥 [Obsolète]
 
