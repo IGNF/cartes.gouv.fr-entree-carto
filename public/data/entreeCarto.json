@@ -171052,200 +171052,148 @@
   },
   "territories": [
     {
-      "id": "FXX",
-      "title": "France métropolitaine",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -9.86,
-        41.15,
-        10.38,
-        51.56
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/fxx.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/fxx.svg"
+        "id": "FHX",
+        "title": "France hexagonale",
+        "description": "",
+        "zoom": null,
+        "bbox": [-9.86, 41.15, 10.38, 51.56],
+        "icon": "img/territories/fhx.svg"
     },
     {
-      "id": "IDF",
-      "title": "Paris petite couronne",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        2.18,
-        48.77,
-        2.52,
-        48.95
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/idf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/idf.svg"
+        "id": "COR",
+        "title": "Corse",
+        "description": "",
+        "zoom": null,
+        "bbox": [8.20, 41.15, 9.80, 43.23],
+        "icon": "img/territories/cor.svg"
     },
     {
-      "id": "GLP",
-      "title": "Guadeloupe",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -61.97,
-        15.72,
-        -60.93,
-        16.66
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/glp.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/glp.svg"
+        "id": "IDF",
+        "title": "Paris petite couronne",
+        "description": "",
+        "zoom": null,
+        "bbox": [2.18, 48.77, 2.52, 48.95],
+        "icon": "img/territories/idf.svg"
     },
     {
-      "id": "MTQ",
-      "title": "Martinique",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -61.4,
-        14.25,
-        -60.67,
-        15.04
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/mtq.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/mtq.svg"
+        "id": "GLP",
+        "title": "Guadeloupe",
+        "description": "",
+        "zoom": null,
+        "bbox": [ -61.97, 15.72, -60.93, 16.66],
+        "icon": "img/territories/glp.svg"
     },
     {
-      "id": "GUF",
-      "title": "Guyane",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -55.65,
-        1.49,
-        -51.2,
-        6.21
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/guf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/guf.svg"
+        "id": "MTQ",
+        "title": "Martinique",
+        "description": "",
+        "zoom": null,
+        "bbox": [-61.40, 14.25, -60.67, 15.04],
+        "icon": "img/territories/mtq.svg"
     },
     {
-      "id": "REU",
-      "title": "La Réunion",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        55.07,
-        -21.46,
-        55.86,
-        -20.79
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/reu.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/reu.svg"
+        "id": "GUF",
+        "title": "Guyane",
+        "description": "",
+        "zoom": null,
+        "bbox": [-55.65, 1.49, -51.20, 6.21],
+        "icon": "img/territories/guf.svg"
     },
     {
-      "id": "SPM",
-      "title": "Saint-Pierre-et-Miquelon",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -56.48,
-        46.69,
-        -56.07,
-        47.19
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/spm.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/spm.svg"
+        "id": "REU",
+        "title": "La Réunion",
+        "description": "",
+        "zoom": null,
+        "bbox": [55.07, -21.46, 55.86, -20.79],
+        "icon": "img/territories/reu.svg"
     },
     {
-      "id": "MYT",
-      "title": "Mayotte",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        44.95,
-        -13.049,
-        45.32,
-        -12.57
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/myt.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/myt.svg"
+        "id": "SPM",
+        "title": "Saint-Pierre-et-Miquelon",
+        "description": "",
+        "zoom": null,
+        "bbox": [-56.48, 46.69, -56.07, 47.19],
+        "icon": "img/territories/spm.svg"
     },
     {
-      "id": "BLM",
-      "title": "Saint-Barthélemy",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -62.95,
-        17.85,
-        -62.75,
-        17.95
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/blm.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/blm.svg"
+        "id": "MYT",
+        "title": "Mayotte",
+        "description": "",
+        "zoom": null,
+        "bbox": [44.95, -13.049, 45.32, -12.57],
+        "icon": "img/territories/myt.svg"
     },
     {
-      "id": "MAF",
-      "title": "Saint-Martin",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -63.2,
-        18.0,
-        -62.9,
-        18.2
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/maf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/maf.svg"
+        "id": "BLM",
+        "title": "Saint-Barthélemy",
+        "description": "",
+        "zoom": null,
+        "bbox": [-62.95, 17.85, -62.75, 17.95],
+        "icon": "img/territories/blm.svg"
     },
     {
-      "id": "WLF",
-      "title": "Wallis-et-Futuna",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -178.32,
-        -15.2,
-        -175.97,
-        -12.25
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/wlf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/wlf.svg"
+        "id": "MAF",
+        "title": "Saint-Martin",
+        "description": "",
+        "zoom": null,
+        "bbox": [-63.2, 18.0, -62.9, 18.2],
+        "icon": "img/territories/maf.svg"
     },
     {
-      "id": "PYF",
-      "title": "Polynésie française",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        -154.83,
-        -27.6,
-        -134.32,
-        -7.25
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/pyf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/pyf.svg"
+        "id": "WLF",
+        "title": "Wallis-et-Futuna",
+        "description": "",
+        "zoom": null,
+        "bbox": [-178.32, -15.2, -175.97, -12.25],
+        "icon": "img/territories/wlf.svg"
     },
     {
-      "id": "NCL",
-      "title": "Nouvelle-Calédonie",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        163.02,
-        -23.08,
-        167.86,
-        -19.5
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/ncl.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/ncl.svg"
+        "id": "PYF",
+        "title": "Polynésie française",
+        "description": "",
+        "zoom": null,
+        "bbox": [-154.83, -27.60, -134.32, -7.25],
+        "icon": "img/territories/pyf.svg"
     },
     {
-      "id": "ATF",
-      "title": "Terres australes et antarctiques françaises",
-      "description": "",
-      "zoom": null,
-      "bbox": [
-        50.0,
-        -60.0,
-        90.0,
-        -45.0
-      ],
-      "thumbnail": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/thumbnails/atf.png",
-      "icon": "https://data.geopf.fr/annexes/cartes.gouv.fr-config/public/resources/territories/atf.svg"
+        "id": "NCL",
+        "title": "Nouvelle-Calédonie",
+        "description": "",
+        "zoom": null,
+        "bbox": [163.02,-23.08, 167.86,-19.50],
+        "icon": "img/territories/ncl.svg"
+    },
+    {
+        "id": "EPA",
+        "title": "TAAF Îles Éparses",
+        "description": "",
+        "zoom": null,
+        "bbox": [39.75, -22.33, 54.52, -11.55],
+        "icon": "img/territories/epa.svg"
+    },
+    {
+        "id": "AUS",
+        "title": "TAAF Îles Australes",
+        "description": "",
+        "zoom": null,
+        "bbox": [49.0, -45, 80.5, -36.50],
+        "icon": "img/territories/aus.svg"
+    },
+    {
+        "id": "ADE",
+        "title": "TAAF Terre Adélie",
+        "description": "",
+        "zoom": null,
+        "bbox": [136,-70, 142,-66],
+        "icon": "img/territories/ade.svg"
+    },
+    {
+        "id": "CLP",
+        "title": "Clipperton",
+        "description": "",
+        "zoom": null,
+        "bbox": [-109.25, 10.27, -109.20, 10.33],
+        "icon": "img/territories/clp.svg"
     }
   ],
   "contacts": {
