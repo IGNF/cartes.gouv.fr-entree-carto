@@ -5,6 +5,7 @@ import { mainMap } from '@/composables/keys'
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   fullscreenOptions: { type: Object, default: () => ({}) }
 })
 
@@ -18,6 +19,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(fullscreen.value)
+    if (props.disabled) {
+      fullscreen.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

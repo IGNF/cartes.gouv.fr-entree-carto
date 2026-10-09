@@ -35,7 +35,15 @@ const props = defineProps({
   },
 });
 
-const selectedControlsModel = defineModel({ type: Array, default: () => [] });
+const selectedControlsModel = computed({
+  get: () => props.selectedControls,
+  set: (values) => {
+    mapStore.cleanControls();
+    for (const key of values) {
+      mapStore.addControl(key);
+    }
+  }
+});
 
 const opts = useControlsMenuOptions();
 
@@ -76,13 +84,6 @@ const allOptions = computed(() => {
 
 const searchString = ref("");
 
-watch(selectedControlsModel, (values) => {
-  mapStore.cleanControls();
-  for (let index = 0; index < values.length; index++) {
-    const key = values[index];
-    mapStore.addControl(key);
-  }
-})
 onMounted(() => {})
 onUpdated(() => {})
 
@@ -122,7 +123,6 @@ onUpdated(() => {})
               v-for="(opt, idx) in group.items"
               :key="idx"
               v-model="selectedControlsModel"
-              :model-value="props.selectedControls"
               :control-list-element-options="opt"
             />
           </div>

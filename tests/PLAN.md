@@ -143,7 +143,10 @@ Fichiers sources : `src/composables/`
 | # | Cas de test | Description |
 |---|-------------|-------------|
 | U-CT-01 | `useControls` contient les contrôles attendus | Catalog, LayerSwitcher, MeasureLength… |
-| U-CT-02 | Chaque contrôle possède `id`, `active`, `default` | Vérification de la structure |
+| U-CT-02 | Chaque contrôle possède `id`, `visible`, `disabled`; `active` est facultatif | Vérification de la structure |
+| U-CT-03 | Contrôle invisible | Absent de la liste initiale et du menu |
+| U-CT-04 | Contrôle visible et désactivé | Présent dans le menu avec `disabled: true` |
+| U-CT-05 | `active` indéfini | Contrôle visible inclus dans la liste initiale |
 
 #### `printUtils.spec.js`
 | # | Cas de test | Description |

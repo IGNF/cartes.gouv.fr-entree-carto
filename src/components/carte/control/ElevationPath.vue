@@ -24,6 +24,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   elevationPathOptions: {
     type: Object,
     default: () => ({})
@@ -90,6 +91,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(elevationPath.value);
+    if (props.disabled) {
+      elevationPath.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
