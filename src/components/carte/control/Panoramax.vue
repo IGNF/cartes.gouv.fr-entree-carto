@@ -1,6 +1,5 @@
 <script setup lang="js">
 
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useDomStore } from '@/stores/domStore';
 
 import "@panoramax/web-viewer/build/photoviewer.js";
@@ -18,7 +17,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  analytic: Boolean,
   panoramaxOptions: {
     type: Object,
     default: () => ({})
@@ -86,10 +84,6 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(panoramax);
-    if (props.analytic) {
-      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
-      useActionButtonEulerian(el);
-    }
     openPanoramaxViewer(getHistoryState());
   }
 })
@@ -103,10 +97,6 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(panoramax);
-    if (props.analytic) {
-      var el = panoramax.element.querySelector("button[id^=GPshowPanoramaxPicto-]");
-      useActionButtonEulerian(el);
-    }
     openPanoramaxViewer(getHistoryState());
   }
 })

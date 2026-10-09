@@ -22,7 +22,7 @@ const logoText = "République Française";
     <h2 class="fr-modal__title fr-h2">
       Bienvenue sur cartes.gouv.fr
     </h2>
-    <p><a href="https://cartes.gouv.fr/actualites/clap-de-fin-pour-le-geoportail-bienvenue-sur-cartesgouvfr">Le Géoportail a fermé ses portes</a> mais l’expérience cartographique continue ici !</p>
+    <p><a href="https://cartes.gouv.fr/actualites/clap-de-fin-pour-le-geoportail-bienvenue-sur-cartesgouvfr">Le Géoportail a fermé ses portes</a> mais l’expérience cartographique continue ici !</p>
     <p><b>Retrouvez vos cartes, vos données et vos outils</b> sur cartes.gouv.fr, le nouveau site de référence pour explorer, comprendre et approfondir la connaissance du territoire.</p>
   </div>
 </template>

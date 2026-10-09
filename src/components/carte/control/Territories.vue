@@ -3,7 +3,6 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { Territories } from 'geopf-extensions-openlayers';
 
@@ -17,7 +16,6 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   territoriesOptions: {
     type: Object,
     default: () => ({})
@@ -101,10 +99,6 @@ onMounted(() => {
   if (props.visibility) {
     addTerritories();
     map.addControl(territories.value)
-    if (props.analytic) {
-      var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget */
     territories.value.on("territories:order", onOrderTerritories);
     territories.value.on("territories:add", onAddTerritories);
@@ -123,10 +117,6 @@ onUpdated(() => {
   if (props.visibility) {
     addTerritories();
     map.addControl(territories.value);
-    if (props.analytic) {
-      var el = territories.value.element.querySelector("button[id^=GPshowTerritoriesPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget */
     territories.value.on("territories:order", onOrderTerritories);
     territories.value.on("territories:add", onAddTerritories);

@@ -8,11 +8,15 @@
 
 Corrections sur la barre de recherche, mise à jour du footer et du calcul d'azimuth, et mise en place d'un nouveau service de remontées d'anomalies.
 
+Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
+
 ### 💥 Breaking changes
 
 ### 📖 Changelog
 
 #### ✨ [Ajout]
+
+- Intégration Matomo IGN (#1322)
 
 #### 🔨 [Evolution]
 
@@ -35,3 +39,4 @@ Corrections sur la barre de recherche, mise à jour du footer et du calcul d'azi
 
 #### 🔒 [Sécurité]
 
+- Mise à jour des dépendances de sécurités (#1333)

@@ -2,13 +2,9 @@
 import { GeoportalFullScreen } from 'geopf-extensions-openlayers'
 import { mainMap } from '@/composables/keys'
 
-// FIXME
-// ajouter un ID sur le bouton pour y ajouter un tracker Eulerian
-
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
   fullscreenOptions: { type: Object, default: () => ({}) }
 })
 
