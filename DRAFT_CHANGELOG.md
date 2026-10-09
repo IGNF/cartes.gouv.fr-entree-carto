@@ -26,6 +26,7 @@ Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
 - Mesure d'azimuth : activation de l’azimuth géodésique (#1285)
 - Modale d’embarquement : mise à jour des textes et position «Ne plus afficher» (#1295)
 - Reporting: intégration service anomaily aavec validation par geocaptcha (#1284)
+- Espace personnel : fenêtre de confirmation avant suppression d'un document personnel (#1334)
 
 #### 🔥 [Obsolète]
 
@@ -35,6 +36,7 @@ Contribution de @ofri-peretz sur la mise à jour des dépendances de sécurités
 
 - Recherche avancée : les parcelles contenues dans des sections contenant plus de 1000 parcelles sont trouvables en autocompletion (#1287)
 - Barre de recherche : la recherche de communes dont le nom contient 3 caractères renvoie bien un résultat (#1283)
+- Ajout d'une page 404 en cas de route inconnue sur explorer-les-cartes (#1328)
 
 #### 🔒 [Sécurité]
 
