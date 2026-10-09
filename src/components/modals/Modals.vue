@@ -47,6 +47,7 @@ import { useRoute } from 'vue-router';
 let modals = useModals();
 const route = useRoute();
 const isEmbedRoute = () => route.name === ROUTE_NAMES.EMBED;
+const isNotFoundRoute = () => route.name === ROUTE_NAMES.NOT_FOUND;
 
 const setUrl = (url) => {
   window.location.href = useBaseUrl() + url;
@@ -59,8 +60,9 @@ onMounted(() => {
   if (localStorage.getItem(appStore.ns('modals'))) {
     dismissibleModals = JSON.parse(localStorage.getItem(appStore.ns('modals')));
   }
-  if (!dismissibleModals.includes('welcome') && !isEmbedRoute()) {
+  if (!dismissibleModals.includes('welcome') && !isEmbedRoute() && !isNotFoundRoute()) {
     modals.open('welcome');
   }
 });
+
 </script>
