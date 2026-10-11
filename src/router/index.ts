@@ -44,9 +44,17 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/photo/:slug(.*)*',
-    name: 'Photo',
+    name: ROUTE_NAMES.PHOTO,
     component: () => import('../views/Photo.vue'), // Lazy loading
     props: true
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: ROUTE_NAMES.NOT_FOUND,
+    component: () => import('../views/NotFound.vue'),
+    meta: {
+      title: ROUTE_NAMES.NOT_FOUND,
+    },
   }
 ]
 

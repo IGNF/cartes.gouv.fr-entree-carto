@@ -50,7 +50,7 @@ const customItems = {
     value : ["service"], // "noLoginInformation" ?
   },
   territories :  {
-    clean : false,
+    clean : true,
     ns : true,
     value : ["territories"],
   },
