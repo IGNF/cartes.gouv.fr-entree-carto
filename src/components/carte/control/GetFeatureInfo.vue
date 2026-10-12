@@ -64,7 +64,7 @@ watch(
 }
 // modale au-dessus
 // spécifique à GFI car le aria-pressed reste a false
-.position:has(> .gpf-widget[id^="GPgetFeatureInfo-"] > .gpf-btn-icon[aria-pressed]) {
+.position:has(> .gpf-widget[id^="GPgetFeatureInfo-"] > dialog.gpf-panel) {
   z-index: 2;
 
   // au dessus de tout en mobile
