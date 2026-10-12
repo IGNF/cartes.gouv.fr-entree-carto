@@ -88,6 +88,7 @@ onMounted(() => {
       tertiary
       no-outline
       :class="{'fr-btn--disabled': domStore.isLayerImportDisabled }"
+      :disabled="domStore.isLayerImportDisabled"
       icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
@@ -98,6 +99,7 @@ onMounted(() => {
       tertiary
       no-outline
       :class="{'fr-btn--disabled': domStore.isShareDisabled }"
+      :disabled="domStore.isShareDisabled"
       icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
@@ -108,6 +110,7 @@ onMounted(() => {
       tertiary
       no-outline
       :class="{'fr-btn--disabled': domStore.isPrintDisabled }"
+      :disabled="domStore.isPrintDisabled"
       icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"
@@ -120,8 +123,9 @@ onMounted(() => {
       tertiary
       no-outline
       :class="{'fr-btn--disabled': domStore.isReportingDisabled }"
+      :disabled="domStore.isReportingDisabled"
       icon="fr-icon-feedback-line"
-      @click="!domStore.isReportingDisabled && onOpenControlReporting()"
+      @click="onOpenControlReporting()"
     >
       Signaler une anomalie
     </DsfrButton>
