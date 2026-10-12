@@ -20,7 +20,7 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(fullscreen.value)
     if (props.disabled) {
-      fullscreen.value.getContainer().firstChild.setAttribute("disabled", "true");
+      fullscreen.value.element.firstChild.setAttribute("disabled", "true");
     }
   }
 })

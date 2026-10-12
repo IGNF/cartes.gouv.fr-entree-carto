@@ -637,7 +637,7 @@ onMounted(() => {
   />
   <Zoom
     v-if="controlOptions"
-    v-bind="getControlProps(useControls.Zoom, { zoomOptions }, false)"
+    v-bind="getControlProps(useControls.Zoom, { zoomOptions })"
     @ready="onControlReady(useControls.Zoom.id)"
   />
   <SearchEngine
@@ -652,7 +652,7 @@ onMounted(() => {
   />
   <ScaleLine
     v-if="controlOptions"
-    v-bind="getControlProps(useControls.ScaleLine, { scaleLineOptions })"
+    v-bind="getControlProps(useControls.ScaleLine, { scaleLineOptions }, false)"
     @ready="onControlReady(useControls.ScaleLine.id)"
   />
   <OverviewMap

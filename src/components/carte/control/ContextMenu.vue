@@ -8,6 +8,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   contextMenuOptions: {
     type: Object,
     default: () => ({})
@@ -25,6 +26,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(contextMenu.value);
+    if (props.disabled) {
+      contextMenu.value.element.classList.add('ol-disabled');
+    }
     contextMenu.value.contextmenu.on("open", onContextMenuOpen)
     map.on('singleclick', function (evt) {
     const p = evt.pixel;
@@ -36,6 +40,9 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(contextMenu.value);
+    if (props.disabled) {
+      contextMenu.value.element.classList.add('ol-disabled');
+    }
   }
   else {
     map.removeControl(contextMenu.value);

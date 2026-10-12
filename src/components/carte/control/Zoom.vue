@@ -8,6 +8,7 @@ import {
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   zoomOptions: { type: Object, default: () => ({}) }
 })
 
@@ -22,6 +23,11 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(zoom.value);
+    if (props.disabled) {
+      var btns = zoom.value.element.childNodes;
+      btns[0].setAttribute("disabled", "true");
+      btns[1].setAttribute("disabled", "true");
+    }
     zoom.value.on('zoom:in', onClickZoomIn)
     zoom.value.on('zoom:out', onClickZoomOut)
   }
@@ -37,7 +43,9 @@ onUpdated(() => {
   if (props.visibility) {
     map.addControl(zoom.value);
     if (props.disabled) {
-      zoom.value.getContainer().firstChild.setAttribute("disabled", "true");
+      var btns = zoom.value.element.childNodes;
+      btns[0].setAttribute("disabled", "true");
+      btns[1].setAttribute("disabled", "true");
     }
   }
 })

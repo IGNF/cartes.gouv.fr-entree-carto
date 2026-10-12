@@ -131,20 +131,19 @@ export const useControls = {
   SearchEngine: {
     id: 'SearchEngine',
     visible: true,
-    disabled: false,
+    disabled: false, // pas compatible avec cette option !
     icon: "ri:search-line"
   },
   ScaleLine: {
     id: 'ScaleLine',
     visible: true,
-    disabled: false,
-    // The ScaleLine control is a non-interactive widget and does not require an icon.
-    icon: ""
+    disabled: false, // pas compatible avec cette option !
+    icon: "" // pas nécessaire pour ce contrôle non interactif !
   },
   GetFeatureInfo: {
     id: 'GetFeatureInfo',
     visible: true,
-    disabled: false,
+    disabled: false, // pas compatible avec cette option !
     icon: "gpf:getfeature-line"
   },
   Legends: {
@@ -194,7 +193,7 @@ export const useControls = {
   ContextMenu: {
     id: 'ContextMenu',
     visible: true,
-    disabled: false,
+    disabled: false, // pas compatible avec cette option !
     icon: "ri:menu-2-line"
   },
   Reporting: {
