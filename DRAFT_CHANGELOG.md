@@ -1,8 +1,8 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.21...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.22...HEAD>
 
-## 🔖 version 1.0.21 - __DATE__
+## 🔖 version 1.0.22 - __DATE__
 
 ### 🎉 Résumé
 
