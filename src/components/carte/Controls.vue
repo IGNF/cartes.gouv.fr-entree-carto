@@ -707,7 +707,7 @@ onMounted(() => {
   />
   <ContextMenu
     v-if="controlOptions"
-    v-bind="getControlProps(useControls.ContextMenu, { contextMenuOptions })"
+    v-bind="getControlProps(useControls.ContextMenu, { contextMenuOptions }, false)"
     @ready="onControlReady(useControls.ContextMenu.id)"
   />
   <Reporting
