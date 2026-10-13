@@ -32,6 +32,7 @@ Ajout de nouveaux territoires dans les selecteur de territoires et évolutions s
 
 - Ajout d'une page 404 en cas de route inconnue sur explorer-les-cartes (#1328)
 - Informations attributaires : correction de l'affichage du panel des infos attributaires en mode mobile (#1341)
+- Bandeau d'alerte : invalidation du cache sur les alertes (#1336)
 
 #### 🔒 [Sécurité]
 

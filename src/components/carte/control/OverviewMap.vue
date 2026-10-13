@@ -9,6 +9,7 @@ import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
 });
 
 const emit = defineEmits(['ready']);
@@ -34,6 +35,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
+    if (props.disabled) {
+      overviewMap.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
   }
 })

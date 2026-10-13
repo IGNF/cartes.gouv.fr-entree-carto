@@ -20,6 +20,7 @@ const props = defineProps({
     required: true
   },
   visibility: Boolean,
+  disabled: Boolean,
   layerSwitcherOptions: {
     type: Object,
     default: () => ({})
@@ -41,6 +42,11 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(layerSwitcher.value);
+    if (props.disabled) {
+      // cas particulier
+      const buttons = layerSwitcher.value.getContainer().querySelectorAll('button');
+      buttons[0]?.setAttribute("disabled", "true");
+    }
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
     layerSwitcher.value.on("layerswitcher:remove", onRemoveLayer);

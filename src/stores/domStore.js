@@ -21,6 +21,9 @@ export const useDomStore = defineStore('dom', () => {
   var rightControlMenu = ref();
   var isReportingDisabled = ref(false);
   var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
+  var isLayerImportDisabled = ref(false);
+  var isShareDisabled = ref(false);
+  var isPrintDisabled = ref(false);
   let isFullscreenPanoramax = ref(false);
 
   function getBookmarksButton () {
@@ -59,6 +62,30 @@ export const useDomStore = defineStore('dom', () => {
     isReportingDisabled.value = value;
   }
 
+  function getLayerImportDisabled () {
+    return isLayerImportDisabled.value;
+  }
+
+  function setLayerImportDisabled (value) {
+    isLayerImportDisabled.value = value;
+  }
+
+  function getShareDisabled () {
+    return isShareDisabled.value;
+  }
+
+  function setShareDisabled (value) {
+    isShareDisabled.value = value;
+  }
+
+  function getPrintDisabled () {
+    return isPrintDisabled.value;
+  }
+
+  function setPrintDisabled (value) {
+    isPrintDisabled.value = value;
+  }
+
   return {
     isHeaderCompact,
     isFullscreenPanoramax,
@@ -67,6 +94,9 @@ export const useDomStore = defineStore('dom', () => {
     rightControlMenu,
     BookmarksButton,
     isReportingDisabled,
+    isLayerImportDisabled,
+    isShareDisabled,
+    isPrintDisabled,
     getmenuCatalogueButton,
     setmenuCatalogueButton,
     getBookmarksButton,
@@ -77,5 +107,11 @@ export const useDomStore = defineStore('dom', () => {
     setleftControlMenu,
     getReportingDisabled,
     setReportingDisabled,
+    getLayerImportDisabled,
+    setLayerImportDisabled,
+    getShareDisabled,
+    setShareDisabled,
+    getPrintDisabled,
+    setPrintDisabled,
   }
 });

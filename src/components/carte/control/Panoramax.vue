@@ -13,6 +13,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   layersReady: {
     type: Boolean,
     default: false
@@ -84,6 +85,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(panoramax);
+    if (props.disabled) {
+      panoramax.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     openPanoramaxViewer(getHistoryState());
   }
 })

@@ -18,6 +18,7 @@ import Controls from '@/components/carte/Controls.vue'
 import Layers from '@/components/carte/Layer/Layers.vue'
 
 import { useMapStore } from "@/stores/mapStore";
+import { isControlVisible } from "@/composables/controls";
 import { mainMap } from "@/composables/keys"
 import { useLogger } from "vue-logger-plugin";
 
@@ -38,6 +39,9 @@ const props = defineProps({
 
 const mapStore = useMapStore()
 const log = useLogger()
+const visibleControls = computed(() => props.selectedControls.filter(
+  controlId => isControlVisible(controlId)
+));
 
 // INFO
 // Les listes sont transmises aux composants Controls et Layers
@@ -128,7 +132,7 @@ onMounted(() => {
     <Controls
       v-if="mapIsReady"
       :map-id="mainMap"
-      :control-options="props.selectedControls"
+      :control-options="visibleControls"
       :layers-ready="layersReady"
       @ready="onControlsReady"
     />

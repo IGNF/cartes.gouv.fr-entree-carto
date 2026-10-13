@@ -16,6 +16,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   territoriesOptions: {
     type: Object,
     default: () => ({})
@@ -98,7 +99,10 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     addTerritories();
-    map.addControl(territories.value)
+    map.addControl(territories.value);
+    if (props.disabled) {
+      territories.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     /* abonnement au widget */
     territories.value.on("territories:order", onOrderTerritories);
     territories.value.on("territories:add", onAddTerritories);

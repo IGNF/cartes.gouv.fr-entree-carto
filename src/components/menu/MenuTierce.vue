@@ -18,6 +18,7 @@
 import { useMapStore } from "@/stores/mapStore"
 import { useDomStore } from "@/stores/domStore"
 import { selectedControls } from '@/composables/mapControls';
+import { isControlVisible } from '@/composables/controls';
 
 const emitter = inject('emitter');
 
@@ -83,24 +84,33 @@ onMounted(() => {
     </div>
     <hr>
     <DsfrButton
+      v-if="isControlVisible('LayerImport')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isLayerImportDisabled }"
+      :disabled="domStore.isLayerImportDisabled"
       icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
       Importer des données
     </DsfrButton>
     <DsfrButton
+      v-if="isControlVisible('Share')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isShareDisabled }"
+      :disabled="domStore.isShareDisabled"
       icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
       Partager, intégrer la carte
     </DsfrButton>
     <DsfrButton
+      v-if="isControlVisible('Print')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isPrintDisabled }"
+      :disabled="domStore.isPrintDisabled"
       icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"
@@ -109,11 +119,13 @@ onMounted(() => {
     </DsfrButton>
 
     <DsfrButton
+      v-if="isControlVisible('Reporting')"
       tertiary
       no-outline
       :class="{'fr-btn--disabled': domStore.isReportingDisabled }"
+      :disabled="domStore.isReportingDisabled"
       icon="fr-icon-feedback-line"
-      @click="!domStore.isReportingDisabled && onOpenControlReporting()"
+      @click="onOpenControlReporting()"
     >
       Signaler une anomalie
     </DsfrButton>
