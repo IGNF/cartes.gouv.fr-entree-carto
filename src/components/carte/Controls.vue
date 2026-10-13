@@ -940,11 +940,10 @@ onMounted(() => {
 @for $i from 1 through 20 {
   // defini la position du widget (i) (n=3 est le premier widget)
   .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
-  // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
+  // defini le nombre total de widgets (count)
   .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2})) { --count: #{$i} }
-
+  // défini le bouton actif
   .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2}) > button[aria-pressed="true"]) { --pressed: #{$i} }
-  
 }
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
