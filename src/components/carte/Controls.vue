@@ -901,26 +901,20 @@ onMounted(() => {
     max-height: 100cqb !important;
   }
   // selecteur a rallonge obligatoire pour surclasser le style
-  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
+  // Rappel : GetFeatureInfo a `button: false`, son dialog n'est donc pas précédé d'un bouton.
+  :is(
+    .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel,
+    .position .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel
+  ) {
     min-width: 0;
     right: -$gap !important;
     top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
     width: 100vw !important;
   }
-  // Rappel : GetFeatureInfo a `button: false`, son dialog n'est donc pas précédé d'un bouton.
-  .position .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel {
-    min-width: 0;
-    right: -$gap !important;
-    top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
-    width: 100vw !important;
-  }
-  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
-    right: auto !important;
-    left: -$gap !important;
-  }
-
-  // Rappel : GetFeatureInfo a `button: false`, son dialog n'est donc pas précédé d'un bouton.
-  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel {
+  :is(.position-container-top-left, .position-container-bottom-left) :is(
+    .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel,
+    .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel
+  ) {
     right: auto !important;
     left: -$gap !important;
   }
