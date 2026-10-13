@@ -68,7 +68,9 @@ const map = new Map({
     minZoom : 0,
     maxZoom : 21,
     enableRotation: false,
-    projection : "EPSG:3857"
+    projection : "EPSG:3857",
+    // Plusieurs copies du monde quand la vue dépasse une seule emprise
+    multiWorld: true,
   }),
 })
 
@@ -124,7 +126,9 @@ map.on("moveend", () => {
   mapStore.y = center[1];
 
   var coordinate = toLonLat(center);
-  mapStore.lon = coordinate[0];
+  // Longitude ramenée dans [-180, 180] pour le permalien
+  var lon = coordinate[0];
+  mapStore.lon = ((((lon + 180) % 360) + 360) % 360) - 180;
   mapStore.lat = coordinate[1];
 
   mapStore.zoom = view.getZoom();

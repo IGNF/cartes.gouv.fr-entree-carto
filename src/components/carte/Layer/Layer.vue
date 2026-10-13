@@ -168,6 +168,9 @@ onMounted(() => {
         var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
         value.params = params; // fusion
 
+        var bbox = value.globalConstraint && value.globalConstraint.bbox;
+        var spansWorld = !!bbox && (Number(bbox.right) - Number(bbox.left)) >= 300;
+
         var options = {
           position : props.layerOptions.position,
           visible : props.layerOptions.visible,
@@ -176,12 +179,21 @@ onMounted(() => {
           sourceParams : {crossOrigin : 'anonymous'},
           permalink : props.layerOptions.permalink || false
         };
+
+        // Couche mondiale : répéter les tuiles au-delà de l'antiméridien
+        if (spansWorld) {
+          options.sourceParams.wrapX = true;
+        }
         
         const olParams = {
           ...options,
           preload : Infinity,
           cacheSize : 1024
         };
+
+        if (spansWorld) {
+          olParams.extent = undefined;
+        }
 
         log.debug("layer to add (catalog)", name, service, options, value);
         switch (service) {
