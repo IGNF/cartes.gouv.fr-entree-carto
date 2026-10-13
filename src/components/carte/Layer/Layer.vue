@@ -4,6 +4,7 @@ import { inject, onMounted, onUnmounted, watch } from 'vue';
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
+import { useCacheBuster } from '@/composables/cacheBuster';
 
 import { 
   LayerMapBox as GeoportalMapBox,
@@ -251,7 +252,7 @@ onMounted(() => {
       log.debug("layer to add (bookmark)", name, type, format);
       var opts = props.layerOptions;
       // HACK on ajoute un timestamp à l'url cache-busting
-      opts.url = `${opts.url}?_=${Date.now()}`;
+      opts.url = useCacheBuster(opts.url);
       switch (type) {
         case "wms":
         case "wmts":

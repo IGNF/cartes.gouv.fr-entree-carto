@@ -30,6 +30,7 @@ Ajout de nouveaux territoires dans les selecteur de territoires et évolutions m
 #### 🐛 [Correction]
 
 - Ajout d'une page 404 en cas de route inconnue sur explorer-les-cartes (#1328)
+- Bandeau d'alerte : invalidation du cache sur les alertes (#1336)
 
 #### 🔒 [Sécurité]
 

@@ -2,6 +2,7 @@ import {
   defineStore
 } from 'pinia';
 import { shallowRef } from 'vue';
+import { useCacheBuster } from '@/composables/cacheBuster';
 
 /**
  * @description
@@ -65,8 +66,11 @@ export const useDataStore = defineStore('data', () => {
     })
   });
 
-  async function fetchJson(url, force=false) {
-    const response = await fetch(url);
+  async function fetchJson(url, force = false, options = {}) {
+    const { cache, bustCache = false } = options;
+    const requestUrl = bustCache ? useCacheBuster(url) : url;
+    const fetchOptions = cache ? { cache } : undefined;
+    const response = await fetch(requestUrl, fetchOptions);
     if (!response.ok) {
       throw new Error(`Erreur HTTP (${response.status})`);
     }
@@ -102,7 +106,7 @@ export const useDataStore = defineStore('data', () => {
     const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
 
     try {
-      const alerts = await fetchJson(alertsConfURL);
+      const alerts = await fetchJson(alertsConfURL, false, { cache: 'no-store', bustCache: true });
       if (!Array.isArray(alerts)) {
         throw new Error('Format des alertes invalide');
       }
