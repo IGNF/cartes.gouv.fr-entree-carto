@@ -23,6 +23,7 @@ Ajout de nouveaux territoires dans les selecteur de territoires et évolutions s
 - Cartalogue: n’affiche plus les producteurs des cartes de base (#1327)
 - Stockage : mécanisme de nettoyage "fin" du localStorage mis en place (#1330)
 - Interface : nouveau mécanisme de gestion de la propriété affichée/active des widgets/fonctionnalités de la page (#1335)
+- Informations attributaires : les items précédemment ouverts du panels s'ouvrent par défaut (ou l'item le plus haut de la liste sinon) (#1344)
 
 #### 🔥 [Obsolète]
 
