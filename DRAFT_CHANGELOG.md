@@ -6,7 +6,7 @@
 
 ### 🎉 Résumé
 
-Ajout de nouveaux territoires dans les selecteur de territoires et évolutions mineures sur l'espace personnel et le cartalogue.
+Ajout de nouveaux territoires dans les selecteur de territoires et évolutions sur l'espace personnel, le cartalogue et la gestion des fonctionnalités affichées sur l'interface.
 
 ### 💥 Breaking changes
 
@@ -22,6 +22,7 @@ Ajout de nouveaux territoires dans les selecteur de territoires et évolutions m
 - Espace personnel : fenêtre de confirmation avant suppression d'un document personnel (#1334)
 - Cartalogue: n’affiche plus les producteurs des cartes de base (#1327)
 - Stockage : mécanisme de nettoyage "fin" du localStorage mis en place (#1330)
+- Interface : nouveau mécanisme de gestion de la propriété affichée/active des widgets/fonctionnalités de la page (#1335)
 
 #### 🔥 [Obsolète]
 
@@ -30,6 +31,7 @@ Ajout de nouveaux territoires dans les selecteur de territoires et évolutions m
 #### 🐛 [Correction]
 
 - Ajout d'une page 404 en cas de route inconnue sur explorer-les-cartes (#1328)
+- Informations attributaires : correction de l'affichage du panel des infos attributaires en mode mobile (#1341)
 - Bandeau d'alerte : invalidation du cache sur les alertes (#1336)
 
 #### 🔒 [Sécurité]
