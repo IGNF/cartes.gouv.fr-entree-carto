@@ -18,26 +18,23 @@ const props = defineProps({
   controlListElementOptions: {
     type: Object,
     default: () => ({})
-  },
-  selectedControls: {
-    type: Array,
-    default: () => []
   }
 });
 
 const selectedControlsModel = defineModel({ type: Array, default: () => [] })
-const isActive = ref()
+const isActive = computed({
+  get: () => selectedControlsModel.value.includes(props.controlListElementOptions.name),
+  set: (value) => {
+    const name = props.controlListElementOptions.name;
+    if (value && !selectedControlsModel.value.includes(name)) {
+      selectedControlsModel.value = [...selectedControlsModel.value, name];
+    } else if (!value) {
+      selectedControlsModel.value = selectedControlsModel.value.filter(control => control !== name);
+    }
+  }
+});
 
 const dsfrIcon = computed(() => typeof props.controlListElementOptions.icon === 'string' && props.controlListElementOptions.icon.startsWith('fr-icon-'))
-
-watch(isActive, (value) => {
-  if(value === true && !selectedControlsModel.value.includes(props.controlListElementOptions.name)) {
-    selectedControlsModel.value = [...selectedControlsModel.value, props.controlListElementOptions.name]
-  }
-  if(value === false) {
-    selectedControlsModel.value = selectedControlsModel.value.filter(e => e !== props.controlListElementOptions.name);
-  }
-})
 
 onMounted(() => {})
 onUpdated(() => {})
@@ -69,7 +66,6 @@ onUpdated(() => {})
         :label="controlListElementOptions.label"
         class="fr-toggle--label-left"
         no-text
-        :model-value="selectedControlsModel === true || (Array.isArray(selectedControlsModel) && selectedControlsModel.includes(controlListElementOptions.name))"
         v-bind="$attrs"
       />
     </div>

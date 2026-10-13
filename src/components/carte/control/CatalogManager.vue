@@ -12,6 +12,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
 });
 
 const emit = defineEmits(['ready']);
@@ -44,6 +45,9 @@ onMounted(() => {
     el.classList.remove('gpf-btn--tertiary');
     el.classList.remove('gpf-btn--icon');
     el.classList.add('gpf-btn--primary');
+    if (props.disabled) {
+      el.setAttribute("disabled", "true");
+    }
     /** abonnement au widget 
      * @fires catalog:loaded
      * @fires catalog:layer:add

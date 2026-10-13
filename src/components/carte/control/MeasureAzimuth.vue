@@ -5,6 +5,7 @@ import { MeasureAzimuth } from 'geopf-extensions-openlayers';
 const props = defineProps({
   mapId: { type: String, default: mainMap },
   visibility: Boolean,
+  disabled: Boolean,
   measureAzimuthOptions: { type: Object, default: () => ({}) }
 })
 
@@ -18,6 +19,9 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(measureAzimuth.value);
+    if (props.disabled) {
+      measureAzimuth.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 

@@ -10,6 +10,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   reverseGeocodeOptions: {
     type: Object,
     default: () => ({})
@@ -26,7 +27,10 @@ const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 onMounted(() => {
   emit('ready');
   if (props.visibility) {
-    map.addControl(reverseGeocode.value)
+    map.addControl(reverseGeocode.value);
+    if (props.disabled) {
+      reverseGeocode.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     /* abonnement au widget
     * @fires reversegeocode:compute
     * @fires reversegeocode:onclickresult

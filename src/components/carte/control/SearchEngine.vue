@@ -21,6 +21,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   searchEngineOptions: {
     type: Object,
     default: () => ({})
@@ -48,6 +49,10 @@ onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value);
+    if (props.disabled) {
+      // TODO
+      // searchEngineAdvanced.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     /** abonnement au widget */
 
     /* événements de recherche non implémentés dans le SearchEngineAdvanced

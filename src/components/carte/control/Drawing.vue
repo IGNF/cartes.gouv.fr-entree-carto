@@ -47,6 +47,7 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
+  disabled: Boolean,
   drawingOptions: {
     type: Object,
     default: () => ({})
@@ -248,6 +249,9 @@ onMounted(() => {
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
+    if (props.disabled) {
+      drawing.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
