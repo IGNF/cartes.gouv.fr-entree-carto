@@ -2,8 +2,7 @@
 
 import { useDomStore } from '@/stores/domStore';
 
-import "@panoramax/web-viewer/build/photoviewer.js";
-import "@panoramax/web-viewer/build/photoviewer.css";
+import "@panoramax/web-viewer";
 
 import { Panoramax } from 'geopf-extensions-openlayers';
 

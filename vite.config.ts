@@ -85,9 +85,16 @@ export default defineConfig({
   envDir: "env",
   envPrefix: ["VITE_", "IAM_"],
   resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
+    alias: [
+      {
+        find: /^@panoramax\/web-viewer$/,
+        replacement: fileURLToPath(new URL('./node_modules/@panoramax/web-viewer/build/cjs/index_photoviewer.js', import.meta.url)),
+      },
+      {
+        find: '@',
+        replacement: fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    ],
   },
   build: {
     // Permet de garder les classes CSS dans un seul bundle de production
