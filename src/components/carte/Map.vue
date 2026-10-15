@@ -20,7 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat, get as getProjection, toLonLat } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -49,6 +49,10 @@ const props = defineProps({
 */
 const mapRef = ref(null)
 
+// multiWorld lève la contrainte d'emprise : on garde N/S (projection), X libre pour le wrap
+const worldExtent = getProjection("EPSG:3857").getExtent();
+const multiWorldExtent = [-Infinity, worldExtent[1], Infinity, worldExtent[3]];
+
 /**
 * Map
 * default controls are removed (rotate, zoom and attributions)
@@ -71,6 +75,7 @@ const map = new Map({
     projection : "EPSG:3857",
     // Plusieurs copies du monde quand la vue dépasse une seule emprise
     multiWorld: true,
+    extent: multiWorldExtent,
   }),
 })
 

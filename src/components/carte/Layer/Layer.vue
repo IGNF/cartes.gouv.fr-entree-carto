@@ -2,6 +2,7 @@
 
 import { inject, onMounted, onUnmounted, watch } from 'vue';
 import { useLogger } from 'vue-logger-plugin';
+import { transformExtent } from 'ol/proj';
 import { useDataStore } from "@/stores/dataStore";
 import { useMapStore } from "@/stores/mapStore";
 import { useCacheBuster } from '@/composables/cacheBuster';
@@ -18,6 +19,28 @@ import {
   createMapBoxLayer,
   createComputeLayer
 } from '@/features/layer.js';
+
+/**
+ * Largeur en longitude (°) de la bbox catalogue.
+ * CRS absent ⇒ EPSG:4326 (comme LayerSwitcher). En cas d'échec ⇒ null.
+ */
+function getBboxLongitudeWidth (globalConstraint) {
+  var bbox = globalConstraint && globalConstraint.bbox;
+  if (!bbox) {
+    return null;
+  }
+  var crs = (globalConstraint && globalConstraint.crs) || "EPSG:4326";
+  try {
+    var extent = transformExtent(
+      [Number(bbox.left), Number(bbox.bottom), Number(bbox.right), Number(bbox.top)],
+      crs,
+      "EPSG:4326"
+    );
+    return extent[2] - extent[0];
+  } catch (e) {
+    return null;
+  }
+}
 
 // lib notification
 import { push } from 'notivue'
@@ -168,8 +191,8 @@ onMounted(() => {
         var params = dataStore.getLayerParamsByName(props.layerOptions.name, props.layerOptions.service);
         value.params = params; // fusion
 
-        var bbox = value.globalConstraint && value.globalConstraint.bbox;
-        var spansWorld = !!bbox && (Number(bbox.right) - Number(bbox.left)) >= 300;
+        var lonWidth = getBboxLongitudeWidth(value.globalConstraint);
+        var spansWorld = lonWidth !== null && lonWidth >= 300;
 
         var options = {
           position : props.layerOptions.position,
