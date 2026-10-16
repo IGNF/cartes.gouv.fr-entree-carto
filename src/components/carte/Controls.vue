@@ -929,22 +929,30 @@ onMounted(() => {
   height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 2) + ($gap * 2));
 }
 
+// hauteur max de la map ou on affiche un seul outil (...)
+$max-height-for-one-tool: 500px;
 // on défini le nombre de widgets max en fonction de la hauteur de map
-@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 1 } }
-@container map (min-height: 550px) { .position-container-top-right { --nb-widgets: 2 } }
-@container map (min-height: 600px) { .position-container-top-right { --nb-widgets: 3 } }
-@container map (min-height: 650px) { .position-container-top-right { --nb-widgets: 4 } }
-@container map (min-height: 700px) { .position-container-top-right { --nb-widgets: 5 } }
+@container map (min-height: #{$max-height-for-one-tool})       { .position-container-top-right { --nb-widgets: 2 } }
+@container map (min-height: #{$max-height-for-one-tool + 50})  { .position-container-top-right { --nb-widgets: 3 } }
+@container map (min-height: #{$max-height-for-one-tool + 100}) { .position-container-top-right { --nb-widgets: 4 } }
+@container map (min-height: #{$max-height-for-one-tool + 150}) { .position-container-top-right { --nb-widgets: 5 } }
+
+// modifie l'icone quand --nb-widgets:1 (== la map a une hauteur max de $max-height-for-one-tool)
+@container map (max-height: #{$max-height-for-one-tool - 0.1}) {
+  button[id^="GPshowControlListPicto-"]::after {
+    -webkit-mask: url("@/assets/tools-line.svg") center no-repeat;
+    mask: url("@/assets/tools-line.svg") center no-repeat;
+  }
+}
 
 // creation des selecteurs pour 20 outils
 @for $i from 1 through 20 {
   // defini la position du widget (i) (n=3 est le premier widget)
   .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
-  // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
+  // defini le nombre total de widgets (count)
   .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2})) { --count: #{$i} }
-
+  // défini le bouton actif
   .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2}) > button[aria-pressed="true"]) { --pressed: #{$i} }
-  
 }
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
