@@ -1,5 +1,8 @@
 <script setup lang="js">
-import { ref, computed, inject, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router';
+import { useAuth } from 'authentification-vue-oidc';
+import { push } from 'notivue';
 
 import { 
   useRandomId, 
@@ -27,14 +30,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   }
-})
+});
 
 // INFO
 // Émettre l'événement toggleId au parent
-const emit = defineEmits(['toggleId'])
-const toggleId = (id) => emit('toggleId', id)
+const emit = defineEmits(['toggleId']);
+const toggleId = (id) => emit('toggleId', id);
 
-const button = ref(null)
+const button = ref(null);
+
 const {
   collapse,
   cssExpanded,
@@ -48,44 +52,44 @@ watch(expanded, (newValue, oldValue) => {
     doExpand(newValue)
   }
 })
+const route = useRoute();
 
-var service = inject('services');
+const { user, status, login, logout } = useAuth();
 
-// variable locale pour stocker l'utilisateur
-const user = ref(service.user);
+const busy = ref(false);
+const pending = computed(() => busy.value || ['initializing', 'authenticating'].includes(status.value));
+const displayName = computed(() => user.value?.name ||
+  [user.value?.claims.given_name, user.value?.claims.family_name].filter(Boolean).join(' ') || user.value?.email);
 
-// INFO
-// Les routes login/logout sont locales à l'application, 
-// donc on les construit à partir de la base URL
-const url = import.meta.env.BASE_URL;
-
-// INFO
-// Écouter l'événement service:user:loaded pour mettre à jour l'utilisateur
-const emitter = inject('emitter');
-emitter.addEventListener('service:user:loaded', (e) => {
-  log.debug('service:user:loaded event received:', e);
-  user.value = e.detail;
-});
-
-watch(() => props.authenticated, (isAuthenticated) => {
-  if (!isAuthenticated) {
-    user.value = {};
+const onAuthentication = async () => {
+  busy.value = true;
+  try {
+    if (props.authenticated) {
+      await logout();
+    } else {
+      await login({ returnTo: route.fullPath });
+    }
+  } catch {
+    push.warning({ title: 'Connexion', message: 'Impossible de terminer cette action. Veuillez reessayer.' });
+  } finally {
+    busy.value = false;
   }
-});
+};
 
 onBeforeMount(() => {
-  log.debug(`NavigationMenu (${props.id}) mounted.`);
+  log.debug(`NavigationMenu (${props.id}) before mount.`);
 });
-
 onMounted(() => {
+  log.debug(`NavigationMenu (${props.id}) mounted.`);
   // NavigationMenu can be expanded by default
   // We need to trigger the expand animation at mounted
   if (expanded.value) {
     doExpand(true)
   }
 });
-
-onBeforeUnmount(() => {});
+onBeforeUnmount(() => {
+  log.debug(`NavigationMenu (${props.id}) before unmount.`);
+});
 
 </script>
 
@@ -102,10 +106,10 @@ onBeforeUnmount(() => {});
         ref="button"
         icon="ri-account-circle-fill"
         class="fr-nav__btn fr-nav__btn-no-dropdown"
+        :disabled="pending"
+        @click="onAuthentication"
       >
-        <a
-          :href="url + '/login'"
-        >Se connecter</a>
+        Se connecter
       </DsfrButton>
       <DsfrButton
         v-else
@@ -133,7 +137,7 @@ onBeforeUnmount(() => {});
             <div class="fr-container  fr-pt-2v">  
               <div class="fr-grid-row fr-grid-row--left">
                 <div class="fr-description__info fr-text--xs">
-                  <b>{{ user.first_name }} {{ user.last_name }}</b>
+                  <b>{{ displayName }}</b>
                 </div>
               </div>
               <div class="fr-grid-row fr-grid-row--left">
@@ -176,16 +180,13 @@ onBeforeUnmount(() => {});
           <DsfrNavigationMenuItem v-if="menu.connexionMenu">
             <div class="flex">
               <div class="fr-grid-row fr-grid-row--center w100">
-                <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center">
+                <button
+                  class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center"
+                  :disabled="pending"
+                  @click="onAuthentication"
+                >
                   <i class="ri-logout-box-line" />
-                  <a 
-                    v-if="authenticated"
-                    :href="url + '/logout'"
-                  >Se déconnecter</a>
-                  <a 
-                    v-else 
-                    :href="url + '/login'"
-                  >Se connecter</a>
+                  {{ authenticated ? 'Se déconnecter' : 'Se connecter' }}
                 </button>
               </div>
             </div>

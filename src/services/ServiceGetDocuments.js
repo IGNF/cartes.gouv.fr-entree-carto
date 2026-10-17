@@ -53,8 +53,7 @@ var GetDocuments = {
     var data = await this.getFileById(id);
 
     var store = useServiceStore();
-    var storage = store.getService();
-    var document = storage.documents.import.find((doc) => doc._id === id);
+    var document = store.documents.import.find((doc) => doc._id === id);
     var none = true;
     // 3 cas : "internal" ou "external" ou aucun
     if (document.labels.includes("internal")) {
@@ -153,8 +152,7 @@ var GetDocuments = {
       }
     }
     var store = useServiceStore();
-    var storage = store.getService();
-    var document = storage.documents.service.find((doc) => doc._id === id);
+    var document = store.documents.service.find((doc) => doc._id === id);
 
     if (!data || typeof data !== "object") {
       return Promise.reject("Le contenu du service est invalide");
