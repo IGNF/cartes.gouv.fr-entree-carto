@@ -259,6 +259,7 @@ var Documents = {
    * @returns {Promise} - Liste des documents filtrée
    */
   getDocumentsByLabel: async function (label) {
+    const generation = this.getGeneration();
     if (!this.labels.includes(label)) {
       return Promise.reject("Label filter not allowed !");
     }
@@ -299,6 +300,9 @@ var Documents = {
         page += 1;
       }
 
+      if (generation !== this.getGeneration()) {
+        throw new DOMException('Document request cancelled', 'AbortError');
+      }
       this.documents[label] = data.sort((a, b) => a.update.localeCompare(b.update, "fr", { sensitivity: "base" }));
 
       this.saveStore();
