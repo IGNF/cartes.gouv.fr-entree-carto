@@ -52,13 +52,15 @@ const reporting = ref(new Reporting(props.reportingOptions));
 const refModalReportingSent = ref({});
 const refModalReportingStart = ref({});
 
+const geocaptchaBaseUrl = import.meta.env.VITE_GPF_GEOCAPTCHA_URL || "https://geocaptcha.ign.fr";
+
 // abonnement sur l'ouverture du controle
 emitter.addEventListener("reporting:open:clicked", (e) => {
   if (reporting.value) {
     reporting.value.setCollapsed(!e.open);
   }
   // load geocaptcha
-  loadScript("https://geocaptcha.ign.fr/api/v1/lib.js?dsfr=true");
+  loadScript(`${geocaptchaBaseUrl}/api/v1/lib.js?dsfr=true`);
 
 });
 emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
