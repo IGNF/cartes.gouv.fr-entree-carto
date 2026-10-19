@@ -20,7 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat, get as getProjection, toLonLat } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -49,6 +49,15 @@ const props = defineProps({
 */
 const mapRef = ref(null)
 
+// multiWorld : X libre pour répétition du monde ; N/S bornés (évite le vide polaire)
+const worldExtent = getProjection("EPSG:3857").getExtent();
+const multiWorldExtent = [-Infinity, worldExtent[1], Infinity, worldExtent[3]];
+
+/** Longitude dans [-180, 180] pour permalien / store */
+function wrapLongitude (lon) {
+  return ((((lon + 180) % 360) + 360) % 360) - 180;
+}
+
 /**
 * Map
 * default controls are removed (rotate, zoom and attributions)
@@ -68,7 +77,10 @@ const map = new Map({
     minZoom : 0,
     maxZoom : 21,
     enableRotation: false,
-    projection : "EPSG:3857"
+    projection : "EPSG:3857",
+    // Répétition du monde (tuiles) ; coords API normalisées côté geopf + permalien ci-dessous
+    multiWorld: true,
+    extent: multiWorldExtent,
   }),
 })
 
@@ -124,7 +136,7 @@ map.on("moveend", () => {
   mapStore.y = center[1];
 
   var coordinate = toLonLat(center);
-  mapStore.lon = coordinate[0];
+  mapStore.lon = wrapLongitude(coordinate[0]);
   mapStore.lat = coordinate[1];
 
   mapStore.zoom = view.getZoom();
