@@ -675,6 +675,10 @@ export function useControlsOptions () {
               configuration : {
                 ...planIgnV2Data,
                 params : dataStore.getLayerParamsByName("GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", "WMTS")
+              },
+              olParams : {
+                sourceParams : { wrapX : true },
+                extent : undefined
               }
             })
           ];

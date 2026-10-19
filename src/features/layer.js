@@ -522,6 +522,9 @@ const createServiceLayer = async (options) => {
       throw new Error(t.ol.failed_source("service non reconnu"));
     }
     
+    // multiWorld : ne pas clipper à une seule emprise monde
+    // (l'ancien setExtent(projection.getExtent()) empêchait le wrap)
+
     // id
     if (tileLayer) {
       tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;
