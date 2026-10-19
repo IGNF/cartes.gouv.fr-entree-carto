@@ -24,6 +24,4 @@
 
 #### 🔒 [Sécurité]
 
-#### 🔒 [Sécurité]
-
 - Résolution des vulnérabilités de dépendances remontées par npm (#1351)
