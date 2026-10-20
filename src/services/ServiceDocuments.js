@@ -274,6 +274,12 @@ var Documents = {
 
       while (true) {
         var response = await this._getDocumentsByLabelPerPage(label, page, limit);
+        
+        // Vérifier que la réponse contient bien des données avant de continuer
+        if (!response || !response.data) {
+          break;
+        }
+
         data = data.concat(response.data);
 
         // On récupère le total à partir du header Content-Range
@@ -352,6 +358,11 @@ var Documents = {
           "X-Requested-With" : "XMLHttpRequest"
         }
       });
+      if (response.status !== 200) {
+        throw new Error(`Erreur HTTP pour obtenir la liste des documents par label ${label}`, {
+          cause: { status: response.status }
+        });
+      }
       var data = await response.json();
       var contentRange = response.headers.get("Content-Range") || response.headers.get("content-range");
       var total = null;
