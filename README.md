@@ -4,6 +4,8 @@
 
 L'entrée cartographique de cartes.gouv.fr est la page d'entrée principale de cartes.gouv.fr : elle est constituée d'une interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme.
 
+Documentation technique : [workflow d'ajout des couches, croquis, favoris et calculs](docs/workflow-ajout-couches.md).
+
 ---
 
 # vue-dsfr-project
@@ -36,6 +38,10 @@ Si le plugin TypeScript ne vous semble pas assez performant, Volar a aussi impl�
 ```sh
 npm install
 ```
+
+## Authentification OIDC
+
+Guide pour les integrateurs : [authentification et service de documents](docs/integration-authentification-documents.md).
 
 ### Compilation et Hot-Reload pour le développement
 

@@ -16,6 +16,7 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
+import { useAuth } from 'authentification-vue-oidc';
 import { useDomStore } from "@/stores/domStore"
 import { selectedControls } from '@/composables/mapControls';
 import { isControlVisible } from '@/composables/controls';
@@ -61,7 +62,7 @@ function openControl(controlName) {
 // INFO
 // on active / desactive le bouton "Mes enregistrements" selon
 // si on est authentifié ou pas
-var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const BookmarksButton = ref(null)
 onMounted(() => {
@@ -75,7 +76,7 @@ onMounted(() => {
       <DsfrButton
         tertiary
         no-outline
-        :class="{'fr-btn--disabled': !service.authenticated }"
+        :class="{'fr-btn--disabled': !isAuthenticated }"
         icon="ri-bookmark-line"
         @click="$emit('onBookMarksOpen')"
       >

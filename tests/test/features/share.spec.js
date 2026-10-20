@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { toShare, fromShare } from '@/features/share';
-import { useServiceStore } from '@/stores/serviceStore';
 import { setActivePinia, createPinia } from 'pinia';
 
 // Fixtures communes
@@ -30,7 +29,6 @@ const DOC_SERVICE = {
 
 beforeAll(() => {
   setActivePinia(createPinia());
-  useServiceStore().setService({ mode: "remote" });
 });
 
 // ─── toShare ──────────────────────────────────────────────────────────────────

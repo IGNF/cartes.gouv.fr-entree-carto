@@ -1,6 +1,6 @@
 import { inject } from 'vue';
 
-import { serviceFactotyCreate } from '@/services/ServiceFactory';
+import Service from '@/services/Service';
 
 const servicesSymbol = Symbol('vue-services-plugin');
 
@@ -11,8 +11,7 @@ export class PluginServices {
    * @param {*} options
   */
   constructor(options) {
-    console.debug("connexion", options);
-    this.instance = serviceFactotyCreate(options);
+    this.instance = new Service(options);
   }
 
   /**

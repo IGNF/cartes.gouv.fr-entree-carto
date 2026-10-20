@@ -23,3 +23,4 @@
 #### 🔒 [Sécurité]
 
 - Résolution des vulnérabilités de dépendances remontées par npm (#1351)
+- Authentification sécurisée (#1354)

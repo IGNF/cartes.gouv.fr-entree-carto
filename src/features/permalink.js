@@ -189,9 +189,8 @@ export const setShortPermalinkData = (data) => {
  */
 export const createShortPermalinkUrl = (uuid) => {
   var store = useServiceStore();
-  var service = store.getService();
   // on recherche le document dans le service pour récupérer le SID du permalien court
-  var document = service.find(uuid);
+  var document = Object.values(store.documents).flat().find((item) => item._id === uuid);
   // on extrait le sid de l'url publique : 
   if (!document || !document.public_url) {
     throw new Error("Le document n'a pas d'url publique pour avoir un permalien court");
