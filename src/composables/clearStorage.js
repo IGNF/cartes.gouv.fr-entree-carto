@@ -45,7 +45,7 @@ const customItems = {
     value : ["loglevel:*"], // !?
   },
   service :  {
-    clean : false,
+    clean : true,
     ns : false,
     value : ["service"], // "noLoginInformation" ?
   },
