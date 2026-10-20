@@ -208,7 +208,6 @@ var SetDocuments = {
    * - enregistrer la réponse dans le localStorage : ex. service.documents.drawing
    * - retourner le UUID et le type d'action
    * 
-   * @fixme On ne peut pas mettre à jour le contenu d'un document avec le PUT pour le mode remote !
    * @example
    * ...
    * 
@@ -246,7 +245,7 @@ var SetDocuments = {
       formData.append("file", blob); // FIXME blob ou text ?
   
       var response = await this.getFetch()(`${this.api}/users/me/documents/${uuid}`, {
-        method: (this.mode === 'local') ? 'PUT' : 'POST', // HACK : PUT ou POST
+        method: 'PUT',
         headers: {
           'Accept': 'application/json',
           "X-Requested-With" : "XMLHttpRequest",
