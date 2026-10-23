@@ -22,4 +22,6 @@
 
 #### 🐛 [Correction]
 
+- Menu contextuel : le marker d'adresse et coordonnées affiché au clic droit disparait quand on ferme le panel (#1352)
+
 #### 🔒 [Sécurité]
