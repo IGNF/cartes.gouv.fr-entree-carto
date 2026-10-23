@@ -14,6 +14,8 @@
 
 #### 🔨 [Evolution]
 
+- Import de données : des flux WMS/WMTS privé peuvent être importés si leur sécurisaton le permet (#1353)
+
 #### 🔥 [Obsolète]
 
 #### 🔥 [Suppression]
@@ -23,5 +25,3 @@
 - Menu contextuel : le marker d'adresse et coordonnées affiché au clic droit disparait quand on ferme le panel (#1352)
 
 #### 🔒 [Sécurité]
-
-- Résolution des vulnérabilités de dépendances remontées par npm (#1351)
