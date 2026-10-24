@@ -173,7 +173,7 @@ onMounted(() => {
           visible : props.layerOptions.visible,
           opacity : props.layerOptions.opacity,
           grayscale : props.layerOptions.grayscale,
-          // multiWorld : wrapX + pas d'extent catalogue (couches visibles hors monde 0)
+          // multiWorld : wrapX ; emprise catalogue gérée côté geopf (filtre tuiles)
           sourceParams : {crossOrigin : 'anonymous', wrapX : true},
           permalink : props.layerOptions.permalink || false
         };
@@ -183,11 +183,6 @@ onMounted(() => {
           preload : Infinity,
           cacheSize : 1024
         };
-
-        if (service === "WMS" || service === "WMTS") {
-          // null/undefined : geopf saute / retire l'emprise catalogue
-          olParams.extent = undefined;
-        }
 
         log.debug("layer to add (catalog)", name, service, options, value);
         switch (service) {
@@ -221,9 +216,6 @@ onMounted(() => {
         }
 
         if (layer) {
-          if ((service === "WMS" || service === "WMTS") && typeof layer.setExtent === "function") {
-            layer.setExtent(undefined);
-          }
           log.debug(name, "| position (props - zindex)", position, layer.getZIndex());
           if (position !== layer.getZIndex()) {
             if (Number(position) === -1) {
