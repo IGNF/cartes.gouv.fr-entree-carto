@@ -278,7 +278,8 @@ const routeOptions = {
   listable: true,
   prettifyCompute: true,
   routeOptions : {
-    serverUrl : `${baseUrlService}/navigation/itineraire`
+    serverUrl : `${baseUrlService}/navigation/itineraire`,
+    resource : "bdtopo-valhalla"
   },
   autocompleteOptions : {
     serverUrl : `${baseUrlService}/geocodage/completion`
