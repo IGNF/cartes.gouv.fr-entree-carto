@@ -1,9 +1,7 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useMatchMedia } from '@/composables/matchMedia';
 
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 
 import ReportingSuccessSentModal from '@/components/modals/ModalReportingSuccessSent.vue';
 import ReportingStartModal from '@/components/modals/ModalReportingStart.vue';
@@ -12,14 +10,39 @@ import MyServiceAction from '@/features/reportingActions/iocServiceAction';
 
 import { Reporting } from 'geopf-extensions-openlayers';
 
+function loadScript (url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Impossible de charger ${url}`));
+
+        document.head.appendChild(script);
+    });
+}
+
 const emitter = inject('emitter');
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  reportingOptions: Object
+  reportingOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 
@@ -29,13 +52,18 @@ const reporting = ref(new Reporting(props.reportingOptions));
 const refModalReportingSent = ref({});
 const refModalReportingStart = ref({});
 
+const geocaptchaBaseUrl = import.meta.env.VITE_GPF_GEOCAPTCHA_URL || "https://geocaptcha.ign.fr";
+
 // abonnement sur l'ouverture du controle
 emitter.addEventListener("reporting:open:clicked", (e) => {
   if (reporting.value) {
     reporting.value.setCollapsed(!e.open);
   }
+  // load geocaptcha
+  loadScript(`${geocaptchaBaseUrl}/api/v1/lib.js?dsfr=true`);
+
 });
-emitter.addEventListener("modalreporting:open:clicked", (e) => {
+emitter.addEventListener("modalreporting:open:clicked", (/* e */) => {
   refModalReportingStart.value.openModalReportingStart(true);
 });
 
@@ -46,14 +74,11 @@ function addThematics () {
 }
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value)
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget */
     reporting.value.on("reporting:sending", onSendingReporting);
   }
@@ -70,10 +95,6 @@ onUpdated(() => {
     addThematics();
     reporting.value.setComponentService(new MyServiceAction());
     map.addControl(reporting.value);
-    if (props.analytic) {
-      var el = reporting.value.element.querySelector("button[id^=GPshowReportingPicto-]");
-      useActionButtonEulerian(el);
-    }
     reporting.value.on("reporting:sending", onSendingReporting);
   }
 })
@@ -87,6 +108,16 @@ const onSendingReporting = (e) => {
   log.debug(e);
   refModalReportingSent.value.openModalReportingSent();
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

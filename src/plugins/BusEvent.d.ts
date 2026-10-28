@@ -1,19 +1,19 @@
 import type { App } from 'vue';
 
-export type BusEventCallback = (data?: any) => void;
+export type BusEventCallback = (data?: unknown) => void;
 
 export interface BusEventOptions {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export class BusEvent {
   constructor(options?: BusEventOptions);
 
-  emitter: any;
+  emitter: unknown;
 
   addEventListener(eventName: string, callback: BusEventCallback): void;
-  removeEventLstener(eventName: string, callback: BusEventCallback): void;
-  dispatchEvent(eventName: string, data?: any): void;
+  removeEventListener(eventName: string, callback: BusEventCallback): void;
+  dispatchEvent(eventName: string, data?: unknown): void;
   install(app: App): void;
 }
 

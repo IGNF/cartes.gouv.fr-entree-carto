@@ -7,8 +7,12 @@ export default {};
 </script>
 
 <script lang="js" setup>
+
 const props = defineProps({
-  description: String,
+  description: {
+    type: String,
+    default: '',
+  },
 });
 
 const iconBeforeExpand = "ri-arrow-down-s-line"
@@ -38,7 +42,7 @@ onMounted(() => {
         v-show="isExpanded"
         class="fr-hint-text hint-class"
       >
-        {{ description }}
+        {{ props.description }}
       </p>            
       <DsfrButton
         tertiary

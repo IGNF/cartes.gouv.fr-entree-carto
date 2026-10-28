@@ -2,16 +2,7 @@
   <div
     class="fr-container fr-container--fluid fr-container-md"
   >
-    
     <CgfrModalTheme />
-
-    <ModalConsent />
-
-    <CgfrModalCookies 
-      @accept-consent="onAcceptConsentAll"
-      @refuse-consent="onRefuseConsentAll"
-      @close-consent="OnCloseConsent"
-    />
 
     <Modal
       v-if="modals.isOpen('welcome')"
@@ -27,7 +18,7 @@
           },
         },
         {
-          label: 'En savoir plus',
+          label: 'Découvrir cartes.gouv.fr',
           secondary: true,
           onClick () {
             setUrl('/decouvrir');
@@ -41,33 +32,26 @@
 </template>
 
 <script setup>
-import { CgfrModalCookies, CgfrModalTheme } from 'cartes.gouv.fr-vue-components';
+import { CgfrModalTheme } from '@ignf/cartes.gouv.fr-vue-components';
 
 import Modal from '@/components/modals/Modal.vue';
-import ModalConsent from '@/components/modals/ModalConsent.vue';
 import ModalWelcome from '@/components/modals/ModalWelcome.vue';
 
 import { useAppStore } from '@/stores/appStore';
 let appStore = useAppStore();
 
-import { useEulerian } from '@/plugins/Eulerian.js';
 import { useBaseUrl } from '@/composables/baseUrl';
 import { useModals } from '@/composables/useModals';
+import { ROUTE_NAMES } from '@/router/routeNames';
+import { useRoute } from 'vue-router';
 let modals = useModals();
-const eulerian = useEulerian();
+const route = useRoute();
+const isEmbedRoute = () => route.name === ROUTE_NAMES.EMBED;
+const isNotFoundRoute = () => route.name === ROUTE_NAMES.NOT_FOUND;
 
 const setUrl = (url) => {
   window.location.href = useBaseUrl() + url;
 };
-
-function onAcceptConsentAll() {
-  eulerian.start();
-  eulerian.resume();
-}
-function onRefuseConsentAll() {
-  eulerian.stop();
-  eulerian.resume();
-}
 
 onMounted(() => {
   // modale d'embarquement ?
@@ -76,8 +60,9 @@ onMounted(() => {
   if (localStorage.getItem(appStore.ns('modals'))) {
     dismissibleModals = JSON.parse(localStorage.getItem(appStore.ns('modals')));
   }
-  if (!dismissibleModals.includes('welcome')) {
+  if (!dismissibleModals.includes('welcome') && !isEmbedRoute() && !isNotFoundRoute()) {
     modals.open('welcome');
   }
 });
+
 </script>

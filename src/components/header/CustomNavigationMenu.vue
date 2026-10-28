@@ -1,5 +1,8 @@
 <script setup lang="js">
-import { ref, computed, inject, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router';
+import { useAuth } from 'authentification-vue-oidc';
+import { push } from 'notivue';
 
 import { 
   useRandomId, 
@@ -7,7 +10,6 @@ import {
 } from "@gouvminint/vue-dsfr"
 
 import { useLogger } from 'vue-logger-plugin'
-import { useBaseUrl } from '@/composables/baseUrl';
 
 const log = useLogger();
 
@@ -28,14 +30,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   }
-})
+});
 
 // INFO
 // Émettre l'événement toggleId au parent
-const emit = defineEmits(['toggleId'])
-const toggleId = (id) => emit('toggleId', id)
+const emit = defineEmits(['toggleId']);
+const toggleId = (id) => emit('toggleId', id);
 
-const button = ref(null)
+const button = ref(null);
+
 const {
   collapse,
   cssExpanded,
@@ -49,45 +52,48 @@ watch(expanded, (newValue, oldValue) => {
     doExpand(newValue)
   }
 })
+const route = useRoute();
 
+const { user, status, login, logout } = useAuth();
 
-var service = inject('services');
-// variable locale pour stocker l'utilisateur
-const user = ref(service.user);
-// Base URL pour les routes login/logout
-const url = useBaseUrl() + import.meta.env.BASE_URL;
+const busy = ref(false);
+const pending = computed(() => busy.value || ['initializing', 'authenticating'].includes(status.value));
+const displayName = computed(() => user.value?.name ||
+  [user.value?.claims.given_name, user.value?.claims.family_name].filter(Boolean).join(' ') || user.value?.email);
 
-// INFO
-// Écouter l'événement service:user:loaded pour mettre à jour l'utilisateur
-const emitter = inject('emitter');
-emitter.addEventListener('service:user:loaded', (e) => {
-  log.debug('service:user:loaded event received:', e);
-  user.value = e.detail;
-});
-
-watch(() => props.authenticated, (isAuthenticated) => {
-  if (!isAuthenticated) {
-    user.value = {};
+const onAuthentication = async () => {
+  busy.value = true;
+  try {
+    if (props.authenticated) {
+      await logout();
+    } else {
+      await login({ returnTo: route.fullPath });
+    }
+  } catch {
+    push.warning({ title: 'Connexion', message: 'Impossible de terminer cette action. Veuillez reessayer.' });
+  } finally {
+    busy.value = false;
   }
-});
+};
 
 onBeforeMount(() => {
-  log.debug(`NavigationMenu (${props.id}) mounted.`);
+  log.debug(`NavigationMenu (${props.id}) before mount.`);
 });
-
 onMounted(() => {
+  log.debug(`NavigationMenu (${props.id}) mounted.`);
   // NavigationMenu can be expanded by default
   // We need to trigger the expand animation at mounted
   if (expanded.value) {
     doExpand(true)
   }
 });
-
-onBeforeUnmount(() => {});
+onBeforeUnmount(() => {
+  log.debug(`NavigationMenu (${props.id}) before unmount.`);
+});
 
 </script>
 
-<template>     
+<template>
   <nav
     :id="menu.title.trim().toLowerCase().replaceAll(' ', '-')"
     class="fr-nav"
@@ -100,10 +106,10 @@ onBeforeUnmount(() => {});
         ref="button"
         icon="ri-account-circle-fill"
         class="fr-nav__btn fr-nav__btn-no-dropdown"
+        :disabled="pending"
+        @click="onAuthentication"
       >
-        <a
-          :href="url + '/login'"
-        >Se connecter</a>
+        Se connecter
       </DsfrButton>
       <DsfrButton
         v-else
@@ -131,7 +137,7 @@ onBeforeUnmount(() => {});
             <div class="fr-container  fr-pt-2v">  
               <div class="fr-grid-row fr-grid-row--left">
                 <div class="fr-description__info fr-text--xs">
-                  <b>{{ user.first_name }} {{ user.last_name }}</b>
+                  <b>{{ displayName }}</b>
                 </div>
               </div>
               <div class="fr-grid-row fr-grid-row--left">
@@ -152,15 +158,11 @@ onBeforeUnmount(() => {});
               class="w100"
             >
               <div class="fr-grid-row fr-grid-row--center w100">
-                <button 
-                  class="fr-m-3v fr-btn fr-btn--tertiary fr-btn--icon-right w100 justify-center"
-                  :class="link.icon"
-                >
-                  <a
-                    :href="link.to"
-                    :target="link.target"
-                  >{{ link.text }}</a>
-                </button>
+                <a
+                  :href="link.to"
+                  :target="link.target"
+                  class="fr-m-3v fr-btn w100 justify-center link__as__fr-primary-btn"
+                >{{ link.text }}</a>
               </div>
             </div>
             <a 
@@ -178,16 +180,13 @@ onBeforeUnmount(() => {});
           <DsfrNavigationMenuItem v-if="menu.connexionMenu">
             <div class="flex">
               <div class="fr-grid-row fr-grid-row--center w100">
-                <button class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center">
+                <button
+                  class="fr-m-3v fr-icon-logout-box-r-line fr-btn fr-btn--tertiary fr-btn--icon-left w100 justify-center"
+                  :disabled="pending"
+                  @click="onAuthentication"
+                >
                   <i class="ri-logout-box-line" />
-                  <a 
-                    v-if="authenticated"
-                    :href="url + '/logout'"
-                  >Se déconnecter</a>
-                  <a 
-                    v-else 
-                    :href="url + '/login'"
-                  >Se connecter</a>
+                  {{ authenticated ? 'Se déconnecter' : 'Se connecter' }}
                 </button>
               </div>
             </div>
@@ -255,6 +254,32 @@ a[target=_blank]::after {
 // alignements des boutons du menu mobile
 .fr-nav__btn span {
   margin-right: auto;
+}
+
+// rendu du liens dans le menu de navigation
+a.link__as__fr-primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-action-high-blue-france) !important;
+  color: var(--text-inverted-blue-france) !important;
+  --hover: var(--background-action-high-blue-france-hover);
+  --active: var(--background-action-high-blue-france-active);
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn:hover {
+  background-color: var(--background-action-high-blue-france-hover) !important;
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn:active {
+  background-color: var(--background-action-high-blue-france-active) !important;
+  text-decoration: none !important;
+}
+
+a.link__as__fr-primary-btn::after {
+  content: none !important;
 }
 
 .fr-header__menu-links::after {

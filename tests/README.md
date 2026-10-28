@@ -1,6 +1,6 @@
 # Tests
 
-> TODO
+> Mise en place des tests unitaires et de rendus
 
 [Vitest](https://vitest.dev/) et <https://vitest.fr/>
 [playwright](https://playwright.dev/)
@@ -22,50 +22,33 @@ Tests E2E (rendu)
 - <https://playwright.dev/>
 - <https://github.com/MelihAltintas/vue3-openlayers.git>
 
-## Composants à tester
+## Plan de tests
 
-- permalien
-- service
-- favoris
+cf. PLAN.md
 
-## Le permalien
+## CI
 
-- test d'un permalien en url
-- test de creation d'un permalien
-  - ajout / suppression d'une couche du catalogue
-  - ajout / suppression d'une donnée de l'espace personnel
+**TODO :**
+> Mise en place des tests sur la CI
 
-On teste quoi ?
+## IA
 
-- le localStorage : layers / boormarks / permalink
-- le rendu sur la webapp : snapshots
+* Prompt Vitest
 
-1. tests unitaires avec share.js
+Exemple de prompt pour les tests unitaires :
+```text
+Écris ou complète le test unitaire dans permalink.spec.js.
+Respecte strictement PLAN.md, vitest.instructions.md et vue.instructions.md .
+Couvre au minimum U-PL-01, U-PL-02 et U-PL-08 avec cas nominal, cas limite et cas erreur.
+Utilise des mocks déterministes, aucun appel réseau externe.
+Avant de coder, liste les règles d’instructions appliquées, puis implémente.
+```
 
-- [x] conversion : document -> url
-- [x] conversion : url -> document
-- [ ] par type de données :
-  - mapbox
-  - vecteurs
-  - service
-  - compute (?)
+* Prompt Playwright
 
-2. tests unitaires avec permalink.js
-
-- [x] passage url -> store
-- [ ] par type de données
-
-3. tests de rendu
-
-Note :
-> Pour les tests de rendu, il faut monter un serveur
-> Le serveur peut utilser les mocks pour les favoris
-
-- [ ] rendu de la carte
-  - position des couches
-  - visibilité
-  - N&B
-  - opacité
-- [ ] rendu dans le gestionnaire de couches
-  - ordre
-  - nom
+Exemle de prompt pour les testts e2e :
+```text
+Crée le fichier tests/e2e/03-permalink.spec.ts en suivant PLAN.md et playwright-test.instructions.md .
+Utilise le POM MainPage.ts, structure en describe + test.step, et applique la convention de nommage des tests du plan.
+Implémente E-PL-03 et E-PL-10 avec assertions web-first et sans attente arbitraire.
+```

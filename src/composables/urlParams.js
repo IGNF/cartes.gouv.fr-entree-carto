@@ -2,7 +2,8 @@ import { useUrlSearchParams } from '@vueuse/core';
 import {
   fromLonLat as fromLonLatProj
 } from "ol/proj";
-import { useDefaultControls } from '@/composables/controls';
+// import { useDefaultControls } from '@/composables/controls';
+
 /**
  * Lecture du permalink pour y extraire les informations.
  * La structure est identique au permalien de la carte
@@ -48,30 +49,53 @@ export function useUrlParams(url) {
         switch (key) {
           case "c":
             var lonlat = urlParams[key].split(",");
+            if (lonlat.length !== 2) {
+              throw new Error(`Le paramètre 'c' du permalien est invalide : ${urlParams[key]} !`);
+            }
             params.lon = parseFloat(lonlat[0]);
             params.lat = parseFloat(lonlat[1]);
-            var xy = fromLonLatProj(lonlat);
+            var xy = fromLonLatProj([params.lon, params.lat]);
+            if (!xy || xy.length !== 2) {
+              throw new Error(`Le paramètre 'c' du permalien est invalide : ${urlParams[key]} !`);
+            }
             params.x = xy[0];
             params.y = xy[1];
             params.center = [params.lon, params.lat];
             break;
           case "l":
+            // on ne traite pas le param "l", le store de la carte s'en charge
             params.layers = urlParams[key];
             break;
           case "w":
-            params.controls = urlParams[key] + "," + useDefaultControls().toString();
+            // on ne traite plus le param "w" = pas de changement des outils en chargeant un permalink
+            // params.controls = urlParams[key] + "," + useDefaultControls().toString();
             break;
           case "d":
+            // on ne traite pas le param "d", le store de la carte s'en charge
             params.bookmarks = urlParams[key];
             break;
           case "z":
             params.zoom = parseInt(urlParams[key], 10);
             break;
           case "p":
+            var geolocation = urlParams[key].split(",");
+            if (geolocation.length !== 2) {
+              throw new Error(`Le paramètre 'p' du permalien est invalide : ${urlParams[key]} !`);
+            }
+            params.geolocation = [parseFloat(geolocation[0]), parseFloat(geolocation[1])];
+            break;
+          case "geolocation":
             params.geolocation = urlParams[key];
             break;
           case "permalink":
-            params.permalink = urlParams[key]; // yes | no
+            var permalink = urlParams[key].toLowerCase();
+            if (permalink !== "yes" && permalink !== "no" && permalink !== "short") {
+              throw new Error(`Le paramètre 'permalink' du permalien est invalide : ${urlParams[key]} !`);
+            }
+            params.permalink = permalink; // yes | no | short
+            break;
+          case "sid":
+            params.sid = urlParams[key]; // id du permalien court
             break;
           case "redirect":
             params.redirect = urlParams[key]; // url de redirection

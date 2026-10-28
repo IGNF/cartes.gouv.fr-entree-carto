@@ -12,7 +12,7 @@ import NotificationClose from '@/icons/NotificationClose.vue'
 import Alerts from '@/components/modals/Alerts.vue'
 import Modals from '@/components/modals/Modals.vue'
 import CustomHeader from '@/components/header/CustomHeader.vue'
-import { CgfrFooter } from 'cartes.gouv.fr-vue-components';
+import { CgfrFooter } from '@ignf/cartes.gouv.fr-vue-components';
 
 // composables
 import { useMatchMedia } from '@/composables/matchMedia'
@@ -21,14 +21,18 @@ import { useMatchMedia } from '@/composables/matchMedia'
 import { Notivue, Notification, lightTheme, darkTheme, type NotivueTheme} from 'notivue'
 
 // stores
-import { useAppStore } from "@/stores/appStore"
+import { useScheme } from '@gouvminint/vue-dsfr';
+import { useAppStore } from "@/stores/appStore";
+import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
+import { ROUTE_NAMES } from '@/router/routeNames';
 
 const appStore = useAppStore()
+const domStore = useDomStore()
 const route = useRoute()
 const { theme } = useScheme()
 
-const isEmbedRoute = computed(() => route.path === '/embed')
+const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
@@ -83,7 +87,7 @@ onMounted(() => {
 
 <template>
   <CustomHeader
-    v-if="!isEmbedRoute"
+    v-if="!isEmbedRoute && !domStore.isFullscreenPanoramax"
     class="CustomHeader"
   />
 
@@ -104,8 +108,14 @@ onMounted(() => {
     <router-view />
   </div>
 
-  <div class="CustomFooter">
-  <CgfrFooter compact v-if="!mobileScreen && !isEmbedRoute"/>
+  <div 
+    v-if="!domStore.isFullscreenPanoramax"
+    class="CustomFooter"
+  >
+    <CgfrFooter 
+      v-if="!mobileScreen && !isEmbedRoute"
+      compact 
+    />
   </div>
 
 
@@ -142,6 +152,7 @@ body.modal-open {
 }
 .Map {
   grid-row: map;
+  min-height: min(75vh, 500px); // hauteur minimum (utile quand footer ouvert)
 }
 .CustomFooter {
   grid-row: footer;
@@ -158,13 +169,21 @@ hr {
   surcharge des popups de notifications :
   https://docs.notivue.smastrom.io/built-in-notifications/using-css-classes.html#targeting-elements
   */
-  /*
-  .Notivue__content-message {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
+  
+  .Notivue__content {
+    width: min(92vw, 34rem);
+    max-width: min(92vw, 34rem);
   }
-  */
+
+  .Notivue__content-message {
+    max-height: min(32vh, 12rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
   /*
   .Notivue__icon {
     color: white;

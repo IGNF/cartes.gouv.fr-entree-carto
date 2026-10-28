@@ -1,38 +1,42 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import { ReverseGeocode } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  reverseGeocodeOptions: Object
+  disabled: Boolean,
+  reverseGeocodeOptions: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const log = useLogger();
-const store = useDataStore();
 
+const emit = defineEmits(['ready']);
 
 const map = inject(props.mapId);
 const reverseGeocode = ref(new ReverseGeocode(props.reverseGeocodeOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
-    map.addControl(reverseGeocode.value)
+    map.addControl(reverseGeocode.value);
+    if (props.disabled) {
+      reverseGeocode.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     /* abonnement au widget
     * @fires reversegeocode:compute
     * @fires reversegeocode:onclickresult
     */
     reverseGeocode.value.on("reverseGeocode:onclickresult", onClickResult);
     reverseGeocode.value.on("reverseGeocode:compute", onCompute);
-    if (props.analytic) {
-      var el = reverseGeocode.value.element.querySelector("button[id^=GPshowReverseGeocodingPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
@@ -45,10 +49,6 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(reverseGeocode.value);
-    if (props.analytic) {
-      var el = reverseGeocode.value.element.querySelector("button[id^=GPshowReverseGeocodingPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
@@ -61,6 +61,16 @@ const onClickResult = (e) => {
 const onCompute = (e) => {
   log.debug(e);
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

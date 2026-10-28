@@ -1,23 +1,27 @@
 <script setup lang="js">
 import { GeoportalFullScreen } from 'geopf-extensions-openlayers'
-
-// FIXME
-// ajouter un ID sur le bouton pour y ajouter un tracker Eulerian
+import { mainMap } from '@/composables/keys'
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
-  fullscreenOptions: Object
+  disabled: Boolean,
+  fullscreenOptions: { type: Object, default: () => ({}) }
 })
+
+const emit = defineEmits(['ready']);
 
 
 const map = inject(props.mapId)
 const fullscreen = ref(new GeoportalFullScreen(props.fullscreenOptions))
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(fullscreen.value)
+    if (props.disabled) {
+      fullscreen.value.element.firstChild.setAttribute("disabled", "true");
+    }
   }
 })
 
@@ -29,6 +33,16 @@ onBeforeUpdate(() => {
     map.removeControl(fullscreen.value)
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

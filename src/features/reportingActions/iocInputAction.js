@@ -75,7 +75,7 @@ class MyInputAction {
             olObservableUnByKey(this.listener);
             this.listener = null;
         }
-        if (this.marker != null) {
+        if (this.marker !== null) {
             this.map.removeOverlay(this.marker);
             this.marker = null;
         }
@@ -113,7 +113,7 @@ class MyInputAction {
         }
         this.coordinate = e.coordinate;
         // on supprime le marqueur précédent
-        if (this.marker != null) {
+        if (this.marker !== null) {
             this.map.removeOverlay(this.marker);
             this.marker = null;
         }

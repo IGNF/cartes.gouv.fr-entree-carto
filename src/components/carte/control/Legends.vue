@@ -1,27 +1,31 @@
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
-import { useMatchMedia } from '@/composables/matchMedia';
 
 import { Legends } from 'geopf-extensions-openlayers';
 
-const isSmallScreen = useMatchMedia('SM')
-
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    required: true
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  legendsOptions: Object
+  disabled: Boolean,
+  legendsOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
+
+const emit = defineEmits(['ready']);
 
 const map = inject(props.mapId);
 const legends = ref(new Legends(props.legendsOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(legends.value);
-    if (props.analytic) {
-      var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
-      useActionButtonEulerian(el);
+    if (props.disabled) {
+      legends.value.getContainer().firstChild.setAttribute("disabled", "true");
     }
   }
 })
@@ -29,15 +33,21 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (props.visibility) {
     map.addControl(legends.value);
-    if (props.analytic) {
-      var el = legends.value.element.querySelector("button[id^=GPshowLegendsPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
   else {
     map.removeControl(legends.value);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

@@ -13,12 +13,14 @@ export default {
 
 <script setup lang="js">
 import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
+import { useAuth } from 'authentification-vue-oidc';
 
 import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.vue';
 import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
 import Patience from '@/components/utils/Patience.vue';
 
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 const emitter = inject('emitter');
 
 const LOADED_DELAY_MS = 1500;
@@ -74,6 +76,18 @@ const IsEmpty = () => {
   return empty;
 };
 
+const hasInitializedAllCategories = () => {
+  if (!Array.isArray(service.labels) || service.labels.length === 0) {
+    return false;
+  }
+
+  return service.labels.every((label) => {
+    // Validate label to prevent prototype pollution
+    return Object.prototype.hasOwnProperty.call(service.documents, label) && 
+           Array.isArray(service.documents[label]);
+  });
+};
+
 var toggle = ref(false);
 var documentsIsEmpty = computed(() => {
   // INFO
@@ -104,13 +118,21 @@ emitter.addEventListener("service:documents:completed", (payload) => {
   var loaded = Array.isArray(detail.data) ? detail.data.length : 0;
   var total = Number.isFinite(detail.total) ? detail.total : loaded;
 
-  documentsProgress.value = {
+  var nextProgress = {
     ...documentsProgress.value,
     [category]: {
       loaded,
       total
     }
   };
+
+  documentsProgress.value = nextProgress;
+
+  // Fallback: si l'evenement global loaded n'arrive pas, on sort du chargement
+  // une fois toutes les categories traitees.
+  if (Object.keys(nextProgress).length >= totalCategories.value) {
+    setLoadedWithDelay();
+  }
 });
 // INFO
 // abonnement à l'evenement du service afin de 
@@ -129,7 +151,7 @@ emitter.addEventListener("document:updated", () => {
 });
 
 onMounted(() => {
-  if (service.isAuthenticatedLocally() && !documentsIsEmpty.value) {
+  if (isAuthenticated.value && (hasInitializedAllCategories() || !documentsIsEmpty.value)) {
     documentsLoadState.value = 'loaded';
   }
 })
@@ -178,9 +200,7 @@ onUnmounted(() => {
   </div>
   <div v-else>
     <!-- Mode connecté avec des documents disponible -->
-    <MenuBookMarkDataList
-      title="Mes enregistrements"
-    />
+    <MenuBookMarkDataList />
   </div>
 </template>
 

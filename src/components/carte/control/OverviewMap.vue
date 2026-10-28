@@ -1,16 +1,18 @@
 <script setup lang="js">
 import { useLogger } from 'vue-logger-plugin';
 import { useMatchMedia } from '@/composables/matchMedia';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
+import { mainMap } from '@/composables/keys';
 import { useControlsOptions } from '@/composables/controls';
 
 import { GeoportalOverviewMap } from 'geopf-extensions-openlayers';
 
 const props = defineProps({
-  mapId: String,
+  mapId: { type: String, default: mainMap },
   visibility: Boolean,
-  analytic: Boolean,
+  disabled: Boolean,
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 
@@ -23,10 +25,6 @@ const isSmallScreen = useMatchMedia('SM')
 watch(isSmallScreen, () => {
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
-    if (props.analytic) {
-      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
-      useActionButtonEulerian(el);
-    }
   }
   else {
     map.removeControl(overviewMap.value);
@@ -34,23 +32,19 @@ watch(isSmallScreen, () => {
 })
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
-    overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
-    if (props.analytic) {
-      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
-      useActionButtonEulerian(el);
+    if (props.disabled) {
+      overviewMap.value.getContainer().firstChild.setAttribute("disabled", "true");
     }
+    overviewMap.value.on('overviewmap:toggle', onToggleOverviewMap);
   }
 })
 
 onBeforeUpdate(() => {
   if (props.visibility && !isSmallScreen.value) {
     map.addControl(overviewMap.value);
-    if (props.analytic) {
-      var el = overviewMap.value.element.querySelector("button[id^=GPshowOverviewMap-]");
-      useActionButtonEulerian(el);
-    }
   }
   else {
     map.removeControl(overviewMap.value);
@@ -60,6 +54,16 @@ onBeforeUpdate(() => {
 function onToggleOverviewMap (e) {
   log.debug(e)
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>
@@ -69,7 +73,8 @@ function onToggleOverviewMap (e) {
 <style lang="scss">
 @use "@/assets/variables" as *;
 
-.gpf-widget[id^="GPoverviewMap-"] {
+// overviewmap uniquement en enfant direct de .position
+.position > .gpf-widget[id^="GPoverviewMap-"] {
   // toujours en premier dans la liste
   order: -1;
   // position relative pour que l'ouverture de la minimap soit par rapport au bouton

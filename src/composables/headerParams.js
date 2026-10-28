@@ -11,7 +11,7 @@ export function useHeaderParams() {
     // Paramètres pour le Header
     headerParams.value = {
         serviceTitle: 'cartes.gouv.fr',
-        serviceDescription: 'Le service public des cartes et données du territoire',
+        serviceDescription: 'Notre territoire commun',
         logoText: ['république', 'française'],
         afterQuickLinks: [
           {
@@ -29,6 +29,12 @@ export function useHeaderParams() {
                   to: useBaseUrl() + '/aide/fr/guides-utilisateur/visualiseur-cartographique/generalites-visualiseur/',
                   target: "_blank",
                   icon: "fr-icon-book-2-line"
+              },
+              {
+                  text: "Niveau de service",
+                  to: useBaseUrl() + '/aide/fr/niveau-de-service/',
+                  target: "_blank",
+                  icon: "fr-icon-rfid-line"
               },
               {
                   text: "Nous contacter",
@@ -65,7 +71,7 @@ export function useHeaderParams() {
               {
                   text: "Découvrir cartes.gouv.fr ",
                   to: useBaseUrl() + '/decouvrir',
-                  target: "_blank",
+                  target: "",
                   button : true
               }
             ]   

@@ -5,6 +5,7 @@ import {
 
 import { useStorage } from '@vueuse/core';
 
+import { loadShortPermalink } from '@/features/permalink';
 import { useUrlParams } from "@/composables/urlParams";
 import { useDefaultControls } from '@/composables/controls';
 
@@ -16,7 +17,7 @@ import { useDefaultControls } from '@/composables/controls';
 var defaultControls = useDefaultControls();
 
 const DEFAULT = {
-  LAYERS: "PLAN.IGN$GEOPORTAIL:GPP:TMS(1;1;1;0;standard)",
+  LAYERS: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2$GEOPORTAIL:OGC:WMTS(1;1;1;0)",
   CONTROLS: defaultControls.toString(),
   X: 289739.8968702704,
   Y: 5859851.607344459,
@@ -119,17 +120,33 @@ export const useMapStore = defineStore('map', () => {
       // on nettoie le localStorage pour ne pas conserver de valeurs obsolètes
       Object.keys(localStorage).forEach(function(key) {
         if (key.startsWith(NAMESPACE)) {
-          // FIXME si on a plusieurs onglets ouverts sur un même navigateur,
+          // FIXME 
+          // si on a plusieurs onglets ouverts sur un même navigateur,
           // la suppression du localStorage est répercutée sur tous les onglets !
+          // mais, on ne souhaite pas un nettoyage aussi radical...
           // localStorage.removeItem(key);
         }
       });
     }
+    // on est sur un permalien en mode réduit
+    if (type === "short") {
+      loadShortPermalink(params.sid)
+      .then((data) => {
+        console.debug("Permalien court récupéré :", data);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération du permalien court :", error);
+      });
+    }
+
     for (const key in params) {
       if (Object.prototype.hasOwnProperty.call(params, key)) {
         // on ne traite pas ces clefs dans le localStorage
         // elles sont gérées par en mode computed()
         if (key === "permalink") {
+          continue;
+        }
+        if (key === "sid") {
           continue;
         }
         if (key === "redirect") {
@@ -200,16 +217,18 @@ export const useMapStore = defineStore('map', () => {
 
   // HACK
   // gestion de la geolocalisation à la lecture du permalien
+  // délai à 500ms pour laisser le temps à la carte de se charger
   setTimeout(() => {
-    if (localStorage.getItem(ns('geolocation')) !== "") {
-      var coordinates = localStorage.getItem(ns('geolocation')).split(",");
+    var storedGeolocation = localStorage.getItem(ns('geolocation'));
+    if (typeof storedGeolocation === "string" && storedGeolocation !== "") {
+      var coordinates = storedGeolocation.split(",");
       // envoi d'un evenement pour afficher la geolocalisation
-      emitter.dispatchEvent("searchengine:open:displayed", {
+      emitter.dispatchEvent("searchengineadvanced:geolocation:displayed", {
         position : coordinates
       });
     }
   }
-  , 100);
+  , 500);
 
   //////////////////
   // objets simples
@@ -236,27 +255,27 @@ export const useMapStore = defineStore('map', () => {
   });
 
   var isPermalink = () => {
-    return location.search.includes("permalink=yes");
+    return location.search.includes("permalink=yes") || location.search.includes("permalink=short");
   };
   
   var permalink = computed(() => {
     // INFO
     // on exclue la route /embed
     var permalinkUrl = "";
-    var optionalControls = controls.value.split(",").filter((c) => !defaultControls.includes(c)).toString();
     var last = location.pathname.slice(-1);
     var path = (last === "/") ? location.pathname.slice(0, -1) : location.pathname;
     var realpath = path.replace(/\/logout|\/login/, "");
     var url = location.origin + realpath.replace("/embed", "");
-    permalinkUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
+    permalinkUrl = `${url}/?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
-      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
-      permalinkUrl += `&p=${geolocation.value}`;
+      var coords = (Array.isArray(geolocation.value)) ? geolocation.value : geolocation.value.split(',');
+      coords = coords.map(n => Number(n).toFixed(6)).join(',');
+      permalinkUrl += `&p=${coords}`;
     }
     permalinkUrl += (bookmarks.value.length > 0) ? 
-    `&l=${layers.value}&w=${optionalControls}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
-    `&l=${layers.value}&w=${optionalControls}`;
+    `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
+    `&l=${layers.value}`;
     return permalinkUrl + "&permalink=yes";
   });
 
@@ -271,8 +290,9 @@ export const useMapStore = defineStore('map', () => {
     permalinkShareUrl = `${url}?c=${center.value}&z=${Math.round(zoom.value)}`;
     if (geolocation.value !== "") {
       // coordonnées avec 6 chiffres après la virgule
-      geolocation.value.split(',').map(n => Number(n).toFixed(6)).join(',');
-      permalinkShareUrl += `&p=${geolocation.value}`;
+      var coords = (Array.isArray(geolocation.value)) ? geolocation.value : geolocation.value.split(',');
+      coords = coords.map(n => Number(n).toFixed(6)).join(',');
+      permalinkShareUrl += `&p=${coords}`;
     }
     permalinkShareUrl += (bookmarks.value.length > 0) ? 
     `&l=${layers.value}&d=${bookmarks.value.replace(/%26s%3D1/g, "")}` :
@@ -383,7 +403,7 @@ export const useMapStore = defineStore('map', () => {
       const regex = /\(.*\)/gm;
       const name = l.replace(regex, "");
       return name;
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function cleanLayers() {
     layers.value = "";
@@ -480,12 +500,12 @@ export const useMapStore = defineStore('map', () => {
 
   // Gestion des données utilisateurs : url de partage des favoris
   function getBookmarks () {
-    return bookmarks.value.split(",").filter(name => name != '');
+    return bookmarks.value.split(",").filter(name => name !== '');
   }
   function getBookmarksByKey () {
     return bookmarks.value.split(",").map((b) => {
       return decodeURIComponent(b).split("?")[0];
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function getBookmarksByID () {
     return bookmarks.value.split(",").map((b) => {
@@ -498,7 +518,7 @@ export const useMapStore = defineStore('map', () => {
         id = decodeURIComponent(b).split("?")[0].split(".")[0]; // lien de partage si pas de uuid
       }
       return id;
-    }).filter(name => name != ''); // array
+    }).filter(name => name !== ''); // array
   }
   function addBookmark (url) {
     if (!url) {
@@ -557,15 +577,15 @@ export const useMapStore = defineStore('map', () => {
     }
   }
   function getBookmarkProperty (url) {
-    var params = {};
+    const params = new Map();
     const index = getBookmarksByKey().indexOf(url.split('?')[0]);
     if (index !== -1) {
       var p = new URLSearchParams(url.split('?')[1]);
       p.forEach((value, key) => {
-        params[key] = value;
+        params.set(key, value);
       });
     } 
-    return params;
+    return Object.fromEntries(params.entries());
   }
 
   function getControls () {
@@ -610,6 +630,9 @@ export const useMapStore = defineStore('map', () => {
   function getTerritories() {
     return parseTerritories();
   }
+  function cleanTerritories() {
+    territories.value = "";
+  }
   function addTerritory(json_territory) {
     if (!json_territory) {
       return;
@@ -653,6 +676,7 @@ export const useMapStore = defineStore('map', () => {
     isPermalink,
     noLoginInformation,
     getTerritories,
+    cleanTerritories,
     addTerritory,
     removeTerritory,
     addTerritories,
@@ -666,6 +690,7 @@ export const useMapStore = defineStore('map', () => {
     updateLayerPosition,
     getLayerProperty,
     getBookmarks,
+    getBookmarksByID,
     addBookmark,
     removeBookmark,
     removeBookmarkByID,

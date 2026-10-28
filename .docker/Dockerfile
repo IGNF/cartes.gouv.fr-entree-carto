@@ -15,7 +15,7 @@
 #----------------------------------------------------------------------
 # cartesgouvfr-entree_carto : Génération d'un build statique
 #----------------------------------------------------------------------
-FROM node:23-alpine AS builder
+FROM node:24.15.0-alpine3.22 AS builder
 
 # Les arguments de construction de l'image
 # - BASE_URL : URL de base de l'application
@@ -27,6 +27,7 @@ ARG SOURCE_MAP="false"
 
 RUN sed -i 's/https/http/' /etc/apk/repositories
 RUN apk add bash
+RUN apk add --no-cache git
 
 WORKDIR /app
 COPY . .

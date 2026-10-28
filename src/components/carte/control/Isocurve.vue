@@ -1,9 +1,8 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin'
-import { useDataStore } from '@/stores/dataStore';
+import { useAuth } from 'authentification-vue-oidc';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
@@ -20,20 +19,28 @@ import t from '@/features/translation';
  
 const emitter = inject('emitter');
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  isocurveOptions: Object
+  disabled: Boolean,
+  isocurveOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
-const log = useLogger()
-const store = useDataStore();
+const emit = defineEmits(['ready']);
+
+const log = useLogger();
 const mapStore = useMapStore();
 
-const map = inject(props.mapId)
-const isocurve = ref(new Isocurve(props.isocurveOptions))
+const map = inject(props.mapId);
+const isocurve = ref(new Isocurve(props.isocurveOptions));
 const btnExport = ref(new ButtonExport({
   title : "Exporter",
   kind : "secondary",
@@ -54,7 +61,7 @@ const btnExport = ref(new ButtonExport({
     menu : "",
     button : "export"
   }
-}))
+}));
 const btnSave = ref(new ButtonExport({
   title : "Enregistrer",
   kind : "primary",
@@ -84,24 +91,24 @@ const btnSave = ref(new ButtonExport({
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(isocurve.value);
     map.addControl(btnExport.value);
+    if (props.disabled) {
+      isocurve.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires isocurve:drawstart
     * @fires isocurve:drawend
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
@@ -125,17 +132,13 @@ onUpdated(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = isocurve.value.element.querySelector("button[id^=GPshowIsochronPicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires isocurve:drawstart
     * @fires isocurve:drawend
     * @fires isocurve:compute
     */
     isocurve.value.on("isocurve:drawstart", onDrawStart);
-    isocurve.value.on("socurve:drawend", onDrawEnd);
+    isocurve.value.on("isocurve:drawend", onDrawEnd);
     isocurve.value.on("isocurve:compute", onCompute);
     isocurve.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportIsocurve);
@@ -176,6 +179,8 @@ const onCompute = (e) => {
   layer.set("data", widget.getData());
   layer.set("geojson", widget.getGeoJSON());
 }
+
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -194,7 +199,7 @@ const onCompute = (e) => {
  */
 const onSaveIsocurve = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     push.warning({
       title: t.auth.title,
       message: t.auth.not_authentificated
@@ -244,6 +249,9 @@ const onSaveIsocurve = (e) => {
     return; // pas plus loin...
   }
 
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -275,6 +283,11 @@ const onSaveIsocurve = (e) => {
       title: t.iso.title,
       message: t.iso.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
@@ -297,6 +310,16 @@ const onSaveIsocurve = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

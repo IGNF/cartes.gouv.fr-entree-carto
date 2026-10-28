@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Carto from "@/components/carte/Carto.vue";
 import LeftMenuTool from "@/components/menu/LeftMenuTool.vue";
-import RightMenuTool from "@/components/menu/RightMenuTool.vue";
 
 import LoginModal from "@/components/modals/ModalLogin.vue";
 import ShareModal from "@/components/carte/control/ShareModal.vue";
@@ -9,19 +8,18 @@ import PrintModal from "@/components/carte/control/PrintModal.vue";
 import SaveModal from "@/components/modals/ModalSave.vue";
 import WelcomeModal from "@/components/modals/ModalWelcome.vue";
 
-import { useDataStore } from "@/stores/dataStore"
-import { useMapStore } from "@/stores/mapStore"
-import { useLogger } from 'vue-logger-plugin';
 import { useAppStore } from "@/stores/appStore"
+import { useMapStore } from "@/stores/mapStore"
+import { useDataStore } from "@/stores/dataStore"
 
 import { fromShare } from "@/features/share";
 
 // lib notification
 import { push } from "notivue";
 
+const appStore = useAppStore();
 const mapStore = useMapStore();
 const dataStore = useDataStore();
-const appStore = useAppStore();
 
 const refModalLogin = ref<InstanceType<typeof LoginModal> | null>(null);
 const refModalShare = ref<InstanceType<typeof ShareModal> | null>(null);
@@ -29,9 +27,17 @@ const refModalSave = ref<InstanceType<typeof SaveModal> | null>(null);
 const refModalPrint = ref<InstanceType<typeof PrintModal> | null>(null);
 const refModalWelcome = ref<InstanceType<typeof WelcomeModal> | null>(null);
 
+const printOptions = {
+  dpi: 96,
+  paperFormat: 'A4',
+  pageOrientation: 'portrait',
+  format: 'PDF',
+};
+
 provide("refModalShare", refModalShare);
 provide("refModalLogin", refModalLogin);
 provide("refModalSave", refModalSave);
+provide("refModalPrint", refModalPrint);
 provide("refModalWelcome", refModalWelcome);
 
 // Les gestionnaires d'évenements des modales
@@ -75,7 +81,7 @@ const notifyAndCleanBookmark = (id: string) => {
 // liste des couches utilisateurs disponibles
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedLayers = computed(() => {
-  var layersValided: any = [];
+  var layersValided: unknown[] = [];
   var layers = mapStore.getLayers();
   for (let i = 0; i < layers.length; i++) {
     var layerId = layers[i];
@@ -106,7 +112,7 @@ const selectedLayers = computed(() => {
 // liste des favoris selectionnés par l'utilisateur, donc disponibles dans le permalien
 // (cette liste est recalculée à chaque fois que le mapStore est modifié)
 const selectedBookmarks = computed(() => {
-  var bookmarksValided: any = [];
+  var bookmarksValided: unknown[] = [];
   var bookmarks = mapStore.getBookmarks();
   for (let i = 0; i < bookmarks.length; i++) {
     var bookmark = bookmarks[i];
@@ -187,19 +193,16 @@ provide("selectedLayers", selectedLayers);
       @on-modal-print-open="onModalPrintOpen"
       @on-modal-login-open="onModalLoginOpen"
     />
-
-    <!-- Le menu des contrôles et le catalogue -->
-    <RightMenuTool
-      :selected-layers="selectedLayers"
-      :selected-controls="selectedControls"
-    />
   </div>
   <!-- Liste des modales -->
   <div class="modal-container">
     <ShareModal ref="refModalShare" />
     <LoginModal ref="refModalLogin" />
     <SaveModal ref="refModalSave" />
-    <PrintModal ref="refModalPrint" />
+    <PrintModal
+      ref="refModalPrint"
+      :print-options="printOptions"
+    />
   </div>
 </template>
 

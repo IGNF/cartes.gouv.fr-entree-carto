@@ -10,11 +10,10 @@
 </script>
 
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
-import { useServiceStore } from '@/stores/serviceStore';
+import { useAuth } from 'authentification-vue-oidc';
 
 import { 
   useCreateDocument, 
@@ -41,7 +40,7 @@ var service = inject('services');
 
 const appStore = useAppStore();
 const mapStore = useMapStore();
-const serviceStore = useServiceStore();
+const { isAuthenticated } = useAuth();
 const log = useLogger();
 
 const props = defineProps({
@@ -50,12 +49,14 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
+  disabled: Boolean,
   drawingOptions: {
     type: Object,
     default: () => ({})
   }
 });
+
+const emit = defineEmits(['ready']);
 
 const map = inject(props.mapId)
 const drawing = ref(new Drawing(props.drawingOptions));
@@ -208,7 +209,6 @@ const restoreTemporaryDocument = (payload) => {
   }).then(() => {
     // Le document est restauré dans le widget: 
     // la reconnexion n'est plus requise.
-    serviceStore.setAuthentificateSyncNeeded(false);
     restoredTemporaryDocument.value = true;
   }).then(() => {
     // et, l'enregistrer définitivement sur l'espace personnel
@@ -226,7 +226,11 @@ const saveTemporaryDocument = (payload) => {
   if (!payload) {
     return;
   }
-  if (!payload.type) {
+  // INFO
+  // si le type n'est pas fourni, on le déduit de l'ID 
+  // de la couche (ex. drawing, import, bookmark...)
+  // mais, la couche doit exister !
+  if (!payload.type && payload.layer) {
     var id = payload.layer.gpResultLayerId.toLowerCase();
     var type = id.split(':')[0];
     payload.type = type.replace("layer", ""); // ex. drawing, import, bookmark...
@@ -234,7 +238,6 @@ const saveTemporaryDocument = (payload) => {
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (payload.layer) {
-    serviceStore.setAuthentificateSyncNeeded(true);
     appStore.setDocumentTemporary(JSON.stringify({
       content : payload.content,
       name : payload.name,
@@ -247,19 +250,18 @@ const saveTemporaryDocument = (payload) => {
 };
 
 onMounted(() => {
+  emit('ready');
   log.debug("Drawing component mounted");
   if (props.visibility) {
     map.addControl(drawing.value);
     map.addControl(btnExport.value);
+    if (props.disabled) {
+      drawing.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      // TODO : changer car ne va pas fonctionner ?
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
@@ -269,14 +271,16 @@ onMounted(() => {
 
   // Fallback: si l'event a ete emis avant le montage du composant,
   // le document temporaire reste disponible dans le store.
-  const docTemp = appStore.getDocumentTemporary();
-  if (service.authenticated && docTemp) {
-    try {
-      restoreTemporaryDocument(JSON.parse(docTemp));
-    } catch (error) {
-      console.error(error);
+  watch(() => isAuthenticated.value && Array.isArray(service.documents.drawing), (ready) => {
+    const docTemp = appStore.getDocumentTemporary();
+    if (ready && docTemp) {
+      try {
+        restoreTemporaryDocument(JSON.parse(docTemp));
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
+  }, { immediate: true });
 })
 
 onBeforeUpdate(() => {
@@ -287,11 +291,6 @@ onBeforeUpdate(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      // TODO : changer car ne va pas fonctionner ?
-      var el = drawing.value.element.querySelector("button[id^=GPshowDrawingPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
@@ -329,7 +328,7 @@ const onToggleShowVector = (e) => {
   log.debug(e);
   // if (e.target.collapsed) {
   if (!e.target.getActive()) {
-    if (!service.authenticated) {
+    if (!isAuthenticated.value) {
       // saveTemporaryDocument({
       //   content : drawing.value.exportFeatures(),
       //   name : drawing.value.getExportName(),
@@ -355,6 +354,7 @@ const onToggleShowVector = (e) => {
   }
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /** 
  * Gestionnaire d'evenement
  * 
@@ -398,7 +398,7 @@ const onSaveVector = (e) => {
 
   var bSaveDocumentTemporary = false;
   // notification d'une authentification nécessaire
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     bSaveDocumentTemporary = true;
     push.warning({
       title: t.auth.title,
@@ -428,6 +428,9 @@ const onSaveVector = (e) => {
     promise = useUpdateDocument(data, emitter, service);
   }
   
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -473,6 +476,11 @@ const onSaveVector = (e) => {
       title: t.drawing.title,
       message: t.drawing.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 

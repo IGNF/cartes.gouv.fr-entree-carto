@@ -1,10 +1,9 @@
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
+import { useAuth } from 'authentification-vue-oidc';
 import { useMapStore } from '@/stores/mapStore';
 import {
   ElevationPath,
@@ -19,16 +18,24 @@ import t from '@/features/translation';
  
 const emitter = inject('emitter');
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  elevationPathOptions: Object
+  disabled: Boolean,
+  elevationPathOptions: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 const log = useLogger();
-const store = useDataStore();
+
+const emit = defineEmits(['ready']);
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
@@ -83,8 +90,12 @@ const btnSave = ref(new ButtonExport({
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(elevationPath.value);
+    if (props.disabled) {
+      elevationPath.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
@@ -103,9 +114,6 @@ onMounted(() => {
     btnSave.value.on("button:clicked", onSaveElevationPath);
 
     var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
-    if (props.analytic) {
-      useActionButtonEulerian(el);
-    }
     // INFO
     // si on clique pour desactiver le profil alti, cette action supprime le tracé en cours !
     // mais, par contre, si on interdit cette action, la couche n'est pas supprimée, 
@@ -139,9 +147,6 @@ onUpdated(() => {
     map.addControl(btnSave.value);
 
     var el = elevationPath.value.element.querySelector("button[id^=GPshowElevationPathPicto-]");
-    if (props.analytic) {
-      useActionButtonEulerian(el);
-    }
     // cf. HACK
     el.dataset.removeMeasure = "false";
     el.dataset.removeLayer = "false";
@@ -196,6 +201,8 @@ const onCompute = (e) => {
   layer.set("data", widget.getData());
   // layer.set("geojson", widget.getGeoJSON());
 }
+
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -214,7 +221,7 @@ const onCompute = (e) => {
  */
 const onSaveElevationPath = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     push.warning({
       title: t.auth.title,
       message: t.auth.not_authentificated
@@ -263,6 +270,9 @@ const onSaveElevationPath = (e) => {
     return; // pas plus loin...
   }
 
+  // le bouton est desactivé pour éviter un double clic
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -294,6 +304,11 @@ const onSaveElevationPath = (e) => {
       title: t.profil.title,
       message: t.profil.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 
@@ -316,6 +331,16 @@ const onExportElevationPath = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

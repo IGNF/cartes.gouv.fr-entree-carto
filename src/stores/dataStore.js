@@ -2,6 +2,7 @@ import {
   defineStore
 } from 'pinia';
 import { shallowRef } from 'vue';
+import { useCacheBuster } from '@/composables/cacheBuster';
 
 /**
  * @description
@@ -65,8 +66,11 @@ export const useDataStore = defineStore('data', () => {
     })
   });
 
-  async function fetchJson(url, force=false) {
-    const response = await fetch(url);
+  async function fetchJson(url, force = false, options = {}) {
+    const { cache, bustCache = false } = options;
+    const requestUrl = bustCache ? useCacheBuster(url) : url;
+    const fetchOptions = cache ? { cache } : undefined;
+    const response = await fetch(requestUrl, fetchOptions);
     if (!response.ok) {
       throw new Error(`Erreur HTTP (${response.status})`);
     }
@@ -102,7 +106,7 @@ export const useDataStore = defineStore('data', () => {
     const alertsConfURL = import.meta.env.VITE_GPF_CONF_ALERTS;
 
     try {
-      const alerts = await fetchJson(alertsConfURL);
+      const alerts = await fetchJson(alertsConfURL, false, { cache: 'no-store', bustCache: true });
       if (!Array.isArray(alerts)) {
         throw new Error('Format des alertes invalide');
       }
@@ -193,9 +197,10 @@ export const useDataStore = defineStore('data', () => {
     return m_thematics.value;
   }
   function getLayersByThematic(thematic) {
-    return Object.keys(m_layers.value)
-      .filter(key => m_layers.value[key].thematic.includes(thematic))
-      .map(layerID => { return layerID })
+    const layersById = new Map(Object.entries(m_layers.value || {}));
+    return Array.from(layersById.entries())
+      .filter(([, layer]) => layer?.thematic?.includes(thematic))
+      .map(([layerId]) => { return layerId })
   }
 
   function getProducers() {
@@ -203,8 +208,9 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getLayersByProducer(producer) {
-    return Object.keys(m_layers.value)
-      .filter(key => m_layers.value[key].producer.includes(producer))
+    const layersById = new Map(Object.entries(m_layers.value || {}));
+    return Array.from(layersById.entries())
+      .filter(([, layer]) => layer?.producer?.includes(producer))
       .map(layerID => { return layerID })
   }
 
@@ -243,12 +249,13 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getLayerByID(id) {
-    return m_layers.value[id];
+    const layersById = new Map(Object.entries(m_layers.value || {}));
+    return layersById.get(id);
   }
 
   function getLayerByTitle(title) {
     return Object.values(m_layers.value).filter((layer) => {
-      if (title && layer.title == title) {
+      if (title && layer.title === title) {
         return layer;
       }
     })
@@ -292,8 +299,10 @@ export const useDataStore = defineStore('data', () => {
       // get services params
       for (var i = 0; i < keys.length; i++) {
         // only one serverUrl is saved in Gp.Config : with multiKeys, we have to retrieve the key used in the serverUrl property
-        if (l.serviceParams.serverUrl[keys[i]]) {
-          params.url = l.serviceParams.serverUrl[keys[i]];
+        const serverUrlByKey = new Map(Object.entries(l.serviceParams.serverUrl || {}));
+        const serverUrl = serverUrlByKey.get(keys[i]);
+        if (serverUrl) {
+          params.url = serverUrl;
         }
       }
 
@@ -370,7 +379,13 @@ export const useDataStore = defineStore('data', () => {
   }
 
   function getTileMatrixSetByID(id) {
-    return m_tileMatrixSets.value[id];
+    const tileMatrixSets = m_tileMatrixSets.value;
+    for (const [key, value] of Object.entries(tileMatrixSets)) {
+      if (!key.localeCompare(id)) {
+        return value;
+      }
+    }
+    return null;
   }
 
   function getTopics() {

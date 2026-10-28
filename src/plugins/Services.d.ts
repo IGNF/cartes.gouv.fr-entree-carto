@@ -1,11 +1,11 @@
 import type { App } from 'vue';
 
 export interface PluginServicesOptions {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export class PluginServices {
-  instance: any;
+  instance: unknown;
   constructor(options: PluginServicesOptions);
   install(app: App): void;
 }

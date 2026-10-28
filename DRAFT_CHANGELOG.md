@@ -1,8 +1,8 @@
 # Unreleased
 
-<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.17...HEAD>
+<https://github.com/IGNF/cartes.gouv.fr-entree-carto/compare/v1.0.23...HEAD>
 
-## 🔖 version 1.0.17 - __DATE__
+## 🔖 version 1.0.23 - __DATE__
 
 ### 🎉 Résumé
 
@@ -11,10 +11,10 @@
 ### 📖 Changelog
 
 #### ✨ [Ajout]
-  
+
 #### 🔨 [Evolution]
 
-  - Partage : ajout du partage via le réseau social "BlueSky" (#1042)
+- Import de données : des flux WMS/WMTS privé peuvent être importés si leur sécurisaton le permet (#1353)
 
 #### 🔥 [Obsolète]
 
@@ -22,8 +22,9 @@
 
 #### 🐛 [Correction]
 
-  - Impression : correction de la mise en page de l'impression en cas de titre long (#1043)
-  
+- Menu contextuel : le marker d'adresse et coordonnées affiché au clic droit disparait quand on ferme le panel (#1352)
+
 #### 🔒 [Sécurité]
 
----
+- Authentification sécurisée (#1354)
+

@@ -40,6 +40,7 @@ var EVENTS = {
     "document:updated",
     "document:deleted",
     "document:exported",
+    "document:synchronized",
     "document:shared",
     "document:restore",
     // others
@@ -50,9 +51,9 @@ var EVENTS = {
     "drawing:open:clicked",
     "drawing:close",
     "layerimport:open:clicked",
-    "searchengine:open:displayed",
-    "searchengine:geolocation:clicked",
-    "searchengine:geolocation:removed",
+    "searchengineadvanced:geolocation:displayed",
+    "searchengineadvanced:geolocation:clicked",
+    "searchengineadvanced:feature:removed",
     "reporting:open:clicked",
     // edition
     "vector:edit:clicked",

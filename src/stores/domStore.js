@@ -19,7 +19,12 @@ export const useDomStore = defineStore('dom', () => {
   var BookmarksButton = ref();
   var leftControlMenu = ref();
   var rightControlMenu = ref();
+  var isReportingDisabled = ref(false);
   var isHeaderCompact = useStorage(ns('isHeaderCompact'), false);
+  var isLayerImportDisabled = ref(false);
+  var isShareDisabled = ref(false);
+  var isPrintDisabled = ref(false);
+  let isFullscreenPanoramax = ref(false);
 
   function getBookmarksButton () {
     return BookmarksButton.value;
@@ -49,12 +54,49 @@ export const useDomStore = defineStore('dom', () => {
     rightControlMenu.value = m;
   }
 
+  function getReportingDisabled () {
+    return isReportingDisabled.value;
+  }
+
+  function setReportingDisabled (value) {
+    isReportingDisabled.value = value;
+  }
+
+  function getLayerImportDisabled () {
+    return isLayerImportDisabled.value;
+  }
+
+  function setLayerImportDisabled (value) {
+    isLayerImportDisabled.value = value;
+  }
+
+  function getShareDisabled () {
+    return isShareDisabled.value;
+  }
+
+  function setShareDisabled (value) {
+    isShareDisabled.value = value;
+  }
+
+  function getPrintDisabled () {
+    return isPrintDisabled.value;
+  }
+
+  function setPrintDisabled (value) {
+    isPrintDisabled.value = value;
+  }
+
   return {
     isHeaderCompact,
+    isFullscreenPanoramax,
     menuCatalogueButton,
     leftControlMenu,
     rightControlMenu,
     BookmarksButton,
+    isReportingDisabled,
+    isLayerImportDisabled,
+    isShareDisabled,
+    isPrintDisabled,
     getmenuCatalogueButton,
     setmenuCatalogueButton,
     getBookmarksButton,
@@ -63,5 +105,13 @@ export const useDomStore = defineStore('dom', () => {
     setrightControlMenu,
     getleftControlMenu,
     setleftControlMenu,
+    getReportingDisabled,
+    setReportingDisabled,
+    getLayerImportDisabled,
+    setLayerImportDisabled,
+    getShareDisabled,
+    setShareDisabled,
+    getPrintDisabled,
+    setPrintDisabled,
   }
 });

@@ -103,7 +103,7 @@ function tabIsActive(componentName) {
  watch(() => domStore.getrightControlMenu(), (newVal) => {
   rightControls.value = newVal
   rightControls.value?.addEventListener("click", function (e) {
-  if (e.target.ariaPressed == "true") {
+  if (e.target.ariaPressed === "true") {
     is_expanded.value = false;
   }
 })

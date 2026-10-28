@@ -10,11 +10,10 @@
 </script>
 
 <script setup lang="js">
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
-import { useServiceStore } from '@/stores/serviceStore';
+import { useAuth } from 'authentification-vue-oidc';
 
 import {
   useCreateDocument
@@ -43,16 +42,17 @@ const props = defineProps({
     default: ''
   },
   visibility: Boolean,
-  analytic: Boolean,
   layerImportOptions: {
     type: Object,
     default: () => ({})
   }
 });
 
+const emit = defineEmits(['ready']);
+
 const mapStore = useMapStore();
 const appStore = useAppStore();
-const serviceStore = useServiceStore();
+const { isAuthenticated } = useAuth();
 const log = useLogger();
 
 const map = inject(props.mapId);
@@ -66,12 +66,9 @@ emitter.addEventListener("layerimport:open:clicked", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(layerImport.value);
-    if (props.analytic) {
-      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     layerImport.value.on("layerimport:vector:added", onSaveImportVector);
     layerImport.value.on("layerimport:service:added", onSaveImportService);
@@ -89,10 +86,6 @@ onBeforeUpdate(() => {
 onUpdated(() => {
   if (props.visibility) {
     map.addControl(layerImport.value);
-    if (props.analytic) {
-      var el = layerImport.value.element.querySelector("button[id^=GPshowImportPicto-]");
-      useActionButtonEulerian(el);
-    }
     /** abonnement au widget */
     layerImport.value.on("layerimport:vector:added", onSaveImportVector);
     layerImport.value.on("layerimport:service:added", onSaveImportService);
@@ -100,6 +93,15 @@ onUpdated(() => {
     layerImport.value.on("layerimport:compute:added", onSaveImportCompute);
   }
 })
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 /**
  * ouverture de la modale de connexion pour proposer à l'utilisateur
@@ -160,6 +162,14 @@ const saveImportVector = (e) => {
 
   promise
   .then((o) => {
+    layerImport.value.setCollapsed(true);
+    // INFO 
+    // on utilise le composant des favoris pour ajouter la couche à la carte
+    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
+    map.removeLayer(data.layer);
+    return o;
+  })
+  .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
     if (document) {
       var url = toShare(document, {
@@ -174,11 +184,6 @@ const saveImportVector = (e) => {
         throw new Error("Action not yet implemented !");
       }
     }
-  })
-  .then(() => {
-    layerImport.value.setCollapsed(true);
-    // on retire la couche de la carte, elle va être ré-ajoutée via le composant des favoris
-    map.removeLayer(data.layer); 
   })
   .then(() => {
     // notification
@@ -222,7 +227,7 @@ const saveImportVector = (e) => {
 const onSaveImportVector = (e) => {
   log.debug(e);
 
-  var bNeedAuthentication = !service.authenticated || (service.authenticated && serviceStore.getAuthentificateSyncNeeded());
+  var bNeedAuthentication = !isAuthenticated.value;
   // on n'est pas connecté, on propose le choix de se connecter ou pas
   if (bNeedAuthentication) {
     // si la case 'Ne plus afficher ce message' est cochée,
@@ -243,7 +248,7 @@ const onSaveImportVector = (e) => {
 const onSaveImportService = (e) => {
   log.debug(e);
   // vérifier si l'utilisateur est authentifié
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     return;
   }
 
@@ -311,7 +316,7 @@ const onSaveImportService = (e) => {
 const onSaveImportMapbox = (e) => {
   log.debug(e);
   // vérifier si l'utilisateur est authentifié
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     return;
   }
 

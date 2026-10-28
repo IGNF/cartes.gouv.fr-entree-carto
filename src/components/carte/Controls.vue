@@ -35,19 +35,18 @@ import FullScreen from './control/FullScreen.vue';
 import ReverseGeocode from './control/ReverseGeocode.vue';
 import Reporting from './control/Reporting.vue';
 import CatalogManager from './control/CatalogManager.vue';
+import Panoramax from './control/Panoramax.vue';
 
-import { useDomStore } from '@/stores/domStore';
-import { useMapStore } from "@/stores/mapStore";
 import { useControls, useControlsExtensionPosition } from '@/composables/controls';
+import { useDomStore } from '@/stores/domStore';
 import { useMatchMedia } from '@/composables/matchMedia';
-let isMobile = useMatchMedia('SM');
-
 import { useLogger } from 'vue-logger-plugin';
 
 import IconGeolocationSVG from "../../assets/geolocation.svg";
 
 import { LoggerUtils } from 'geopf-extensions-openlayers';
 
+let isMobile = useMatchMedia('SM');
 const emitter = inject('emitter');
 
 const isProduction = (import.meta.env.MODE === "production");
@@ -65,11 +64,17 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
+  layersReady: {
+    type: Boolean,
+    default: false
+  },
   mapId: {
     type: String,
     default: ''
   }
 });
+
+const emit = defineEmits(['ready']);
 
 // INFO
 // liste des contrôles à activer
@@ -88,7 +93,6 @@ const props = defineProps({
 //  "FullScreen"
 //  (...)
 // ]
-const mapStore = useMapStore();
 const domStore = useDomStore();
 const log = useLogger();
 log.debug(props.controlOptions);
@@ -98,6 +102,12 @@ if (!baseUrlService) {
   // Utilisation de l'url des services de production
   log.warn("VITE_GPF_BASE_URL_SERVICE is not defined, using production URL");
   baseUrlService = "https://data.geopf.fr";
+}
+
+// FIXME : mauvais nom de resource alti en preprod
+var altiResource;
+if (baseUrlService === "https://data-pprd.priv.geopf.fr") {
+   altiResource = "rge_alti";
 }
 
 // liste des options pour les contrôles
@@ -115,13 +125,43 @@ const searchEngineOptions = computed(() => {
       prettifyResults : true,
       maximumEntries : 5
     },
-    geocodeOptions : {
+    searchOptions : {
       serviceOptions : {
         serverUrl : `${baseUrlService}/geocodage/search`
       }
     },
     markerUrl : IconGeolocationSVG,
     placeholder: isMobile.value ? 'Rechercher...' : 'Rechercher un lieu...',
+    advancedSearchOptions : {
+      coordinateSearch : {
+        systems :
+          [{
+              label : "G\u00e9ographique",
+              crs : "EPSG:4326",
+              type : "Geographical"
+          }, 
+          {
+              label : "Web Mercator",
+              crs : "EPSG:3857",
+              type : "Metric"
+          }, 
+          {
+              label : "Lambert 93",
+              crs : "EPSG:2154",
+              type : "Metric"
+          },
+          {
+              label : "Lambert II \u00e9tendu",
+              crs : "EPSG:27572",
+              type : "Metric"
+          }]
+      },
+      searchOptions : {
+        serverUrl : `${baseUrlService}/geocodage/search`,
+        wfsServerUrl : `${baseUrlService}/wfs/ows?`,
+        geocodeGetCapabilitiesUrl : `${baseUrlService}/geocodage/getCapabilities`
+      }
+    }
   };
 });
 
@@ -173,6 +213,8 @@ const territoriesOptions = {
 const getFeatureInfoOptions = {
   id: "6",
   position: useControlsExtensionPosition().getFeatureInfoOptions,
+  button : false,
+  active : true,
   noDataMessage : "<h6 style='text-align: center;'> Pas d'infos disponibles </h6> <p style='text-align: center;'> Il n'y a pas de données interrogeables ici </p>"
 };
 
@@ -192,7 +234,9 @@ const controlListOptions = {
   id: "10",
   gutter: false,
   controlCatalogElement: document.getElementById('MenuControl'),
-}
+  header: false,
+  sortable: true,
+};
 
 const drawingOptions = {
   id: "11",
@@ -221,6 +265,9 @@ const isocurveOptions = {
   listable: true,
   isocurveOptions : {
     serverUrl : `${baseUrlService}/navigation/isochrone`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
@@ -232,6 +279,9 @@ const routeOptions = {
   prettifyCompute: true,
   routeOptions : {
     serverUrl : `${baseUrlService}/navigation/itineraire`
+  },
+  autocompleteOptions : {
+    serverUrl : `${baseUrlService}/geocodage/completion`
   }
 };
 
@@ -254,6 +304,7 @@ const measureAzimuthOptions = {
   gutter: false,
   listable: true,
   id: "17",
+  geodesic: true,
 };
 
 const mousePositionOptions = {
@@ -264,7 +315,8 @@ const mousePositionOptions = {
   editCoordinates : true,
   altitude : {
     serviceOptions : {
-      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`
+      serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+      resource : altiResource
     }
   },
   // On ajoute les systemes UTM pour les territoires
@@ -413,29 +465,34 @@ const elevationPathOptions = {
   gutter: false,
   listable: true,
   elevationPathOptions : {
-    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`
+    serverUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevationLine.json`,
+    resource : altiResource
   }
 };
+
+const isLayerImportDisabled = useControls.LayerImport.disabled;
+domStore.setLayerImportDisabled(isLayerImportDisabled);
 
 const layerImportOptions = {
   id: "20",
   position: useControlsExtensionPosition().layerImportOptions,
   gutter: true,
-  listable: true,
 };
+
+const isReportingDisabled = useControls.Reporting.disabled;
+domStore.setReportingDisabled(isReportingDisabled);
 
 const reportingOptions = {
   id: "21",
   position: useControlsExtensionPosition().reportingOptions,
   gutter: true,
-  listable: true,
   format : "kml"
 };
 
 const contextMenuOptions = computed(() => {
-  return {
-    contextMenuItemsOptions : [
-      {
+  const contextMenuItemsOptions = isReportingDisabled
+    ? []
+    : [{
         text : "Signaler une anomalie",
         callback : () => {
           setTimeout(() => {
@@ -451,179 +508,217 @@ const contextMenuOptions = computed(() => {
             });
           }, 0);
         }
-      }
-    ]
+      }];
+
+  return {
+    reverseGeocodeServerUrl : `${baseUrlService}/geocodage/reverse`, 
+    altiServerUrl : `${baseUrlService}/altimetrie/1.0/calcul/alti/rest/elevation.json?`,
+    altiResource : altiResource,
+    contextMenuItemsOptions
   }
 })
+
+const panoramaxOptions = {
+  id: "23",
+  position: useControlsExtensionPosition().panoramaxOptions,
+  panel: true,
+  gutter: true,
+  listable: true,
+  auto : false,
+  visualizationWindow : {
+    size : "fullscreen-map"
+  },
+  viewer : {
+    share : {
+      type : "geoplateforme",
+      url : location.origin + import.meta.env.BASE_URL // beurk !
+    },
+    widgets : [
+      "btnClose",
+      "btnZoom",
+      "btnFullscreen",
+      "cmpPictureLegend",
+      "cmpMinimap"
+    ]
+  },
+  buttonsWindow: {
+    hover: {
+      display: false,
+    },
+    background: {
+      display: false,
+    },
+    layerswitcher: {
+      display: false,
+    },
+    filters : {
+      display : true,
+      label : "Effacer les filtres",
+      description : "Réinitialiser les filtres",
+      content : {
+          types : {
+             value : "360°"
+          },
+          dates : true,
+          periodes : true
+      }
+    }
+  }
+};
+
+const isShareDisabled = useControls.Share.disabled;
+domStore.setShareDisabled(isShareDisabled);
+
+const isPrintDisabled = useControls.Print.disabled;
+domStore.setPrintDisabled(isPrintDisabled);
+
+// gestion des propriétés des contrôles
+const isControlVisible = (controlId) => props.controlOptions.includes(controlId);
+const getControlProps = (control, additionalProps = {}, includeDisabled = true) => ({
+  visibility: isControlVisible(control.id),
+  ...(includeDisabled ? { disabled: control.disabled } : {}),
+  mapId: props.mapId,
+  ...additionalProps
+});
+
+// On écoute l'événement "ready" émis par les composants de type Controls
+const onControlReady = (controlName) => {
+  log.debug(`Control ${controlName} is ready`);
+};
+
+// On émet un événement "ready" lorsque tous les contrôles sont prêts !
+const notifyControlsReady = async () => {
+  emit('ready');
+};
 
 onMounted(() => {
   log.debug("Controls component mounted")
   domStore.setleftControlMenu(document.getElementById("position-container-bottom-left"));
   domStore.setrightControlMenu(document.getElementById("position-container-top-right"));
-})
+  notifyControlsReady();
+});
+
 </script>
-<!-- INFO : Affichage du contrôle
->>> option visibility:true, si le contrôle est dans la liste
->>> sinon, visibility:false
--->
+
 <template>
   <CatalogManager
-    :visibility="props.controlOptions.includes(useControls.Catalog.id)"
-    :analytic="false"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Catalog)"
+    @ready="onControlReady(useControls.Catalog.id)"
   />
   <LayerSwitcher
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.LayerSwitcher.id)"
-    :analytic="useControls.LayerSwitcher.analytic"
-    :layer-switcher-options="layerSwitcherOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.LayerSwitcher, { layerSwitcherOptions })"
+    @ready="onControlReady(useControls.LayerSwitcher.id)"
   />
   <Legends
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Legends.id)"
-    :analytic="useControls.Legends.analytic"
-    :legends-options="legendsOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Legends, { legendsOptions })"
+    @ready="onControlReady(useControls.Legends.id)"
   />
   <Route
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Route.id)"
-    :analytic="useControls.Route.analytic"
-    :route-options="routeOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Route, { routeOptions })"
+    @ready="onControlReady(useControls.Route.id)"
   />
   <Isocurve
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Isocurve.id)"
-    :analytic="useControls.Isocurve.analytic"
-    :isocurve-options="isocurveOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Isocurve, { isocurveOptions })"
+    @ready="onControlReady(useControls.Isocurve.id)"
   />
   <ReverseGeocode
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ReverseGeocode.id)"
-    :analytic="useControls.ReverseGeocode.analytic"
-    :reverse-geocode-options="reverseGeocodeOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.ReverseGeocode, { reverseGeocodeOptions })"
+    @ready="onControlReady(useControls.ReverseGeocode.id)"
   />
   <FullScreen
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.FullScreen.id)"
-    :analytic="useControls.FullScreen.analytic"
-    :fullscreen-options="fullscreenOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.FullScreen, { fullscreenOptions })"
+    @ready="onControlReady(useControls.FullScreen.id)"
   />
   <Zoom
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Zoom.id)"
-    :analytic="useControls.Zoom.analytic"
-    :zoom-options="zoomOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Zoom, { zoomOptions })"
+    @ready="onControlReady(useControls.Zoom.id)"
   />
   <SearchEngine
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.SearchEngine.id)"
-    :analytic="useControls.SearchEngine.analytic"
-    :search-engine-options="searchEngineOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.SearchEngine, { searchEngineOptions })"
+    @ready="onControlReady(useControls.SearchEngine.id)"
   />
   <GetFeatureInfo
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.GetFeatureInfo.id)"
-    :analytic="useControls.GetFeatureInfo.analytic"
-    :get-feature-info-options="getFeatureInfoOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.GetFeatureInfo, { getFeatureInfoOptions }, false)"
+    @ready="onControlReady(useControls.GetFeatureInfo.id)"
   />
   <ScaleLine
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ScaleLine.id)"
-    :analytic="useControls.ScaleLine.analytic"
-    :scale-line-options="scaleLineOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.ScaleLine, { scaleLineOptions }, false)"
+    @ready="onControlReady(useControls.ScaleLine.id)"
   />
   <OverviewMap
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.OverviewMap.id)"
-    :analytic="useControls.OverviewMap.analytic"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.OverviewMap)"
+    @ready="onControlReady(useControls.OverviewMap.id)"
   />
   <Territories
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Territories.id)"
-    :analytic="useControls.Territories.analytic"
-    :territories-options="territoriesOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Territories, { territoriesOptions })"
+    @ready="onControlReady(useControls.Territories.id)"
   />
   <MeasureLength
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureLength.id)"
-    :analytic="useControls.MeasureLength.analytic"
-    :measure-length-options="measureLengthOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.MeasureLength, { measureLengthOptions })"
+    @ready="onControlReady(useControls.MeasureLength.id)"
   />
   <MeasureArea
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureArea.id)"
-    :analytic="useControls.MeasureArea.analytic"
-    :measure-area-options="measureAreaOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.MeasureArea, { measureAreaOptions })"
+    @ready="onControlReady(useControls.MeasureArea.id)"
   />
   <MeasureAzimuth
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MeasureAzimuth.id)"
-    :analytic="useControls.MeasureAzimuth.analytic"
-    :measure-azimuth-options="measureAzimuthOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.MeasureAzimuth, { measureAzimuthOptions })"
+    @ready="onControlReady(useControls.MeasureAzimuth.id)"
   />
   <MousePosition
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.MousePosition.id)"
-    :analytic="useControls.MousePosition.analytic"
-    :mouse-position-options="mousePositionOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.MousePosition, { mousePositionOptions })"
+    @ready="onControlReady(useControls.MousePosition.id)"
   />
   <Drawing
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Drawing.id)"
-    :analytic="useControls.Drawing.analytic"
-    :drawing-options="drawingOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Drawing, { drawingOptions })"
+    @ready="onControlReady(useControls.Drawing.id)"
   />
   <ElevationPath
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ElevationPath.id)"
-    :analytic="useControls.ElevationPath.analytic"
-    :elevation-path-options="elevationPathOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.ElevationPath, { elevationPathOptions })"
+    @ready="onControlReady(useControls.ElevationPath.id)"
   />
   <LayerImport
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.LayerImport.id)"
-    :analytic="useControls.LayerImport.analytic"
-    :layer-import-options="layerImportOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.LayerImport, { layerImportOptions })"
+    @ready="onControlReady(useControls.LayerImport.id)"
   />
   <ControlList
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ControlList.id)"
-    :analytic="useControls.ControlList.analytic"
-    :control-list-options="controlListOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.ControlList, { controlListOptions })"
+    @ready="onControlReady(useControls.ControlList.id)"
   />
   <ContextMenu
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.ContextMenu.id)"
-    :analytic="useControls.ContextMenu.analytic"
-    :context-menu-options="contextMenuOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.ContextMenu, { contextMenuOptions }, false)"
+    @ready="onControlReady(useControls.ContextMenu.id)"
   />
   <Reporting
+    v-if="controlOptions && !domStore.isReportingDisabled"
+    v-bind="getControlProps(useControls.Reporting, { reportingOptions }, false)"
+    @ready="onControlReady(useControls.Reporting.id)"
+  />
+  <Panoramax
     v-if="controlOptions"
-    :visibility="props.controlOptions.includes(useControls.Reporting.id)"
-    :analytic="useControls.Reporting.analytic"
-    :reporting-options="reportingOptions"
-    :map-id="mapId"
+    v-bind="getControlProps(useControls.Panoramax, { panoramaxOptions, layersReady: props.layersReady })"
+    @ready="onControlReady(useControls.Panoramax.id)"
   />
 </template>
 
@@ -702,17 +797,6 @@ onMounted(() => {
     content: none;
   }
 }
-// conteneur top-right
-.position-container-top-right {
-  // cree un espace vide au-dessus du 3e widget (pour insérer le controleur de widgets)
-  .gpf-widget-button:nth-child(3) {
-    margin-top: $widget-btn-size;
-  }
-  // enleve le border-radius (en haut)
-  .gpf-widget-button:nth-child(3) .gpf-btn-icon {
-    border-radius: 0;
-  }
-}
 // tooltips: position
 .position-container-top-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before,
 .position-container-bottom-right > .gpf-widget-button > .gpf-btn-icon[aria-label]:hover::before {
@@ -723,7 +807,7 @@ onMounted(() => {
   transform: translate($widget-btn-size - $widget-btn-padding * 2, $widget-btn-padding);
 }
 // modales: au dessus quand active
-.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"]) {
+.position:has(> .gpf-widget-button > .gpf-btn-icon[aria-pressed="true"] + .gpf-panel) {
   z-index: 2;
 
   // au dessus de tout en mobile
@@ -761,6 +845,12 @@ onMounted(() => {
 .position-container-bottom-right .gpf-panel {
   right: $widget-btn-size + $gap !important;
 }
+// fixe position d'un panel dans un panel
+.gpf-panel .gpf-panel {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: none;
+}
 .gpf-panel__body {
   max-height: calc(70vh) !important;
   max-height: calc(100cqb - $gap * 2) !important;
@@ -769,7 +859,9 @@ onMounted(() => {
   max-height: initial !important;
 }
 @include max(sm) {
-  .gpf-panel {
+  .gpf-panel,
+  .position-container-top-left .gpf-panel,
+  .position-container-bottom-left .gpf-panel {
     max-width: 100vw !important;
     max-height: 100cqb !important;
   }
@@ -777,13 +869,20 @@ onMounted(() => {
     max-height: 100cqb !important;
   }
   // selecteur a rallonge obligatoire pour surclasser le style
-  .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
+  // Rappel : GetFeatureInfo a `button: false`, son dialog n'est donc pas précédé d'un bouton.
+  :is(
+    .position .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel,
+    .position .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel
+  ) {
     min-width: 0;
     right: -$gap !important;
     top: -($widget-btn-size + $gap * 2) !important; // au-dessus de la recherche
     width: 100vw !important;
   }
-  :is(.position-container-top-left, .position-container-bottom-left) .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel {
+  :is(.position-container-top-left, .position-container-bottom-left) :is(
+    .gpf-widget-button > button[aria-pressed] ~ dialog.gpf-panel,
+    .gpf-widget-button.GPgetFeatureInfo > dialog.gpf-panel
+  ) {
     right: auto !important;
     left: -$gap !important;
   }
@@ -793,55 +892,70 @@ onMounted(() => {
  *  gestion du nombre de widget en fonction de la hauteur
  */
 
-// le widget GPcontrolList est caché par défaut (pas d'outils)
+// le widget GPcontrolList est toujours affiché
 .gpf-widget[id^="GPcontrolList-"] {
-  display: none;
-}
-// puis réaffiché si minimum 1 outil (n=3, apres catalog+layerswitcher)
-.position-container-top-right > .gpf-widget-button:nth-child(3) ~ .gpf-widget-button[id^="GPcontrolList-"] {
   position: absolute !important;
-  display: block;
-  // le controlList est affiché tout en bas, sous la liste
-  // --diff-widgets
-  // si le nombre max (--nb-widgets) est plus grand que le nombre de widget (--count +1 car controlList)
-  // alors, --diff-widgets > 0 et bottom = 9999px * n, sinon --diff-widgets = 0 et bottom = 0
-  --diff-widgets: max(var(--nb-widgets) - var(--count) + 1, 0);
-  bottom: calc(var(--diff-widgets) * 9999px) !important;
+  // tout en bas, sous la liste
+  bottom: 0 !important;
+  
+  .gpf-btn-icon {
+    // calcul du border-radius top de controllist
+    $border-radius: calc((1 - min(1, max(0, calc(var(--nb-widgets) - 1)))) * $widget-btn-radius);
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+  }
 }
 
-// on ajoute un border-radius sur l'avant dernier élément, a partir du 3e (celui avant controlList)
-.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:nth-last-child(2) > .gpf-btn-icon {
-  border-radius: 0 0 $widget-btn-radius $widget-btn-radius;
+// ajoute un fond sur le controllist si l'outil sélectionné est masqué
+.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:has(> button[aria-pressed="true"]) ~  .gpf-widget-button[id^="GPcontrolList-"] > button {
+  // on cree un dégradé conic de deux fois la largeur du bouton (cree un damier)
+  background-image: conic-gradient(var(--background-open-blue-france) 50%, transparent 0);
+  background-size: 200% 100%;
+  // n = si l'element cliqué est visible alors n=0, sinon n=N
+  --n: max(var(--pressed) - var(--nb-widgets) + 1, 0); // 0 ou N
+  // on positionne le fond en fonction de N
+  // si n=0, bgp = 0
+  // si n=1, bgp = 48px * 1
+  // si n=2, bgp = 48px * 3
+  // si n=3, bgp = 48px * 5
+  // soit, bpg = N + N-1 * 48px
+  background-position: calc((var(--n) + max(var(--n) - 1, 0)) * $widget-btn-size) 0;
 }
 
 // on calcule la hauteur qui dépend du nombre d'outil (le minimum entre le nombre reel (count) et le nombre max (nb-widgets))
 .position-container-top-right {
-  --nb-widgets: 0;
+  --nb-widgets: 1;
   position: relative;
-  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 4) + ($gap * 2));
+  height: calc((min(var(--count), var(--nb-widgets)) * $widget-btn-size) + ($widget-btn-size * 2) + ($gap * 2));
 }
 
+// hauteur max de la map ou on affiche un seul outil (...)
+$max-height-for-one-tool: 500px;
 // on défini le nombre de widgets max en fonction de la hauteur de map
-@container map (min-height: 500px) { .position-container-top-right { --nb-widgets: 0 } }
-@container map (min-height: 550px) { .position-container-top-right { --nb-widgets: 2 } }
-@container map (min-height: 600px) { .position-container-top-right { --nb-widgets: 3 } }
-@container map (min-height: 650px) { .position-container-top-right { --nb-widgets: 4 } }
-@container map (min-height: 700px) { .position-container-top-right { --nb-widgets: 5 } }
-@container map (min-height: 750px) { .position-container-top-right { --nb-widgets: 6 } }
-@container map (min-height: 850px) { .position-container-top-right { --nb-widgets: 8 } }
-@container map (min-height: 900px) { .position-container-top-right { --nb-widgets: 10 } }
-@container map (min-height: 950px) { .position-container-top-right { --nb-widgets: 20 } }
+@container map (min-height: #{$max-height-for-one-tool})       { .position-container-top-right { --nb-widgets: 2 } }
+@container map (min-height: #{$max-height-for-one-tool + 50})  { .position-container-top-right { --nb-widgets: 3 } }
+@container map (min-height: #{$max-height-for-one-tool + 100}) { .position-container-top-right { --nb-widgets: 4 } }
+@container map (min-height: #{$max-height-for-one-tool + 150}) { .position-container-top-right { --nb-widgets: 5 } }
+
+// modifie l'icone quand --nb-widgets:1 (== la map a une hauteur max de $max-height-for-one-tool)
+@container map (max-height: #{$max-height-for-one-tool - 0.1}) {
+  button[id^="GPshowControlListPicto-"]::after {
+    -webkit-mask: url("@/assets/tools-line.svg") center no-repeat;
+    mask: url("@/assets/tools-line.svg") center no-repeat;
+  }
+}
 
 // creation des selecteurs pour 20 outils
 @for $i from 1 through 20 {
   // defini la position du widget (i) (n=3 est le premier widget)
   .position-container-top-right > .gpf-widget-button:nth-child(#{$i + 2}) { --i: #{$i} }
-  // defini le nombre total de widgets (count) (n=4 car controllist ne compte pas)
-  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 3})) { --count: #{$i} }
+  // defini le nombre total de widgets (count)
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2})) { --count: #{$i} }
+  // défini le bouton actif
+  .position-container-top-right:has(> .gpf-widget-button:nth-child(#{$i + 2}) > button[aria-pressed="true"]) { --pressed: #{$i} }
 }
-
 // on décale tous les widgets qui dépassent de la hauteur (pour les masquer)
 .position-container-top-right > .gpf-widget-button:not([id^="GPcontrolList-"]) {
-  margin-left: calc(max(var(--i) - var(--nb-widgets), 0) * 2in);
+  margin-left: calc(max(var(--i) - var(--nb-widgets) + 1, 0) * -99in);
 }
 </style>

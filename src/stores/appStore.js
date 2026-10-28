@@ -1,10 +1,13 @@
 import {
-  defineStore
+  defineStore,
+  acceptHMRUpdate
 } from 'pinia';
 
+import { useScheme } from '@gouvminint/vue-dsfr';
 import { useStorage } from '@vueuse/core';
+import { useClearStorage } from '@/composables/clearStorage';
 
-const { setScheme, theme, scheme } = useScheme();
+const { setScheme, scheme } = useScheme();
 
 /**
  * Espace de noms des clefs du localStorage
@@ -18,7 +21,7 @@ const ns = ((value) => {
 /**
  * Versionning du localStorage
  */
-const VERSION = "11";
+const VERSION = "15";
 
 /**
  * Clef du localStorage de cartes.gouv.fr
@@ -47,7 +50,7 @@ export const useAppStore = defineStore('app', () => {
   // si la version du localStorage est differente de celle du code,
   // on nettoie le localStorage et on enregistre la bonne version.
   if (version.value !== VERSION) {
-    localStorage.clear();
+    useClearStorage(NAMESPACE);
     localStorage.setItem(ns('version'), VERSION);
     version.value = VERSION;
   }
@@ -125,3 +128,11 @@ export const useAppStore = defineStore('app', () => {
   }
 
 });
+
+// uniquement pour le mode développement
+// modifier le store pourra alors mettre celui-ci à jour sans propager
+// systématiquement la modification aux composants parents.
+// donc, pas de déclenchement de la suppression des couches !
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAppStore, import.meta.hot));
+}

@@ -15,9 +15,6 @@
  * - enregistrement de l'ID dans la couche native : 
  *   ex. gpResultLayerId = 'bookmark:drawing-kml:3fa85f64-5717-4562-b3fc-2c963f66afa5'
  * 
- * @todo gestion des exceptions sur les actions avec notification
- * @todo le type service mapbox est à mettre en place
- * @todo le type compute est à mettre en place
  */
 export default {
   name: 'MenuBookMarkEntry'
@@ -28,8 +25,20 @@ export default {
 
 import { ref, inject, onBeforeMount, onMounted, useTemplateRef } from 'vue';
 
-import { getLayersFromPermalink } from '@/features/permalink.js';
+import ServiceError from '@/services/ServiceError';
+import ModalConfirm from '@/components/modals/ModalConfirm.vue';
+
+import { 
+  loadPermalink, 
+  setShortPermalinkData, 
+  createShortPermalinkUrl } 
+from '@/features/permalink.js';
+
 import { toShare } from '@/features/share.js';
+import { 
+  createVectorLayer, 
+  transformVectorLayerFormat 
+} from '@/features/layer.js';
 
 // lib notification
 import { push } from 'notivue'
@@ -64,6 +73,18 @@ const props = defineProps({
 const service = inject('services');
 const emitter = inject('emitter');
 
+const isNeedToReSync = async (id, type) => {
+  // on informe l'utilisateur
+  push.warning({ title: t.bookmark.title, message: "Ce document n'est plus disponible, mise à jour en cours..." });
+  // on resynchronise uniquement le label concerné
+  await service.getDocumentsByLabel(type); // type = "drawing"|"import"|...
+  // on emet un event pour prévenir le composant des favoris
+  emitter.dispatchEvent("document:synchronized", {
+    uuid: id,
+    action: "synchronized"
+  });
+};
+
 /**
  * Gestionnaire d'evenement d'affichage de la couche sur la carte
  * 
@@ -91,6 +112,9 @@ const onAddData = (data) => {
         fct = service.getService;
         break;
       case "carte":
+        // 2 formats possible : 
+        // - permalien classique : contient l'url du permalien
+        // - directement les données : contient les informations utiles de la carte
         fct = service.getCartes;
         break;
       default:
@@ -105,11 +129,25 @@ const onAddData = (data) => {
     .then((response) => {
       
       if (data.type === "carte") {
-        getLayersFromPermalink(response);
-        push.success({
-          title: t.bookmark.title,
-          message: t.bookmark.success_add_data("permalien")
-        });
+        var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") && 
+          Object.prototype.hasOwnProperty.call(response, "y") && 
+          Object.prototype.hasOwnProperty.call(response, "zoom") && 
+          Object.prototype.hasOwnProperty.call(response, "documents");
+        if (!isShortPermalink) {
+          // on charge le permalien classique
+          loadPermalink(response.permalink);
+          push.success({
+            title: t.bookmark.title,
+            message: t.bookmark.success_add_data("permalien")
+          });
+        } else {
+          // on transmet les informations utiles de la carte
+          setShortPermalinkData(response);
+          push.success({
+            title: t.bookmark.title,
+            message: t.bookmark.success_add_data("permalien court")
+          });
+        }
         return;
       }
       if (data.type === "service") {
@@ -142,10 +180,11 @@ const onAddData = (data) => {
       }
     })
     .then(() => {
+      // on ne notifie pas l'ajout d'une couche issue d'un permalien
       if (mapStore.isPermalink()) {
-        // on ne notifie pas l'ajout d'une couche du permalien
         return;
       }
+      // on notifie l'ajout d'une couche sur la carte
       push.success({
         title: t.bookmark.title,
         message: t.bookmark.success_add_data(document.extra.format),
@@ -157,10 +196,14 @@ const onAddData = (data) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.id, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_add_data(e.message || e),
+      });
+    }
   })
 };
 
@@ -176,12 +219,24 @@ const onClickButtonRename = (e) => {
   refDivRename.value.classList.toggle("fr-hidden");
   rename.value = props.data.name;
 };
+
+const isConfirmDeleteModalOpened = ref(false);
+var lstDocumentsCarte = []; 
+
 const onClickButtonDelete = (e) => {
   console.debug(e);
+  // on recherche si le document est présent dans les cartes enregistrées
+  lstDocumentsCarte = service.findInCartes(props.data.id);
+  // et, on ouvre un modal de confirmation pour prévenir l'utilisateur
+  isConfirmDeleteModalOpened.value = true;
+};
+
+const onConfirmDeleteDocument = () => {
   var data = {
     uuid : props.data.id,
     type : props.data.type
   };
+
   service.deleteDocument(data)
     .then((o) => {
       // emettre un event pour prévenir de la suppression d'un document
@@ -190,19 +245,48 @@ const onClickButtonDelete = (e) => {
         uuid : o.uuid,
         action : o.action // added, updated, deleted
       });
+      return o;
     })
-    .then(() => {
-      // TODO
+    .then((o) => {
       // prevenir l'utilisateur que le document supprimé
       // ne sera plus disponible sur les cartes enregistrées
       // et donc sur le permalien !
-    });
+     if (o.extra.isPresentInBookmarksCarte) {
+        push.warning({
+          title: t.bookmark.title,
+          message: t.bookmark.warning_delete_document_in_bookmarks_carte
+        });
+      }
+    })
+    .catch((e) => {
+      console.error(e);
+      if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+        isNeedToReSync(data.uuid, data.type);
+      } else {
+        push.error({
+          title: t.bookmark.title,
+          message: t.bookmark.failed_delete_data(e.message || e),
+        });
+      }
+    })
 };
 const onClickButtonExport = (e) => {
   console.debug(e);
+  // pas de transformation de format pour les cartes et les services
+  // on exporte directement le document
+  // FIXME comment connaitre le format mapbox !?
+  if (props.data.type === "carte" || props.data.type === "service" || props.data.type === "compute") {
+    onConfirmExportDocument();
+    return;
+  }
+  openedFormatExport.value = true;
+};
+const onConfirmExportDocument = (format) => {
+  log.debug("onConfirmExportDocument", format);
+  const type = props.data.type;
   var data = {
     uuid : props.data.id,
-    type : props.data.type
+    type : type
   };
   service.exportDocument(data)
   .then((o) => {
@@ -212,6 +296,31 @@ const onClickButtonExport = (e) => {
       uuid : o.uuid,
       action : o.action // added, updated, deleted
     });
+    return o;
+  })
+  .then(async (o) => {
+    // si le format est different du format d'origine, on transforme le format
+    if (format && o.extra.ext !== format) {
+      try {
+        // on crée une couche vectorielle temporaire pour transformer le format
+        var layer = await createVectorLayer({
+          id : o.uuid,
+          name: o.extra.name,
+          format: o.extra.ext,
+          data: o.extra.content,
+          type: type // FIXME oubli dans la réponse : ex. drawing, import, service, compute
+        });
+        // transformer le format de la couche vectorielle
+        // ex. geojson -> gpx, kml...
+        var results = transformVectorLayerFormat(layer, format);
+        o.extra.content = results.content;
+        o.extra.ext = results.ext;
+        o.extra.mimeType = results.mimeType;
+      } catch (e) {
+        console.error(e);
+        throw new Error("Failed to transform vector layer format");
+      }
+    }
     return o;
   })
   .then((o) => {
@@ -235,8 +344,20 @@ const onClickButtonExport = (e) => {
     } else {
       link.click();
     }
-  });
+  })
+  .catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_export_data(e.message || e),
+      });
+    }
+  })
 };
+
 const onClickButtonCopyPermalink = (e) => {
   console.debug(e);
   var data = {
@@ -246,7 +367,16 @@ const onClickButtonCopyPermalink = (e) => {
 
   service.getCartes(data.uuid)
   .then((response) => {
-    copy(response);
+    var isShortPermalink = Object.prototype.hasOwnProperty.call(response, "x") &&
+      Object.prototype.hasOwnProperty.call(response, "y") &&
+      Object.prototype.hasOwnProperty.call(response, "zoom") &&
+      Object.prototype.hasOwnProperty.call(response, "documents");
+    if (!isShortPermalink) {
+      copy(response.permalink);
+    } else {
+      var shortPermalinkUrl = createShortPermalinkUrl(data.uuid);
+      copy(shortPermalinkUrl);
+    }
   })
   .then(() => {
     push.success({
@@ -256,13 +386,16 @@ const onClickButtonCopyPermalink = (e) => {
   })
   .catch((e) => {
     console.error(e);
-    push.error({
-      title: t.bookmark.title,
-      message: t.bookmark.failed_add_data(e.message),
-    });
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_copy_permalink(e.message || e),
+      });
+    }
   });
-
-}
+};
 
 const onClickButtonValidateRename = (e) => {
   log.debug(e);
@@ -294,8 +427,18 @@ const onClickButtonValidateRename = (e) => {
     // FIXME
     // doit on modifier les informations du gestionnaire de couche ?
     // ex. modifier Name
+  })
+  .catch((e) => {
+    console.error(e);
+    if (e instanceof ServiceError && e.type === ServiceError.TYPE_SYNCERR) {
+      isNeedToReSync(data.uuid, data.type);
+    } else {
+      push.error({
+        title: t.bookmark.title,
+        message: t.bookmark.failed_rename_data(e.message || e),
+      });
+    }
   });
-
 };
 const onClickButtonCancelRename  = (e) => {
   log.debug(e);
@@ -342,7 +485,7 @@ const buttonsMap = [
   ...buttonsCommon,
   {
     label: 'Copier',
-    icon: "fr-icon-link",
+    icon: props.data.status ? "fr-icon-links-fill" : "fr-icon-link",
     "data-id": props.data.id,
     "data-type": props.data.type,
     "data-name": props.data.name,
@@ -375,6 +518,49 @@ const buttonsData = [
     onclick: onClickButtonExport
   }
 ];
+
+const convertTime = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+};
+const convertDate = (date) => {
+  if (!date) {
+    return "";
+  }
+  var d = new Date(date);
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
+const openedFormatExport = ref(false);
+const modelValueFormatExport = ref('geojson');
+const optionsFormatExport = [
+  { label: 'GPX', value: 'gpx' },
+  { label: 'GeoJSON', value: 'geojson' },
+  { label: 'KML', value: 'kml' }
+];
+const actionsformatExport = [
+  {
+    label: 'Exporter',
+    onClick () {
+      openedFormatExport.value = false;
+      var format = modelValueFormatExport.value;
+      onConfirmExportDocument(format);
+    }
+  },  
+  {
+    label: 'Annuler',
+    tertiary: true,
+    onClick () {
+      openedFormatExport.value = false;
+    }
+  },
+];
+const onModalExportClose = () => {
+  openedFormatExport.value = false;
+};
 
 </script>
 
@@ -421,8 +607,13 @@ const buttonsData = [
   -->
   <div class="container-bookmark-entry-advanced-infos fr-hint-text">
     <span v-if="data.type_fr"> {{ data.type_fr }}</span>
+    <span v-if="data.type_fr && (data.format || data.date)"> - </span>
     <span v-if="data.format"> {{ data.format }}</span>
-    <span v-if="data.date"> {{ data.date }}</span>
+    <span v-if="data.format && data.date"> - </span>
+    <span 
+      v-if="data.date" 
+      :title="convertTime(data.date)"
+    >{{ convertDate(data.date) }}</span>
   </div>
   <!-- Menu pour renommer un favori -->
   <div
@@ -453,6 +644,55 @@ const buttonsData = [
       />
     </div>
   </div>
+  <slot name="slot-bookmark-entry">
+    <!-- Modale d'export avec changement de format -->
+    <DsfrModal 
+      :opened="openedFormatExport" 
+      title="Exporter"
+      size="md" 
+      :is-alert="true"
+      :actions="actionsformatExport"
+      @close="onModalExportClose"
+    >
+      <!-- slot : c'est ici que l'on customise le contenu ! -->
+      <template #default>
+        <div class="">
+          <DsfrRadioButtonSet
+            v-model="modelValueFormatExport"
+            legend="Format (obligatoire)"
+            :options="optionsFormatExport"
+            :name="'format-export-' + data.id"
+            inline
+          />
+        </div>
+      </template>
+    </DsfrModal>
+  </slot>
+  <ModalConfirm
+    v-model="isConfirmDeleteModalOpened"
+    :title="t.bookmark.title"
+    :message="t.bookmark.confirm_delete_document_with_name(data.name)"
+    confirm-label="Valider"
+    cancel-label="Annuler"
+    @confirm="onConfirmDeleteDocument"
+  >
+    <div v-if="props.type === 'map'">
+      {{ t.bookmark.warning_delete_permalink_in_bookmarks_carte }}
+    </div>
+    <div v-else>
+      <div v-if="lstDocumentsCarte.length > 0">
+        {{ t.bookmark.warning_delete_document_in_bookmarks_carte }}
+        <ul class="fr-mt-2w">
+          <li
+            v-for="doc in lstDocumentsCarte"
+            :key="doc.id"
+          >
+            {{ doc.name }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ModalConfirm>  
   <slot />
 </template>
 
@@ -467,8 +707,11 @@ const buttonsData = [
 }
 .button-bookmark-entry {
   width: 210px;
+  overflow: hidden;
 }
 .button-bookmark-entry > span {
+  display: inline-block;
+  max-width: calc(100% - 1.75rem);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

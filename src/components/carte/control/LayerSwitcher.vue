@@ -3,7 +3,6 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian.js';
 
 import {
     transformExtent as olTransformExtentProj
@@ -21,12 +20,14 @@ const props = defineProps({
     required: true
   },
   visibility: Boolean,
-  analytic: Boolean,
+  disabled: Boolean,
   layerSwitcherOptions: {
     type: Object,
     default: () => ({})
   }
 });
+
+const emit = defineEmits(['ready']);
 
 const log = useLogger();
 const mapStore = useMapStore();
@@ -38,11 +39,13 @@ const map = inject(props.mapId);
 const layerSwitcher = ref(new LayerSwitcher(props.layerSwitcherOptions));
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(layerSwitcher.value);
-    if (props.analytic) {
-      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
-      useActionButtonEulerian(el);
+    if (props.disabled) {
+      // cas particulier
+      const buttons = layerSwitcher.value.getContainer().querySelectorAll('button');
+      buttons[0]?.setAttribute("disabled", "true");
     }
     /** abonnement au widget */
     layerSwitcher.value.on("layerswitcher:add", onAddLayer);
@@ -60,10 +63,6 @@ onMounted(() => {
 onBeforeUpdate(() => {
   if (!props.visibility) {
     map.removeControl(layerSwitcher.value);
-    if (props.analytic) {
-      var el = layerSwitcher.value.element.querySelector("button[id^=GPshowLayersListPicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
@@ -520,6 +519,16 @@ const onClickEditLayer = (e) => {
   });
   
 }
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
+
 </script>
 
 <template>

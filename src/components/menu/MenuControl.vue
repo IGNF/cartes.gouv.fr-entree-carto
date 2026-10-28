@@ -13,21 +13,37 @@
 
 <script setup lang="js">
 import { useControlsMenuOptions } from '@/composables/controls';
-import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from "@/stores/mapStore";
+import { useDomStore } from "@/stores/domStore";
 import ControlListElement from './ControlListElement.vue';
 
-const log = useLogger();
-const mapStore = useMapStore();;
+const mapStore = useMapStore();
+const domStore = useDomStore();
 
 const props = defineProps({
   selectedControls: {
     type: Array,
     default: () => []
-  }
+  },
+  theme: {
+    type: String,
+    default: null,
+  },
+  themeTitle: {
+    type: String,
+    default: null,
+  },
 });
 
-const selectedControlsModel = defineModel({ type: Array, default: () => [] });
+const selectedControlsModel = computed({
+  get: () => props.selectedControls,
+  set: (values) => {
+    mapStore.cleanControls();
+    for (const key of values) {
+      mapStore.addControl(key);
+    }
+  }
+});
 
 const opts = useControlsMenuOptions();
 
@@ -39,12 +55,15 @@ const allOptions = computed(() => {
   // ]
   // puis filtrage des items par la recherche
   // puis filtrage si pas d'items
-  return Object.entries(
-    opts.reduce((acc, item) => {
-      (acc[item.group] ??= []).push(item);
-      return acc;
-    }, {})
-  ).map(([group, items]) => ({
+  const groupedItems = opts.reduce((acc, item) => {
+    if (!acc.has(item.group)) {
+      acc.set(item.group, []);
+    }
+    acc.get(item.group).push(item);
+    return acc;
+  }, new Map());
+
+  let items = Array.from(groupedItems.entries()).map(([group, items]) => ({
     group,
     items: items.filter(opt => {
       return (
@@ -54,20 +73,17 @@ const allOptions = computed(() => {
       );
     })
   })).filter(({ items }) => items.length > 0);
+
+  // filtre pour theme spécifique
+  if (props.theme) {
+    items = items.filter(({ group }) => group === props.theme);
+  }
+
+  return items;
 });
 
 const searchString = ref("");
-function updateSearch(e) {
-  searchString.value = e;
-}
 
-watch(selectedControlsModel, (values) => {
-  mapStore.cleanControls();
-  for (let index = 0; index < values.length; index++) {
-    const key = values[index];
-    mapStore.addControl(key);
-  }
-})
 onMounted(() => {})
 onUpdated(() => {})
 
@@ -75,28 +91,38 @@ onUpdated(() => {})
 
 <template>
   <div class="control-container">
-    <h4>Gestion d'outils</h4>
-    <div class="control-search-bar">
-      <DsfrSearchBar
-        :model-value="searchString"
-        @update:model-value="updateSearch"
-      />
-    </div>
     <div class="control-content">
       <div>
         <div
           v-for="group in allOptions"
           :key="group.group"
         >
-          <p class="fr-text--sm fr-mb-0">
-            {{ group.group }}
+          <p class="fr-text--sm fr-mb-2v">
+            {{ themeTitle ?? group.group }}
           </p>
           <div class="fr-mb-3w">
+            <div class="control-list-element">
+              <div class="control-list-element-img">
+                <div>
+                  <span 
+                    class="fr-icon--sm fr-icon-layout-top-line"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+              <div class="control-list-element-toggle">
+                <DsfrToggleSwitch
+                  v-model="domStore.isHeaderCompact"
+                  label="Affichage compact"
+                  no-text
+                  class="fr-toggle--label-left"
+                />
+              </div>
+            </div>
             <ControlListElement
               v-for="(opt, idx) in group.items"
               :key="idx"
               v-model="selectedControlsModel"
-              :model-value="props.selectedControls"
               :control-list-element-options="opt"
             />
           </div>
@@ -116,7 +142,7 @@ onUpdated(() => {})
 
 .control-container {
   @include min(sm) {
-    width: $widget-panel-width-md;
+    width: $widget-panel-width-sm;
   }
 }
 </style>

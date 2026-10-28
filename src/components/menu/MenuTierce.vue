@@ -16,7 +16,10 @@
 
 <script setup lang="js">
 import { useMapStore } from "@/stores/mapStore"
+import { useAuth } from 'authentification-vue-oidc';
 import { useDomStore } from "@/stores/domStore"
+import { selectedControls } from '@/composables/mapControls';
+import { isControlVisible } from '@/composables/controls';
 
 const emitter = inject('emitter');
 
@@ -59,7 +62,7 @@ function openControl(controlName) {
 // INFO
 // on active / desactive le bouton "Mes enregistrements" selon
 // si on est authentifié ou pas
-var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const BookmarksButton = ref(null)
 onMounted(() => {
@@ -73,7 +76,7 @@ onMounted(() => {
       <DsfrButton
         tertiary
         no-outline
-        :class="{'fr-btn--disabled': !service.authenticated }"
+        :class="{'fr-btn--disabled': !isAuthenticated }"
         icon="ri-bookmark-line"
         @click="$emit('onBookMarksOpen')"
       >
@@ -82,24 +85,33 @@ onMounted(() => {
     </div>
     <hr>
     <DsfrButton
+      v-if="isControlVisible('LayerImport')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isLayerImportDisabled }"
+      :disabled="domStore.isLayerImportDisabled"
       icon="ri:file-upload-line"
       @click="openControl('LayerImport')"
     >
       Importer des données
     </DsfrButton>
     <DsfrButton
+      v-if="isControlVisible('Share')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isShareDisabled }"
+      :disabled="domStore.isShareDisabled"
       icon="ri:share-2-fill"
       @click="$emit('onModalShareOpen')"
     >
       Partager, intégrer la carte
     </DsfrButton>
     <DsfrButton
+      v-if="isControlVisible('Print')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isPrintDisabled }"
+      :disabled="domStore.isPrintDisabled"
       icon="fr-icon-printer-line"
       class="tierce-print"
       @click="$emit('onModalPrintOpen')"
@@ -108,23 +120,24 @@ onMounted(() => {
     </DsfrButton>
 
     <DsfrButton
+      v-if="isControlVisible('Reporting')"
       tertiary
       no-outline
+      :class="{'fr-btn--disabled': domStore.isReportingDisabled }"
+      :disabled="domStore.isReportingDisabled"
       icon="fr-icon-feedback-line"
       @click="onOpenControlReporting()"
     >
       Signaler une anomalie
     </DsfrButton>
+
     <hr>
 
-    <div class="fr-btn fr-btn--tertiary-no-outline fr-btn--md fr-btn--icon-left fr-icon-layout-top-line">
-      <DsfrToggleSwitch
-        v-model="domStore.isHeaderCompact"
-        label="Affichage compact"
-        no-text
-        class="fr-toggle--label-left"
-      />
-    </div>
+    <MenuControl
+      :selected-controls="selectedControls"
+      theme="Affichage"
+      theme-title="Préférences d’affichage"
+    />
   </div>
 </template>
 

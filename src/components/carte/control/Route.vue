@@ -1,9 +1,8 @@
 <script setup lang="js">
 
 import { useLogger } from 'vue-logger-plugin';
-import { useDataStore } from '@/stores/dataStore';
+import { useAuth } from 'authentification-vue-oidc';
 import { useMapStore } from '@/stores/mapStore';
-import { useActionButtonEulerian } from '@/composables/actionEulerian';
 import { useCreateDocument } from '@/components/carte/control/actions/actionSaveButton';
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
@@ -20,16 +19,24 @@ import t from '@/features/translation';
  
 const emitter = inject('emitter');
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const props = defineProps({
-  mapId: String,
+  mapId: {
+    type: String,
+    default: ''
+  },
   visibility: Boolean,
-  analytic: Boolean,
-  routeOptions: Object
+  disabled: Boolean,
+  routeOptions: {
+    type: Object,
+    default: () => ({})
+  }
 });
 
+const emit = defineEmits(['ready']);
+
 const log = useLogger();
-const store = useDataStore();
 const mapStore = useMapStore();
 
 const map = inject(props.mapId);
@@ -85,9 +92,13 @@ emitter.addEventListener("compute-route:edit:clicked", (e) => {
 });
 
 onMounted(() => {
+  emit('ready');
   if (props.visibility) {
     map.addControl(route.value);
     map.addControl(btnExport.value);
+    if (props.disabled) {
+      route.value.getContainer().firstChild.setAttribute("disabled", "true");
+    }
     if (import.meta.env.IAM_DISABLE === '1') {
       btnSave.value.getContainer().style.display = "none";
     }
@@ -103,10 +114,6 @@ onMounted(() => {
     route.value.on("change:collapsed", onToggleShowCompute);
     btnExport.value.on("button:clicked", onExportRoute);
     btnSave.value.on("button:clicked", onSaveRoute);
-    if (props.analytic) {
-      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
-      useActionButtonEulerian(el);
-    }
   }
 })
 
@@ -126,10 +133,6 @@ onUpdated(() => {
       btnSave.value.getContainer().style.display = "none";
     }
     map.addControl(btnSave.value);
-    if (props.analytic) {
-      var el = route.value.element.querySelector("button[id^=GPshowRoutePicto-]");
-      useActionButtonEulerian(el);
-    }
     /* abonnement au widget 
     * @fires route:drawstart
     * @fires route:drawend
@@ -172,6 +175,7 @@ const onCompute = (e) => {
   layer.set("geojson", widget.getGeoJSON());
 }
 
+const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
 /**
  * Gestionnaire d'evenement 
  * 
@@ -197,7 +201,7 @@ const onCompute = (e) => {
  */
 const onSaveRoute = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     push.warning({
       title: t.auth.title,
       message: t.auth.not_authentificated
@@ -247,6 +251,8 @@ const onSaveRoute = (e) => {
     return; // pas plus loin...
   }
 
+  btnSave.value.button.setAttribute("disabled", "disabled");
+
   promise
   .then((o) => {
     var document = service.find(o.uuid); // un peu redondant...
@@ -278,6 +284,11 @@ const onSaveRoute = (e) => {
       title: t.route.title,
       message: t.route.save_failed
     });
+  })
+  .finally(() => {
+    setTimeout(() => {
+      btnSave.value.button.removeAttribute("disabled");
+    }, TIMEOUT_BUTTON_SAVE_CLICK);
   });
 }
 /**
@@ -299,6 +310,16 @@ const onExportRoute = (e) => {
   // on reprend le nom de l'export saisie par l'utilisateur
   btnExport.value.options.name = btnExport.value.inputName.value || e.name;
 }
+
+
+watch(
+  () => props.visibility,
+  (visible) => {
+    if (visible) {
+      emit('ready');
+    }
+  }
+);
 
 </script>
 

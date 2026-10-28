@@ -7,8 +7,8 @@ import StoreData from '@/components/StoreData.vue';
 <template>
   <Suspense>
     <!-- Chargement du dataStore avec une patience 
-          avant afficahge de la cartographie 
-      -->
+      avant affichage de la cartographie 
+    -->
     <StoreData>
       <CartoAndTools />
     </StoreData>
