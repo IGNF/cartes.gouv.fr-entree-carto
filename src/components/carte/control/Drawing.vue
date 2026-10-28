@@ -13,7 +13,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
-import { useServiceStore } from '@/stores/serviceStore';
+import { useAuth } from 'authentification-vue-oidc';
 
 import { 
   useCreateDocument, 
@@ -38,7 +38,7 @@ var service = inject('services');
 
 const appStore = useAppStore();
 const mapStore = useMapStore();
-const serviceStore = useServiceStore();
+const { isAuthenticated } = useAuth();
 const log = useLogger();
 
 const props = defineProps({
@@ -201,7 +201,6 @@ const restoreTemporaryDocument = (payload) => {
   }).then(() => {
     // Le document est restauré dans le widget: 
     // la reconnexion n'est plus requise.
-    serviceStore.setAuthentificateSyncNeeded(false);
     restoredTemporaryDocument.value = true;
   }).then(() => {
     // et, l'enregistrer définitivement sur l'espace personnel
@@ -231,7 +230,6 @@ const saveTemporaryDocument = (payload) => {
   // stockage temporaire dans le localStorage
   // car l'utilisateur demande une sauvegarde sans etre authentifié !
   if (payload.layer) {
-    serviceStore.setAuthentificateSyncNeeded(true);
     appStore.setDocumentTemporary(JSON.stringify({
       content : payload.content,
       name : payload.name,
@@ -264,14 +262,16 @@ onMounted(() => {
 
   // Fallback: si l'event a ete emis avant le montage du composant,
   // le document temporaire reste disponible dans le store.
-  const docTemp = appStore.getDocumentTemporary();
-  if (service.authenticated && docTemp) {
-    try {
-      restoreTemporaryDocument(JSON.parse(docTemp));
-    } catch (error) {
-      console.error(error);
+  watch(() => isAuthenticated.value && Array.isArray(service.documents.drawing), (ready) => {
+    const docTemp = appStore.getDocumentTemporary();
+    if (ready && docTemp) {
+      try {
+        restoreTemporaryDocument(JSON.parse(docTemp));
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
+  }, { immediate: true });
 })
 
 onBeforeUpdate(() => {
@@ -312,7 +312,7 @@ watch(
 const onToggleShowVector = (e) => {
   log.debug(e);
   if (e.target.collapsed) {
-    if (!service.authenticated) {
+    if (!isAuthenticated.value) {
       saveTemporaryDocument({
         content : drawing.value.exportFeatures(),
         name : drawing.value.getExportName(),
@@ -375,7 +375,7 @@ const onSaveVector = (e) => {
 
   var bSaveDocumentTemporary = false;
   // notification d'une authentification nécessaire
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     bSaveDocumentTemporary = true;
     push.warning({
       title: t.auth.title,

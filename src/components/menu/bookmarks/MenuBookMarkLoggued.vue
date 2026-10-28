@@ -13,12 +13,14 @@ export default {
 
 <script setup lang="js">
 import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
+import { useAuth } from 'authentification-vue-oidc';
 
 import MenuBookMarkNoData from '@/components/menu/bookmarks/MenuBookMarkNoData.vue';
 import MenuBookMarkDataList from '@/components/menu/bookmarks/MenuBookMarkDataList.vue';
 import Patience from '@/components/utils/Patience.vue';
 
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 const emitter = inject('emitter');
 
 const LOADED_DELAY_MS = 1500;
@@ -149,7 +151,7 @@ emitter.addEventListener("document:updated", () => {
 });
 
 onMounted(() => {
-  if (service.isAuthenticatedLocally() && (hasInitializedAllCategories() || !documentsIsEmpty.value)) {
+  if (isAuthenticated.value && (hasInitializedAllCategories() || !documentsIsEmpty.value)) {
     documentsLoadState.value = 'loaded';
   }
 })

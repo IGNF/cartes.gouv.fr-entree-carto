@@ -45,12 +45,12 @@ const customItems = {
     value : ["loglevel:*"], // !?
   },
   service :  {
-    clean : false,
+    clean : true,
     ns : false,
     value : ["service"], // "noLoginInformation" ?
   },
   territories :  {
-    clean : true,
+    clean : false,
     ns : true,
     value : ["territories"],
   },

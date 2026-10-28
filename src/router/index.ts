@@ -25,6 +25,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: ROUTE_NAMES.LOGIN,
     component: () => import('../views/Login.vue'), // Lazy loading
+    meta: { isAuthCallback: true },
   },
   {
     path: '/logout',
