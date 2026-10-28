@@ -1,0 +1,2 @@
+import{C as o,k as s,o as r,c,bB as i,I as u}from"./index-D2n1ulJW.js";const l={role:"status"},d={__name:"Login",setup(p){const e=i(),{login:n,isAuthenticated:t,error:a}=o();return s(async()=>{if(t.value||a.value){await e.replace("/");return}try{await n({returnTo:"/"})}catch{u.warning({title:"Connexion",message:"La connexion est indisponible."}),await e.replace("/")}}),(_,h)=>(r(),c("span",l,"Connexion en cours..."))}};export{d as default};
+//# sourceMappingURL=Login-DU9q_Yly.js.map
