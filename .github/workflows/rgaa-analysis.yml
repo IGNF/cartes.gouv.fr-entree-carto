@@ -1,0 +1,49 @@
+name: Analyse RGAA manuelle
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-rgaa-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      - name: Définir la date d'analyse
+        id: meta
+        shell: bash
+        run: echo "analysis_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Générer le rapport RGAA daté
+        env:
+          ANALYSIS_DATE: ${{ steps.meta.outputs.analysis_date }}
+        run: node rgaa/generate-rgaa-report.mjs
+
+      - name: Enregistrer le rapport dans le répertoire rgaa
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rgaa
+
+          if git diff --cached --quiet; then
+            echo "Aucun nouveau rapport RGAA généré."
+          else
+            git commit -m "Ajout du rapport RGAA ${{ steps.meta.outputs.analysis_date }}"
+            git push
+          fi
+
+      - name: Télécharger l’archive du rapport
+        uses: actions/upload-artifact@v4
+        with:
+          name: rgaa-report-${{ steps.meta.outputs.analysis_date }}
+          path: rgaa/rapports/*.md
+          if-no-files-found: error
