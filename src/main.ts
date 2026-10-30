@@ -37,12 +37,14 @@ registeredIconCollections()
 // https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
 const isProduction = (import.meta.env.MODE === "production")
 
-async function waitingPrepareApp() {
-  // INFO
+/**
+ * Activer le mocking des requêtes HTTP 
+ * si la variable d'environnement VITE_HTTP_MOCK_REQUEST est définie à '1'
+ */
+async function enableMocking() {
   // permet de mocker les appels IAM ou les requetes de l'entrepot
-  // cf. ./mocks/handlers
   if (import.meta.env.VITE_HTTP_MOCK_REQUEST === '1') {
-    const { worker } = await import('./mocks/browser')
+    const { worker } = await import('./mocks/browser.js')
     return worker.start({
       serviceWorker: {
         url: import.meta.env.BASE_URL + '/mockServiceWorker.js',
@@ -58,6 +60,34 @@ async function waitingPrepareApp() {
     })
   }
   return Promise.resolve()
+}
+
+/**
+ * Initialiser l'application Vue avec les plugins, le routage et l'authentification.
+ * Assure que les mocks HTTP sont activés avant tout appel réseau.
+ */
+async function bootstrap() {
+  // Les mocks doivent être prêts avant les appels HTTP.
+  await enableMocking()
+
+  const authOptions = createAuthOptions();
+  app.use(createAuth(authOptions));
+
+  const services = createServices({ fetcher: createAuthFetch() });
+  app.use(services);
+
+  const auth = useAuth();
+  auth.on('error', (error) => {
+    if (error.code !== 'LOGIN_REQUIRED') {
+      push.warning({ title: 'Connexion', message: 'La connexion est indisponible. Vous pouvez reessayer.' });
+    }
+  });
+  router.beforeEach(createAuthGuard());
+  app.use(router);
+  
+  // Ensure initial route is fully resolved before first render.
+  await router.isReady();
+  app.mount('#app');
 }
 
 const logger = createLogger({
@@ -106,28 +136,6 @@ app.use(bus)
 app.use(eulerian)
 app.use(matomo)
 
-waitingPrepareApp()
-.then(async () => {
-  const authOptions = createAuthOptions();
-  app.use(createAuth(authOptions));
-
-  const services = createServices({ fetcher: createAuthFetch() });
-  app.use(services);
-
-  const auth = useAuth();
-  auth.on('error', (error) => {
-    if (error.code !== 'LOGIN_REQUIRED') {
-      push.warning({ title: 'Connexion', message: 'La connexion est indisponible. Vous pouvez reessayer.' });
-    }
-  });
-  router.beforeEach(createAuthGuard());
-  app.use(router);
-  
-  // Ensure initial route is fully resolved before first render.
-  await router.isReady();
-  app.mount('#app');
-
+bootstrap().catch((error) => {
+  console.error('Application initialization failed', error)
 })
-.catch(() => {
-  console.error('Application initialization failed');
-});
