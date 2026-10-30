@@ -21,7 +21,8 @@ import { createAuthOptions } from './config/authentification-options.js'
 import { createLogger } from 'vue-logger-plugin'
 import { createServices } from './plugins/Services.js'
 import { createBusEvent } from './plugins/BusEvent.js'
-import { initAnalytics } from './features/analytics.js'
+import { createEulerian } from './plugins/Eulerian.js'
+import { createMatomo } from './plugins/Matomo.js'
 
 // library notification
 import { createNotivue, push } from 'notivue'
@@ -81,12 +82,29 @@ const notivue = createNotivue({
 
 const bus = createBusEvent();
 
+const eulerian = createEulerian({
+  verbose : !isProduction, // option du plugin
+  domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
+  site: {
+    environment: isProduction ? "production" : "development",
+    entity: "IGN"
+  }
+})
+
+const matomo = createMatomo({
+  environment: isProduction ? "production" : "development",
+  host: "https://matomo.ign.fr",
+  siteId: "11"
+})
+
 const app = createApp(App);
 app.use(createHead())
 app.use(pinia)
 app.use(logger)
 app.use(notivue)
 app.use(bus)
+app.use(eulerian)
+app.use(matomo)
 
 waitingPrepareApp()
 .then(async () => {
@@ -109,12 +127,6 @@ waitingPrepareApp()
   await router.isReady();
   app.mount('#app');
 
-})
-.then(() => {
-  // une fois l'app initialisée, chargement des analytics
-  initAnalytics().catch((error) => {
-    console.error('Analytics initialization failed', error);
-  });
 })
 .catch(() => {
   console.error('Application initialization failed');
