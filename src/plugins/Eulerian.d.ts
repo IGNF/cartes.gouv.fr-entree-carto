@@ -1,0 +1,27 @@
+import type { App } from 'vue';
+
+export interface EulerianOptions {
+  verbose?: boolean;
+  domain?: string;
+  site?: {
+    environment?: string;
+    entity?: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+export class Eulerian {
+  constructor(options: EulerianOptions);
+  options: EulerianOptions;
+  key: string;
+  status: boolean;
+
+  load(): Promise<void>;
+  start(): void;
+  stop(): void;
+  install(app: App): void;
+}
+
+export function createEulerian(options: EulerianOptions): Eulerian;
+export function useEulerian(): Eulerian | undefined;
