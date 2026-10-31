@@ -123,8 +123,8 @@ const eulerian = createEulerian({
 
 const matomo = createMatomo({
   environment: isProduction ? "production" : "development",
-  host: "https://matomo.ign.fr",
-  siteId: "11"
+  host: import.meta.env.VITE_MATOMO_URL,
+  siteId: import.meta.env.VITE_MATOMO_SITE_ID
 })
 
 const app = createApp(App);
