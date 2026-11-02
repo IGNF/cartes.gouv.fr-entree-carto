@@ -24,6 +24,7 @@
 #### 🐛 [Correction]
 
 - Menu contextuel : le marker d'adresse et coordonnées affiché au clic droit disparait quand on ferme le panel (#1352)
+- Import de couche : l'accès aux informations attributaires est possible sur les couches importées (https://github.com/IGNF/geopf-extensions-openlayers/pull/646)
 
 #### 🔒 [Sécurité]
 
