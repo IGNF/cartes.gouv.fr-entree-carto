@@ -21,8 +21,10 @@ import {
 } from '@/components/carte/control/actions/actionSaveButton';
 
 import { 
-  Drawing,
-  ButtonExport
+  Draw as Drawing,
+  // Drawing,
+  ButtonExport,
+  KML
 } from 'geopf-extensions-openlayers';
 
 import { toShare } from '@/features/share';
@@ -82,6 +84,7 @@ const btnExport = ref(new ButtonExport({
   },
   direction : "column",
   format : formatByDefault,
+  target : drawing.value.getDialog().getFooterContent(),
   icons : {
     menu : "",
     button : "export"
@@ -92,6 +95,7 @@ const btnSave = ref(new ButtonExport({
   kind : "primary",
   download : false,
   name: "Mon croquis",
+  target : drawing.value.getDialog().getFooterContent(),
   description: "",
   control: drawing.value,
   menu: false,
@@ -116,7 +120,8 @@ const btnSave = ref(new ButtonExport({
  */
 emitter.addEventListener("vector:edit:clicked", (e) => {
   if (drawing.value) {
-    drawing.value.setCollapsed(false);
+    // drawing.value.setCollapsed(false);
+    drawing.value.setActive(true);
     drawing.value.setLayer(e.layer);
     btnExport.value.setName(e.options.title || "");
     btnSave.value.setName(e.options.title || "");
@@ -147,7 +152,8 @@ emitter.addEventListener("vector:edit:clicked", (e) => {
  */
 emitter.addEventListener("drawing:open:clicked", (e) => {
   if (drawing.value) {
-    drawing.value.setCollapsed(!e.open);
+    // drawing.value.setCollapsed(!e.open);
+    drawing.value.setActive(e.open);
   }
 });
 
@@ -157,7 +163,8 @@ emitter.addEventListener("drawing:open:clicked", (e) => {
  */
 emitter.addEventListener("drawing:close", () => {
   if (drawing.value) {
-    drawing.value.setCollapsed(true);
+    // drawing.value.setCollapsed(true);
+    drawing.value.setActive(false);
   }
 });
 
@@ -192,7 +199,8 @@ const restoreTemporaryDocument = (payload) => {
     data : payload.content
   }).then((layer) => {
     // restaurer le croquis dans le widget puis l'afficher
-    drawing.value.setCollapsed(false);
+    // drawing.value.setCollapsed(false);
+    drawing.value.setActive(true);
     drawing.value.setLayer(layer);
     btnExport.value.setName(payload.name || "Document restauré");
     btnExport.value.setFormat(payload.format);
@@ -257,7 +265,8 @@ onMounted(() => {
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
-    drawing.value.on("change:collapsed", onToggleShowVector);
+    // drawing.value.on("change:collapsed", onToggleShowVector);
+    drawing.value.on("change:active", onToggleShowVector);
   }
 
   // Fallback: si l'event a ete emis avant le montage du composant,
@@ -285,7 +294,8 @@ onBeforeUpdate(() => {
     /** abonnement au widget */
     btnSave.value.on("button:clicked", onSaveVector);
     btnExport.value.on("button:clicked", onExportVector);
-    drawing.value.on("change:collapsed",onToggleShowVector);
+    // drawing.value.on("change:collapsed",onToggleShowVector);
+    drawing.value.on("change:active", onToggleShowVector);
   }
   else {
     map.removeControl(btnSave.value);
@@ -294,14 +304,19 @@ onBeforeUpdate(() => {
   }
 })
 
-watch(
-  () => props.visibility,
-  (visible) => {
-    if (visible) {
-      emit('ready');
-    }
-  }
-);
+const exportFeatures = () => {
+  const format = new KML({
+    writeStyles : true
+  });
+  const featProj = drawing.value.getLayer().getSource().getProjection() || drawing.value.getMap().getView().getProjection();
+
+  const result = format.writeFeatures(drawing.value.getLayer().getSource().getFeatures(), {
+    dataProjection : "EPSG:4326",
+    featureProjection : featProj
+  });
+
+  return result;
+}
 
 /**
  * Gestionnaire d'evenement 
@@ -311,15 +326,23 @@ watch(
  */
 const onToggleShowVector = (e) => {
   log.debug(e);
-  if (e.target.collapsed) {
+  // if (e.target.collapsed) {
+  if (!e.target.getActive()) {
     if (!isAuthenticated.value) {
+      // saveTemporaryDocument({
+      //   content : drawing.value.exportFeatures(),
+      //   name : drawing.value.getExportName(),
+      //   description : "",
+      //   format : drawing.value.getExportFormat(),
+      //   layer : drawing.value.getLayer(),
+      // });
       saveTemporaryDocument({
-        content : drawing.value.exportFeatures(),
-        name : drawing.value.getExportName(),
-        description : "",
-        format : drawing.value.getExportFormat(),
+        content : exportFeatures(),
+        name : "Croquis",
+        description: "",
+        format : "KML",
         layer : drawing.value.getLayer(),
-      });
+      })
     }
     // dissociation de la couche du widget 
     // pour permettre une autre saisie dans 
@@ -481,6 +504,47 @@ const onExportVector = (e) => {
 
 <style lang="scss">
 @use "@/assets/variables" as *;
+
+.position-container-top-right .gpf-widget-button:nth-child(3) .GPToggleButton {
+  border-radius: 0;
+}
+
+.position-container-top-right > .gpf-widget-button:nth-child(2) ~ .gpf-widget-button:nth-last-child(2) > .GPToggleButton {
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
+div[id^="position-container-"] > div.GPToggleControl {
+  height: 48px;
+  width: 48px;
+  padding: 0;
+
+  > button.GPToggleButton {
+    width: 48px;
+    height: 48px;
+    max-width: unset;
+    max-height: unset;
+
+    &::before {
+      margin-left: 0.25rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  &.gpf-button-no-gutter > button {
+    background-color: var(--background-default-grey);
+    box-shadow: inset 4px 0 var(--background-default-grey), inset -4px 0 var(--background-default-grey), inset 0 3px var(--background-default-grey), inset 0 -3px var(--background-default-grey);
+    transition: background-color 300ms;
+  }
+}
+
+dialog.GPF-dialog[id^=style-dialog] {
+  // z-index: 2;
+
+  @include min(sm) {
+    // left: 4rem;
+    top: 4rem;
+  }
+}
 
 // gp-label-div/gp-styling-div sont les sous-panel de "annoter la carte"
 // positionne au même endroit qu'un panel de gauche

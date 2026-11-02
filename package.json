@@ -55,7 +55,7 @@
     "@panoramax/web-viewer": "^5.3.1",
     "@unhead/vue": "^3.4.2",
     "authentification-vue-oidc": "./modules/authentification-vue-oidc-0.1.0.tgz",
-    "geopf-extensions-openlayers": "file:geopf-extensions-openlayers-1.0.0-beta.16-610.tgz",
+    "geopf-extensions-openlayers": "file:geopf-extensions-openlayers-1.0.0-beta.16-490.tgz",
     "jspdf": "^4.2.1",
     "ol": "^10.5.0",
     "serve": "^14.2.6",
