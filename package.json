@@ -1,9 +1,9 @@
 {
   "name": "cartes.gouv.fr-entree-carto",
   "type": "module",
-  "version": "1.0.22-1",
+  "version": "1.0.23-prerelease-2",
   "description": "Interface cartographique permettant de visualiser et manipuler les données de la Géoplateforme",
-  "date": "21/10/2026",
+  "date": "02/11/2026",
   "directories": {},
   "engines": {
     "node": ">=24.15.0"
@@ -56,7 +56,7 @@
     "@panoramax/web-viewer": "^5.3.1",
     "@unhead/vue": "^3.4.2",
     "authentification-vue-oidc": "./modules/authentification-vue-oidc-0.1.0.tgz",
-    "geopf-extensions-openlayers": "file:geopf-extensions-openlayers-1.0.0-beta.16-610.tgz",
+    "geopf-extensions-openlayers": "file:geopf-extensions-openlayers-1.0.0-beta.16-648.tgz",
     "jspdf": "^4.2.1",
     "ol": "^10.5.0",
     "serve": "^14.2.6",
