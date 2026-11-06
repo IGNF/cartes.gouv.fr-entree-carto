@@ -1,1 +1,0 @@
-export function initAnalytics(): Promise<unknown>;
