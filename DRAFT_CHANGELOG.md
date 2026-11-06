@@ -16,6 +16,7 @@
 
 - Import de données : des flux WMS/WMTS privé peuvent être importés si leur sécurisaton le permet (#1353)
 - Informations attributaires : un marker apparait à l'endroit selectionné (https://github.com/IGNF/geopf-extensions-openlayers/pull/607)
+- Cartalog : amélioration de la recherche (#1348) (https://github.com/IGNF/geopf-extensions-openlayers/pull/657)
 
 #### 🔥 [Obsolète]
 
