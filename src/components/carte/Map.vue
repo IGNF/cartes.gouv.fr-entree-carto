@@ -78,9 +78,12 @@ const map = new Map({
     maxZoom : 21,
     enableRotation: false,
     projection : "EPSG:3857",
-    // Répétition du monde (tuiles) ; coords API normalisées côté geopf + permalien ci-dessous
+    // Répétition du monde (tuiles) ; coords API normalisées côté geopf + permalien ci-dessous.
+    // X libre ; N/S bornés. Centre seul contraint : le bord N/S peut atteindre
+    // le milieu de l'écran (moitié de l'écran occupée par la carte).
     multiWorld: true,
     extent: multiWorldExtent,
+    constrainOnlyCenter: true,
   }),
 })
 

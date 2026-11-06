@@ -16,15 +16,15 @@ import "geopf-extensions-openlayers/css/Dsfr.css";
 import { createApp } from 'vue'
 import { createHead } from '@unhead/vue/client'
 import { createPinia } from 'pinia'
+import { createAuth, createAuthFetch, createAuthGuard, useAuth } from 'authentification-vue-oidc'
+import { createAuthOptions } from './config/authentification-options.js'
 import { createLogger } from 'vue-logger-plugin'
 import { createServices } from './plugins/Services.js'
 import { createBusEvent } from './plugins/BusEvent.js'
 import { initAnalytics } from './features/analytics.js'
 
 // library notification
-import { createNotivue } from 'notivue'
-
-import { storePlugin } from 'pinia-plugin-store'
+import { createNotivue, push } from 'notivue'
 
 import App from './App.vue'
 import router from './router/index'
@@ -48,9 +48,7 @@ async function waitingPrepareApp() {
       },
       onUnhandledRequest(request, print) {
         // Ignore any requests containing in their URL.
-        if (request.url.includes('data.geopf.fr') ||
-          request.url.includes('acwg.cartes.gouv.fr')
-        ) {
+        if (['data.geopf.fr', 'acwg.cartes.gouv.fr'].includes(new URL(request.url).hostname)) {
           return
         }
         // Otherwise, print an unhandled request warning.
@@ -60,11 +58,6 @@ async function waitingPrepareApp() {
   }
   return Promise.resolve()
 }
-
-// INFO
-// on recupere les info de connexion de la session, et les transmettre !
-const storage = localStorage.getItem('service')
-const services = createServices(storage ? JSON.parse(storage).connexion : {})
 
 const logger = createLogger({
   enabled: true,
@@ -88,30 +81,41 @@ const notivue = createNotivue({
 
 const bus = createBusEvent();
 
-// INFO
-// on enregistre les informations de connexion dans le localStorage
-const store = storePlugin({
-  stores: ['service'],
-  storage: localStorage,
-})
-pinia.use(store)
-
 const app = createApp(App);
 app.use(createHead())
 app.use(pinia)
-app.use(router)
 app.use(logger)
 app.use(notivue)
 app.use(bus)
-app.use(services)
 
-waitingPrepareApp().then(async () => {
+waitingPrepareApp()
+.then(async () => {
+  const authOptions = createAuthOptions();
+  app.use(createAuth(authOptions));
+
+  const services = createServices({ fetcher: createAuthFetch() });
+  app.use(services);
+
+  const auth = useAuth();
+  auth.on('error', (error) => {
+    if (error.code !== 'LOGIN_REQUIRED') {
+      push.warning({ title: 'Connexion', message: 'La connexion est indisponible. Vous pouvez reessayer.' });
+    }
+  });
+  router.beforeEach(createAuthGuard());
+  app.use(router);
+  
   // Ensure initial route is fully resolved before first render.
   await router.isReady();
   app.mount('#app');
 
+})
+.then(() => {
   // une fois l'app initialisée, chargement des analytics
   initAnalytics().catch((error) => {
     console.error('Analytics initialization failed', error);
   });
+})
+.catch(() => {
+  console.error('Application initialization failed');
 });

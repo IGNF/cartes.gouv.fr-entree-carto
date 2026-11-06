@@ -396,8 +396,7 @@ export const handlers = {
       // new drawing
       if (keys.map((key) => key.uuid).includes(id)) {
         var store = useServiceStore();
-        var service = store.getService();
-        var drawings = service.documents.drawing;
+        var drawings = store.documents.drawing;
         var resp = drawings.find((e) => e._id === id);
         response = HttpResponse.json(resp);
       }
@@ -530,8 +529,7 @@ export const handlers = {
       console.debug(content);
 
       var store = useServiceStore();
-      var service = store.getService();
-      var drawings = service.documents.drawing;
+      var drawings = store.documents.drawing;
       // mise à jour des clefs déjà utilisées
       drawings.forEach(d => {
         var res = keys.find((e) => e.uuid === d._id);

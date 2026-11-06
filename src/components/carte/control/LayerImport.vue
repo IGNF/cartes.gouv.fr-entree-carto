@@ -13,7 +13,7 @@
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
 import { useAppStore } from '@/stores/appStore';
-import { useServiceStore } from '@/stores/serviceStore';
+import { useAuth } from 'authentification-vue-oidc';
 
 import {
   useCreateDocument
@@ -52,7 +52,7 @@ const emit = defineEmits(['ready']);
 
 const mapStore = useMapStore();
 const appStore = useAppStore();
-const serviceStore = useServiceStore();
+const { isAuthenticated } = useAuth();
 const log = useLogger();
 
 const map = inject(props.mapId);
@@ -227,7 +227,7 @@ const saveImportVector = (e) => {
 const onSaveImportVector = (e) => {
   log.debug(e);
 
-  var bNeedAuthentication = !service.authenticated || (service.authenticated && serviceStore.getAuthentificateSyncNeeded());
+  var bNeedAuthentication = !isAuthenticated.value;
   // on n'est pas connecté, on propose le choix de se connecter ou pas
   if (bNeedAuthentication) {
     // si la case 'Ne plus afficher ce message' est cochée,
@@ -248,7 +248,7 @@ const onSaveImportVector = (e) => {
 const onSaveImportService = (e) => {
   log.debug(e);
   // vérifier si l'utilisateur est authentifié
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     return;
   }
 
@@ -316,7 +316,7 @@ const onSaveImportService = (e) => {
 const onSaveImportMapbox = (e) => {
   log.debug(e);
   // vérifier si l'utilisateur est authentifié
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     return;
   }
 

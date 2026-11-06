@@ -21,10 +21,9 @@
     <!-- INFO
       Message d'information sur la nécessité de se reconnecter 
       pour enregistrer un document temporaire
-      Via la clef/valeur : "authentificateSyncNeeded=1"
     -->
     <Alert
-      v-if="authentificateSyncNeeded"
+      v-if="needsConnection"
       type="warning"
       title="Connexion requise"
       :closed="temporyDocumentClosed"
@@ -62,22 +61,22 @@
 import { useAppStore } from '@/stores/appStore';
 import { useDataStore } from '@/stores/dataStore';
 import { useMapStore} from '@/stores/mapStore';
-import { useServiceStore } from '@/stores/serviceStore';
+import { useAuth } from 'authentification-vue-oidc';
 import { useBaseUrl } from '@/composables/baseUrl';
 import Alert from '@/components/modals/Alert.vue';
 
 let appStore = useAppStore();
 let dataStore = useDataStore();
 let mapStore = useMapStore();
-let serviceStore = useServiceStore();
+const { isAuthenticated } = useAuth();
 
 // Login URL
-let loginUrl = useBaseUrl() + import.meta.env.BASE_URL + 'login';
+let loginUrl = new URL('login', new URL(`${import.meta.env.BASE_URL.replace(/\/$/, '')}/`, location.origin)).href;
 
 // Documents temporaires
 const temporyDocumentClosed = ref(false);
-const authentificateSyncNeeded = computed(() => serviceStore.authentificateSyncNeeded);
-watch(authentificateSyncNeeded, (needAuth) => {
+const needsConnection = computed(() => !isAuthenticated.value && Boolean(appStore.getDocumentTemporary()));
+watch(needsConnection, (needAuth) => {
   if (needAuth) {
     temporyDocumentClosed.value = false;
   }
@@ -87,7 +86,6 @@ const onCloseTemporyDocument = () => {
   // En cas de fermeture de l'alerte, on considère que l'utilisateur
   // ne souhaite pas se reconnecter pour enregistrer le document temporaire.
   temporyDocumentClosed.value = true;
-  serviceStore.setAuthentificateSyncNeeded(false);
   appStore.clearDocumentTemporary();
 };
 

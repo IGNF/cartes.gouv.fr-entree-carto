@@ -16,6 +16,7 @@ import MenuBookMarks from '@/components/menu/MenuBookMarks.vue';
 
 import { useTemplateRef } from 'vue';
 import { inject } from 'vue';
+import { useAuth } from 'authentification-vue-oidc';
 
 import { useDomStore } from '@/stores/domStore';
 
@@ -76,8 +77,7 @@ emitter.addEventListener("leftmenu:close", () => {
   wrapper.value.closeMenu();
 });
 
-var service = inject('services');
-var authenticated = computed(() => service.authenticated);
+const { isAuthenticated: authenticated } = useAuth();
 /**
  * Ouverture du menu des favoris si on est connecté,
  * sinon, on ouvre la modale de connexion

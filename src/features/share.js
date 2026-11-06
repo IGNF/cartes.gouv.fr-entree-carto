@@ -1,4 +1,4 @@
-import { useServiceStore } from '@/stores/serviceStore';
+import Documents from '@/services/ServiceDocuments';
 
 /**
  * @description
@@ -37,8 +37,7 @@ import { useServiceStore } from '@/stores/serviceStore';
  * @returns {String} - URL de partage
  */
 export const toShare = (document, params) => {
-  var store = useServiceStore();
-  var service = store.getService();
+  var service = Documents;
 
   if (!document) {
     console.debug("toShare: Document non défini !");

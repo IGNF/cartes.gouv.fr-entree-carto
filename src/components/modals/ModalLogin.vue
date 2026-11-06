@@ -9,10 +9,13 @@ export default {
 </script>
 
 <script setup lang="js">
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+import { useAuth } from 'authentification-vue-oidc';
+import { push } from 'notivue';
 import { useMapStore } from "@/stores/mapStore";
 
-const router = useRouter();
+const route = useRoute();
+const { login } = useAuth();
 const store = useMapStore();
 
 const title = "Se connecter à cartes.gouv.fr";
@@ -20,10 +23,14 @@ const icon = 'fr-icon-account-fill';
 const actions = [
   {
     label: 'Se connecter',
-    onClick () {
+    async onClick () {
       // on renvoie vers la route de login
       opened.value = false;
-      router.push({ path : '/login' });
+      try {
+        await login({ returnTo: route.fullPath });
+      } catch {
+        push.warning({ title: 'Connexion', message: 'La connexion est indisponible.' });
+      }
     }
   },
   {

@@ -3,6 +3,7 @@ import { useCreateDocument } from '@/components/carte/control/actions/actionSave
 import { useActionEdit } from '@/components/carte/control/actions/actionEditButton';
 
 import { useLogger } from 'vue-logger-plugin';
+import { useAuth } from 'authentification-vue-oidc';
 import { useMapStore } from '@/stores/mapStore';
 import {
   ElevationPath,
@@ -17,6 +18,7 @@ import t from '@/features/translation';
  
 const emitter = inject('emitter');
 var service = inject('services');
+const { isAuthenticated } = useAuth();
 
 const props = defineProps({
   mapId: {
@@ -219,7 +221,7 @@ const TIMEOUT_BUTTON_SAVE_CLICK = 1500; // ms
  */
 const onSaveElevationPath = (e) => {
   log.debug(e);
-  if (!service.authenticated) {
+  if (!isAuthenticated.value) {
     push.warning({
       title: t.auth.title,
       message: t.auth.not_authentificated

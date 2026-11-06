@@ -30,7 +30,6 @@ tests/
 │   │   └── events.spec.js
 │   ├── composables/
 │   │   ├── urlParams.spec.js
-│   │   ├── useAuthentication.spec.js
 │   │   ├── useModals.spec.js
 │   │   ├── controls.spec.js
 │   │   ├── printUtils.spec.js
@@ -42,9 +41,9 @@ tests/
 │   │   ├── serviceStore.spec.js
 │   │   └── domStore.spec.js
 │   └── services/
+│       ├── Authentication.spec.js
+│       ├── Service.spec.js
 │       ├── ServiceDocuments.spec.js
-│       ├── ServiceEncrypt.spec.js
-│       └── ServiceUsers.spec.js
 └── e2e/                      ← tests E2E / rendu (Playwright)
     ├── MainPage.ts            ← Page Object Model
     ├── 01-carte.spec.ts
@@ -165,20 +164,20 @@ Fichiers sources : `src/composables/`
 
 ---
 
-### 1.4 Groupe — Authentification (`composables/`)
+### 1.4 Groupe — Authentification OIDC et documents personnels
 
-Fichier source : `src/composables/useAuthentication.js`
+Fichiers sources : `src/config/authentification-options.js` et `src/services/ServiceSyncDocuments.js`.
 
-#### `useAuthentication.spec.js`
+#### `services/Authentication.spec.js`
 | # | Cas de test | Description |
 |---|-------------|-------------|
-| U-AU-01 | `checkSessionKeyCloak` — session active détectée | `onLogin` appelé, `authenticated = true` |
-| U-AU-02 | `checkSessionKeyCloak` — aucune session | Reste non authentifié |
-| U-AU-03 | `checkSessionKeyCloak` — déjà tenté (flag session) | Ne re-tente pas le check SSO |
-| U-AU-04 | `checkSessionKeyCloak` — exception (mode navigation privée) | Drapeau positionné, aucun crash |
-| U-AU-05 | `IAM_CHECK_SSO_DISABLE=1` | Le check SSO est court-circuité |
-| U-AU-06 | `cleanAutoSSOAttemptedFlag` | Supprime l'entrée sessionStorage |
-| U-AU-07 | Service non injecté | Lève une `Error` explicite |
+| U-AU-01 | Configuration publique | URI sous BASE_URL, aucun secret transmis |
+| U-AU-03 | Session restauree et deconnexion | Documents charges une fois par identite, reponses tardives ignorees |
+| U-AU-04 | Fetch officiel | Bearer courant, FormData et origine autorisee |
+| U-AU-05 | Demontage du composant racine | Watcher arrete, aucun evenement ni notification pour une reponse tardive |
+
+E2E : `tests/e2e/06-authentification.spec.ts`, fournisseur OIDC et API simules
+localement, sans identifiants ni reseau IAM reel.
 
 ---
 
@@ -199,9 +198,9 @@ Fichiers sources : `src/stores/`
 #### `serviceStore.spec.js`
 | # | Cas de test | Description |
 |---|-------------|-------------|
-| U-SS-01 | Persistance dans localStorage via pinia-plugin-store | Vérification de la clé `service` |
-| U-SS-02 | `getService()` retourne le service courant | |
-| U-SS-03 | État `authenticated` à `true` après connexion | |
+| U-SS-01 | Etat du store | Uniquement documents et authentificated, aucune instance/token |
+| U-SS-02 | Deconnexion ou changement de compte | Cache documentaire vide |
+| U-SS-03 | État `authentificated` à `true` après connexion | Miroir de useAuth |
 | U-SS-04 | Documents de l'espace personnel (import, carte, croquis…) | Structure correcte |
 
 #### `appStore.spec.js` / `dataStore.spec.js` / `domStore.spec.js`
@@ -225,11 +224,13 @@ Fichiers sources : `src/services/`
 | U-SD-03 | `setDocuments` — enregistrement d'un document | Payload envoyé conforme |
 | U-SD-04 | `deleteDocument` — suppression nominale | Appel DELETE effectué sur le bon endpoint |
 
-#### `ServiceEncrypt.spec.js`
+#### `Service.spec.js` (migration OIDC)
 | # | Cas de test | Description |
 |---|-------------|-------------|
-| U-SE-01 | Chiffrement d'une chaîne | Résultat différent de l'entrée |
-| U-SE-02 | Déchiffrement — cycle aller-retour | Données originales récupérées |
+| U-SS-01 | Store documentaire | Uniquement documents et authentificated, donnees reactives sans token |
+| U-SD-01 | Fetch injecte | Options et FormData transmis sans logique auth dans Service |
+| U-SD-02 | Reponse tardive | Rejet apres remise a zero du cache |
+| U-SD-03 | Lecture tardive du corps | Rejet si le compte change pendant response.json() |
 
 ---
 
