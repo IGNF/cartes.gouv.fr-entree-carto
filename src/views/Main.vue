@@ -26,6 +26,7 @@ import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
 import { ROUTE_NAMES } from '@/router/routeNames';
+import { mainMap } from '@/composables/keys';
 
 const appStore = useAppStore()
 const domStore = useDomStore()
@@ -33,6 +34,10 @@ const route = useRoute()
 const { theme } = useScheme()
 
 const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
+
+// RGAA 12.7 : lien d'accès rapide au contenu principal (la carte, focusable au clavier)
+const skipLinks = [{ id: mainMap, text: 'Accéder à la carte' }]
+const showSkipLinks = computed(() => route.name === ROUTE_NAMES.MAP && !domStore.isFullscreenPanoramax)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
@@ -86,6 +91,11 @@ onMounted(() => {
 </script>
 
 <template>
+  <DsfrSkipLinks
+    v-if="showSkipLinks"
+    :links="skipLinks"
+  />
+
   <CustomHeader
     v-if="!isEmbedRoute && !domStore.isFullscreenPanoramax"
     class="CustomHeader"
@@ -104,9 +114,9 @@ onMounted(() => {
 
   <Alerts class="Alerts" />
 
-  <div class="futur-map-container Map">
+  <main class="futur-map-container Map">
     <router-view />
-  </div>
+  </main>
 
   <div 
     v-if="!domStore.isFullscreenPanoramax"
@@ -134,9 +144,11 @@ body.modal-open {
 }
 #app {
   display: grid;
-  // on définit 4 lignes (attention, il faut bien 4 enfants dans #app)
+  // on définit 5 lignes (attention, chaque enfant de #app doit être placé sur une ligne)
   // [nom] taille
+  // la ligne skiplinks reste vide tant que le lien d'évitement n'a pas le focus
   grid-template-rows:
+    [skiplinks] auto
     [header] auto
     [alerts] auto
     [map] 1fr
@@ -144,6 +156,9 @@ body.modal-open {
   min-height: 100vh;
 }
 // on place les éléments
+.fr-skiplinks {
+  grid-row: skiplinks;
+}
 .CustomHeader {
   grid-row: header;
 }
