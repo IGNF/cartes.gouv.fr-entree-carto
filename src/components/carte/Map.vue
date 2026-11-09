@@ -20,7 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat, toLonLat, get as getProjection } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -68,7 +68,11 @@ const map = new Map({
     minZoom : 0,
     maxZoom : 21,
     enableRotation: false,
-    projection : "EPSG:3857"
+    projection : "EPSG:3857",
+    extent : getProjection("EPSG:3857").getExtent(),
+    // seul le centre est contraint : on peut sortir de la carte jusqu'à ce que
+    // le bord de l'emprise atteigne le milieu de l'écran (moitié de l'écran occupée par la carte)
+    constrainOnlyCenter : true
   }),
 })
 
