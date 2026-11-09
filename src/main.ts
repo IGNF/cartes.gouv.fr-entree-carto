@@ -74,7 +74,7 @@ const notivue = createNotivue({
   avoidDuplicates: false,
   notifications: {
     global: {
-      duration: 1000000
+      duration: 2000
     },
     info: {
       ariaRole: 'status',
