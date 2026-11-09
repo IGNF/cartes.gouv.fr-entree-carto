@@ -76,6 +76,9 @@ const props = defineProps({
 
 const emit = defineEmits(['ready']);
 
+// instance de la carte OpenLayers (fournie par Map.vue via provide)
+const map = inject(props.mapId);
+
 // INFO
 // liste des contrôles à activer
 // Ex.
@@ -117,6 +120,11 @@ const searchEngineOptions = computed(() => {
     collapsed: false,
     collapsible: false,
     returnTrueGeometry: true,
+    coordinateDetection : {
+      zoom : function () {
+        return map.getView().getZoom();
+      }
+    },
     autocompleteOptions : {
       serviceOptions : {
           maximumResponses : 10,
