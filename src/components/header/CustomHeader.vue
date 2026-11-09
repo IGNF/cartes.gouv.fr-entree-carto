@@ -54,6 +54,7 @@ headerParams.value.quickLinks = [
     :logo-text="domStore.isHeaderCompact ? [] : headerParams.logoText"
     :quick-links="headerParams.quickLinks"
     :operator-img-src="operatorImgSrc"
+    operator-img-alt="Logo de cartes.gouv"
     :language-selector="headerParams.languageSelector"
     :class="{ 'fr-header--compact': domStore.isHeaderCompact }"
   >
