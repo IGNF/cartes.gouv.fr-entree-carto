@@ -110,7 +110,7 @@ export class PluginMatomo {
       'trackEvent',
       category,
       action,
-      ...(name !== undefined ? [name] : []),
+      ...(name !== undefined || value !== undefined ? [name ?? ''] : []),
       ...(value !== undefined ? [value] : []),
     ])
   }
