@@ -1,0 +1,2 @@
+import{C as t,k as n,o as s,c as a,bB as c,I as r}from"./index-D8Mpf9xz.js";const u={role:"status"},d={__name:"Logout",setup(i){const e=c(),{logout:o}=t();return n(async()=>{try{await o()}catch{r.warning({title:"Connexion",message:"La deconnexion du serveur est indisponible."}),await e.replace("/")}}),(p,_)=>(s(),a("span",u,"Déconnexion en cours..."))}};export{d as default};
+//# sourceMappingURL=Logout-B7Nxf7pP.js.map
