@@ -116,13 +116,13 @@ const eulerian = createEulerian({
   verbose : !isProduction, // option du plugin
   domain: "acwg.cartes.gouv.fr", // OBLIGATOIRE :domaine de tracking Eulerian 
   site: {
-    environment: isProduction ? "production" : "development",
+    environment: import.meta.env.VITE_GPF_CONTEXT === 'production' ? 'production' : 'development',
     entity: "IGN"
   }
 })
 
 const matomo = createMatomo({
-  environment: isProduction ? "production" : "development",
+  environment: import.meta.env.VITE_GPF_CONTEXT === 'production' ? 'production' : 'development',
   host: import.meta.env.VITE_MATOMO_URL || 'https://matomo.ign.fr',
   siteId: import.meta.env.VITE_MATOMO_SITE_ID || '11'
 })
