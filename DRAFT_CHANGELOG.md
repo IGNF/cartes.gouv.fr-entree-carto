@@ -12,6 +12,8 @@
 
 #### ✨ [Ajout]
 
+- Recherche : possibilité de rechercher des coordonnées directement dans la barre de recherche simple (#1368)
+
 #### 🔨 [Evolution]
 
 - Import de données : des flux WMS/WMTS privé peuvent être importés si leur sécurisaton le permet (#1353)
