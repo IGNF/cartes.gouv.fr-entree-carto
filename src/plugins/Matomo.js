@@ -30,7 +30,7 @@ export class PluginMatomo {
   */
   constructor(options) {
     this.options = options;
-    this.initAnalytics()
+    router.isReady().then(() => this.initAnalytics())
     .then(() => {
       console.log('Analytics initialized successfully', options);
     })
