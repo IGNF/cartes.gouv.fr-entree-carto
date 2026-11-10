@@ -75,6 +75,18 @@ const notivue = createNotivue({
   notifications: {
     global: {
       duration: 2000
+    },
+    info: {
+      ariaRole: 'status',
+    },
+    success: {
+      ariaRole: 'status',
+    },
+    error: {
+      ariaRole: 'alert',
+    },
+    warning: {
+      ariaRole: 'alert',
     }
   }
 })
