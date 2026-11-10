@@ -35,12 +35,19 @@ const { theme } = useScheme()
 
 const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
-// RGAA 12.7 : lien d'accès rapide au contenu principal (la carte, focusable au clavier)
-const skipLinks = [{ id: mainMap, text: 'Accéder à la carte' }]
-const showSkipLinks = computed(() => route.name === ROUTE_NAMES.MAP && !domStore.isFullscreenPanoramax)
-
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
+
+// RGAA 12.7 : liens d'accès rapide
+// - mobile : menu et pied de page sont dans la modale du header, ouverte par le bouton #button-menu (vue-dsfr)
+// - desktop : #aide-button est le bouton du 1er menu du header (id issu du titre, cf. CustomNavigationMenu.vue)
+const skipLinks = computed(() => [
+  { id: mainMap, text: 'Contenu principal' },
+  { id: mobileScreen?.value ? 'button-menu' : 'aide-button', text: 'Navigation principale' },
+  ...(domStore.searchInputId ? [{ id: domStore.searchInputId, text: 'Rechercher' }] : []),
+  ...(mobileScreen?.value ? [] : [{ id: 'footer', text: 'Pied de page' }]),
+])
+const showSkipLinks = computed(() => route.name === ROUTE_NAMES.MAP && !domStore.isFullscreenPanoramax)
 
 // customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
