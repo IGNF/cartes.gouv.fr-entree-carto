@@ -9,8 +9,6 @@ import WMTS from 'ol/source/WMTS';
 import TileWMSSource from "ol/source/TileWMS";
 import WMTSTileGrid from 'ol/tilegrid/WMTS';
 
-import { get as getProjection } from 'ol/proj';
-
 // ol-mapbox-style
 import { applyStyle } from 'ol-mapbox-style';
 import VectorTileLayer from "ol/layer/VectorTile";
@@ -461,6 +459,7 @@ const createServiceLayer = async (options) => {
         tileGrid: tileGrid,
         style: options.data.styleName,
         attributions: '',
+        wrapX: true,
       });
       
       if (!sourceWMTS) {
@@ -491,7 +490,8 @@ const createServiceLayer = async (options) => {
           "STYLES": options.data.stylesName // array ?
         },
         projection : options.data.projection || 'EPSG:3857',
-        attributions: ''
+        attributions: '',
+        wrapX: true,
       });
       
       if (!sourceTileWMS) {
@@ -522,12 +522,9 @@ const createServiceLayer = async (options) => {
       throw new Error(t.ol.failed_source("service non reconnu"));
     }
     
-    // extent par defaut
-    if (tileLayer && !tileLayer.getExtent()) {
-      const projection = getProjection('EPSG:3857');
-      tileLayer.setExtent(projection.getExtent());
-    }
-    
+    // multiWorld : ne pas clipper à une seule emprise monde
+    // (l'ancien setExtent(projection.getExtent()) empêchait le wrap)
+
     // id
     if (tileLayer) {
       tileLayer.gpResultLayerId = "bookmark:" +  options.kind.toLowerCase() + ":" + options.id;

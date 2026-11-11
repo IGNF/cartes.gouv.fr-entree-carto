@@ -20,7 +20,7 @@ import {
 import {
     shiftKeyOnly as eventShiftKeyOnly
 } from "ol/events/condition";
-import { fromLonLat, toLonLat, get as getProjection } from "ol/proj";
+import { fromLonLat, get as getProjection, toLonLat } from "ol/proj";
 
 import { useMapStore } from "@/stores/mapStore"
 import { mainMap } from "@/composables/keys"
@@ -49,6 +49,15 @@ const props = defineProps({
 */
 const mapRef = ref(null)
 
+// multiWorld : X libre pour répétition du monde ; N/S bornés (évite le vide polaire)
+const worldExtent = getProjection("EPSG:3857").getExtent();
+const multiWorldExtent = [-Infinity, worldExtent[1], Infinity, worldExtent[3]];
+
+/** Longitude dans [-180, 180] pour permalien / store */
+function wrapLongitude (lon) {
+  return ((((lon + 180) % 360) + 360) % 360) - 180;
+}
+
 /**
 * Map
 * default controls are removed (rotate, zoom and attributions)
@@ -69,10 +78,12 @@ const map = new Map({
     maxZoom : 21,
     enableRotation: false,
     projection : "EPSG:3857",
-    extent : getProjection("EPSG:3857").getExtent(),
-    // seul le centre est contraint : on peut sortir de la carte jusqu'à ce que
-    // le bord de l'emprise atteigne le milieu de l'écran (moitié de l'écran occupée par la carte)
-    constrainOnlyCenter : true
+    // Répétition du monde (tuiles) ; coords API normalisées côté geopf + permalien ci-dessous.
+    // X libre ; N/S bornés. Centre seul contraint : le bord N/S peut atteindre
+    // le milieu de l'écran (moitié de l'écran occupée par la carte).
+    multiWorld: true,
+    extent: multiWorldExtent,
+    constrainOnlyCenter: true,
   }),
 })
 
@@ -128,7 +139,7 @@ map.on("moveend", () => {
   mapStore.y = center[1];
 
   var coordinate = toLonLat(center);
-  mapStore.lon = coordinate[0];
+  mapStore.lon = wrapLongitude(coordinate[0]);
   mapStore.lat = coordinate[1];
 
   mapStore.zoom = view.getZoom();

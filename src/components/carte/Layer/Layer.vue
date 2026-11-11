@@ -173,7 +173,8 @@ onMounted(() => {
           visible : props.layerOptions.visible,
           opacity : props.layerOptions.opacity,
           grayscale : props.layerOptions.grayscale,
-          sourceParams : {crossOrigin : 'anonymous'},
+          // multiWorld : wrapX ; emprise catalogue gérée côté geopf (filtre tuiles)
+          sourceParams : {crossOrigin : 'anonymous', wrapX : true},
           permalink : props.layerOptions.permalink || false
         };
         
