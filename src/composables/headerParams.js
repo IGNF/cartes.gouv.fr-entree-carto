@@ -63,11 +63,24 @@ export function useHeaderParams() {
                   to: useBaseUrl() + '/publier-une-donnee',
                   icon: "fr-icon-database-line"
               },
-              // {
-              //     text: "Créer une carte",
-              //     to: useBaseUrl() + '/creer-une-carte',
-              //     icon: "ri-brush-line"
-              // },
+              {
+                  text: "Créer une carte",
+                  to: useBaseUrl() + '/creer-une-carte/',
+                  icon: "fr-icon-brush-line",
+                  badge: "Bêta"
+              },
+              {
+                  text: "Extraire une donnée",
+                  to: useBaseUrl() + '/extraire-une-donnee/',
+                  icon: "fr-icon-capslock-line",
+                  badge: "Bêta"
+              },
+              {
+                  text: "Contribuer aux données",
+                  to: useBaseUrl() + '/contribuer-aux-donnees/',
+                  icon: "fr-icon-message-2-line",
+                  badge: "Bêta"
+              },
               {
                   text: "Découvrir cartes.gouv.fr ",
                   to: useBaseUrl() + '/decouvrir',
