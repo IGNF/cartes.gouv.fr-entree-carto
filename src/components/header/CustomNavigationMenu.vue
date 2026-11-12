@@ -175,6 +175,10 @@ onBeforeUnmount(() => {
             >
               <!-- <VIcon :name="link.icon" size="1.5rem" class="fr-icon--grey-800" /> -->
               {{ link.text }}
+              <span
+                v-if="link.badge"
+                class="fr-badge fr-badge--sm fr-badge--green-emeraude fr-ml-1w"
+              >{{ link.badge }}</span>
             </a>
           </DsfrNavigationMenuItem>
           <DsfrNavigationMenuItem v-if="menu.connexionMenu">
