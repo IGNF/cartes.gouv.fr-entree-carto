@@ -72,7 +72,7 @@ export function useHeaderParams() {
               {
                   text: "Extraire une donnée",
                   to: useBaseUrl() + '/extraire-une-donnee/',
-                  icon: "fr-icon-capslock-line",
+                  icon: "gpf:extraction",
                   badge: "Bêta"
               },
               {
