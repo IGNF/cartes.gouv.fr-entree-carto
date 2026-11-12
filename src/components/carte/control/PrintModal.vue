@@ -19,6 +19,8 @@ from './printUtils/helper.js';
 import { injectDpiInPng } from './printUtils/png.js';
 import { renderMapCanvasForExport } from './printUtils/mapExport.js';
 
+import { getPointResolution, toLonLat } from 'ol/proj';
+
 import { jsPDF } from "jspdf";
 
 const mapStore = useMapStore();
@@ -71,7 +73,35 @@ const onModalPrintOpen = () => {
 const onModalPrintClose = () => {
   isExportInProgress.value = false;
   printModalOpened.value = false;
+  // À la fermeture, on remet l'échelle par défaut (échelle actuelle de la carte)
+  resetScaleSelection();
+  // et on réinitialise la preview en resynchronisant le store
+  // sur la vue de la carte principale (la preview met à jour le store sur 'moveend')
+  resetPreviewView();
   mapStore.getMap().renderSync();
+};
+
+/**
+ * Réinitialise l'état de la preview.
+ * La carte de prévisualisation met à jour le store (x/y/lon/lat/zoom) sur 'moveend' ;
+ * comme la preview est recréée à l'ouverture avec mapStore.center/zoom, on resynchronise
+ * le store depuis la vue de la carte principale (qui n'a pas bougé).
+ */
+const resetPreviewView = () => {
+  const map = mapStore.getMap();
+  if (!map) {
+    return;
+  }
+  const view = map.getView();
+  const center = view.getCenter();
+  if (center) {
+    mapStore.x = center[0];
+    mapStore.y = center[1];
+    const [lon, lat] = toLonLat(center);
+    mapStore.lon = lon;
+    mapStore.lat = lat;
+  }
+  mapStore.zoom = view.getZoom();
 };
 
 // INFO
@@ -113,6 +143,7 @@ const MAX_HIGH_DPI_PAPER_AREA = 250 * 353; // B4 (250mm x 353mm)
  *  {String} printTitle - Titre de la carte
  *  {String} pageOrientation - Orientation du papier
  *  {Number} margin - marge en mm 
+ *  {String} scale - Échelle d'impression ('' = échelle courante, 'custom' = saisie libre, sinon dénominateur)
  *  {String} paperFormat - Format standard de papier
  *  {Number} dpi - Résolution d'impression en DPI
  *  {String} format - Format d'export de la carte (PDF, PNG, JPEG)
@@ -125,6 +156,7 @@ const defaultPrintFormState = {
   printTitle: 'Ma carte',
   pageOrientation: 'portrait',
   margin: 5,
+  scale: '',
   paperFormat: 'A4',
   dpi: 96,
   format: 'PNG',
@@ -140,6 +172,7 @@ const allowedPrintOptionKeys = [
   'printTitle',
   'pageOrientation',
   'margin',
+  'scale',
   'paperFormat',
   'dpi',
   'format',
@@ -251,6 +284,111 @@ const paperDimension = computed(() => {
   }
   return paperFormats.A4;
 });
+
+/*************************************************************************
+ * Gestion de l'échelle d'impression
+ *  - standardScales : dénominateurs d'échelles standards pour le menu déroulant
+ *  - scaleOptions : options du menu déroulant des échelles
+ *  - customScaleInput : saisie libre de l'utilisateur (ex : 1/25000)
+ *  - parseScaleDenominator : extrait le dénominateur d'une saisie libre
+ *  - selectedScaleDenominator : dénominateur de l'échelle demandée (null si aucune)
+ *  - applyScaleToPreview : met la carte de prévisualisation à l'échelle demandée
+ **************************************************************************/
+
+const CUSTOM_SCALE_VALUE = 'custom';
+
+const standardScales = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
+
+const scaleOptions = [
+  { value: '', text: 'Échelle actuelle de la carte' },
+  ...standardScales.map((denominator) => ({
+    value: String(denominator),
+    text: `1 / ${denominator.toLocaleString('fr-FR')}`,
+  })),
+  { value: CUSTOM_SCALE_VALUE, text: 'Échelle personnalisée (saisie libre)' },
+];
+
+const customScaleInput = ref('');
+
+/**
+ * Extrait le dénominateur d'une échelle saisie librement
+ * Formats acceptés : "25000", "1/25000", "1:25000", "1 / 25 000"
+ * @param {string} value - Saisie utilisateur
+ * @returns {number|null} Dénominateur de l'échelle ou null si invalide
+ */
+const parseScaleDenominator = (value) => {
+  if (!value) {
+    return null;
+  }
+  const raw = String(value).replace(/[\s\u00a0\u202f]/g, '');
+  const match = raw.match(/^(?:1[/:])?(\d+(?:[.,]\d+)?)e?$/i);
+  if (!match) {
+    return null;
+  }
+  const denominator = Number(match[1].replace(',', '.'));
+  return Number.isFinite(denominator) && denominator > 0 ? denominator : null;
+};
+
+/**
+ * Dénominateur de l'échelle demandée
+ * (null si échelle courante ou saisie invalide)
+ */
+const selectedScaleDenominator = computed(() => {
+  if (printFormState.scale === CUSTOM_SCALE_VALUE) {
+    return parseScaleDenominator(customScaleInput.value);
+  }
+  const denominator = Number(printFormState.scale);
+  return Number.isFinite(denominator) && denominator > 0 ? denominator : null;
+});
+
+/**
+ * Indique si la saisie libre de l'échelle est invalide
+ */
+const isCustomScaleInvalid = computed(() => {
+  return printFormState.scale === CUSTOM_SCALE_VALUE
+    && customScaleInput.value.trim() !== ''
+    && parseScaleDenominator(customScaleInput.value) === null;
+});
+
+/**
+ * Met la carte de prévisualisation à l'échelle demandée.
+ * 1 pixel du canvas de la preview correspond à COEFF_PX2MM mm sur le papier :
+ * la résolution terrain visée (m/px) vaut donc denominateur * COEFF_PX2MM / 1000,
+ * corrigée de la déformation de la projection au centre de la carte.
+ */
+const applyScaleToPreview = () => {
+  const denominator = selectedScaleDenominator.value;
+  const map = refPreviewMap.value?.map;
+  if (!denominator || !map) {
+    return;
+  }
+  const view = map.getView();
+  const center = view.getCenter();
+  if (!center) {
+    return;
+  }
+  const targetPointResolution = (denominator * COEFF_PX2MM) / 1000;
+  const pointResolutionFactor = getPointResolution(view.getProjection(), 1, center, 'm');
+  view.setResolution(targetPointResolution / pointResolutionFactor);
+};
+
+/**
+ * Remet la sélection d'échelle à sa valeur par défaut
+ * (échelle actuelle de la carte) et vide la saisie libre
+ */
+const resetScaleSelection = () => {
+  printFormState.scale = defaultPrintFormState.scale;
+  customScaleInput.value = '';
+};
+
+// Surveille l'échelle demandée et la disponibilité de la carte de prévisualisation
+// pour appliquer l'échelle à la preview
+watch(
+  () => [selectedScaleDenominator.value, refPreviewMap.value?.map],
+  () => {
+    applyScaleToPreview();
+  },
+);
 
 /*************************************************************************
  * Gestion des dimensions du DOM pour le calcul de la taille de la carte à imprimer
@@ -616,6 +754,9 @@ const onClickExportMap = async () => {
 
   isExportInProgress.value = true;
   try {
+    // Garantit que l'export respecte l'échelle demandée
+    // même si l'utilisateur a zoomé sur la preview entre temps
+    applyScaleToPreview();
     if (printFormState.format === 'PDF') {
       await exportPDF();
       return;
@@ -723,6 +864,27 @@ const scaleLineOptions = {
             { value : 10, text : 'Grosse marge - 10mm' }
           ]"
         />
+        <DsfrSelect
+          v-model="printFormState.scale"
+          label="Échelle"
+          :options="scaleOptions"
+        />
+        <template v-if="printFormState.scale === CUSTOM_SCALE_VALUE">
+          <DsfrInput
+            v-model="customScaleInput"
+            label="Échelle personnalisée"
+            label-visible
+            hint="Ex : 1/25000 ou 25000"
+            name="echelle-personnalisee"
+            class="mb-10"
+          />
+          <p
+            v-if="isCustomScaleInvalid"
+            class="fr-error-text"
+          >
+            Échelle invalide. Saisissez par exemple 1/25000.
+          </p>
+        </template>
         <DsfrInput
           v-model="printFormState.printTitle"
           :disabled="!printFormState.hasTitle"
