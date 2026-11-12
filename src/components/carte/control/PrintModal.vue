@@ -356,6 +356,10 @@ const isCustomScaleInvalid = computed(() => {
  * la résolution terrain visée (m/px) vaut donc denominateur * COEFF_PX2MM / 1000,
  * corrigée de la déformation de la projection au centre de la carte.
  */
+// Indique qu'un changement de résolution de la preview est d'origine
+// programmatique (application de l'échelle) et non utilisateur
+let isApplyingScale = false;
+
 const applyScaleToPreview = () => {
   const denominator = selectedScaleDenominator.value;
   const map = refPreviewMap.value?.map;
@@ -369,7 +373,12 @@ const applyScaleToPreview = () => {
   }
   const targetPointResolution = (denominator * COEFF_PX2MM) / 1000;
   const pointResolutionFactor = getPointResolution(view.getProjection(), 1, center, 'm');
-  view.setResolution(targetPointResolution / pointResolutionFactor);
+  isApplyingScale = true;
+  try {
+    view.setResolution(targetPointResolution / pointResolutionFactor);
+  } finally {
+    isApplyingScale = false;
+  }
 };
 
 /**
@@ -380,6 +389,37 @@ const resetScaleSelection = () => {
   printFormState.scale = defaultPrintFormState.scale;
   customScaleInput.value = '';
 };
+
+/**
+ * Si l'utilisateur zoome manuellement sur la preview alors qu'une échelle
+ * est sélectionnée, celle-ci n'est plus respectée : on rebascule le menu
+ * sur "Échelle actuelle de la carte".
+ * (Les changements de résolution programmatiques - application de l'échelle,
+ * export - sont ignorés.)
+ */
+const onPreviewResolutionChange = () => {
+  if (isApplyingScale || isExportInProgress.value) {
+    return;
+  }
+  if (selectedScaleDenominator.value === null) {
+    return;
+  }
+  resetScaleSelection();
+};
+
+// Abonne/désabonne le détecteur de zoom utilisateur sur la vue de la preview
+// (la carte de prévisualisation est recréée à chaque ouverture de la modale)
+watch(
+  () => refPreviewMap.value?.map,
+  (map, oldMap) => {
+    if (oldMap) {
+      oldMap.getView().un('change:resolution', onPreviewResolutionChange);
+    }
+    if (map) {
+      map.getView().on('change:resolution', onPreviewResolutionChange);
+    }
+  },
+);
 
 // Surveille l'échelle demandée et la disponibilité de la carte de prévisualisation
 // pour appliquer l'échelle à la preview
@@ -856,15 +896,6 @@ const scaleLineOptions = {
           :options="paperFormatOptions"
         />
         <DsfrSelect
-          v-model.number="printFormState.margin"
-          label="Marge"
-          :options="[
-            { value : 0, text : 'Pas de marge - 0mm' },
-            { value : 5, text : 'Petite marge - 5mm' },
-            { value : 10, text : 'Grosse marge - 10mm' }
-          ]"
-        />
-        <DsfrSelect
           v-model="printFormState.scale"
           label="Échelle"
           :options="scaleOptions"
@@ -885,6 +916,15 @@ const scaleLineOptions = {
             Échelle invalide. Saisissez par exemple 1/25000.
           </p>
         </template>
+        <DsfrSelect
+          v-model.number="printFormState.margin"
+          label="Marge"
+          :options="[
+            { value : 0, text : 'Pas de marge - 0mm' },
+            { value : 5, text : 'Petite marge - 5mm' },
+            { value : 10, text : 'Grosse marge - 10mm' }
+          ]"
+        />
         <DsfrInput
           v-model="printFormState.printTitle"
           :disabled="!printFormState.hasTitle"
