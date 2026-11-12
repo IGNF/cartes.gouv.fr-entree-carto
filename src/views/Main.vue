@@ -26,6 +26,7 @@ import { useAppStore } from "@/stores/appStore";
 import { useDomStore } from "@/stores/domStore";
 import { useRoute } from 'vue-router';
 import { ROUTE_NAMES } from '@/router/routeNames';
+import { mainMap } from '@/composables/keys';
 
 const appStore = useAppStore()
 const domStore = useDomStore()
@@ -36,6 +37,17 @@ const isEmbedRoute = computed(() => route.name === ROUTE_NAMES.EMBED)
 
 // paramètres de mediaQuery pour affichage HEADER et FOOTER
 const mobileScreen = useMatchMedia('LG')
+
+// RGAA 12.7 : liens d'accès rapide
+// - mobile : menu et pied de page sont dans la modale du header, ouverte par le bouton #button-menu (vue-dsfr)
+// - desktop : #aide-button est le bouton du 1er menu du header (id issu du titre, cf. CustomNavigationMenu.vue)
+const skipLinks = computed(() => [
+  { id: mainMap, text: 'Contenu principal' },
+  { id: mobileScreen?.value ? 'button-menu' : 'aide-button', text: 'Navigation principale' },
+  ...(domStore.searchInputId ? [{ id: domStore.searchInputId, text: 'Rechercher' }] : []),
+  ...(mobileScreen?.value ? [] : [{ id: 'footer', text: 'Pied de page' }]),
+])
+const showSkipLinks = computed(() => route.name === ROUTE_NAMES.MAP && !domStore.isFullscreenPanoramax)
 
 // customisation des icons dsfr pour les notifications
 const myNotificationsIcons = {
@@ -86,6 +98,11 @@ onMounted(() => {
 </script>
 
 <template>
+  <DsfrSkipLinks
+    v-if="showSkipLinks"
+    :links="skipLinks"
+  />
+
   <CustomHeader
     v-if="!isEmbedRoute && !domStore.isFullscreenPanoramax"
     class="CustomHeader"
@@ -104,9 +121,9 @@ onMounted(() => {
 
   <Alerts class="Alerts" />
 
-  <div class="futur-map-container Map">
+  <main class="futur-map-container Map">
     <router-view />
-  </div>
+  </main>
 
   <div 
     v-if="!domStore.isFullscreenPanoramax"
@@ -134,9 +151,11 @@ body.modal-open {
 }
 #app {
   display: grid;
-  // on définit 4 lignes (attention, il faut bien 4 enfants dans #app)
+  // on définit 5 lignes (attention, chaque enfant de #app doit être placé sur une ligne)
   // [nom] taille
+  // la ligne skiplinks reste vide tant que le lien d'évitement n'a pas le focus
   grid-template-rows:
+    [skiplinks] auto
     [header] auto
     [alerts] auto
     [map] 1fr
@@ -144,6 +163,9 @@ body.modal-open {
   min-height: 100vh;
 }
 // on place les éléments
+.fr-skiplinks {
+  grid-row: skiplinks;
+}
 .CustomHeader {
   grid-row: header;
 }
