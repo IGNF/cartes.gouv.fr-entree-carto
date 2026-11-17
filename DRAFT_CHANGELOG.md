@@ -32,6 +32,7 @@
 - Itinéraire/Isochrone : utilisation de la ressource bdtopo-valhalla pour tous les cas d'utilisation itinéraire/isochrone (#1365)
 - Légendes : ajout description/alt pour image des légendes (RGAA) (#1276)
 - Navigation : ajout de liens d'évitement (contenu principal, navigation, recherche, pied de page) et d'une zone de contenu principal `<main>` (RGAA) (#1256)
+- Remontées d'anomalie : transmission des couches ajoutées à la carte au service d'anomalie (#1379)
 
 #### 🔒 [Sécurité]
 

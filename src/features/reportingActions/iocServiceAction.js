@@ -104,6 +104,11 @@ class MyServiceAction {
         const mapStore = useMapStore();
         let mapZoom = Math.round(mapStore.getMap().getView().getZoom());
 
+        // couches visibles de la carte, au format du permalien
+        // ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;0.5;1;0)
+        let layers = mapStore.layers.split(",")
+            .filter((layer) => mapStore.getLayerProperty(layer.replace(/\(.*\)/, "")).visible);
+
         let anomaly = {
             anomaly: {
                 name: layername,
@@ -118,6 +123,7 @@ class MyServiceAction {
                 layername: layername,
                 name: layername,
             },
+            layers: layers,
             geocaptchaToken: data.geocaptchaToken,
         };
 
