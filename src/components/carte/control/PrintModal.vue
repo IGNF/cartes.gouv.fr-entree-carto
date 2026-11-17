@@ -300,7 +300,6 @@ const CUSTOM_SCALE_VALUE = 'custom';
 const standardScales = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
 
 const scaleOptions = [
-  { value: '', text: 'Échelle actuelle de la carte' },
   ...standardScales.map((denominator) => ({
     value: String(denominator),
     text: `1 / ${denominator.toLocaleString('fr-FR')}`,
@@ -898,6 +897,7 @@ const scaleLineOptions = {
         <DsfrSelect
           v-model="printFormState.scale"
           label="Échelle"
+          default-unselected-text="Échelle de la prévisualisation"
           :options="scaleOptions"
         />
         <template v-if="printFormState.scale === CUSTOM_SCALE_VALUE">
