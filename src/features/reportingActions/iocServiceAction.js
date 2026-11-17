@@ -104,6 +104,16 @@ class MyServiceAction {
         const mapStore = useMapStore();
         let mapZoom = Math.round(mapStore.getMap().getView().getZoom());
 
+        // couches visibles de la carte, au format du permalien
+        // ex. ORTHOIMAGERY.ORTHOPHOTOS$GEOPORTAIL:OGC:WMTS(1;0.5;1;0)
+        // triées par position (ordre d'affichage)
+        let layers = mapStore.layers.split(",")
+            .filter((layer) => layer !== "")
+            .map((layer) => ({ layer, props : mapStore.getLayerProperty(layer.replace(/\(.*\)/, "")) }))
+            .filter(({ props }) => props.visible)
+            .sort((a, b) => a.props.position - b.props.position)
+            .map(({ layer }) => layer);
+
         let anomaly = {
             anomaly: {
                 name: layername,
@@ -118,6 +128,7 @@ class MyServiceAction {
                 layername: layername,
                 name: layername,
             },
+            layers: layers,
             geocaptchaToken: data.geocaptchaToken,
         };
 
