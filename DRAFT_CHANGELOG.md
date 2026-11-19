@@ -38,4 +38,5 @@
 #### 🔒 [Sécurité]
 
 - Authentification sécurisée (#1354)
-
+- Mise à jour version nginx (#1381)
+- Mise à jour version viteJs (#1382)
