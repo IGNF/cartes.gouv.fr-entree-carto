@@ -50,7 +50,7 @@ RUN /app/generate-env-template.sh
 #----------------------------------------------------------------------
 # cartesgouvfr-entree_carto : Config d'un serveur statique avec nginx
 #----------------------------------------------------------------------
-FROM nginx/nginx-unprivileged:1.31.9-alpine
+FROM nginx/nginx-unprivileged:1.31-alpine
 
 # Utilisateur par défaut pour nginx
 ARG USER_ENV=nginx
