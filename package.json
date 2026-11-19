@@ -101,7 +101,7 @@
     "universal-base64url": "^1.1.0",
     "unplugin-auto-import": "^19.1.2",
     "unplugin-vue-components": "^32.1.0",
-    "vite": "^6.2.6",
+    "vite": "^6.4.6",
     "vite-plugin-compression2": "^2.4.0",
     "vite-plugin-env-runtime": "./modules/vite-plugin-env-runtime-0.3.6.tgz",
     "vite-plugin-purgecss-updated-v5": "1.2.6",
