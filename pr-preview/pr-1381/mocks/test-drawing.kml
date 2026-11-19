@@ -1,0 +1,21 @@
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd">
+	<ExtendedData>
+		<Data name="geoportail:compute">{}</Data>
+		<Data name="description">"export"</Data>
+	</ExtendedData>
+	<Placemark>
+		<name>Ceci est un croquis de test pour la création</name>
+		<Style>
+			<LabelStyle>
+				<color>ff0202f7</color>
+				<LabelStyleSimpleExtensionGroup fontSize="16px" fontFamily="sans" haloColor="ffffffff" haloRadius="10" haloOpacity="1"/>
+			</LabelStyle>
+		</Style>
+		<ExtendedData>
+			<Data name="measure"/>
+		</ExtendedData>
+		<Point>
+			<coordinates>2.426551098425293,48.843832344997196</coordinates>
+		</Point>
+	</Placemark>
+</kml>
