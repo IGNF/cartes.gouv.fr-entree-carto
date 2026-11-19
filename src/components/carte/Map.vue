@@ -194,4 +194,8 @@ defineExpose({
 #mainMap {
   outline : none;
 }
+#mainMap:focus-visible {
+  outline: 3px solid #0a76f6;
+  outline-offset: -3px;
+}
 </style>

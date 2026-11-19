@@ -25,6 +25,8 @@ export const useDomStore = defineStore('dom', () => {
   var isShareDisabled = ref(false);
   var isPrintDisabled = ref(false);
   let isFullscreenPanoramax = ref(false);
+  // id du champ de la barre de recherche (cible du lien d'évitement "Rechercher")
+  let searchInputId = ref();
 
   function getBookmarksButton () {
     return BookmarksButton.value;
@@ -89,6 +91,7 @@ export const useDomStore = defineStore('dom', () => {
   return {
     isHeaderCompact,
     isFullscreenPanoramax,
+    searchInputId,
     menuCatalogueButton,
     leftControlMenu,
     rightControlMenu,

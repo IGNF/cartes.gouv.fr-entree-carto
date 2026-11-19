@@ -2,6 +2,7 @@
 
 import { useLogger } from 'vue-logger-plugin';
 import { useMapStore } from '@/stores/mapStore';
+import { useDomStore } from '@/stores/domStore';
 
 import { shallowRef } from 'vue';
 
@@ -32,6 +33,7 @@ const emit = defineEmits(['ready']);
 
 const log = useLogger();
 const mapStore = useMapStore();
+const domStore = useDomStore();
 
 const map = inject(props.mapId);
 const insee = shallowRef(new InseeAdvancedSearch({ ...props.searchEngineOptions.advancedSearchOptions, name: 'Code INSEE' }));
@@ -45,10 +47,16 @@ const advancedSearchEngineOptions = computed(() => {
 
 let searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
 
+// RGAA 12.7 : l'id du champ est généré par l'extension, on l'expose pour le lien d'évitement (cf. Main.vue)
+const setSearchInputId = () => {
+  domStore.searchInputId = searchEngineAdvanced.value.element.querySelector('input.GPsearchInputText')?.id;
+}
+
 onMounted(() => {
   emit('ready');
   if (props.visibility) {
     map.addControl(searchEngineAdvanced.value);
+    setSearchInputId();
     if (props.disabled) {
       // TODO
       // searchEngineAdvanced.value.getContainer().firstChild.setAttribute("disabled", "true");
@@ -69,6 +77,7 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
   map.removeControl(searchEngineAdvanced.value);
+  domStore.searchInputId = undefined;
 })
 
 onUpdated(() => {
@@ -76,6 +85,7 @@ onUpdated(() => {
     // cree un nouveau searchengine quand les props changent (label)
     searchEngineAdvanced = shallowRef(new SearchEngineAdvanced(advancedSearchEngineOptions.value));
     map.addControl(searchEngineAdvanced.value);
+    setSearchInputId();
   }
 })
 
