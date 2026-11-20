@@ -20,6 +20,7 @@
 - Informations attributaires : un marker apparait à l'endroit selectionné (https://github.com/IGNF/geopf-extensions-openlayers/pull/607)
 - Navigation : contrainte de la navigation à l'emprise de la carte (#1364)
 - Impression : menu pour choisir une échelle d'impression (#1376)
+- Cartalog : amélioration de la recherche (#1348) (https://github.com/IGNF/geopf-extensions-openlayers/pull/657)
 
 #### 🔥 [Obsolète]
 
