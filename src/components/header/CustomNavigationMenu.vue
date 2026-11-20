@@ -171,7 +171,7 @@ onBeforeUnmount(() => {});
               :id="idx"
               :href="link.to"
               :target="link.target"
-              class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
+              class="fr-link--icon-left fr-access__link fr-nav__link flex flex-start"
               :class="isDsfrIcon(link.icon) && link.icon"
             >
               <VIcon
@@ -182,7 +182,7 @@ onBeforeUnmount(() => {});
               {{ link.text }}
               <span
                 v-if="link.badge"
-                class="fr-badge fr-badge--sm fr-badge--green-emeraude fr-ml-1w"
+                class="fr-badge fr-badge--sm fr-badge--green-emeraude"
               >{{ link.badge }}</span>
             </a>
           </DsfrNavigationMenuItem>
@@ -224,6 +224,15 @@ onBeforeUnmount(() => {});
 }
 .flex {
   display: flex;
+}
+
+.fr-access__link {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.fr-access__link .fr-badge {
+  margin-left: auto;
 }
 
 .fr-nav__btn-no-dropdown::after {
