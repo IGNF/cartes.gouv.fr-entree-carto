@@ -38,6 +38,7 @@
 - Remontées d'anomalie : transmission des couches ajoutées à la carte au service d'anomalie (#1379)
 - Espace personnel : l'enregistrement d'une carte n'échoue plus lorsqu'elle contient un croquis enregistré sans paramètre visible ou grayscale (#1387)
 - Espace personnel : le nom de la carte est obligatoire, avec un message d'erreur explicite, et les boutons d'enregistrement ont des intitulés accessibles (RGAA) (#1387)
+- Formulaires : mise en conformité RGAA des formulaires présents sur l'interface cartographique (#1386)
 
 #### 🔒 [Sécurité]
 
