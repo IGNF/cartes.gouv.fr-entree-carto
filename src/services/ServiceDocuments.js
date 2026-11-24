@@ -1,4 +1,6 @@
 
+import { getUid } from "ol/util";
+
 import GetDocuments from "./ServiceGetDocuments";
 import SetDocuments from "./ServiceSetDocuments";
 
@@ -180,6 +182,81 @@ var Documents = {
     }
       
     return cartesContainingDocument;
+  },
+
+  /**
+   * Recherche les documents (croquis, calculs) présents sur la carte
+   * mais non enregistrés dans l'espace personnel.
+   * 
+   * Les couches sont identifiées via leur `gpResultLayerId` :
+   * - croquis non enregistré : "drawing"
+   * - calcul non enregistré : "compute:*", "measure:profil", "layerimport:compute"
+   * - document enregistré : "bookmark:(drawing|compute)-*:uuid", 
+   *   non enregistré si l'uuid est absent de la liste des documents
+   * 
+   * Les couches vides (sans objet) issues des outils ne sont pas prises en compte.
+   * 
+   * @param {Object} map - carte OpenLayers
+   * @returns {Array<{id: String, name: String, type: String}>} - Liste des documents non enregistrés
+   */
+  getUnsavedDocuments: function (map) {
+    if (!map || typeof map.getAllLayers !== "function") {
+      return [];
+    }
+
+    const defaultName = (gpId, type) => {
+      if (gpId.includes("itineraire") || gpId.includes("compute-route")) {
+        return "Itinéraire";
+      }
+      if (gpId.includes("isocurve")) {
+        return "Isochrone/Isodistance";
+      }
+      if (gpId.includes("profil")) {
+        return "Profil altimétrique";
+      }
+      return (type === "drawing") ? "Croquis" : "Calcul";
+    };
+
+    var unsaved = [];
+    map.getAllLayers().forEach((layer) => {
+      if (typeof layer.gpResultLayerId !== "string") {
+        return;
+      }
+      const gpId = layer.gpResultLayerId.toLowerCase();
+      var type = null;
+
+      if (gpId.startsWith("bookmark:")) {
+        const parts = layer.gpResultLayerId.split(":");
+        const t = (parts[1] || "").toLowerCase().split("-")[0];
+        if (t !== "drawing" && t !== "compute") {
+          return;
+        }
+        const uuid = parts.slice(2).join(":");
+        if (this.find(uuid)) {
+          return;
+        }
+        type = t;
+      } else {
+        if (gpId === "drawing") {
+          type = "drawing";
+        } else if (gpId.startsWith("compute:") || gpId === "measure:profil" || gpId === "layerimport:compute") {
+          type = "compute";
+        } else {
+          return;
+        }
+        const source = typeof layer.getSource === "function" ? layer.getSource() : null;
+        if (!source || typeof source.getFeatures !== "function" || source.getFeatures().length === 0) {
+          return;
+        }
+      }
+
+      unsaved.push({
+        id : String(getUid(layer)),
+        name : layer.get("title") || layer.get("name") || defaultName(gpId, type),
+        type : type
+      });
+    });
+    return unsaved;
   },
 
   /**

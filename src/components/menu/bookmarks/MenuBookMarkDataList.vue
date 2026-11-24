@@ -21,6 +21,7 @@ import { inject, ref, useTemplateRef } from 'vue';
 
 import Sort from '@/components/utils/Sort.vue';
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
+import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 import { fromShare } from "@/features/share";
 
@@ -338,7 +339,20 @@ const addData = () => {
 const refDivMapName = useTemplateRef('div-map-name');
 const name = ref('');
 
+// documents de la carte non enregistrés dans l'espace personnel
+const unsavedDocuments = ref([]);
+const isUnsavedDocumentsModalOpened = ref(false);
+
 const onClickMapButtonValidateName = () => {
+  unsavedDocuments.value = service.getUnsavedDocuments(mapStore.getMap());
+  if (unsavedDocuments.value.length > 0) {
+    isUnsavedDocumentsModalOpened.value = true;
+    return;
+  }
+  saveMap();
+};
+
+const saveMap = () => {
   refDivMapName.value.classList.toggle("fr-hidden");
   
   // recupérer les couches du catalogue
@@ -664,6 +678,24 @@ onMounted(() => {});
         </DsfrTabContent>
       </DsfrTabs>
     </div>
+    <ModalConfirm
+      v-model="isUnsavedDocumentsModalOpened"
+      :title="t.bookmark.title_unsaved_documents"
+      :message="t.bookmark.warning_unsaved_documents"
+      confirm-label="Valider"
+      cancel-label="Annuler"
+      @confirm="saveMap"
+    >
+      <ul class="fr-mt-2w">
+        <li
+          v-for="doc in unsavedDocuments"
+          :key="doc.id"
+        >
+          {{ doc.name }} ({{ i18n(doc.type) }})
+        </li>
+      </ul>
+      <p>{{ t.bookmark.confirm_save_map_without_unsaved_documents }}</p>
+    </ModalConfirm>
   </div>
 </template>
 

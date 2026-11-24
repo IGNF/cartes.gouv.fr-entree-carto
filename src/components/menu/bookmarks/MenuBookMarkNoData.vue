@@ -16,7 +16,9 @@ export default {
 
 <script setup lang="js">
 import { useMapStore } from '@/stores/mapStore';
-import { inject, nextTick } from 'vue';
+import { inject, nextTick, ref } from 'vue';
+
+import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 // lib notification
 import { push } from 'notivue'
@@ -47,6 +49,50 @@ const createTempCarteDocument = async (data) => {
   }
 };
 
+const saveMap = () => {
+  // realiser un enregistrement du permalien
+  // dans l'espace personnel
+  // - creer un document generique afin d'ouvrir le menu
+  // - proposer de renommer l'enregistrement
+  const name = "Ma carte";
+
+  // recupèrer le permalien
+  var permalink = mapStore.permalink;
+  
+  const data = {
+    name : name,
+    description : "permalien",
+    format : "json",
+    target : "internal",
+    type : "carte",
+    content : JSON.stringify({
+      name : name,
+      date : new Date().toISOString(),
+      permalink : permalink
+    })
+  };
+
+  createTempCarteDocument(data)
+  .then(() => {
+    // notification
+    push.success({
+      title: t.bookmark.title,
+      message: t.bookmark.success_save_map
+    });
+  })
+  .catch((e) => {
+    console.error(e);
+    push.error({
+      title: t.bookmark.title,
+      message: t.bookmark.failed_save_map
+    });
+  });
+};
+
+// documents de la carte non enregistrés dans l'espace personnel
+const unsavedDocuments = ref([]);
+const isUnsavedDocumentsModalOpened = ref(false);
+
 const buttons = [
   {
     label: 'Enregistrer une carte',
@@ -56,43 +102,12 @@ const buttons = [
     secondary: true,
     class: 'bookmark-button-container',
     onclick: () => {
-      // realiser un enregistrement du permalien
-      // dans l'espace personnel
-      // - creer un document generique afin d'ouvrir le menu
-      // - proposer de renommer l'enregistrement
-      const name = "Ma carte";
-
-      // recupèrer le permalien
-      var permalink = mapStore.permalink;
-      
-      const data = {
-        name : name,
-        description : "permalien",
-        format : "json",
-        target : "internal",
-        type : "carte",
-        content : JSON.stringify({
-          name : name,
-          date : new Date().toISOString(),
-          permalink : permalink
-        })
-      };
-
-      createTempCarteDocument(data)
-      .then(() => {
-        // notification
-        push.success({
-          title: t.bookmark.title,
-          message: t.bookmark.success_save_map
-        });
-      })
-      .catch((e) => {
-        console.error(e);
-        push.error({
-          title: t.bookmark.title,
-          message: t.bookmark.failed_save_map
-        });
-      });
+      unsavedDocuments.value = service.getUnsavedDocuments(mapStore.getMap());
+      if (unsavedDocuments.value.length > 0) {
+        isUnsavedDocumentsModalOpened.value = true;
+        return;
+      }
+      saveMap();
     }
   },
   {
@@ -154,6 +169,24 @@ const buttons = [
         :buttons="buttons"
       />
     </div>
+    <ModalConfirm
+      v-model="isUnsavedDocumentsModalOpened"
+      :title="t.bookmark.title_unsaved_documents"
+      :message="t.bookmark.warning_unsaved_documents"
+      confirm-label="Valider"
+      cancel-label="Annuler"
+      @confirm="saveMap"
+    >
+      <ul class="fr-mt-2w">
+        <li
+          v-for="doc in unsavedDocuments"
+          :key="doc.id"
+        >
+          {{ doc.name }} ({{ doc.type === 'drawing' ? 'croquis' : 'calcul' }})
+        </li>
+      </ul>
+      <p>{{ t.bookmark.confirm_save_map_without_unsaved_documents }}</p>
+    </ModalConfirm>
   </div>
 </template>
 
