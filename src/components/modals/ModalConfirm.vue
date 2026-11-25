@@ -32,8 +32,10 @@ const closeModal = () => {
 };
 
 const onConfirm = () => {
-  emit('confirm');
+  // fermer d'abord : une erreur dans le gestionnaire "confirm"
+  // ne doit pas laisser la modale ouverte
   closeModal();
+  emit('confirm');
 };
 
 const onCancel = () => {
