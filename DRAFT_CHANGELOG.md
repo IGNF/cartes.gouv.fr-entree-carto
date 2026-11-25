@@ -21,6 +21,7 @@
 - Navigation : contrainte de la navigation à l'emprise de la carte (#1364)
 - Impression : menu pour choisir une échelle d'impression (#1376)
 - Cartalog : amélioration de la recherche (#1348) (https://github.com/IGNF/geopf-extensions-openlayers/pull/657)
+- Espace personnel : avertissement avant l'enregistrement d'une carte si des croquis ou calculs affichés ne sont pas enregistrés (#1387)
 
 #### 🔥 [Obsolète]
 
@@ -35,6 +36,8 @@
 - Légendes : ajout description/alt pour image des légendes (RGAA) (#1276)
 - Navigation : ajout de liens d'évitement (contenu principal, navigation, recherche, pied de page) et d'une zone de contenu principal `<main>` (RGAA) (#1256)
 - Remontées d'anomalie : transmission des couches ajoutées à la carte au service d'anomalie (#1379)
+- Espace personnel : l'enregistrement d'une carte n'échoue plus lorsqu'elle contient un croquis enregistré sans paramètre visible ou grayscale (#1387)
+- Espace personnel : le nom de la carte est obligatoire, avec un message d'erreur explicite, et les boutons d'enregistrement ont des intitulés accessibles (RGAA) (#1387)
 
 #### 🔒 [Sécurité]
 
