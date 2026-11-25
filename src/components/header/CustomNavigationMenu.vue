@@ -56,6 +56,11 @@ const route = useRoute();
 
 const { user, status, login, logout } = useAuth();
 
+// INFO
+// Les icônes DSFR (fr-icon-*) sont des classes CSS,
+// les autres sont des icônes Iconify (ex: gpf:extraction, cf. src/iconscustom.ts)
+const isDsfrIcon = (icon) => icon?.startsWith('fr-icon-');
+
 const busy = ref(false);
 const pending = computed(() => busy.value || ['initializing', 'authenticating'].includes(status.value));
 const displayName = computed(() => user.value?.name ||
@@ -171,11 +176,19 @@ onBeforeUnmount(() => {
               :id="idx"
               :href="link.to"
               :target="link.target"
-              class="fr-link--icon-left fr-access__link fr-nav__link flex-start"
-              :class="link.icon"
+              class="fr-link--icon-left fr-access__link fr-nav__link flex flex-start"
+              :class="isDsfrIcon(link.icon) && link.icon"
             >
-              <!-- <VIcon :name="link.icon" size="1.5rem" class="fr-icon--grey-800" /> -->
+              <VIcon
+                v-if="link.icon && !isDsfrIcon(link.icon)"
+                :name="link.icon"
+                scale="0.833"
+              />
               {{ link.text }}
+              <span
+                v-if="link.badge"
+                class="fr-badge fr-badge--sm fr-badge--green-emeraude"
+              >{{ link.badge }}</span>
             </a>
           </DsfrNavigationMenuItem>
           <DsfrNavigationMenuItem v-if="menu.connexionMenu">
@@ -215,12 +228,26 @@ onBeforeUnmount(() => {
   display: flex;
 }
 
+.fr-access__link {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.fr-access__link .fr-badge {
+  margin-left: auto;
+}
+
 .fr-nav__btn-no-dropdown::after {
   display: none;
 }
 
 a[target=_blank]::after {
   margin-left: auto;
+}
+
+// icône Iconify : mêmes marges que les icônes DSFR (cf. .fr-link--icon-left::before)
+.fr-nav__link .vicon {
+  margin: 0 0.5rem 0 -0.125rem;
 }
 
 // menus collapsable
