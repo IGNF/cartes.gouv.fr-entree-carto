@@ -159,7 +159,7 @@ const buttons = [
         Aucun enregistrement pour le moment
       </h4>
       <div>
-        Enregsitrer vos cartes et données créées sur votre espace afin de les retrouver
+        Enregistrer vos cartes et données créées sur votre espace afin de les retrouver
         et de les utiliser à tout moment.
       </div>
       <div id="location-france" />
@@ -173,8 +173,8 @@ const buttons = [
       v-model="isUnsavedDocumentsModalOpened"
       :title="t.bookmark.title_unsaved_documents"
       :message="t.bookmark.warning_unsaved_documents"
-      confirm-label="Valider"
-      cancel-label="Annuler"
+      :confirm-label="t.bookmark.confirm_save_unsaved_documents"
+      :cancel-label="t.bookmark.cancel_save_unsaved_documents"
       @confirm="saveMap"
     >
       <ul class="fr-mt-2w">

@@ -603,6 +603,8 @@ onMounted(() => {});
               <DsfrButton
                 size="sm"
                 icon="ri:close-line"
+                :title="t.bookmark.label_cancel_map_name"
+                :aria-label="t.bookmark.label_cancel_map_name"
                 tertiary
                 no-outline
                 class="fr-p-1w"
@@ -611,6 +613,8 @@ onMounted(() => {});
               <DsfrButton
                 size="sm"
                 icon="ri:check-line"
+                :title="t.bookmark.label_validate_map_name"
+                :aria-label="t.bookmark.label_validate_map_name"
                 tertiary
                 no-outline
                 class="fr-p-1w"
@@ -682,8 +686,8 @@ onMounted(() => {});
       v-model="isUnsavedDocumentsModalOpened"
       :title="t.bookmark.title_unsaved_documents"
       :message="t.bookmark.warning_unsaved_documents"
-      confirm-label="Valider"
-      cancel-label="Annuler"
+      :confirm-label="t.bookmark.confirm_save_unsaved_documents"
+      :cancel-label="t.bookmark.cancel_save_unsaved_documents"
       @confirm="saveMap"
     >
       <ul class="fr-mt-2w">
