@@ -30,6 +30,7 @@ export default {
     cancel_save_unsaved_documents: "Annuler l'enregistrement",
     label_validate_map_name: "Valider le nom de la carte",
     label_cancel_map_name: "Annuler la saisie du nom",
+    failed_map_name_required: "Le nom de la carte est obligatoire.",
     success_copy_permalink: "Le permalien est copié",
     failed_type_unknow: (value) => { return `Impossible de determiner le type de données : ${value}` },
     failed_not_yet_implemented: (value) => { return `Pas encore implementé : ${value} !` },
