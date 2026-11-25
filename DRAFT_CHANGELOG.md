@@ -20,6 +20,9 @@
 - Informations attributaires : un marker apparait à l'endroit selectionné (https://github.com/IGNF/geopf-extensions-openlayers/pull/607)
 - Navigation : contrainte de la navigation à l'emprise de la carte (#1364)
 - Header : Ajout des nouveaux services dans le header (#1377)
+- Impression : menu pour choisir une échelle d'impression (#1376)
+- Cartalog : amélioration de la recherche (#1348) (https://github.com/IGNF/geopf-extensions-openlayers/pull/657)
+- Espace personnel : avertissement avant l'enregistrement d'une carte si des croquis ou calculs affichés ne sont pas enregistrés (#1387)
 
 #### 🔥 [Obsolète]
 
@@ -32,8 +35,14 @@
 - Recherche avancée : controle de la validité des coordonnées saisis (#1365)
 - Itinéraire/Isochrone : utilisation de la ressource bdtopo-valhalla pour tous les cas d'utilisation itinéraire/isochrone (#1365)
 - Légendes : ajout description/alt pour image des légendes (RGAA) (#1276)
+- Navigation : ajout de liens d'évitement (contenu principal, navigation, recherche, pied de page) et d'une zone de contenu principal `<main>` (RGAA) (#1256)
+- Remontées d'anomalie : transmission des couches ajoutées à la carte au service d'anomalie (#1379)
+- Espace personnel : l'enregistrement d'une carte n'échoue plus lorsqu'elle contient un croquis enregistré sans paramètre visible ou grayscale (#1387)
+- Espace personnel : le nom de la carte est obligatoire, avec un message d'erreur explicite, et les boutons d'enregistrement ont des intitulés accessibles (RGAA) (#1387)
+- Formulaires : mise en conformité RGAA des formulaires présents sur l'interface cartographique (#1386)
 
 #### 🔒 [Sécurité]
 
 - Authentification sécurisée (#1354)
-
+- Mise à jour version nginx (#1381)
+- Mise à jour version viteJs (#1382)

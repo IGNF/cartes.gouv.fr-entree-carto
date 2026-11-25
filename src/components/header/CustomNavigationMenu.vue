@@ -118,6 +118,7 @@ onBeforeUnmount(() => {
       </DsfrButton>
       <DsfrButton
         v-else
+        :id="`${menu.title.trim().toLowerCase().replaceAll(' ', '-')}-button`"
         ref="button"
         :label="menu.title"
         :icon="menu.icon"

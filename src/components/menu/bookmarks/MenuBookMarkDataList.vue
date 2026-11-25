@@ -17,10 +17,11 @@ export default {
 
 <script setup lang="js">
 
-import { inject, ref, useTemplateRef } from 'vue';
+import { inject, ref, useId, useTemplateRef, watch } from 'vue';
 
 import Sort from '@/components/utils/Sort.vue';
 import MenuBookMarkEntry from '@/components/menu/bookmarks/MenuBookMarkEntry.vue';
+import ModalConfirm from '@/components/modals/ModalConfirm.vue';
 
 import { fromShare } from "@/features/share";
 
@@ -315,7 +316,8 @@ emitter.addEventListener("document:synchronized", onUpdateBookmark);
  * @fires emitter#layerimport:open:clicked
  */
 const addMap = () => {
-  refDivMapName.value.classList.toggle("fr-hidden");
+  nameError.value = "";
+  isMapNameOpened.value = !isMapNameOpened.value;
 };
 const addData = () => {
   // envoi d'un evenement pour l'ouverture du contrôle d'import de données
@@ -335,12 +337,56 @@ const addData = () => {
  * Gestion de l'enregistrement d'un permalien
  ************************************************************************/
 
-const refDivMapName = useTemplateRef('div-map-name');
+// affichage du champ de nommage : état réactif, et non classList,
+// sinon Vue réécrit l'attribut class (et remet fr-hidden) à chaque rendu
+const isMapNameOpened = ref(false);
+const refInputMapName = useTemplateRef('input-map-name');
 const name = ref('');
 
+// message d'erreur du champ de nommage (le nom est obligatoire)
+const nameError = ref('');
+const nameMessagesId = useId();
+// l'erreur n'est plus valable dès que l'utilisateur saisit un nom
+watch(name, (value) => {
+  if (nameError.value && value && value.trim()) {
+    nameError.value = "";
+  }
+});
+
+// documents de la carte non enregistrés dans l'espace personnel
+const unsavedDocuments = ref([]);
+const isUnsavedDocumentsModalOpened = ref(false);
+
 const onClickMapButtonValidateName = () => {
-  refDivMapName.value.classList.toggle("fr-hidden");
-  
+  // le nom est obligatoire : on le vérifie avant toute autre étape
+  // (y compris l'avertissement sur les documents non enregistrés)
+  if (!name.value || !name.value.trim()) {
+    nameError.value = t.bookmark.failed_map_name_required;
+    refInputMapName.value?.focus();
+    return;
+  }
+  nameError.value = "";
+
+  unsavedDocuments.value = service.getUnsavedDocuments(mapStore.getMap());
+  if (unsavedDocuments.value.length > 0) {
+    isUnsavedDocumentsModalOpened.value = true;
+    return;
+  }
+  saveMap();
+};
+
+// les paramètres issus d'une URL de partage sont des chaînes ("true", "false", "1", "0")
+// et peuvent être absents (ex. grayscale non défini sur une couche de croquis)
+const parseBoolean = (value, defaultValue) => {
+  if (value === undefined || value === null || value === "") {
+    return defaultValue;
+  }
+  return value === true || value === "true" || value === "1";
+};
+
+const saveMap = () => {
+  isMapNameOpened.value = false;
+
   // recupérer les couches du catalogue
   // on retourne un tableau d'objets avec les propriétés utiles pour l'enregistrement du document
   var _layers = mapStore.getLayers().map((id) => {
@@ -368,22 +414,23 @@ const onClickMapButtonValidateName = () => {
     }
     return {
       ...doc,
-      opacity : Number(obj.opacity),
-      visible : JSON.parse(obj.visible),
-      grayscale : JSON.parse(obj.grayscale),
+      opacity : (obj.opacity === undefined) ? 1 : Number(obj.opacity),
+      visible : parseBoolean(obj.visible, true),
+      grayscale : parseBoolean(obj.grayscale, false),
       position : Number(obj.position)
     };
   }).filter((bookmark) => bookmark !== null);
 
   // fournir un nom au document via UI
+  const mapName = name.value.trim();
   const data = {
-    name : name.value,
+    name : mapName,
     description : "permalien",
     format : "json",
     target : "internal",
     type : "carte",
     content : JSON.stringify({
-      name : name.value,
+      name : mapName,
       date : new Date().toISOString(),
       permalink : mapStore.permalink,
       x : mapStore.x,
@@ -401,9 +448,6 @@ const onClickMapButtonValidateName = () => {
   };
 
   createCarteDocument(data)
-  .then(() => {
-    // refDivMapName.value.classList.toggle("fr-hidden");
-  })
   .then(() => {
     name.value = "";
   })
@@ -424,7 +468,8 @@ const onClickMapButtonValidateName = () => {
   
 };
 const onClickMapButtonCancelName  = () => {
-  refDivMapName.value.classList.toggle("fr-hidden");
+  nameError.value = "";
+  isMapNameOpened.value = false;
 };
 
 const createCarteDocument = async (data) => {
@@ -577,31 +622,55 @@ onMounted(() => {});
           />
           <!-- Affichage du menu pour nommer le permalien dans les favoris -->
           <div
-            ref="div-map-name"
-            class="container-bookmark-map-name fr-hidden"
+            class="fr-input-group container-bookmark-map-name-group"
+            :class="{ 'fr-hidden': !isMapNameOpened, 'fr-input-group--error': nameError }"
+            data-testid="bookmark-map-name"
           >
-            <DsfrInput
-              v-model="name"
-              label="Nommer"
-              placeholder=""
-            />
-            <div class="container-bookmark-map-buttons-name">
-              <DsfrButton
-                size="sm"
-                icon="ri:close-line"
-                tertiary
-                no-outline
-                class="fr-p-1w"
-                @click="onClickMapButtonCancelName"
+            <div class="container-bookmark-map-name">
+              <DsfrInput
+                ref="input-map-name"
+                v-model="name"
+                label="Nommer"
+                placeholder=""
+                required
+                :is-invalid="!!nameError"
+                :description-id="nameMessagesId"
               />
-              <DsfrButton
-                size="sm"
-                icon="ri:check-line"
-                tertiary
-                no-outline
-                class="fr-p-1w"
-                @click="onClickMapButtonValidateName"
-              />
+              <div class="container-bookmark-map-buttons-name">
+                <DsfrButton
+                  size="sm"
+                  icon="ri:close-line"
+                  :title="t.bookmark.label_cancel_map_name"
+                  :aria-label="t.bookmark.label_cancel_map_name"
+                  tertiary
+                  no-outline
+                  class="fr-p-1w"
+                  @click="onClickMapButtonCancelName"
+                />
+                <DsfrButton
+                  size="sm"
+                  icon="ri:check-line"
+                  :title="t.bookmark.label_validate_map_name"
+                  :aria-label="t.bookmark.label_validate_map_name"
+                  tertiary
+                  no-outline
+                  class="fr-p-1w"
+                  @click="onClickMapButtonValidateName"
+                />
+              </div>
+            </div>
+            <!-- message d'erreur DSFR, annoncé aux lecteurs d'écran -->
+            <div
+              :id="nameMessagesId"
+              class="fr-messages-group"
+              aria-live="polite"
+            >
+              <p
+                v-if="nameError"
+                class="fr-message fr-message--error"
+              >
+                {{ nameError }}
+              </p>
             </div>
           </div>
           <!-- Affichage des cartes ou permaliens -->
@@ -664,12 +733,34 @@ onMounted(() => {});
         </DsfrTabContent>
       </DsfrTabs>
     </div>
+    <ModalConfirm
+      v-model="isUnsavedDocumentsModalOpened"
+      :title="t.bookmark.title_unsaved_documents"
+      :message="t.bookmark.warning_unsaved_documents"
+      :confirm-label="t.bookmark.confirm_save_unsaved_documents"
+      :cancel-label="t.bookmark.cancel_save_unsaved_documents"
+      @confirm="saveMap"
+    >
+      <ul class="fr-mt-2w">
+        <li
+          v-for="doc in unsavedDocuments"
+          :key="doc.id"
+        >
+          {{ doc.name }} ({{ i18n(doc.type) }})
+        </li>
+      </ul>
+      <p>{{ t.bookmark.confirm_save_map_without_unsaved_documents }}</p>
+    </ModalConfirm>
   </div>
 </template>
 
 <style>
 .container-bookmark-map-name {
   display: flex;
+}
+/* pas de marge DSFR sous le groupe : la liste des cartes suit directement */
+.fr-input-group.container-bookmark-map-name-group:not(:last-child) {
+  margin-bottom: 0;
 }
 .container-bookmark-map-buttons-name {
   display: flex;

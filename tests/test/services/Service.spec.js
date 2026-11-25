@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import Service from '@/services/Service';
 import { useServiceStore } from '@/stores/serviceStore';
+import Map from 'ol/Map';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import TileLayer from 'ol/layer/Tile';
 
 beforeEach(() => setActivePinia(createPinia()));
 afterEach(() => {
@@ -107,5 +113,65 @@ describe('Service documents', () => {
     resolveBody([{ _id: 'previous-account' }]);
     await expect(body).rejects.toThrow('Document request cancelled');
     expect(service.documents).toEqual({});
+  });
+});
+describe('Service documents - getUnsavedDocuments', () => {
+  const createVector = (gpResultLayerId, { features = 1, title } = {}) => {
+    const layer = new VectorLayer({
+      source: new VectorSource({
+        features: Array.from({ length: features }, () => new Feature(new Point([0, 0])))
+      })
+    });
+    if (gpResultLayerId) {
+      layer.gpResultLayerId = gpResultLayerId;
+    }
+    if (title) {
+      layer.set('title', title);
+    }
+    return layer;
+  };
+  const createMap = (layers) => new Map({ layers });
+
+  it('U-SD-04 - detecte les croquis et calculs non enregistres', () => {
+    const service = new Service();
+    const map = createMap([
+      createVector('drawing', { title: 'Mon croquis' }),
+      createVector('compute:Pieton$OGC:OPENLS;Itineraire'),
+      createVector('compute:Voiture$GEOPORTAIL:GPP:Isocurve'),
+      createVector('measure:profil'),
+      createVector('layerimport:COMPUTE', { title: 'Calcul importe' })
+    ]);
+    expect(service.getUnsavedDocuments(map).map(({ name, type }) => ({ name, type }))).toEqual([
+      { name: 'Mon croquis', type: 'drawing' },
+      { name: 'Itinéraire', type: 'compute' },
+      { name: 'Isochrone/Isodistance', type: 'compute' },
+      { name: 'Profil altimétrique', type: 'compute' },
+      { name: 'Calcul importe', type: 'compute' }
+    ]);
+  });
+
+  it('U-SD-05 - ignore les couches vides, du catalogue, des imports et des mesures', () => {
+    const service = new Service();
+    const map = createMap([
+      createVector('drawing', { features: 0 }),
+      createVector(null),
+      createVector('layerimport:KML'),
+      createVector('measure'),
+      new TileLayer()
+    ]);
+    expect(service.getUnsavedDocuments(map)).toEqual([]);
+  });
+
+  it('U-SD-06 - signale un bookmark absent des documents de l\'espace personnel', () => {
+    const service = new Service();
+    service.documents.drawing = [{ _id: 'saved-uuid', name: 'Enregistre' }];
+    const map = createMap([
+      createVector('bookmark:drawing-kml:saved-uuid', { title: 'Enregistre' }),
+      createVector('bookmark:compute-route:missing-uuid', { features: 0 }),
+      createVector('bookmark:import-kml:missing-import')
+    ]);
+    expect(service.getUnsavedDocuments(map).map(({ name, type }) => ({ name, type }))).toEqual([
+      { name: 'Itinéraire', type: 'compute' }
+    ]);
   });
 });
