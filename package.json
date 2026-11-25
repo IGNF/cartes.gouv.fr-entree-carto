@@ -52,7 +52,7 @@
     "@gouvfr/dsfr": "1.14.4",
     "@gouvminint/vue-dsfr": "^8.19.0",
     "@iconify/vue": "^5.0.0",
-    "@ignf/cartes.gouv.fr-vue-components": "^1.4.6",
+    "@ignf/cartes.gouv.fr-vue-components": "github:IGNF/cartes.gouv.fr-vue-components#semver:^1.4.6",
     "@panoramax/web-viewer": "^5.3.1",
     "@unhead/vue": "^3.4.2",
     "authentification-vue-oidc": "./modules/authentification-vue-oidc-0.1.0.tgz",
