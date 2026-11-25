@@ -375,6 +375,15 @@ const saveMap = () => {
     var obj = fromShare(decodeURIComponent(bookmark));
     if (!obj) {
       return null;
+// les paramètres issus d'une URL de partage sont des chaînes ("true", "false", "1", "0")
+// et peuvent être absents (ex. grayscale non défini sur une couche de croquis)
+const parseBoolean = (value, defaultValue) => {
+  if (value === undefined || value === null || value === "") {
+    return defaultValue;
+  }
+  return value === true || value === "true" || value === "1";
+};
+
     };
     var doc = service.find(obj.id);
     if (!doc) {
@@ -382,9 +391,9 @@ const saveMap = () => {
     }
     return {
       ...doc,
-      opacity : Number(obj.opacity),
-      visible : JSON.parse(obj.visible),
-      grayscale : JSON.parse(obj.grayscale),
+      opacity : (obj.opacity === undefined) ? 1 : Number(obj.opacity),
+      visible : parseBoolean(obj.visible, true),
+      grayscale : parseBoolean(obj.grayscale, false),
       position : Number(obj.position)
     };
   }).filter((bookmark) => bookmark !== null);
