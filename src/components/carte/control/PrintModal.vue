@@ -883,7 +883,7 @@ const scaleLineOptions = {
           :options="pageOrientationOptions"
           :small="false"
           legend="Mise en Page"
-          class="mb-20"
+          class="fr-mb-3w"
         >
           <template #legend>
             Mise en Page
@@ -901,20 +901,14 @@ const scaleLineOptions = {
           :options="scaleOptions"
         />
         <template v-if="printFormState.scale === CUSTOM_SCALE_VALUE">
-          <DsfrInput
+          <DsfrInputGroup
             v-model="customScaleInput"
             label="Échelle personnalisée"
             label-visible
             hint="Ex : 1/25000 ou 25000"
             name="echelle-personnalisee"
-            class="mb-10"
+            :error-message="isCustomScaleInvalid ? 'Échelle invalide. Saisissez par exemple 1/25000.' : undefined"
           />
-          <p
-            v-if="isCustomScaleInvalid"
-            class="fr-error-text"
-          >
-            Échelle invalide. Saisissez par exemple 1/25000.
-          </p>
         </template>
         <DsfrSelect
           v-model.number="printFormState.margin"
@@ -925,28 +919,28 @@ const scaleLineOptions = {
             { value : 10, text : 'Grosse marge - 10mm' }
           ]"
         />
-        <DsfrInput
+        <fieldset class="fr-fieldset">
+          <legend class="fr-fieldset__legend fr-fieldset__legend--regular">
+            Éléments à afficher sur la carte
+          </legend>
+          <DsfrCheckbox
+            v-model="printFormState.hasTitle"
+            name="print-has-title"
+            label="Afficher le titre"
+          />
+          <DsfrCheckbox
+            v-model="printFormState.hasScale"
+            name="print-has-scale"
+            label="Afficher l'échelle"
+          />
+        </fieldset>
+        <DsfrInputGroup
           v-model="printFormState.printTitle"
           :disabled="!printFormState.hasTitle"
           label="Titre de la carte"
           label-visible
           name="titre"
-          class="mb-10"
         />
-        <div class="mt-10">
-          <DsfrCheckbox
-            v-model="printFormState.hasTitle"
-            name="checkbox-simple"
-            :label="!printFormState.hasTitle ? 'Activer le titre' : 'Désactiver le titre'"
-          />
-        </div>
-        <div class="mt-10">
-          <DsfrCheckbox
-            v-model="printFormState.hasScale"
-            name="checkbox-simple"
-            :label="!printFormState.hasScale ? 'Afficher l\'échelle' : 'Désactiver l\'échelle'"
-          />
-        </div>
         <DsfrSelect
           v-model="printFormState.format"
           label="Format d'export"
@@ -1064,15 +1058,6 @@ const scaleLineOptions = {
     }
   }
 
-  .mb-20 {
-    margin-bottom: 12px;
-  }
-  .mb-10 {
-    margin-bottom: 6px;
-  }
-  .mt-10 {
-    margin-top: 6px;
-  }
   .print-page{
     display: flex;
     flex-direction: row;
@@ -1112,13 +1097,6 @@ const scaleLineOptions = {
     flex: 0 0 230px;
     margin-right: 10px;
     /* max-width: 230px; */
-  }
-
-  .print-form :deep(.fr-select-group),
-  .print-form :deep(.fr-input-group),
-  .print-form :deep(.fr-checkbox-group),
-  .print-form :deep(.fr-fieldset) {
-    margin-bottom: 8px;
   }
 
   .map-title {
